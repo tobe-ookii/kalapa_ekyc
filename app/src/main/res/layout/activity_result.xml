@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ekyc_demo_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ResultActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_vertical"
+            android:text="@string/klp_demo_result"
+            android:textAlignment="center"
+            android:textSize="@dimen/klp_txt_size_banner"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/container_selfie_photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="@dimen/margin_mid"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/liveness_radius"
+                        app:cardPreventCornerOverlap="false">
+
+                        <ImageView
+                            android:id="@+id/iv_selfie"
+                            android:layout_width="@dimen/nfc_image_height"
+                            android:layout_height="@dimen/nfc_image_height"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:visibility="visible" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/container_eid_photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="@dimen/margin_mid"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/liveness_radius"
+                        app:cardPreventCornerOverlap="false">
+
+                        <ImageView
+                            android:id="@+id/iv_eid_photo"
+                            android:layout_width="@dimen/nfc_image_height"
+                            android:layout_height="@dimen/nfc_image_height"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:visibility="visible" />
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_front_id"
+                    android:layout_width="250dp"
+                    android:layout_height="175dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/margin_vertical"
+                    android:visibility="gone"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:id="@+id/iv_front_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/guide_id" />
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_back_id"
+                    android:layout_width="250dp"
+                    android:layout_height="175dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/margin_vertical"
+                    android:visibility="gone"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:id="@+id/iv_back_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/guide_id_back" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/ll_ocr_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_side"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/border_button_only"
+                    android:backgroundTint="@color/mainColor"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_title_ocr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_mid"
+                        android:text="@string/klp_demo_ocr"
+                        android:textColor="@color/mainColor"
+                        android:textSize="@dimen/klp_txt_size_header"
+                        android:textStyle="bold" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_id_number"
+                        app:tvValue="@string/klp_field_id_number" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_name"
+                        app:tvValue="@string/klp_field_name" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_dob"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_dob"
+                        app:tvValue="18/08/1994" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_hometown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_hometown"
+                        app:tvValue="Trịnh Xá, Thành Phố Phủ Lý, Hà Nam" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_address"
+                        app:tvValue="Số 6 Ngõ 92/8 Nguyễn Khánh Toàn Tổ 5 Quan Hoa Cg Hn" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_doi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_doi"
+                        app:tvValue="@string/klp_field_doi" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_poi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_poi"
+                        app:tvValue="Cục Trưởng Cục Cảnh Sát Quản Lý Hành Chính Về Trật Tự Xã Hội" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_personal_identification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_personal_identification"
+                        app:tvValue="Nốt Ruồi C:1cm Trên Sau Đuôi Mắt Trái" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_card_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_card_type"
+                        app:tvValue="@string/klp_card_type" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container_matching_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_side"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/border_button_only"
+                    android:backgroundTint="@color/mainColor"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_title_face_matching"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_mid"
+                        android:text="@string/klp_face_matching"
+                        android:textColor="@color/mainColor"
+                        android:textSize="@dimen/klp_txt_size_header"
+                        android:textStyle="bold" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_is_matched"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_demo_is_matched"
+                        app:tvValue="@string/klp_demo_is_matched" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_matching_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_demo_matching_score"
+                        app:tvValue="@string/klp_demo_matching_score" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/holder_nfc_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_side"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/border_button_only"
+                    android:backgroundTint="@color/mainColor"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_title_nfc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_mid"
+                        android:text="@string/klp_nfc_information"
+                        android:textColor="@color/mainColor"
+                        android:textSize="@dimen/klp_txt_size_header"
+                        android:textStyle="bold" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_is_valid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_demo_field_nfc_is_valid"
+                        android:visibility="gone"
+                        app:tvValue="@string/klp_demo_field_nfc_is_valid" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_id_number"
+                        app:tvValue="@string/klp_field_id_number" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_old_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_old_id_number"
+                        app:tvValue="@string/klp_field_old_id_number" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_name"
+                        app:tvValue="@string/klp_field_name" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_dob"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_dob"
+                        app:tvValue="18/08/1994" />
+
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_gender"
+                        app:tvValue="18/08/1994" />
+
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_hometown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_hometown"
+                        app:tvValue="Trịnh Xá, Thành Phố Phủ Lý, Hà Nam" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_address"
+                        app:tvValue="Số 6 Ngõ 92/8 Nguyễn Khánh Toàn Tổ 5 Quan Hoa Cg Hn" />
+
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_nationality"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_nationality"
+                        app:tvValue="18/08/1994" />
+
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_nation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_nation"
+                        app:tvValue="Kinh" />
+
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_religion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_religion"
+                        app:tvValue="Không" />
+
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_doi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_doi"
+                        app:tvValue="@string/klp_field_doi" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_personal_identification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_personal_identification"
+                        app:tvValue="Nốt Ruồi C:1cm Trên Sau Đuôi Mắt Trái" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_mother_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_mother_name"
+                        app:tvValue="@string/klp_field_mother_name" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_father_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_father_name"
+                        app:tvValue="@string/klp_field_father_name" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_nfc_spouse_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_field_spouse_name"
+                        app:tvValue="@string/klp_field_spouse_name" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/holder_not_qualified_rule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_side"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/border_button_only"
+                    android:backgroundTint="@color/mainColor"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_title_rule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_mid"
+                        android:textColor="@color/mainColor"
+                        android:textSize="@dimen/klp_txt_size_header"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_result_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/margin_mid"
+                        android:textAlignment="center"
+                        android:textColor="@color/black_txt"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/margin_mid"
+                        android:layout_marginStart="@dimen/margin_xxsmall"
+                        android:text="@string/klp_demo_approved"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black_txt"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/btn_finish"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="50dp"
+                    android:layout_marginTop="@dimen/margin_vertical"
+                    android:layout_marginBottom="@dimen/margin_vertical"
+                    android:background="@drawable/border_button_solid"
+                    android:backgroundTint="@color/mainColor"
+                    android:text="@string/klp_demo_done"
+                    android:textAllCaps="false" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </ScrollView>
+    </LinearLayout>
+</ScrollView>

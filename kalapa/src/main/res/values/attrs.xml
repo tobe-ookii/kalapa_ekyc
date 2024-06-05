@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="isTablet">false</bool>
+    <attr name="maskColor" format="color" />
+    <attr name="dashColor" format="color" />
+    <attr name="cornerColor" format="color" />
+    <attr name="detectingColor" format="color" />
+    <attr name="centerX" format="dimension" />
+    <attr name="centerY" format="dimension" />
+    <attr name="frameWidth" format="dimension" />
+    <attr name="frameHeight" format="dimension" />
+    <attr name="transOff" format="dimension" />
+    <attr name="transOffY" format="dimension" />
+    <attr name="strokeWidth" format="dimension" />
+    <attr name="radius" format="dimension" />
+    <attr name="corner" format="boolean" />
+
+
+    <attr name="frameRadius" format="dimension" />
+    <attr name="maskType" format="enum">
+        <enum name="Rectangle" value="0" />
+        <enum name="Oval" value="1" />
+    </attr>
+    <declare-styleable name="KLPCustomSwitch">
+        <attr name="rb_first_label" format="string" />
+        <attr name="rb_second_label" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="CameraCaptureView">
+        <attr name="maskColor" />
+        <attr name="dashColor" />
+        <attr name="strokeWidth" />
+        <attr name="cornerColor" />
+        <attr name="centerX" />
+        <attr name="centerY" />
+        <attr name="frameWidth" />
+        <attr name="frameHeight" />
+        <attr name="transOff" />
+        <attr name="rectFrame" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CircleView">
+        <attr name="frameWidth" />
+        <attr name="frameHeight" />
+        <attr name="viewAngle" format="integer" />
+        <attr name="viewStroke" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CardMaskView">
+        <attr name="maskColor" />
+        <attr name="dashColor" />
+        <attr name="strokeWidth" />
+        <attr name="cornerColor" />
+        <attr name="centerX" />
+        <attr name="centerY" />
+        <attr name="frameWidth" />
+        <attr name="frameHeight" />
+        <attr name="transOff" />
+        <attr name="transOffY" />
+        <attr name="radius" />
+        <attr name="liveness_mode" format="boolean">false</attr>
+    </declare-styleable>
+
+    <declare-styleable name="FaceDetectRadioView">
+        <attr name="icon" format="reference" />
+        <attr name="title" format="string" />
+        <attr name="description" format="string" />
+        <attr name="checked" format="boolean" />
+        <attr name="value" format="enum">
+            <enum name="None" value="0" />
+            <enum name="Active" value="1" />
+            <enum name="PassLiveness" value="2" />
+            <enum name="Passive" value="3" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="FaceDetectionView">
+        <attr name="frameWidth" />
+        <attr name="frameHeight" />
+        <attr name="transOff" />
+        <attr name="maskColor" />
+        <attr name="dashColor" />
+        <attr name="strokeWidth" />
+        <attr name="cornerColor" />
+        <attr name="foundColor" format="color" />
+        <attr name="centerX" />
+        <attr name="centerY" />
+        <attr name="corner" />
+    </declare-styleable>
+
+    <declare-styleable name="ScanStatusView">
+        <attr name="icon" />
+        <attr name="status" format="enum">
+            <enum name="None" value="0" />
+            <enum name="Verified" value="1" />
+            <enum name="Failed" value="2" />
+        </attr>
+        <attr name="title" />
+    </declare-styleable>
+
+    <declare-styleable name="CameraMaskView">
+        <attr name="maskColor" />
+        <attr name="detectingColor" />
+        <attr name="dashColor" />
+        <attr name="strokeWidth" />
+        <attr name="centerX" />
+        <attr name="centerY" />
+        <attr name="frameWidth" />
+        <attr name="frameHeight" />
+        <attr name="frameRadius" />
+        <attr name="transOff" />
+        <attr name="maskType" />
+    </declare-styleable>
+    <declare-styleable name="KLPResultRow">
+        <attr name="tvKey" format="string" />
+        <attr name="tvValue" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="KLPDecisionRow">
+        <attr name="tvRule" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="KLPCustomMultipleChoices">
+        <attr name="kmc_first_label" format="string" />
+        <attr name="kmc_second_label" format="string" />
+        <attr name="kmc_third_label" format="string" />
+    </declare-styleable>
+</resources>

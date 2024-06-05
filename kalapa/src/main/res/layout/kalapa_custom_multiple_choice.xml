@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rg_toggle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_button_only"
+    android:backgroundTint="@color/textColor"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/margin_xsmall"
+    android:paddingVertical="@dimen/margin_xxsmall">
+
+    <RadioButton
+        android:id="@+id/rb_first_label"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_weight="1"
+        android:background="@drawable/custom_switch"
+        android:button="@null"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/margin_mid"
+        android:text="Search"
+        android:textColor="@color/progress_text_unchecked" />
+
+    <RadioButton
+        android:id="@+id/rb_second_label"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_weight="1"
+        android:background="@drawable/custom_switch"
+        android:button="@null"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/margin_mid"
+        android:text="Offers"
+        android:textColor="@color/white" />
+
+    <RadioButton
+        android:id="@+id/rb_third_label"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_weight="1"
+        android:background="@drawable/custom_switch"
+        android:button="@null"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/margin_mid"
+        android:text="Offers"
+        android:textColor="@color/white" />
+</RadioGroup>

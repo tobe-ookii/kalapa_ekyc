@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/ln_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/margin_horizontal"
+        android:paddingVertical="@dimen/margin_vertical"
+        tools:context=".activity.SettingActivity">
+
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="iv_setting"
+            android:src="@drawable/ic_setting" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_face_otp_token"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edt_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edt_default_background"
+            android:contentDescription="Enter your background color"
+            android:maxLines="3" />
+
+        <TextView
+            android:id="@+id/tv_enviroment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_faceotp_environment"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
+            android:id="@+id/sw_enviroment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rb_first_label="@string/klp_environment_production"
+            app:rb_second_label="@string/klp_environment_dev" />
+
+
+        <TextView
+            android:id="@+id/tv_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_index_language"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
+            android:id="@+id/sw_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:kmc_first_label="@string/klp_faceOTP_language_vi"
+            app:kmc_second_label="@string/klp_faceOTP_language_en"
+            app:kmc_third_label="@string/klp_faceOTP_language_ko" />
+
+        <TextView
+            android:id="@+id/tv_scenario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_mid"
+            android:text="@string/klp_index_scenario"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+
+        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
+            android:id="@+id/sw_scenario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:kmc_first_label="nfc_ekyc"
+            app:kmc_second_label="verify"
+            app:kmc_third_label="passport" />
+
+        <TextView
+            android:id="@+id/tv_liveness_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_mid"
+            android:layout_marginBottom="@dimen/margin_mid"
+            android:text="@string/klp_index_faceOTP_liveness"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
+            android:id="@+id/sw_liveness_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:kmc_first_label="@string/klp_liveness_activate"
+            app:kmc_second_label="@string/klp_liveness_semi_activate"
+            app:kmc_third_label="@string/klp_liveness_passive" />
+        <!--        <vn.kalapa.faceotp.views.KLPCustomSwitch-->
+        <!--            android:id="@+id/sw_liveness_version"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            app:rb_first_label="@string/klp_liveness_version_2"-->
+        <!--            app:rb_second_label="@string/klp_liveness_version_3" />-->
+
+        <TextView
+            android:id="@+id/tv_main_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_index_main_color"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_main_color"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/margin_mid"
+                android:background="@drawable/border_button_solid"
+                android:contentDescription="Enter your main color (also your button color)"
+                android:textAllCaps="true" />
+
+
+            <EditText
+                android:id="@+id/edt_main_color"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:background="@drawable/edt_default_background"
+                android:contentDescription="Enter your main color (also your button color)"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_button_text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_index_main_text_color"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_button_text_color"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/margin_mid"
+                android:background="@drawable/border_button_solid"
+                android:contentDescription="Enter your button text color"
+                android:textAllCaps="true" />
+
+
+            <EditText
+                android:id="@+id/edt_button_text_color"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:background="@drawable/edt_default_background"
+                android:contentDescription="Enter your text on button color"
+                android:maxLines="1" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_background_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_index_background_color"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_background_color"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/margin_mid"
+                android:background="@drawable/border_button_solid"
+                android:textAllCaps="true" />
+
+
+            <EditText
+                android:id="@+id/edt_background_color"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:background="@drawable/edt_default_background"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_main_text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_index_main_text_color"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_main_text_color"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/margin_mid"
+                android:background="@drawable/border_button_solid"
+                android:textAllCaps="true" />
+
+            <EditText
+                android:id="@+id/edt_main_text_color"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:background="@drawable/edt_default_background"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight=" 1" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_vertical"
+            android:background="@drawable/border_button_solid"
+            android:text="@string/klp_save_setting_title"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</ScrollView>

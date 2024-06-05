@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="KLPResultRow">
+        <attr name="tvKey" format="string" />
+        <attr name="tvValue" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="KLPDecisionRow">
+        <attr name="tvRule" format="string" />
+    </declare-styleable>
+</resources>

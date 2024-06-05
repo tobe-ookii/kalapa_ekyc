@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_corner_radius">15dp</dimen>
+    <dimen name="margin_xxsmall">2dp</dimen>
+    <dimen name="margin_xsmall">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_mid">12dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="margin_side">24dp</dimen>
+    <dimen name="margin_xlarge">32dp</dimen>
+    <dimen name="size_20">15dp</dimen>
+    <dimen name="text_size_20">15dp</dimen>
+    <dimen name="size_80">80dp</dimen>
+    <dimen name="klp_txt_size_step">10dp</dimen>
+    <dimen name="klp_txt_size_description">12dp</dimen>
+    <dimen name="klp_txt_size_normal">14dp</dimen>
+    <dimen name="klp_txt_size_title">16dp</dimen>
+    <dimen name="klp_txt_size_header">18dp</dimen>
+    <dimen name="klp_step_height">100dp</dimen>
+    <dimen name="margin_vertical">24dp</dimen>
+    <dimen name="margin_horizontal">18dp</dimen>
+    <dimen name="margin_horizontal_path">22dp</dimen>
+    <dimen name="margin_vertical_large">28dp</dimen>
+    <dimen name="liveness_size">260dp</dimen>
+    <dimen name="liveness_image">230dp</dimen>
+    <dimen name="liveness_radius">260dp</dimen>
+    <dimen name="camera_offset_y">-70dp</dimen>
+    <dimen name="camera_margin_vertical_from_top">70dp</dimen>
+
+
+    <dimen name="camera_offset_passport">-90dp</dimen>
+    <dimen name="camera_offset_selfie">-50dp</dimen>
+    <dimen name="margin_from_button_holder">30dp</dimen>
+    <dimen name="capture_from_button_holder">30dp</dimen>
+    <dimen name="toolbar">50dp</dimen>
+    <dimen name="nfc_image_height">150dp</dimen>
+    <dimen name="popup_width">300dp</dimen>
+    <dimen name="wv_height">350dp</dimen>
+    <dimen name="banner_height">320dp</dimen>
+    <dimen name="klp_holder_card_height">110dp</dimen>
+    <dimen name="margin_bottom_button">50dp</dimen>
+</resources>

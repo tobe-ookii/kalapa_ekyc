@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ocr_colorPrimaryDark">#0a1b2c</color>
+    <color name="ocr_colorPrimary">#0a1b2c</color>
+    <color name="white">#ffffffff</color>
+    <color name="ocr_colorAccent">#00d7ff</color>
+    <color name="colorPrimary">@color/main_color_50</color>
+    <color name="colorPrimaryDark">@color/main_color</color>
+</resources>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+
+    <ImageView
+        android:id="@+id/iv_preview_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/guide_id"
+        android:translationY="@dimen/camera_offset_y"
+        android:visibility="gone" />
+
+    <vn.kalapa.ekyc.views.CardMaskView
+        android:id="@+id/cardMaskView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        app:dashColor="@color/colorWhite"
+        app:maskColor="@color/colorPrimary"
+        app:radius="4dp"
+        app:transOff="-5dp"
+        app:transOffY="@dimen/camera_offset_y" />
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:id="@+id/btn_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_from_button_holder"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_retry"
+            style="@style/BeTallSingleButtonStyle"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:background="@drawable/border_button_solid"
+            android:backgroundTint="@color/white"
+            android:text="@string/klp_retry_btn"
+            android:visibility="invisible"
+            android:textStyle="bold"
+            android:textColor="@color/betall_inactive_button" />
+
+        <Button
+            android:id="@+id/btn_next"
+            style="@style/BeTallSingleButtonStyle"
+            android:background="@drawable/border_button_solid"
+            android:backgroundTint="@color/main_color"
+            android:text="@string/klp_next_btn"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_sub_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_guide"
+        android:layout_centerInParent="true"
+        android:background="@drawable/border_button_solid"
+        android:backgroundTint="@color/ekyc_red_60"
+        android:text="@string/klp_error_happen"
+        android:textColor="@color/white"
+        android:translationZ="1000dp"
+        android:visibility="invisible" />
+
+
+    <LinearLayout
+        android:id="@+id/holder_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btn_holder"
+        android:layout_marginHorizontal="@dimen/margin_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="@dimen/margin_horizontal"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/border_button_solid"
+            android:backgroundTint="@color/white40"
+            android:lines="2"
+            android:text="SAMPLE_ERROR\nSAMPLE ERROR"
+            android:textColor="@color/ekyc_red"
+            android:textSize="@dimen/klp_txt_size_normal" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/holder_auto_capture"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_below="@id/tv_guide"
+        android:layout_marginBottom="@dimen/margin_xxsmall"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/toggle_auto_capture"
+            android:layout_width="38dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_toggle_on" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/margin_xxsmall"
+            android:gravity="center"
+            android:textSize="@dimen/klp_txt_size_description" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_guide_0"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_passport" />
+
+    <TextView
+        android:id="@+id/tv_guide_0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_guide"
+        android:layout_marginHorizontal="@dimen/margin_side"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:lines="1"
+        android:text="@string/klp_passport_guide_1"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/klp_shinhan_title_22" />
+
+    <TextView
+        android:id="@+id/tv_guide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/holder_error"
+        android:layout_marginHorizontal="@dimen/margin_side"
+        android:lines="2"
+        android:text="@string/klp_passport_guide_2"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/klp_shinhan_text_normal_13" />
+
+    <TextView
+        android:id="@+id/tv_instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/holder_error"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="@dimen/margin_horizontal"
+        android:background="@drawable/border_button_solid"
+        android:backgroundTint="@color/progress_unchecked"
+        android:text="@string/klp_instruction"
+        android:textColor="#1A94FF"
+        android:textSize="@dimen/klp_txt_size_normal"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/holder_capture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/capture_from_button_holder"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/btn_capture"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/camera_vector"
+                android:backgroundTint="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--    <ImageView-->
+    <!--        android:id="@+id/iv_bitmap_preview"-->
+    <!--        android:layout_width="200dp"-->
+    <!--        android:layout_height="200dp"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        android:layout_centerHorizontal="true" />-->
+
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/fragment_container"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_alignParentBottom="true" />-->
+
+</RelativeLayout>
