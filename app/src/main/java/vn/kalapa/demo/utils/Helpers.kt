@@ -52,7 +52,7 @@ internal class Helpers {
             val env = getValuePreferences(Common.MY_KEY_ENV)
             return if (lang == null || scenario == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, scenario, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, true, true, true, true, true, true, 50, true, true, true, true)
             }
         }
 

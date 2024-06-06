@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,7 +79,6 @@
                     </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
-
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_front_id"
@@ -407,6 +407,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/container_decision"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"

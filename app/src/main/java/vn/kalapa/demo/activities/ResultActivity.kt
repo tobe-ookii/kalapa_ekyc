@@ -257,59 +257,67 @@ class ResultActivity : AppCompatActivity() {
             ivSelfie.visibility = View.VISIBLE
             container_selfie_photo.visibility = View.VISIBLE
             ivSelfie.setImageBitmap(ExampleGlobalClass.faceImage)
-        }else
+        } else
             container_selfie_photo.visibility = View.GONE
-//        ivSelfie.setImageURI(Uri.parse(FileUtil.getFaceFile(this@ResultActivity).absolutePath))
-//        ivFront.setImageURI(Uri.parse(FileUtil.getCardFile(this@ResultActivity).absolutePath))
-//        ivBack.setImageURI(Uri.parse(FileUtil.getCardBackFile(this@ResultActivity).absolutePath))
 
-//        findViewById<View>(R.id.cv_front_id).visibility = if (Kalapa.frontResult == null) View.GONE else View.VISIBLE
-//        findViewById<View>(R.id.cv_back_id).visibility = if (Kalapa.backResult == null) View.GONE else View.VISIBLE
-//        if (Kalapa.frontResult == null && Kalapa.backResult == null) {
-//            containerOCRInfo.visibility = View.GONE
-//        }
+        if (ExampleGlobalClass.isFrontImageInitialized()) {
+            ivFront.visibility = View.VISIBLE
+            ivFront.setImageBitmap(ExampleGlobalClass.frontImage)
+            findViewById<View>(R.id.cv_front_id).visibility = View.VISIBLE
+        } else
+            ivFront.visibility = View.GONE
+
+        if (ExampleGlobalClass.isBackImageInitialized()) {
+            ivBack.visibility = View.VISIBLE
+            ivBack.setImageBitmap(ExampleGlobalClass.backImage)
+            findViewById<View>(R.id.cv_back_id).visibility = View.VISIBLE
+        } else
+            ivBack.visibility = View.GONE
+
+        if (ExampleGlobalClass.isKalapaResultInitialized()) {
+            containerOCRInfo.visibility = View.VISIBLE
+            val myFields = ExampleGlobalClass.kalapaResult
+            if (myFields.idNumber != null) rowId.setRecordValue(myFields.idNumber) else rowId.visibility = View.GONE
+            if (myFields.name != null) rowName.setRecordValue(myFields.name) else rowName.visibility = View.GONE
+            if (myFields.birthday != null) rowDob.setRecordValue(myFields.birthday) else rowDob.visibility = View.GONE
+            if (myFields.home != null) rowHometown.setRecordValue(myFields.home) else rowHometown.visibility = View.GONE
+            if (myFields.resident != null) rowAddress.setRecordValue(myFields.resident) else rowAddress.visibility = View.GONE
+            if (myFields.doi != null) rowDoi.setRecordValue(myFields.doi) else rowDoi.visibility = View.GONE
+            if (myFields.poi != null) rowPoi.setRecordValue(myFields.poi) else rowPoi.visibility = View.GONE
+            if (myFields.features != null) rowPersonalIdentification.setRecordValue(myFields.features) else rowPersonalIdentification.visibility = View.GONE
+            if (myFields.type != null) rowCardType.setRecordValue(myFields.type) else rowCardType.visibility = View.GONE
+
+            if (myFields.decision != null && myFields.decisionDetail != null) {
+                findViewById<View>(R.id.container_decision).visibility = View.VISIBLE
+                tvResult.visibility = View.VISIBLE
+                tvResultStatus.visibility = View.VISIBLE
+                tvResultStatus.text = if (myFields.decision == "REJECTED") resources.getString(R.string.klp_your_application_were) else resources.getString(R.string.klp_your_application_is)
+                if (myFields.decision == "APPROVED") {
+                    containerViolatedRule.visibility = View.GONE
+                    tvResult.setTextColor(resources.getColor(R.color.ekyc_green))
+                    tvResult.text = resources.getString(R.string.klp_demo_approved)
+                } else {
+                    tvResult.setTextColor(resources.getColor(if (myFields.decision == "REJECTED") R.color.ekyc_red else R.color.ekyc_warning))
+                    tvResult.text = if (myFields.decision == "REJECTED") resources.getString(R.string.klp_demo_rejected) else resources.getString(R.string.klp_demo_manual)
+                    containerViolatedRule.visibility = View.VISIBLE
+                    var decisionDetails = myFields.decisionDetail
+                    var count = 0
+                    decisionDetails!!.forEach {
+                        if (it.isPass != null && (it.isPass == 0)) { // || it.isPass == -1
+                            // Add into Linear Layout
+                            var row = KLPDecisionRow(this@ResultActivity)
+                            row.setRuleValue(if (language == "en") it.description else it.descriptionVi)
+                            containerViolatedRule.addView(row)
+                            count++
+                        }
+                    }
+                    if (count == 0) containerViolatedRule.visibility = View.GONE
+                }
+            }
+        } else
+            containerOCRInfo.visibility = View.GONE
 
 
-//        if (Kalapa.frontResult?.myFields != null) {
-//            val myFields = Kalapa.frontResult?.myFields!!
-//            if (myFields.idNumber != null) rowId.setRecordValue(myFields.idNumber) else rowId.visibility = View.GONE
-//            if (myFields.name != null) rowName.setRecordValue(myFields.name) else rowName.visibility = View.GONE
-//            if (myFields.birthday != null || myFields.dob != null) rowDob.setRecordValue(if (myFields.birthday != null) myFields.birthday else myFields.dob) else rowDob.visibility = View.GONE
-//            if (myFields.home != null) rowHometown.setRecordValue(myFields.home) else rowHometown.visibility = View.GONE
-//            if (myFields.resident != null) rowAddress.setRecordValue(myFields.resident) else rowAddress.visibility = View.GONE
-//            if (myFields.doi != null) rowDoi.setRecordValue(myFields.doi) else rowDoi.visibility = View.GONE
-//            if (myFields.poi != null) rowPoi.setRecordValue(myFields.poi) else rowPoi.visibility = View.GONE
-//            if (myFields.features != null) rowPersonalIdentification.setRecordValue(myFields.features) else rowPersonalIdentification.visibility = View.GONE
-//            if (myFields.type != null) rowCardType.setRecordValue(myFields.type) else rowCardType.visibility = View.GONE
-//        }
-
-//        if (Kalapa.confirmResult?.decision_detail != null) {
-//            if (Kalapa.confirmResult?.decision_detail!!.decision != null) {
-//                if (Kalapa.confirmResult?.decision_detail!!.decision == "APPROVED") {
-//                    containerViolatedRule.visibility = View.GONE
-//                    tvResult.setTextColor(resources.getColor(R.color.ekyc_green))
-//                    tvResult.text = resources.getString(R.string.klp_demo_approved)
-//                } else {
-//                    tvResult.setTextColor(resources.getColor(if (Kalapa.confirmResult?.decision_detail!!.decision == "REJECTED") R.color.ekyc_red else R.color.ekyc_warning))
-//                    tvResult.text = if (Kalapa.confirmResult?.decision_detail!!.decision == "REJECTED") resources.getString(R.string.klp_demo_rejected) else resources.getString(R.string.klp_demo_manual)
-//                    tvResultStatus.text = if (Kalapa.confirmResult?.decision_detail!!.decision == "REJECTED") resources.getString(R.string.klp_your_application_were) else resources.getString(R.string.klp_your_application_is)
-//                    containerViolatedRule.visibility = View.VISIBLE
-//                    var decisionDetails = Kalapa.confirmResult?.decision_detail!!.details!!
-//                    var count = 0
-//                    decisionDetails.forEach {
-//                        if (it.isPass != null && (it.isPass == 0)) { // || it.isPass == -1
-//                            // Add into Linear Layout
-//                            var row = KLPDecisionRow(this@ResultActivity)
-//                            row.setRuleValue(if (language == "en") it.description else it.descriptionVi)
-//                            containerViolatedRule.addView(row)
-//                            count++
-//                        }
-//                    }
-//                    if (count == 0) containerViolatedRule.visibility = View.GONE
-//                }
-//            }
-//
-//        }
     }
 
     private fun qualifiedToUpgrade() {

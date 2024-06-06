@@ -27,24 +27,28 @@ import java.util.Map;
 import okhttp3.RequestBody;
 import vn.kalapa.demo.activities.BaseActivity;
 import vn.kalapa.demo.activities.ResultActivity;
+import vn.kalapa.demo.models.NFCCardData;
 import vn.kalapa.demo.models.NFCVerificationData;
 import vn.kalapa.demo.network.Client;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.FaceOTPFlowType;
 import vn.kalapa.ekyc.KalapaCaptureHandler;
-import vn.kalapa.ekyc.KalapaCaptureResultCode;
+import vn.kalapa.ekyc.KalapaHandler;
 import vn.kalapa.ekyc.KalapaNFCHandler;
-import vn.kalapa.ekyc.KalapaNFCResultCode;
+import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKCallback;
 import vn.kalapa.ekyc.KalapaSDKConfig;
 import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.managers.AESCryptor;
+import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
+import vn.kalapa.ekyc.networks.KalapaAPI;
 import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
+import vn.kalapa.ekyc.views.ProgressView;
 
 public class MainActivityJava extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -79,8 +83,27 @@ public class MainActivityJava extends BaseActivity {
 //                LogUtils.Companion.printLog("Try Encrypt " + message);
 //                LogUtils.Companion.printLog(AESCryptor.encryptText(message));
 //                startFaceOTP();
-//                startEKYC();
-                startCapture();
+//                startCapture();
+                startEKYC();
+//                KalapaSDK.Companion.startConfirmForResult(MainActivityJava.this, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1NGM2ZWM4YmNlYzQ4OTk5NDM1OTJkZTA4YjZkMmE0IiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NjY4OTk4fQ.KPPuHUk_gNnuDhB8evoU2_VekxY77x96U1s6L6eZYAY"
+//                , sdkConfig, new KalapaHandler() {
+//                    @Override
+//                    public void onError(@NonNull KalapaSDKResultCode resultCode) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete(@NonNull KalapaResult kalapaResult) {
+//                        super.onComplete(kalapaResult);
+//                        ExampleGlobalClass.kalapaResult = kalapaResult;
+//                        if (KalapaSDK.Companion.isFaceBitmapInitialized()) ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
+//                        if (KalapaSDK.Companion.isFrontBitmapInitialized()) ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
+//                        if (KalapaSDK.Companion.isBackBitmapInitialized()) ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
+//                        ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
+//                        startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+//                    }
+//                });
+
             }
         });
     }
@@ -102,14 +125,14 @@ public class MainActivityJava extends BaseActivity {
                                 }
 
                                 @Override
-                                public void onError(@NonNull KalapaCaptureResultCode resultCode) {
+                                public void onError(@NonNull KalapaSDKResultCode resultCode) {
 
                                 }
                             });
                         }
 
                         @Override
-                        public void onError(@NonNull KalapaCaptureResultCode resultCode) {
+                        public void onError(@NonNull KalapaSDKResultCode resultCode) {
 
                         }
                     });
@@ -118,21 +141,67 @@ public class MainActivityJava extends BaseActivity {
             }
 
             @Override
-            public void onError(@NonNull KalapaCaptureResultCode resultCode) {
+            public void onError(@NonNull KalapaSDKResultCode resultCode) {
 
             }
         });
     }
 
     public void startFaceOTP() {
-        if (preferencesConfig.getScenario().equals(FaceOTPFlowType.PASSPORT.name()))
-            startPassport();
-        else startLiveness();
+//        if (preferencesConfig.getScenario().equals(FaceOTPFlowType.PASSPORT.name()))
+//            startPassport();
+//        else startLiveness();
     }
 
     private void startEKYC() {
-        // nfc_only / ekyc
-        startNFCOnly(preferencesConfig.getToken());
+        if (Common.Companion.isOnline(MainActivityJava.this)) {
+            String[] acceptedDocument = {"CCCD", "CMND", "CMND12"};
+            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, null, null);
+            KalapaAPI.Companion.doRequestGetSession(preferencesConfig.getEnv(), preferencesConfig.getToken(), "true", "true", "true", true, acceptedDocument, 50,
+                    createSessionResult -> {
+                        ProgressView.Companion.hideProgress(true);
+                        LogUtils.Companion.printLog("doRequestGetSession createSessionResult: " + createSessionResult.component1());
+                        KalapaSDK.Companion.startFullEKYC(MainActivityJava.this, createSessionResult.component1(), sdkConfig, new KalapaHandler() {
+
+                            @Override
+                            public void onError(@NonNull KalapaSDKResultCode resultCode) {
+                                Helpers.Companion.showDialog(MainActivityJava.this,
+                                        getString(R.string.klp_face_otp_alert_title),
+                                        "Error happened due to " + resultCode.name(),
+                                        R.drawable.frowning_face
+                                );
+                            }
+
+                            @Override
+                            public void onComplete(@NonNull KalapaResult kalapaResult) {
+                                LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult + " \n " + kalapaResult.component1());
+                                ExampleGlobalClass.kalapaResult = kalapaResult;
+                                if (KalapaSDK.Companion.isFaceBitmapInitialized()) ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
+                                if (KalapaSDK.Companion.isFrontBitmapInitialized()) ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
+                                if (KalapaSDK.Companion.isBackBitmapInitialized()) ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
+                                ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
+                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+                            }
+
+                        });
+                        return null;
+                    }, kalapaError -> {
+                        ProgressView.Companion.hideProgress(true);
+                        Helpers.Companion.showDialog(MainActivityJava.this,
+                                getString(R.string.klp_face_otp_alert_title),
+                                kalapaError.getMessageError(),
+                                R.drawable.ic_failed_solid
+                        );
+                        LogUtils.Companion.printLog("doRequestGetSession kalapaError: " + kalapaError);
+                        return null;
+                    });
+        } else {
+            Helpers.Companion.showDialog(MainActivityJava.this,
+                    getString(R.string.klp_face_otp_alert_title),
+                    getString(R.string.klp_face_otp_error_network),
+                    R.drawable.ic_failed_solid
+            );
+        }
     }
 
     public void startLivenessAndNFC() {
@@ -197,7 +266,7 @@ public class MainActivityJava extends BaseActivity {
                         }
 
                         @Override
-                        public void onError(@NonNull KalapaNFCResultCode resultCode) {
+                        public void onError(@NonNull KalapaSDKResultCode resultCode) {
                             Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
                         }
                     });
@@ -206,7 +275,7 @@ public class MainActivityJava extends BaseActivity {
             }
 
             @Override
-            public void onError(@NonNull KalapaCaptureResultCode resultCode) {
+            public void onError(@NonNull KalapaSDKResultCode resultCode) {
                 Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
             }
         });
@@ -217,7 +286,7 @@ public class MainActivityJava extends BaseActivity {
             String PASSPORT_PATH = "/passport/check";
 
             @Override
-            public void onError(@NonNull KalapaCaptureResultCode resultCode) {
+            public void onError(@NonNull KalapaSDKResultCode resultCode) {
                 Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
             }
 
@@ -301,7 +370,7 @@ public class MainActivityJava extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(KalapaCaptureResultCode resultCode) {
+                    public void onError(KalapaSDKResultCode resultCode) {
                         // Capture not finished return an occurred
                         Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
                     }
@@ -340,7 +409,7 @@ public class MainActivityJava extends BaseActivity {
             }
 
             @Override
-            public void onError(KalapaNFCResultCode resultCode) {
+            public void onError(KalapaSDKResultCode resultCode) {
                 // MRZ not finished return an occurred
                 Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
 
@@ -394,7 +463,7 @@ public class MainActivityJava extends BaseActivity {
             }
 
             @Override
-            public void onError(KalapaNFCResultCode resultCode) {
+            public void onError(KalapaSDKResultCode resultCode) {
                 // MRZ not finished return an occurred
                 Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
             }
@@ -442,7 +511,7 @@ public class MainActivityJava extends BaseActivity {
             String btnTxtColor = preferencesConfig.getBtnTextColor();
             String lang = preferencesConfig.getLanguage();
             livenessVersion = preferencesConfig.getLivenessVersion();
-            scenario = preferencesConfig.getScenario();
+//            scenario = preferencesConfig.getScenario();
             refreshText(lang);
             refreshColor(btnColor, btnTxtColor);
             if (updateLanguage) {

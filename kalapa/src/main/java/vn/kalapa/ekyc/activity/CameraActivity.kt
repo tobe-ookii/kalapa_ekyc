@@ -354,7 +354,7 @@ abstract class CameraActivity(
                         }
 
                         override fun onNo() {
-                            KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.PERMISSION_DENIED)
+                            KalapaSDK.handler.onError(KalapaSDKResultCode.PERMISSION_DENIED)
                             finish()
 //                        TODO("Not yet implemented")
                         }

@@ -7,7 +7,7 @@ package vn.kalapa.ekyc.capturesdk//package vn.kalapa.faceotp.activity
 //import android.widget.ImageView
 //import android.widget.TextView
 //import vn.kalapa.faceotp.DialogListener
-//import vn.kalapa.faceotp.KalapaCaptureResultCode
+//import vn.kalapa.faceotp.KalapaSDKResultCode
 //import vn.kalapa.faceotp.KalapaSDK
 //import vn.kalapa.faceotp.KalapaSDKCallback
 //import vn.kalapa.faceotp.KalapaSDKMediaType

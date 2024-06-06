@@ -37,8 +37,10 @@ import vn.kalapa.ekyc.views.KLPCustomSwitch
 // prod: api-ekyc.kalapa.vn/face-otp
 // dev: faceotp-dev.kalapa.vn/api
 class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
-    private val KLP_PROD = "https://api-ekyc.kalapa.vn/face-otp"
-    private val KLP_DEV = "https://faceotp-dev.kalapa.vn/api"
+//    private val KLP_PROD = "https://api-ekyc.kalapa.vn/face-otp"
+//    private val KLP_DEV = "https://faceotp-dev.kalapa.vn/api"
+    private val KLP_PROD = "https://ekyc-api.kalapa.vn"
+    private val KLP_DEV = "https://ekyc-dev-internal.kalapa.vn"
     private val defaultConfig = KalapaSDKConfig(this@SettingActivity, language = "en")
     private lateinit var rgLanguage: KLPCustomMultipleChoices
 
@@ -61,8 +63,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvMainTextColor: TextView
     private lateinit var tvButtonTextColor: TextView
     private lateinit var tvBackgroundColor: TextView
-    private lateinit var tvScenario: TextView
-    private lateinit var rgScenario: KLPCustomMultipleChoices
+//    private lateinit var tvScenario: TextView
+//    private lateinit var rgScenario: KLPCustomMultipleChoices
     private lateinit var edtToken: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,9 +87,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         edtToken = findViewById(R.id.edt_token)
         rgLanguage = findViewById(R.id.sw_language)
         rgLivenessVersion = findViewById(R.id.sw_liveness_version)
-        tvScenario = findViewById(R.id.tv_scenario)
+//        tvScenario = findViewById(R.id.tv_scenario)
         rgEnvironment = findViewById(R.id.sw_enviroment)
-        rgScenario = findViewById(R.id.sw_scenario)
+//        rgScenario = findViewById(R.id.sw_scenario)
 
         btnSaveConfig = findViewById(R.id.btn_next)
 
@@ -152,7 +154,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         Helpers.setBackgroundColorTintList(btnSaveConfig, mainColor)
         rgLanguage.setMainColor(mainColor)
         rgLivenessVersion.setMainColor(mainColor)
-        rgScenario.setMainColor(mainColor)
+//        rgScenario.setMainColor(mainColor)
         rgEnvironment.setMainColor(mainColor)
     }
 
@@ -162,7 +164,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         btnSaveConfig.setTextColor(Color.parseColor(txtColor))
         rgLanguage.setTextColor(txtColor)
         rgLivenessVersion.setTextColor(txtColor)
-        rgScenario.setTextColor(txtColor)
+//        rgScenario.setTextColor(txtColor)
         rgEnvironment.setTextColor(txtColor)
     }
 
@@ -177,7 +179,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun refreshUI() {
-        tvScenario.text = resources.getString(R.string.klp_index_scenario)
+//        tvScenario.text = resources.getString(R.string.klp_index_scenario)
         tvLanguage.text = resources.getString(R.string.klp_index_language)
         rgLanguage.rbOne.text = resources.getString(R.string.klp_faceOTP_language_vi)
         rgLanguage.rbSecond.text = resources.getString(R.string.klp_faceOTP_language_en)
@@ -192,9 +194,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgLivenessVersion.rbSecond.text = resources.getString(R.string.klp_liveness_semi_activate)
         rgLivenessVersion.rbThird.text = resources.getString(R.string.klp_liveness_activate)
 
-        rgScenario.rbOne.text = "nfc_ekyc"
-        rgScenario.rbSecond.text = "verify"
-        rgScenario.rbThird.text = "passport"
+//        rgScenario.rbOne.text = "nfc_ekyc"
+//        rgScenario.rbSecond.text = "verify"
+//        rgScenario.rbThird.text = "passport"
 
         btnSaveConfig.text = resources.getString(R.string.klp_save_setting_title)
         tvMainColor.text = resources.getString(R.string.klp_index_main_color)
@@ -213,10 +215,11 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 //        Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPostitiveCheck) "vi" else "en")
             Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString())
 
-            Helpers.savePrefs(
-                MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) FaceOTPFlowType.ONBOARD.name
-                else if (rgScenario.selectedIndex == 1) FaceOTPFlowType.VERIFY.name else FaceOTPFlowType.PASSPORT.name
-            )
+//            Helpers.savePrefs(
+//                MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) FaceOTPFlowType.ONBOARD.name
+//                else if (rgScenario.selectedIndex == 1) FaceOTPFlowType.VERIFY.name else FaceOTPFlowType.PASSPORT.name
+//            )
+
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPostitiveCheck) KLP_PROD else KLP_DEV)
 
             if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(MY_KEY_MAIN_COLOR)!!)
@@ -263,7 +266,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
 //        rgScenario.switchChangeListener(secnario == FaceOTPFlowType.ONBOARD.name)
         rgLivenessVersion.switchChangeListener(if (livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version) 0 else if (livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version) 1 else 2)
-        rgScenario.switchChangeListener(if (secnario == FaceOTPFlowType.ONBOARD.name) 0 else if (secnario == FaceOTPFlowType.VERIFY.name) 1 else 2)
+//        rgScenario.switchChangeListener(if (secnario == FaceOTPFlowType.ONBOARD.name) 0 else if (secnario == FaceOTPFlowType.VERIFY.name) 1 else 2)
 
         rgLanguage.switchChangeListener(if (lang == "vi") 0 else if (lang == "en") 1 else 2)
         rgEnvironment.switchChangeListener(env == KLP_PROD)

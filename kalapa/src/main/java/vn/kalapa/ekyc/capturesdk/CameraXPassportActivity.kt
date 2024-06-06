@@ -14,10 +14,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.exifinterface.media.ExifInterface
 import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
-import vn.kalapa.ekyc.KalapaCaptureResultCode
+import vn.kalapa.ekyc.KalapaCaptureHandler
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDKCallback
 import vn.kalapa.ekyc.KalapaSDKMediaType
+import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
@@ -153,7 +154,7 @@ class CameraXPassportActivity :
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 
@@ -180,7 +181,7 @@ class CameraXPassportActivity :
         }
         Handler(Looper.getMainLooper()).postDelayed({
 
-            KalapaSDK.captureHandler.process(
+            (KalapaSDK.handler as KalapaCaptureHandler).process(
                 BitmapUtil.convertBitmapToBase64(tmpBitmap!!),
                 KalapaSDKMediaType.PASSPORT,
                 this

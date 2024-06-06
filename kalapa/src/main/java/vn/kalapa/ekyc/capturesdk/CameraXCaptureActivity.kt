@@ -13,7 +13,7 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
 
 
-class CameraXCaptureActivity() :
+class CameraXCaptureActivity :
     CameraXActivity(activityLayoutId = R.layout.activity_camera_x_id_card, hideAutoCapture = true),
     KalapaSDKCallback {
     private lateinit var ivPreviewImage: ImageView
@@ -82,6 +82,7 @@ class CameraXCaptureActivity() :
 
     private var currError = ""
     override fun sendError(message: String?) {
+        ProgressView.hideProgress()
         if (currError.isNotEmpty() && currError == message) return
         currError = message ?: KalapaSDK.config.languageUtils.getLanguageString(
             resources.getString(
@@ -118,7 +119,7 @@ class CameraXCaptureActivity() :
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 
@@ -141,7 +142,8 @@ class CameraXCaptureActivity() :
     }
 
     override fun verifyImage() {
-        KalapaSDK.captureHandler.process(
+        ProgressView.showProgress(this@CameraXCaptureActivity)
+        (KalapaSDK.handler as KalapaCaptureHandler).process(
             BitmapUtil.convertBitmapToBase64(tmpBitmap!!),
             KalapaSDKMediaType.FRONT,
             this@CameraXCaptureActivity

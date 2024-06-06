@@ -102,4 +102,6 @@
     <string name="klp_demo_matching_score">Độ trùng khớp</string>
     <string name="klp_field_nation">Dân tộc</string>
     <string name="klp_field_doi">Ngày tạo</string>
+    <string name="klp_your_application_were">Hồ sơ của bạn</string>
+    <string name="klp_setting_capture_image">Thu tập ảnh giấy tờ</string>
 </resources>

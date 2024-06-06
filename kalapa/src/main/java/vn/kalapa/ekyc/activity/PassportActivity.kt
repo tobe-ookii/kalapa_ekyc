@@ -44,7 +44,7 @@ class PassportActivity : CameraActivity(R.layout.activity_camera, LENS_FACING.RE
             Helpers.printLog("On Back Clicked... Finish Activity...")
             Helpers.showEndKYC(this, object : DialogListener {
                 override fun onYes() {
-                    KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                    KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                     finish()
                 }
 
@@ -81,7 +81,7 @@ class PassportActivity : CameraActivity(R.layout.activity_camera, LENS_FACING.RE
             KalapaSDK.config.languageUtils.getLanguageString(res.getString(R.string.klp_warning_title)),
             KalapaSDK.config.languageUtils.getLanguageString(res.getString(R.string.klp_emulator_warning_body)), R.drawable.frowning_face
         ) {
-            KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.EMULATOR_DETECTED)
+            KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)
             finish()
         }
     }
@@ -99,7 +99,7 @@ class PassportActivity : CameraActivity(R.layout.activity_camera, LENS_FACING.RE
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 
@@ -153,7 +153,7 @@ class PassportActivity : CameraActivity(R.layout.activity_camera, LENS_FACING.RE
             ProgressView.showProgress(this@PassportActivity)
         }
         Handler().postDelayed({
-            KalapaSDK.captureHandler.process(BitmapUtil.convertBitmapToBase64(BitmapUtil.resizeBitmapToBitmap(tmpBitmap)), KalapaSDKMediaType.PASSPORT, this)
+            (KalapaSDK.handler as KalapaCaptureHandler).process(BitmapUtil.convertBitmapToBase64(BitmapUtil.resizeBitmapToBitmap(tmpBitmap)), KalapaSDKMediaType.PASSPORT, this)
         }, 100)
 
     }
@@ -247,7 +247,7 @@ class PassportActivity : CameraActivity(R.layout.activity_camera, LENS_FACING.RE
         runOnUiThread {
             ProgressView.hideProgress()
         }
-        KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.SUCCESS)
+        KalapaSDK.handler.onError(KalapaSDKResultCode.SUCCESS)
         finish()
     }
 

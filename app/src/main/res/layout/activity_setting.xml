@@ -73,24 +73,6 @@
             app:kmc_third_label="@string/klp_faceOTP_language_ko" />
 
         <TextView
-            android:id="@+id/tv_scenario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_mid"
-            android:text="@string/klp_index_scenario"
-            android:textSize="@dimen/klp_txt_size_header"
-            android:textStyle="bold" />
-
-
-        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
-            android:id="@+id/sw_scenario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:kmc_first_label="nfc_ekyc"
-            app:kmc_second_label="verify"
-            app:kmc_third_label="passport" />
-
-        <TextView
             android:id="@+id/tv_liveness_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -109,6 +91,271 @@
             app:kmc_first_label="@string/klp_liveness_activate"
             app:kmc_second_label="@string/klp_liveness_semi_activate"
             app:kmc_third_label="@string/klp_liveness_passive" />
+        
+        <TextView
+            android:id="@+id/tv_enable_nfc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_setting_nfc"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
+            android:id="@+id/sw_enable_nfc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rb_first_label="@string/klp_yes"
+            app:rb_second_label="@string/klp_no" />
+
+        <TextView
+            android:id="@+id/tv_capture_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_setting_capture_image"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
+            android:id="@+id/sw_capture_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rb_first_label="@string/klp_yes"
+            app:rb_second_label="@string/klp_no" />
+
+        <TextView
+            android:id="@+id/tv_verify_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_setting_verify_check"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
+            android:id="@+id/sw_verify_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rb_first_label="@string/klp_yes"
+            app:rb_second_label="@string/klp_no" />
+
+        <TextView
+            android:id="@+id/tv_fraud_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_setting_fraud_check"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
+            android:id="@+id/sw_fraud_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rb_first_label="@string/klp_yes"
+            app:rb_second_label="@string/klp_no" />
+
+        <TextView
+            android:id="@+id/tv_strict_quality_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_strict_quality_check"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
+            android:id="@+id/sw_strict_quality_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rb_first_label="@string/sw_strict_quality_basic"
+            app:rb_second_label="@string/sw_strict_quality_advance" />
+
+        <TextView
+            android:id="@+id/tv_card_sides_match_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_check_if_card_sides_match"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
+            android:id="@+id/sw_card_sides_match_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rb_first_label="@string/klp_yes"
+            app:rb_second_label="@string/klp_no" />
+
+        <!--        <TextView-->
+<!--            android:id="@+id/tv_scenario"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/margin_mid"-->
+<!--            android:text="@string/klp_index_scenario"-->
+<!--            android:textSize="@dimen/klp_txt_size_header"-->
+<!--            android:textStyle="bold" />-->
+
+
+<!--        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices-->
+<!--            android:id="@+id/sw_scenario"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:kmc_first_label="nfc_ekyc"-->
+<!--            app:kmc_second_label="verify"-->
+<!--            app:kmc_third_label="passport" />-->
+
+        <TextView
+            android:id="@+id/tv_acceptance_face_matching_threshold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_setting_acceptance_face_matching_threshold"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/slider_face_matching_threshold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MyMaterialTheme"
+                android:value="50"
+
+                android:stepSize="1"
+                android:valueFrom="1"
+                android:valueTo="99" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:layout_below="@id/slider_face_matching_threshold"
+                android:layout_alignStart="@id/slider_face_matching_threshold"
+                android:layout_marginStart="@dimen/margin_mid"
+                android:translationY="-10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50"
+                android:layout_below="@id/slider_face_matching_threshold"
+                android:layout_centerHorizontal="true"
+                android:translationY="-10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:layout_below="@id/slider_face_matching_threshold"
+                android:layout_alignEnd="@id/slider_face_matching_threshold"
+                android:layout_marginEnd="@dimen/margin_mid"
+                android:translationY="-10dp"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_acceptance_document"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_mid"
+            android:text="@string/klp_setting_acceptance_document"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_old_id_card" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_12_digits_id_card" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_eid_no_chip" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_eid_with_chip" />
+
+        </LinearLayout>
+
+
         <!--        <vn.kalapa.faceotp.views.KLPCustomSwitch-->
         <!--            android:id="@+id/sw_liveness_version"-->
         <!--            android:layout_width="wrap_content"-->

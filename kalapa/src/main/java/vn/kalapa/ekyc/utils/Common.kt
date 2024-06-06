@@ -125,16 +125,19 @@ class Common {
         }
 
         fun getIdCardNumberFromMRZ(input: String?): String? {
-            if (input != null && input.isNotEmpty() && input.contains("IDVNM")) {
-                val lines = input.split("\n")
-                for (line in lines) {
-                    if (line.length == 30 && line.contains("IDVNM") && line.contains("<<")) {
-                        val pattern = Regex("IDVNM\\d+(\\d{12})<<\\d")
-                        val match = pattern.find(line.replace("O", "0").replace("o", "0"))
-                        if (match != null) {
-                            return match.groupValues[1]
-                        } else {
+            if (!input.isNullOrEmpty()) {
+                if (input.length == 12) return input
+                if (input.contains("IDVNM")) {
+                    val lines = input.split("\n")
+                    for (line in lines) {
+                        if (line.length == 30 && line.contains("IDVNM") && line.contains("<<")) {
+                            val pattern = Regex("IDVNM\\d+(\\d{12})<<\\d")
+                            val match = pattern.find(line.replace("O", "0").replace("o", "0"))
+                            if (match != null) {
+                                return match.groupValues[1]
+                            } else {
 //                        Helpers.printLog("$TAG No match found.")
+                            }
                         }
                     }
                 }
@@ -148,7 +151,7 @@ class Common {
         }
 
         fun getModelPosition(model: String): String? {
-            val url = URL("${KalapaSDK.config.baseURL}/get-nfc-location")
+            val url = URL("https://api-ekyc.kalapa.vn/face-otp/get-nfc-location")
             val signature = "${model}Kalapa@2024".md5()
             val params = "model=$model&signature=$signature"
             Helpers.printLog("Model $model: Signature $signature")

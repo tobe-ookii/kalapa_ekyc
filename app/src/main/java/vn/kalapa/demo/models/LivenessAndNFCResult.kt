@@ -3,7 +3,7 @@ package vn.kalapa.demo.models
 import com.beust.klaxon.Json
 import com.beust.klaxon.Klaxon
 import vn.kalapa.ekyc.models.KalapaError
-import vn.kalapa.ekyc.nfcsdk.models.NFCData
+import vn.kalapa.ekyc.nfcsdk.models.NFCResultData
 
 private val klaxon = Klaxon()
 
@@ -35,7 +35,7 @@ data class NFCVerificationData(
 
 data class NFCCardData(
     @Json(name = "card_data")
-    var data: NFCData? = NFCData(),
+    var data: NFCResultData? = NFCResultData(),
     @Json(name = "is_valid")
     var isValid: Boolean? = null
 ) {

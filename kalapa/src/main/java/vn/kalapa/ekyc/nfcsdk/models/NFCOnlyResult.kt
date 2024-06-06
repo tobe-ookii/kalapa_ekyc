@@ -6,18 +6,18 @@ import vn.kalapa.ekyc.models.KalapaError
 
 private val klaxon = Klaxon()
 
-data class NFCResult(
+data class NFCOnlyResult(
     var error: KalapaError? = null,
-    var data: NFCData? = NFCData()
+    var data: NFCResultData? = NFCResultData()
 ) {
     fun toJson() = klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCResult>(json)
+        fun fromJson(json: String) = klaxon.parse<NFCOnlyResult>(json)
     }
 }
 
-data class NFCData(
+data class NFCResultData(
     var mrz: String? = "",
 
     @Json(name = "id_number")
@@ -57,6 +57,6 @@ data class NFCData(
     fun toJson() = klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCData>(json)
+        fun fromJson(json: String) = klaxon.parse<NFCResultData>(json)
     }
 }

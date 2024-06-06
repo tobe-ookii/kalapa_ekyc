@@ -142,7 +142,7 @@ abstract class CameraXActivity(
         btnRetry.text =
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_retry_btn))
         ivAutoCapture = findViewById(R.id.toggle_auto_capture)
-        if (hideAutoCapture) ivAutoCapture.visibility = View.GONE
+        if (hideAutoCapture) ivAutoCapture.visibility = View.INVISIBLE
         Helpers.setColorTintList(ivAutoCapture, KalapaSDK.config.mainColor)
         ivAutoCapture.setOnClickListener {
             this.isAutocapturing = !isAutocapturing
@@ -375,7 +375,7 @@ abstract class CameraXActivity(
         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
         holderCapture.visibility = View.VISIBLE
         holderAutoCapture.visibility =
-            if (lensFacing == LENS_FACING.REAR && !hideAutoCapture) View.VISIBLE else View.GONE
+            if (lensFacing == LENS_FACING.REAR && !hideAutoCapture) View.VISIBLE else View.INVISIBLE
         tvGuide.visibility = View.VISIBLE
         btnNext.visibility = View.INVISIBLE
         btnRetry.visibility = View.INVISIBLE
@@ -384,7 +384,7 @@ abstract class CameraXActivity(
         btnNext.visibility = View.VISIBLE
         btnRetry.visibility = View.VISIBLE
         holderCapture.visibility = View.INVISIBLE
-        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.GONE
+        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.INVISIBLE
         this.isCameraMode = false
     }
 

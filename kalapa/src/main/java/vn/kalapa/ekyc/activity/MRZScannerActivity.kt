@@ -51,7 +51,7 @@ class MRZScannerActivity : CameraActivity(R.layout.activity_camera_mrz, LENS_FAC
             Helpers.printLog("On Back Clicked... Finish Activity...")
             Helpers.showEndKYC(this, object : DialogListener {
                 override fun onYes() {
-                    KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.USER_LEAVE)
+                    KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                     finish()
                 }
 
@@ -88,7 +88,7 @@ class MRZScannerActivity : CameraActivity(R.layout.activity_camera_mrz, LENS_FAC
             KalapaSDK.config.languageUtils.getLanguageString(res.getString(R.string.klp_warning_title)),
             KalapaSDK.config.languageUtils.getLanguageString(res.getString(R.string.klp_emulator_warning_body)), R.drawable.frowning_face
         ) {
-            KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.EMULATOR_DETECTED)
+            KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)
             finish()
         }
     }
@@ -108,7 +108,7 @@ class MRZScannerActivity : CameraActivity(R.layout.activity_camera_mrz, LENS_FAC
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 

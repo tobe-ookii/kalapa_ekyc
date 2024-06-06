@@ -12,7 +12,7 @@
 #define AES_KEY_SIZE 256
 #define READ_LEN 10
 // vn.kalapa.faceotp.managers
-#define TARGET_CLASS "vn/kalapa/faceotp/managers/AESCryptor"
+#define TARGET_CLASS "vn/kalapa/ekyc/managers/AESCryptor"
 #define TARGET_CRYPT "crypt"
 #define TARGET_CRYPT_SIG "([BJI)[B"
 #define TARGET_READ "read"

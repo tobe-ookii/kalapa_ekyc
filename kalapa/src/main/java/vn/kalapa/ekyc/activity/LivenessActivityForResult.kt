@@ -58,7 +58,7 @@ class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_livene
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 
@@ -79,7 +79,7 @@ class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_livene
 
             Helpers.showEndKYC(this, object : DialogListener {
                 override fun onYes() {
-                    KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                    KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                     finish()
                 }
 
@@ -199,6 +199,7 @@ class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_livene
 
     override fun onResume() {
         super.onResume()
+        Helpers.printLog("LivenessActivityForResult onResume")
         renewSession()
     }
 
@@ -213,7 +214,7 @@ class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_livene
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_warning_title)),
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_emulator_warning_body)), R.drawable.frowning_face
         ) {
-            KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.EMULATOR_DETECTED)
+            KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)
             finish()
         }
     }
@@ -301,7 +302,7 @@ class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_livene
             ProgressView.showProgress(this@LivenessActivityForResult)
         }
         Handler().postDelayed({
-            KalapaSDK.captureHandler.process(BitmapUtil.convertBitmapToBase64(BitmapUtil.resizeBitmapToBitmap(faceBitmap)), KalapaSDKMediaType.PORTRAIT, this)
+            (KalapaSDK.handler as KalapaCaptureHandler).process(BitmapUtil.convertBitmapToBase64(BitmapUtil.resizeBitmapToBitmap(faceBitmap)), KalapaSDKMediaType.PORTRAIT, this)
         }, 100)
 
     }
@@ -573,7 +574,7 @@ class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_livene
         runOnUiThread {
             ProgressView.hideProgress()
         }
-        KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.SUCCESS)
+        KalapaSDK.handler.onError(KalapaSDKResultCode.SUCCESS)
         finish()
     }
 

@@ -13,7 +13,7 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
-import vn.kalapa.ekyc.KalapaNFCResultCode
+import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.toBitmap
 import vn.kalapa.ekyc.utils.BitmapUtil
@@ -155,7 +155,7 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 

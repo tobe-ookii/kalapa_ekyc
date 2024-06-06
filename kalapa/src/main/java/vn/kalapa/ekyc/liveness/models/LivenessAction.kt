@@ -36,7 +36,7 @@ abstract class LivenessAction {
             val bounds = face.face.boundingBox
             val isFaceTooSmall =
                 bounds.width() < trueWidth * 0.3f || bounds.height() < trueHeight * 0.3f
-            if (!isFaceTooSmall) Helpers.printLog("isFaceTooSmall ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
+//            if (!isFaceTooSmall) Helpers.printLog("isFaceTooSmall ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceTooSmall
         }
 
@@ -45,7 +45,7 @@ abstract class LivenessAction {
             val trueHeight = max(face.frameWidth, face.frameHeight)
             val bounds = face.face.boundingBox
             val isFaceSmallEnough = bounds.width() < trueWidth * 0.4f || bounds.height() < trueHeight * 0.4f
-            if(!isFaceSmallEnough) Helpers.printLog("isFaceSmallEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
+//            if(!isFaceSmallEnough) Helpers.printLog("isFaceSmallEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceSmallEnough
         }
 
@@ -54,7 +54,7 @@ abstract class LivenessAction {
             val trueHeight = max(face.frameWidth, face.frameHeight)
             val bounds = face.face.boundingBox
             val isFaceSmallEnough = bounds.width() > trueWidth * 0.5f || bounds.height() > trueHeight * 0.5f
-            if(!isFaceSmallEnough) Helpers.printLog("isFaceBigEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
+//            if(!isFaceSmallEnough) Helpers.printLog("isFaceBigEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceSmallEnough
         }
 

@@ -43,6 +43,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     private fun getIntentData() {
         mrz = intent.getStringExtra("mrz")
         idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
+        Helpers.printLog("Get idCardNumber $idCardNumber from mrz $mrz ")
         if (idCardNumber == null)
             openMRZScanner()
         else
@@ -69,6 +70,8 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_please_wait)),
             Toast.LENGTH_LONG
         ).show()
+        isNFCFinished = false
+        isNFCSucceed = false
         nfcUtils.forceCall = true
         nfcUtils.callOnPause()
         nfcUtils.callOnResume()
@@ -76,7 +79,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     }
 
     override fun onUserSkip() {
-        KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.USER_LEAVE)
+        KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
         finish()
     }
 
@@ -162,7 +165,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                     runOnUiThread {
                         ProgressView.showProgress(this@NFCActivity)
                     }
-                    KalapaSDK.nfcHandler.process(
+                    (KalapaSDK.handler as KalapaNFCHandler).process(
                         Common.getIdCardNumberFromMRZ(mrz)!!,
                         p0!!,
                         this@NFCActivity
@@ -194,16 +197,16 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                     if (p0 == ResultCode.WRONG_CCCDID) {
                         openMRZScanner()
                     }
-                    var klpResultCode = KalapaNFCResultCode.UNKNOWN
+                    var klpResultCode = KalapaSDKResultCode.UNKNOWN
                     if (p0 != null) {
                         klpResultCode = when (p0) {
-                            ResultCode.CARD_NOT_FOUND -> KalapaNFCResultCode.CARD_NOT_FOUND
-                            ResultCode.CARD_LOST_CONNECTION -> KalapaNFCResultCode.CARD_LOST_CONNECTION
-                            ResultCode.SUCCESS -> KalapaNFCResultCode.SUCCESS
-                            ResultCode.CANNOT_OPEN_DEVICE -> KalapaNFCResultCode.CANNOT_OPEN_DEVICE
-                            ResultCode.UNKNOWN -> KalapaNFCResultCode.UNKNOWN
-                            ResultCode.WRONG_CCCDID -> KalapaNFCResultCode.WRONG_CCCDID
-                            ResultCode.SUCCESS_WITH_WARNING -> KalapaNFCResultCode.SUCCESS_WITH_WARNING
+                            ResultCode.CARD_NOT_FOUND -> KalapaSDKResultCode.CARD_NOT_FOUND
+                            ResultCode.CARD_LOST_CONNECTION -> KalapaSDKResultCode.CARD_LOST_CONNECTION
+                            ResultCode.SUCCESS -> KalapaSDKResultCode.SUCCESS
+                            ResultCode.CANNOT_OPEN_DEVICE -> KalapaSDKResultCode.CANNOT_OPEN_DEVICE
+                            ResultCode.UNKNOWN -> KalapaSDKResultCode.UNKNOWN
+                            ResultCode.WRONG_CCCDID -> KalapaSDKResultCode.WRONG_CCCDID
+                            ResultCode.SUCCESS_WITH_WARNING -> KalapaSDKResultCode.SUCCESS_WITH_WARNING
                         }
                     }
                 }
@@ -274,7 +277,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                                     btnScanNFC.visibility = View.VISIBLE
                                     btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm))
                                     btnScanNFC.setOnClickListener {
-                                        KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.DEVICE_NOT_SUPPORTED)
+                                        KalapaSDK.handler.onError(KalapaSDKResultCode.DEVICE_NOT_SUPPORTED)
                                         finish()
                                     }
                                     KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_not_support_nfc))
@@ -356,13 +359,13 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_emulator_warning_body)),
             R.drawable.frowning_face
         ) {
-            KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.EMULATOR_DETECTED)
+            KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)
             finish()
         }
     }
 
     override fun onYes() {
-        KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.USER_LEAVE)
+        KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
         finish()
     }
 

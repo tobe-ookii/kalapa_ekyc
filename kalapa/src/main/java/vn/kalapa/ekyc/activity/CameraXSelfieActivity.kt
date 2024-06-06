@@ -16,11 +16,12 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.face.Face
 import vn.kalapa.ekyc.DialogListener
-import vn.kalapa.ekyc.KalapaCaptureResultCode
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDKCallback
 import vn.kalapa.ekyc.KalapaSDKMediaType
 import vn.kalapa.R
+import vn.kalapa.ekyc.KalapaCaptureHandler
+import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.capturesdk.CameraXActivity
 import vn.kalapa.ekyc.liveness.LivenessHandler
 import vn.kalapa.ekyc.liveness.LivenessSessionStatus
@@ -60,7 +61,7 @@ class CameraXSelfieActivity : CameraXActivity(
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 
@@ -254,7 +255,7 @@ class CameraXSelfieActivity : CameraXActivity(
             ProgressView.showProgress(this@CameraXSelfieActivity)
         }
         Handler(Looper.getMainLooper()).postDelayed({
-            KalapaSDK.captureHandler.process(
+            (KalapaSDK.handler as KalapaCaptureHandler).process(
                 BitmapUtil.convertBitmapToBase64(faceBitmap),
                 KalapaSDKMediaType.PORTRAIT,
                 this
@@ -281,6 +282,11 @@ class CameraXSelfieActivity : CameraXActivity(
         previewViewLayerMode(true)
         renewSession()
         Helpers.printLog("On Back Clicked & Preview Mode... Finish Activity...")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        renewSession()
     }
 
     override fun onInfoBtnClicked() {

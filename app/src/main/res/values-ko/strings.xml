@@ -102,4 +102,6 @@
     <string name="klp_demo_matching_score">일치 점수</string>
     <string name="klp_field_nation">Nation</string>
     <string name="klp_field_doi">발행일</string>
+    <string name="klp_your_application_were">klp_your_application_were</string>
+    <string name="klp_setting_capture_image">Capture image</string>
 </resources>

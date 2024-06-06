@@ -13,23 +13,51 @@ import androidx.camera.core.ImageProxy
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
+import org.json.JSONObject
+import vn.kalapa.R
 import vn.kalapa.ekyc.capturesdk.CameraXPassportActivity
 import vn.kalapa.ekyc.activity.CameraXSelfieActivity
+import vn.kalapa.ekyc.activity.ConfirmActivity
 import vn.kalapa.ekyc.capturesdk.CameraXCaptureActivity
 import vn.kalapa.ekyc.capturesdk.CameraXCaptureBackActivity
 import vn.kalapa.ekyc.handlers.GetDynamicLanguageHandler
+import vn.kalapa.ekyc.models.BackResult
+import vn.kalapa.ekyc.models.FrontResult
+import vn.kalapa.ekyc.models.KalapaError
 import vn.kalapa.ekyc.models.KalapaLanguageModel
+import vn.kalapa.ekyc.models.KalapaResult
+import vn.kalapa.ekyc.models.NFCRawData
+import vn.kalapa.ekyc.models.PassportResult
+import vn.kalapa.ekyc.networks.Client
+import vn.kalapa.ekyc.networks.KalapaAPI
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.utils.LanguageUtils
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
+import vn.kalapa.ekyc.utils.BitmapUtil
 import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
     companion object {
         lateinit var session: String
         lateinit var config: KalapaSDKConfig
-        lateinit var captureHandler: KalapaCaptureHandler
-        lateinit var nfcHandler: KalapaNFCHandler
+        lateinit var handler: KalapaHandler
+        lateinit var kalapaResult: KalapaResult
+        lateinit var frontResult: FrontResult
+        private lateinit var passportResult: PassportResult
+        private lateinit var backResult: BackResult
+        lateinit var faceBitmap: Bitmap
+        lateinit var frontBitmap: Bitmap
+        lateinit var backBitmap: Bitmap
+
+        fun isFaceBitmapInitialized():Boolean{
+            return this::faceBitmap.isInitialized
+        }
+        fun isFrontBitmapInitialized():Boolean{
+            return this::frontBitmap.isInitialized
+        }
+        fun isBackBitmapInitialized():Boolean{
+            return this::backBitmap.isInitialized
+        }
         var flowType: FaceOTPFlowType = FaceOTPFlowType.ONBOARD
         fun startLivenessForResult(
             activity: Activity,
@@ -38,7 +66,7 @@ class KalapaSDK {
         ) {
             this.config = config
             isFoldOpen(activity)
-            this.captureHandler = handler
+            this.handler = handler
 //            val intent = Intent(activity, LivenessActivityForResult::class.java)
             val intent = Intent(activity, CameraXSelfieActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -71,7 +99,7 @@ class KalapaSDK {
         ) {
             val metrics = activity.resources.displayMetrics
             this.config = config
-            this.captureHandler = handler
+            this.handler = handler
             val intent = Intent(activity, CameraXCaptureActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             activity.startActivity(intent)
@@ -84,8 +112,22 @@ class KalapaSDK {
         ) {
             val metrics = activity.resources.displayMetrics
             this.config = config
-            this.captureHandler = handler
+            this.handler = handler
             val intent = Intent(activity, CameraXCaptureBackActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            activity.startActivity(intent)
+        }
+
+        fun startConfirmForResult(
+            activity: Activity,
+            session: String,
+            config: KalapaSDKConfig,
+            handler: KalapaHandler
+        ) {
+            this.session = session
+            this.config = config
+            this.handler = handler
+            val intent = Intent(activity, ConfirmActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             activity.startActivity(intent)
         }
@@ -96,7 +138,7 @@ class KalapaSDK {
             handler: KalapaCaptureHandler
         ) {
             this.config = config
-            this.captureHandler = handler
+            this.handler = handler
             val intent = Intent(activity, CameraXPassportActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             activity.startActivity(intent)
@@ -108,7 +150,7 @@ class KalapaSDK {
             nfcHandler: KalapaNFCHandler
         ) {
             this.config = config
-            this.nfcHandler = nfcHandler
+            this.handler = nfcHandler
             val intent = Intent(activity, NFCActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("mrz", nfcHandler.mrz)
@@ -123,11 +165,173 @@ class KalapaSDK {
         ) {
             this.session = session
             this.config = config
-            this.nfcHandler = nfcHandler
+            this.handler = nfcHandler
             val intent = Intent(activity, NFCActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("mrz", nfcHandler.mrz)
             activity.startActivity(intent)
+        }
+
+        fun startFullEKYC(activity: Activity, session: String, config: KalapaSDKConfig, kalapaCustomHandler: KalapaHandler) {
+            this.session = session
+            this.config = config
+            this.kalapaResult = KalapaResult()
+            val onGeneralError: (resultCode: KalapaSDKResultCode) -> Unit = {
+                kalapaCustomHandler.onError(it)
+            }
+
+            /*****-STEP 5-*****/
+            val localStartConfirmForResult = {
+                startConfirmForResult(activity, session, config, object : KalapaHandler() {
+                    override fun onError(resultCode: KalapaSDKResultCode) {
+                        onGeneralError(resultCode)
+                    }
+
+                    override fun onComplete(kalapaResult: KalapaResult) {
+                        super.onComplete(kalapaResult)
+                        Helpers.printLog("startFullEKYC localStartConfirmForResult onComplete KalapaResult: $kalapaResult \n ${kalapaResult.decision} ${kalapaResult.decisionDetail} ")
+                        kalapaCustomHandler.onComplete(kalapaResult)
+                    }
+
+
+                })
+            }
+
+            /*****-STEP 4-*****/
+            val localStartLivenessForResult = {
+                startLivenessForResult(activity, config, object : KalapaCaptureHandler() {
+                    private val endpoint = "/api/kyc/app/check-selfie"
+                    override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                        faceBitmap = BitmapUtil.base64ToBitmap(base64)
+                        KalapaAPI.selfieCheck(endpoint, faceBitmap, object : Client.RequestListener {
+                            override fun success(jsonObject: JSONObject) {
+                                // Set Liveness. Call Confirm
+                                callback.sendDone {
+                                    localStartConfirmForResult()
+                                }
+                            }
+
+                            override fun fail(error: KalapaError) {
+                                callback.sendError(error.getMessageError())
+                            }
+
+                            override fun timeout() {
+                                callback.sendError(config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body)))
+                            }
+
+                        })
+
+                    }
+
+                    override fun onError(resultCode: KalapaSDKResultCode) {
+                        onGeneralError(resultCode)
+                    }
+
+                })
+            }
+
+            /*****-STEP 3-*****/
+            val localStartNFCForResult = {
+                startNFCForResult(activity, config, object : KalapaNFCHandler(frontResult.myFields?.idNumber ?: frontResult.mrzData?.data?.rawMRZ ?: "") {
+                    private val endpoint = "/api/nfc/verify"
+                    override fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback) {
+                        // Submit NFC.
+                        KalapaAPI.nfcCheck(endPoint = endpoint, body = NFCRawData.fromJson(nfcData)!!, object : Client.RequestListener {
+                            override fun success(jsonObject: JSONObject) {
+                                // Set NFC. Call liveness
+                                callback.sendDone {
+                                    localStartLivenessForResult()
+                                }
+                            }
+
+                            override fun fail(error: KalapaError) {
+                                callback.sendError(error.getMessageError())
+                            }
+
+                            override fun timeout() {
+                                callback.sendError(config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body)))
+                            }
+
+                        })
+                    }
+
+                    override fun onError(resultCode: KalapaSDKResultCode) {
+                        onGeneralError(resultCode)
+                    }
+
+                })
+            }
+
+            /*****-STEP 2-*****/
+            val localStartBackForResult = {
+                startCaptureBackForResult(activity, config, object : KalapaCaptureHandler() {
+                    private val endpoint = "/api/kyc/app/scan-back"
+                    override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                        backBitmap = BitmapUtil.base64ToBitmap(base64)
+                        KalapaAPI.imageCheck(endpoint, backBitmap, object : Client.RequestListener {
+                            override fun success(jsonObject: JSONObject) {
+                                backResult = BackResult.fromJson(jsonObject.toString())!!
+                                Helpers.printLog("imageCheck $endpoint $jsonObject")
+                                callback.sendDone {
+                                    // Call NFC if needed!
+                                    if (backResult.cardType?.contains("eid") == true) {
+                                        localStartNFCForResult()
+                                    } else {
+                                        localStartLivenessForResult()
+                                    }
+                                }
+                            }
+
+                            override fun fail(error: KalapaError) {
+                                Helpers.printLog("error: $error ${error.getMessageError()}")
+                                callback.sendError(error.getMessageError())
+                            }
+
+                            override fun timeout() {
+                                callback.sendError(config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body)))
+                            }
+                        })
+                    }
+
+                    override fun onError(resultCode: KalapaSDKResultCode) {
+                        onGeneralError(resultCode)
+                    }
+
+                })
+            }
+            /*****-STEP 1-*****/
+            startCaptureForResult(activity, this.config, object : KalapaCaptureHandler() {
+                private val endpoint = "/api/kyc/app/scan-front"
+                override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                    // Check Front!
+                    frontBitmap = BitmapUtil.base64ToBitmap(base64)
+                    KalapaAPI.imageCheck(endpoint, frontBitmap, object : Client.RequestListener {
+                        override fun success(jsonObject: JSONObject) {
+                            // Call Back!
+                            frontResult = FrontResult.fromJson(jsonObject.toString())!!
+                            Helpers.printLog("imageCheck $endpoint $jsonObject")
+                            callback.sendDone {
+                                localStartBackForResult()
+                            }
+                        }
+
+                        override fun fail(error: KalapaError) {
+                            callback.sendError(error.getMessageError())
+                        }
+
+                        override fun timeout() {
+                            callback.sendError(config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body)))
+                        }
+
+                    })
+                }
+
+                override fun onError(resultCode: KalapaSDKResultCode) {
+                    // Got Message
+                    onGeneralError(resultCode)
+                }
+
+            })
         }
 
         fun checkNFCCapacity(activity: Activity): KalapaSDKNFCStatus {
@@ -212,21 +416,23 @@ class KalapaSDKConfig(
 }
 
 
-abstract class KalapaCaptureHandler {
+abstract class KalapaCaptureHandler : KalapaHandler() {
     abstract fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback)
-    abstract fun onError(resultCode: KalapaCaptureResultCode)
-    open fun onProcessFinished() {
-        Helpers.printLog("KalapaCaptureHandler onProcessFinished")
-    }
-
 }
 
-abstract class KalapaNFCHandler(val mrz: String?) {
-    abstract fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback)
-    abstract fun onError(resultCode: KalapaNFCResultCode)
+abstract class KalapaHandler {
+    abstract fun onError(resultCode: KalapaSDKResultCode)
     open fun onProcessFinished() {
-        Helpers.printLog("KalapaNFCHandler onProcessFinished")
+        Helpers.printLog("KalapaHandler onProcessFinished")
     }
+
+    open fun onComplete(kalapaResult: KalapaResult) {
+        Helpers.printLog("KalapaHandler onComplete $kalapaResult")
+    }
+}
+
+abstract class KalapaNFCHandler(val mrz: String?) : KalapaHandler() {
+    abstract fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback)
 }
 
 enum class KalapaSDKNFCStatus(status: Int) {
@@ -235,13 +441,10 @@ enum class KalapaSDKNFCStatus(status: Int) {
     SUPPORTED(1)
 }
 
-enum class KalapaNFCResultCode {
+enum class KalapaSDKResultCode {
     UNKNOWN, SUCCESS, PERMISSION_DENIED, USER_CONSENT_DECLINED, SUCCESS_WITH_WARNING, CANNOT_OPEN_DEVICE, CARD_NOT_FOUND, WRONG_CCCDID, CARD_LOST_CONNECTION, USER_LEAVE, EMULATOR_DETECTED, DEVICE_NOT_SUPPORTED
 }
 
-enum class KalapaCaptureResultCode {
-    UNKNOWN, SUCCESS, PERMISSION_DENIED, USER_CONSENT_DECLINED, USER_LEAVE, EMULATOR_DETECTED
-}
 
 enum class KalapaSDKMediaType {
     FRONT, BACK, PORTRAIT, PASSPORT
@@ -250,6 +453,7 @@ enum class KalapaSDKMediaType {
 interface KalapaSDKCallback {
     fun sendError(message: String?)
     fun sendDone(nextAction: () -> Unit)
+
 }
 
 enum class FaceOTPFlowType(val flow: String?) {
@@ -398,22 +602,3 @@ private fun imageToByteBuffer(image: ImageProxy, outputBuffer: ByteArray, pixelC
         }
     }
 }
-//
-//fun Image.toBitmap(): Bitmap {
-//
-//    val yBuffer = planes[0].buffer // Y
-//    val vuBuffer = planes[2].buffer // VU
-//
-//    val ySize = yBuffer.remaining()
-//    val vuSize = vuBuffer.remaining()
-//
-//    val nv21 = ByteArray(ySize + vuSize)
-//    yBuffer.get(nv21, 0, ySize)
-//    vuBuffer.get(nv21, ySize, vuSize)
-//
-//    val yuvImage = YuvImage(nv21, ImageFormat.NV21, this.width, this.height, null)
-//    val out = ByteArrayOutputStream()
-//    yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 85, out)
-//    val imageBytes = out.toByteArray()
-//    return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-//}

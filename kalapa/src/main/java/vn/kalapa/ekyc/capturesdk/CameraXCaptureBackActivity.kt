@@ -14,7 +14,7 @@ import vn.kalapa.ekyc.views.ProgressView
 
 
 
-class CameraXCaptureBackActivity() : CameraXActivity(activityLayoutId = R.layout.activity_camera_x_back_card, hideAutoCapture = true), KalapaSDKCallback {
+class CameraXCaptureBackActivity : CameraXActivity(activityLayoutId = R.layout.activity_camera_x_back_card, hideAutoCapture = true), KalapaSDKCallback {
     private lateinit var ivPreviewImage: ImageView
     private lateinit var tvTitle: TextView
     private lateinit var tvGuide1: TextView
@@ -36,7 +36,7 @@ class CameraXCaptureBackActivity() : CameraXActivity(activityLayoutId = R.layout
 
         ivBitmapReview = findViewById(R.id.iv_bitmap_preview)
         tvTitle.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_front))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_back))
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
 //        tvGuide0.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
         tvGuide1.text =
@@ -81,6 +81,7 @@ class CameraXCaptureBackActivity() : CameraXActivity(activityLayoutId = R.layout
 
     private var currError = ""
     override fun sendError(message: String?) {
+        ProgressView.hideProgress()
         if (currError.isNotEmpty() && currError == message) return
         currError = message ?: KalapaSDK.config.languageUtils.getLanguageString(
             resources.getString(
@@ -117,7 +118,7 @@ class CameraXCaptureBackActivity() : CameraXActivity(activityLayoutId = R.layout
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
-                KalapaSDK.captureHandler.onError(KalapaCaptureResultCode.USER_LEAVE)
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 
@@ -140,7 +141,8 @@ class CameraXCaptureBackActivity() : CameraXActivity(activityLayoutId = R.layout
     }
 
     override fun verifyImage() {
-        KalapaSDK.captureHandler.process(
+        ProgressView.showProgress(this@CameraXCaptureBackActivity)
+        (KalapaSDK.handler as KalapaCaptureHandler).process(
             BitmapUtil.convertBitmapToBase64(tmpBitmap!!),
             KalapaSDKMediaType.FRONT,
             this@CameraXCaptureBackActivity

@@ -25,7 +25,7 @@ import vn.kalapa.ekyc.views.ProgressView
 
 abstract class BaseNFCActivity : BaseActivity {
     lateinit var bottomSheetDialog: Dialog
-    private var isNFCSucceed = false
+    var isNFCSucceed = false
     var isNFCFinished = false
 
     private val NFC_LOCATION_PATH = "/api/nfc/position"
@@ -139,7 +139,7 @@ abstract class BaseNFCActivity : BaseActivity {
         ivCloseEkyc.setOnClickListener {
             Helpers.showEndKYC(this, object : DialogListener {
                 override fun onYes() {
-                    KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.USER_LEAVE)
+                    KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                     finish()
                 }
 
@@ -282,7 +282,7 @@ abstract class BaseNFCActivity : BaseActivity {
         } else {
             Helpers.showEndKYC(this, object : DialogListener {
                 override fun onYes() {
-                    KalapaSDK.nfcHandler.onError(KalapaNFCResultCode.USER_LEAVE)
+                    KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                     finish()
                 }
 

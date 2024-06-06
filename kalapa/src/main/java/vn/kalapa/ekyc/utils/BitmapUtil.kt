@@ -52,7 +52,7 @@ class BitmapUtil {
             return BitmapFactory.decodeByteArray(image, 0, image.size)
         }
 
-        private fun convertBitmapToBytes(srcBmp: Bitmap): ByteArray {
+        fun convertBitmapToBytes(srcBmp: Bitmap): ByteArray {
             val stream = ByteArrayOutputStream()
             srcBmp.compress(Bitmap.CompressFormat.JPEG, 90, stream)
             return stream.toByteArray()
