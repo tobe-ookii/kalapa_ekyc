@@ -89,7 +89,32 @@ public class MainActivityJava extends BaseActivity {
         KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
             @Override
             public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
+                callback.sendDone(() -> {
+                    KalapaSDK.Companion.startCaptureBackForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
+                        @Override
+                        public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
+                            KalapaSDK.Companion.startLivenessForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
+                                @Override
+                                public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
+                                    callback.sendDone(() -> {
+                                        return null;
+                                    });
+                                }
 
+                                @Override
+                                public void onError(@NonNull KalapaCaptureResultCode resultCode) {
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(@NonNull KalapaCaptureResultCode resultCode) {
+
+                        }
+                    });
+                    return null;
+                });
             }
 
             @Override

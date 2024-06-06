@@ -16,7 +16,6 @@
 //import android.view.View
 //import android.widget.ImageView
 //import android.widget.TextView
-//import androidx.camera.core.AspectRatio
 //import androidx.camera.core.ImageAnalysis
 //import androidx.camera.core.ImageProxy
 //import androidx.core.graphics.scaleMatrix
@@ -42,14 +41,35 @@
 //    private lateinit var tvTitle: TextView
 //    private lateinit var tvGuide1: TextView
 //    private lateinit var ivGuide: ImageView
-//
+//    private var enteredNFCActivity = false
 //    private var isProcessingFrame = false
 //
 //    // For Autocapture
 //    private var detector: CardClassifier? = null
+//    private val NUMTHREADS = 1
+//    private val MAINTAIN_ASPECT = true
+//    private val MINIMUM_CONFIDENCE_TF_OD_API = 0.3f
+//    private val MODE = DetectorMode.TF_OD_API
+//
+//    private val yuvBytes = arrayOfNulls<ByteArray>(3)
+//    private var rgbBytes: IntArray? = null
+//    private var yRowStride = 0
+//    private var postInferenceCallback: Runnable? = null
+//    private var imageConverter: Runnable? = null
+//
 //    private lateinit var ivBitmapReview: ImageView
 //    private var computingDetection = false
 //
+//    private var previewWidth = 0
+//    private var previewHeight = 0
+//
+//    private var rgbFrameBitmap: Bitmap? = null
+//    private var croppedBitmap: Bitmap? = null
+//
+//    private lateinit var cropCopyBitmap: Bitmap
+//
+//    lateinit var frameToCropTransform: Matrix
+//    lateinit var cropToFrameTransform: Matrix
 //
 //    override fun setupCustomUI() {
 ////        cardMaskView = findViewById(R.id.cardMaskView)
@@ -72,6 +92,15 @@
 //
 //    }
 //
+//    private fun returnToNFCActivity(ocrMRZ: String) {
+//        if (!enteredNFCActivity) {
+//            enteredNFCActivity = true
+//            val intent = Intent(this@CameraXAutoCaptureActivity, NFCActivity::class.java)
+//            intent.putExtra("mrz", ocrMRZ)
+//            startActivity(intent)
+//            finish()
+//        }
+//    }
 //
 //    override fun previewViewLayerMode(isCameraMode: Boolean) {
 //        super.previewViewLayerMode(isCameraMode)
@@ -88,7 +117,70 @@
 //        }
 //    }
 //
+//    @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
 //    private fun processFrame(imageProxy: ImageProxy): String {
+//        // Process here
+//        if (viewFinder.width == 0 || viewFinder.height == 0) {
+//            Helpers.printLog("previewWidth & previewHeight null")
+//            return ""
+//        }
+//        if (previewWidth == 0 || previewHeight == 0) {
+//            previewWidth = viewFinder.width
+//            previewHeight = viewFinder.height
+//            val cropSize = detector!!.inputSize
+//            rgbFrameBitmap =
+//                Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+//            croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Bitmap.Config.ARGB_8888)
+//            frameToCropTransform = ImageUtils.getTransformationMatrix(
+//                previewWidth,
+//                previewHeight,
+//                cropSize,
+//                cropSize,
+//                imageProxy.imageInfo.rotationDegrees,
+//                MAINTAIN_ASPECT
+//            )
+//            cropToFrameTransform = Matrix()
+//            frameToCropTransform.invert(cropToFrameTransform)
+//        }
+//
+//        if (rgbBytes == null) {
+//            rgbBytes = IntArray(previewWidth * previewHeight)
+//        }
+//        try {
+//            Helpers.printLog("Start Processing Frame")
+//            isProcessingFrame = true
+//            Trace.beginSection("imageAvailable")
+//            val planes = imageProxy.image!!.planes
+//            fillBytes(planes, yuvBytes)
+//            yRowStride = planes[0].rowStride
+//            val uvRowStride = planes[1].rowStride
+//            val uvPixelStride = planes[1].pixelStride
+//            imageConverter = Runnable {
+//                ImageUtils.convertYUV420ToARGB8888(
+//                    yuvBytes[0],
+//                    yuvBytes[1],
+//                    yuvBytes[2],
+//                    previewWidth,
+//                    previewHeight,
+//                    yRowStride,
+//                    uvRowStride,
+//                    uvPixelStride,
+//                    rgbBytes
+//                )
+//            }
+//            postInferenceCallback = Runnable {
+//                imageProxy.close()
+//                isProcessingFrame = false
+//            }
+//            processImage()
+//            Helpers.printLog("Start Processing Image")
+//        } catch (e: Exception) {
+//            Helpers.printLog(e, "Exception!")
+//            Trace.endSection()
+//            return ""
+//        }
+//        Trace.endSection()
+//        // End of process here
 //        isProcessingFrame = false
 //        while (true) {
 //            if (!isProcessingFrame)
@@ -134,8 +226,7 @@
 //    override fun setupAnalyzer(): ImageAnalysis? {
 //        return ImageAnalysis.Builder()
 //            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-//            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-//            .setTargetRotation(viewFinder.display.rotation)
+//            .setTargetResolution(Size(320, 320))
 //            .build()
 //            .also {
 //                it.setAnalyzer(cameraExecutor, IDCardAnalyze {
@@ -164,7 +255,7 @@
 //
 //    private fun renewSession() {
 //        detector = DetectorFactory.getDetector(assets, modelString)
-//        detector?.setNumThreads(1)
+//        detector?.setNumThreads(NUMTHREADS)
 //    }
 //
 //    override fun onResume() {
@@ -186,18 +277,52 @@
 //
 //    private fun processImage() {
 //        if (computingDetection) {
+//            readyForNextImage()
 //            return
 //        }
 //        computingDetection = true
+//        rgbFrameBitmap!!.setPixels(
+//            getRgbBytes(),
+//            0,
+//            previewWidth,
+//            0,
+//            0,
+//            previewWidth,
+//            previewHeight
+//        )
+//        readyForNextImage()
+//
+//        val canvas = Canvas(croppedBitmap!!)
+//        canvas.drawBitmap(rgbFrameBitmap!!, frameToCropTransform, null)
+//        // For examining the actual TF input.
+////        runOnUiThread {
+////            ivBitmapReview.setImageBitmap(croppedBitmap)
+////        }
 //        Handler(Looper.getMainLooper()).run {
-//            val results: List<Classifier.Recognition> = detector!!.recognizeImage(tmpBitmap)
+//            val startTime = SystemClock.uptimeMillis()
+//
+//            val results: List<Classifier.Recognition> = detector!!.recognizeImage(croppedBitmap)
+////                if (results.isNotEmpty())
+////                    Log.e("CHECK", "run: " + results.size)
 //            Helpers.printLog("Result: $results")
 //            if (results.isEmpty() || results.size < 3) {
 //                onCardOutOfMaskHandleUI()
-//            } else {
+//            }else{
 //                cardInMaskHandleUI()
 //            }
 //            computingDetection = false
+//        }
+//    }
+//
+//    private fun getRgbBytes(): IntArray? {
+//        imageConverter!!.run()
+//        return rgbBytes
+//    }
+//
+//
+//    private fun readyForNextImage() {
+//        if (postInferenceCallback != null) {
+//            postInferenceCallback!!.run()
 //        }
 //    }
 //

@@ -15,7 +15,8 @@ import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
 import vn.kalapa.ekyc.capturesdk.CameraXPassportActivity
 import vn.kalapa.ekyc.activity.CameraXSelfieActivity
-import vn.kalapa.ekyc.capturesdk.CameraXAutoCaptureActivity
+import vn.kalapa.ekyc.capturesdk.CameraXCaptureActivity
+import vn.kalapa.ekyc.capturesdk.CameraXCaptureBackActivity
 import vn.kalapa.ekyc.handlers.GetDynamicLanguageHandler
 import vn.kalapa.ekyc.models.KalapaLanguageModel
 import vn.kalapa.ekyc.utils.Helpers
@@ -71,7 +72,20 @@ class KalapaSDK {
             val metrics = activity.resources.displayMetrics
             this.config = config
             this.captureHandler = handler
-            val intent = Intent(activity, CameraXAutoCaptureActivity::class.java)
+            val intent = Intent(activity, CameraXCaptureActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            activity.startActivity(intent)
+        }
+
+        fun startCaptureBackForResult(
+            activity: Activity,
+            config: KalapaSDKConfig,
+            handler: KalapaCaptureHandler
+        ) {
+            val metrics = activity.resources.displayMetrics
+            this.config = config
+            this.captureHandler = handler
+            val intent = Intent(activity, CameraXCaptureBackActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             activity.startActivity(intent)
         }

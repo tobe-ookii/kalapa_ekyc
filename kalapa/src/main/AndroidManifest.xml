@@ -57,7 +57,12 @@
             android:configChanges="orientation|screenSize"
             android:exported="false" />
         <activity
-            android:name=".ekyc.capturesdk.CameraXAutoCaptureActivity"
+            android:name=".ekyc.capturesdk.CameraXCaptureActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".ekyc.capturesdk.CameraXCaptureBackActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"
             android:exported="false" />

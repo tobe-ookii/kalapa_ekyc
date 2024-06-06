@@ -94,4 +94,5 @@
     <string name="klp_error_token">klp_error_token</string>
     <string name="klp_liveness_eye_closes">klp_liveness_eye_closes\n</string>
     <string name="please_place_card_into_mask">please_place_card_into_mask</string>
+    <string name="klp_scan_front_document">klp_scan_front_document</string>
 </resources>
