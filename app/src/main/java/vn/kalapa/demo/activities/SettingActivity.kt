@@ -50,7 +50,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 //    private val KLP_DEV = "https://faceotp-dev.kalapa.vn/api"
     private val KLP_PROD = "https://ekyc-api.kalapa.vn"
     private val KLP_DEV = "https://ekyc-dev-internal.kalapa.vn"
-    private val defaultConfig = KalapaSDKConfig(this@SettingActivity, language = "en")
+    private val defaultConfig = KalapaSDKConfig.KalapaSDKConfigBuilder(this@SettingActivity).build()
 
     //    private lateinit var rgLanguage: KLPCustomMultipleChoices
     private lateinit var rgLanguage: KLPCustomSwitch
@@ -277,12 +277,12 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgCaptureImage.setMainColor(mainColor)
         rgScanNFC.setMainColor(mainColor)
 
-        Helpers.setCheckboxTintList(cbAcceptedOldIdCard,Color.parseColor(mainColor))
-        Helpers.setCheckboxTintList(cbAcceptedEidWithoutChip,Color.parseColor(mainColor))
-        Helpers.setCheckboxTintList(cbAcceptedOld12DigitsIdCard,Color.parseColor(mainColor))
-        Helpers.setCheckboxTintList(cbAcceptedEidWithChip,Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbAcceptedOldIdCard, Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbAcceptedEidWithoutChip, Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbAcceptedOld12DigitsIdCard, Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbAcceptedEidWithChip, Color.parseColor(mainColor))
 
-        Helpers.setSliderTintList(sliderFaceMatchingThreshold,Color.parseColor(mainColor))
+        Helpers.setSliderTintList(sliderFaceMatchingThreshold, Color.parseColor(mainColor))
     }
 
     private fun refreshBtnTextColor(txtColor: String) {
@@ -464,7 +464,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
     private fun onInitValue() {
         val token = Helpers.getValuePreferences(MY_KEY_TOKEN) ?: ""
-        val env = Helpers.getValuePreferences(MY_KEY_ENV) ?: KLP_DEV
+        val env = Helpers.getValuePreferences(MY_KEY_ENV) ?: defaultConfig.baseURL
 
         val secnario = Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: FaceOTPFlowType.ONBOARD.name
         val lang = Helpers.getValuePreferences(MY_KEY_LANGUAGE)

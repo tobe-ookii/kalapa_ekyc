@@ -1,31 +1,30 @@
 package vn.kalapa.ekyc.utils
 
-import android.app.Activity
+import android.content.Context
 import vn.kalapa.ekyc.KalapaSDK
 import kotlin.collections.HashMap
 
-class LanguageUtils(val activity: Activity) {
-    var mapLanguage: Map<String, String> = HashMap()
+class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, String> = HashMap()) {
     fun setLanguage(map: Map<String, String>) {
 //        for (k in map.keys) {
-//            Helpers.savePrefs(k, map[k] ?: "")
+//            Helpers.printLog("Key $k: ${map[k]}")
 //        }
-        mapLanguage = map
+        this.mapLanguage = map
     }
 
     fun getLanguageString(tag: String): String {
 //        val string = Helpers.getStringPreferences(activity, tag)
-//        Helpers.printLog("Get $tag: $string")
+        Helpers.printLog("Get $tag: $mapLanguage")
         val k = tag.toLowerCase()
         if (mapLanguage[k] != null) return mapLanguage[k]!!
-        else if (KalapaSDK.config.language.contains("vi") && VI_DEFAULT[k] != null)
-            return VI_DEFAULT[k]!!
-        else if (KalapaSDK.config.language.contains("ko") && KO_DEFAULT[k] != null)
-            return KO_DEFAULT[k]!!
-        else if (EN_DEFAULT[k] != null)
-            return EN_DEFAULT[k]!!
-        else
-            return tag
+//        else if (KalapaSDK.config.language.contains("vi") && VI_DEFAULT[k] != null)
+//            return VI_DEFAULT[k]!!
+//        else if (KalapaSDK.config.language.contains("ko") && KO_DEFAULT[k] != null)
+//            return KO_DEFAULT[k]!!
+//        else if (EN_DEFAULT[k] != null)
+//            return EN_DEFAULT[k]!!
+//        else
+        return tag
     }
 
     private val EN_DEFAULT = mapOf(
@@ -101,7 +100,7 @@ class LanguageUtils(val activity: Activity) {
         "klp_emulator_warning_body" to "This application is not allowed to run on emulators",
         "klp_virtual_camera_warning_body" to "Invalid camera settings",
         "klp_accept_btn" to "Accept"
-        )
+    )
     private val VI_DEFAULT = mapOf(
         "klp_alert_title" to "Thông báo",
         "klp_angle_not_correct" to "Góc mặt chưa đúng, vui lòng nhìn thẳng",

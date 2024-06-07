@@ -485,8 +485,8 @@ class KalapaSDK {
 
 }
 
-class KalapaSDKConfig(
-    var context: Activity,
+class KalapaSDKConfig private constructor(
+    var context: Context,
     var backgroundColor: String = "#FFFFFF",
     var mainColor: String = "#62A583",
     var mainTextColor: String = "#65657B",
@@ -498,7 +498,82 @@ class KalapaSDKConfig(
     var useNFC: Boolean = true,
     var captureImage: Boolean = true
 ) {
-    var languageUtils: LanguageUtils = LanguageUtils(context)
+    class KalapaSDKConfigBuilder(val context: Context) {
+
+        var backgroundColor: String = "#FFFFFF"
+        var mainColor: String = "#62A583"
+        var mainTextColor: String = "#65657B"
+        var btnTextColor: String = "#FFFFFF"
+        var livenessVersion: Int = 0
+        var language: String = "vi"
+        var minNFCRetry: Int = 3
+        var baseURL: String = "api-ekyc.kalapa.vn/face-otp"
+        var useNFC: Boolean = true
+        var captureImage: Boolean = true
+
+        fun build(): KalapaSDKConfig {
+            return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL, useNFC, captureImage)
+        }
+
+        fun withBackgroundColor(color: String): KalapaSDKConfigBuilder {
+            this.backgroundColor = color
+            return this
+        }
+
+        fun withMainColor(color: String): KalapaSDKConfigBuilder {
+            this.mainColor = color
+            return this
+        }
+
+        fun withMainTextColor(color: String): KalapaSDKConfigBuilder {
+            this.mainTextColor = color
+            return this
+        }
+
+        fun withBtnTextColor(color: String): KalapaSDKConfigBuilder {
+            this.btnTextColor = color
+            return this
+        }
+
+        fun withLivenessVersion(version: Int): KalapaSDKConfigBuilder {
+            if (version in 0..2)
+                this.livenessVersion = version
+            return this
+        }
+
+        fun withLanguage(language: String): KalapaSDKConfigBuilder {
+            if (language == "vi" || language == "vi-VN")
+                this.language = "vi"
+            else if (language == "en" || language == "en-US")
+                this.language = "en"
+            else if (language == "ko" || language == "ko-KR")
+                this.language = "ko"
+            return this
+        }
+
+        fun withBaseURL(baseURL: String): KalapaSDKConfigBuilder {
+            if (baseURL.startsWith("https"))
+                this.baseURL = baseURL
+            return this
+        }
+
+        fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
+            this.useNFC = useNFC
+            return this
+        }
+
+        fun withMinNFCTimes(nfcRetryTimes: Int): KalapaSDKConfigBuilder {
+            this.minNFCRetry = nfcRetryTimes
+            return this
+        }
+
+        fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
+            this.captureImage = captureImage
+            return this
+        }
+    }
+
+    lateinit var languageUtils: LanguageUtils
     var customTitle: String = ""
     var customSubTitle: String = ""
 
@@ -507,13 +582,16 @@ class KalapaSDKConfig(
     }
 
     private fun pullLanguage() {
-        val languageJsonBody: String? = null
-//            GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
+        Helpers.printLog("| $language")
+        val languageJsonBody: String? = GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
         if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
+            Helpers.printLog("pullLanguage $languageJsonBody")
             val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
             if ((klpLanguageModel?.error != null) && (klpLanguageModel.error.code == 0) && klpLanguageModel.data != null) {
                 // Thành công
                 if (klpLanguageModel.data.data?.sdk?.isNotEmpty() == true) {
+                    Helpers.printLog("setLanguage ${klpLanguageModel.data.data.sdk}")
+                    languageUtils = LanguageUtils(context)
                     languageUtils.setLanguage(klpLanguageModel.data.data.sdk)
                 }
             }
@@ -547,8 +625,19 @@ enum class KalapaSDKNFCStatus(status: Int) {
     SUPPORTED(1)
 }
 
-enum class KalapaSDKResultCode {
-    UNKNOWN, SUCCESS, PERMISSION_DENIED, USER_CONSENT_DECLINED, SUCCESS_WITH_WARNING, CANNOT_OPEN_DEVICE, CARD_NOT_FOUND, WRONG_CCCDID, CARD_LOST_CONNECTION, USER_LEAVE, EMULATOR_DETECTED, DEVICE_NOT_SUPPORTED
+enum class KalapaSDKResultCode(val vi: String, val en: String) {
+    UNKNOWN("Lỗi không xác định", "Unknown error"),
+    SUCCESS("Thành công", "Success"),
+    PERMISSION_DENIED("Không cung cấp quyền truy cập", "User permission not granted"),
+    USER_CONSENT_DECLINED("Không đồng ý điều khoản", "User declines consent"),
+    SUCCESS_WITH_WARNING("Thành công", "Success with warning"),
+    CANNOT_OPEN_DEVICE("Lỗi phần cứng", "Device issues"),
+    CARD_NOT_FOUND("Không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ", "Document not found or invalid"),
+    WRONG_CCCDID("Giấy tờ không hợp lệ", "Document invalid"),
+    CARD_LOST_CONNECTION("Mất kết nối tới thẻ", "Card lost connection"),
+    USER_LEAVE("Người dùng hủy bỏ xác thực", "User leave ekyc process"),
+    EMULATOR_DETECTED("Phát hiện máy ảo", "Emulator detection"),
+    DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "Device does not support")
 }
 
 

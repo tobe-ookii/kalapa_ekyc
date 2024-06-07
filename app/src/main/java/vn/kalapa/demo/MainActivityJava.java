@@ -84,7 +84,7 @@ public class MainActivityJava extends BaseActivity {
 //                LogUtils.Companion.printLog(AESCryptor.encryptText(message));
 //                startFaceOTP();
 //                startCapture();
-                    startEKYC();
+                startEKYC();
 
 //                KalapaSDK.Companion.startConfirmForResult(MainActivityJava.this,
 //                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc0ODQzZDViZjEyMDQyOWI4YjYxNGRjMzZkODQ2NDVlIiwidWlkIjoiNzUyZWNiY2QzZGNjNGQyYWE4YzgyNWZlYjQwZjgxMjQiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NzM2NDI5fQ.2TkyQF_us1fJj_04WOlUf5jj4e-MvwDHP1H5QuTprmk"
@@ -173,11 +173,7 @@ public class MainActivityJava extends BaseActivity {
                         KalapaSDK.Companion.startFullEKYC(MainActivityJava.this, createSessionResult.component1(), sdkConfig, new KalapaHandler() {
                             @Override
                             public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                                Helpers.Companion.showDialog(MainActivityJava.this,
-                                        getString(R.string.klp_face_otp_alert_title),
-                                        getString(R.string.klp_face_otp_error_happended) + resultCode.name(),
-                                        R.drawable.frowning_face
-                                );
+                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
                             }
 
                             @Override
@@ -278,7 +274,7 @@ public class MainActivityJava extends BaseActivity {
 
                         @Override
                         public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                            Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
+                            Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
                         }
                     });
                     return null;
@@ -287,7 +283,7 @@ public class MainActivityJava extends BaseActivity {
 
             @Override
             public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
+                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
             }
         });
     }
@@ -298,7 +294,7 @@ public class MainActivityJava extends BaseActivity {
 
             @Override
             public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
+                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
             }
 
             @Override
@@ -383,7 +379,7 @@ public class MainActivityJava extends BaseActivity {
                     @Override
                     public void onError(KalapaSDKResultCode resultCode) {
                         // Capture not finished return an occurred
-                        Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
+                        Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
                     }
                 }
         );
@@ -422,8 +418,7 @@ public class MainActivityJava extends BaseActivity {
             @Override
             public void onError(KalapaSDKResultCode resultCode) {
                 // MRZ not finished return an occurred
-                Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
-
+                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
             }
         });
     }
@@ -475,8 +470,7 @@ public class MainActivityJava extends BaseActivity {
 
             @Override
             public void onError(KalapaSDKResultCode resultCode) {
-                // MRZ not finished return an occurred
-                Helpers.Companion.showDialog(MainActivityJava.this, "Error happened due to ", resultCode.name(), R.drawable.ic_failed_solid);
+                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
             }
         });
     }
@@ -497,25 +491,25 @@ public class MainActivityJava extends BaseActivity {
     private void initConfig() {
         if (preferencesConfig != null) {
             LogUtils.Companion.printLog("Setting Config " + preferencesConfig);
-            KalapaSDK.config = new KalapaSDKConfig(
-                    MainActivityJava.this,
-                    preferencesConfig.getBackgroundColor(),
-                    preferencesConfig.getMainColor(),
-                    preferencesConfig.getMainTextColor(),
-                    preferencesConfig.getBtnTextColor(),
-                    preferencesConfig.getLivenessVersion(),
-                    preferencesConfig.getLanguage(),
-                    3,
-                    preferencesConfig.getEnv(),
-                    preferencesConfig.getUseNFC(),
-                    preferencesConfig.getCaptureImage()
-            );
+            boolean shouldUpdateLanguage = sdkConfig == null || !sdkConfig.getLanguage().equals(preferencesConfig.getLanguage());
+            sdkConfig = new KalapaSDKConfig.KalapaSDKConfigBuilder(MainActivityJava.this)
+                    .withBackgroundColor(preferencesConfig.getBackgroundColor())
+                    .withMainColor(preferencesConfig.getMainColor())
+                    .withBtnTextColor(preferencesConfig.getBtnTextColor())
+                    .withMainTextColor(preferencesConfig.getMainTextColor())
+                    .withLivenessVersion(livenessVersion)
+                    .withBaseURL(preferencesConfig.getEnv())
+                    .useNFC(preferencesConfig.getUseNFC())
+                    .captureImage(preferencesConfig.getCaptureImage())
+                    .build();
+//            if (shouldUpdateLanguage) sdkConfig.pullLanguage();
+            KalapaSDK.config = sdkConfig;
         } else {
             LogUtils.Companion.printLog("Setting preferencesConfig is null");
         }
     }
 
-    private void getPreferencesValuesAndApply(boolean updateLanguage) {
+    private void getPreferencesValuesAndApply() {
         preferencesConfig = Helpers.Companion.getSharedPreferencesConfig(this);
         if (preferencesConfig != null) {
             String backgroundColor = preferencesConfig.getBackgroundColor();
@@ -527,21 +521,23 @@ public class MainActivityJava extends BaseActivity {
 //            scenario = preferencesConfig.getScenario();
             refreshText(lang);
             refreshColor(btnColor, btnTxtColor);
-            if (updateLanguage) {
-                sdkConfig = new KalapaSDKConfig(
-                        MainActivityJava.this,
-                        backgroundColor,
-                        btnColor,
-                        txtColor,
-                        btnTxtColor,
-                        livenessVersion,
-                        lang,
-                        3,
-                        preferencesConfig.getEnv(),
-                        preferencesConfig.getUseNFC(),
-                        preferencesConfig.getCaptureImage()
-                );
-            }
+            boolean shouldUpdateLanguage = sdkConfig == null || !sdkConfig.getLanguage().equals(lang);
+            sdkConfig = new KalapaSDKConfig.KalapaSDKConfigBuilder(MainActivityJava.this)
+                    .withBackgroundColor(backgroundColor)
+                    .withMainColor(btnColor)
+                    .withBtnTextColor(btnTxtColor)
+                    .withMainTextColor(txtColor)
+                    .withLivenessVersion(livenessVersion)
+                    .withBaseURL(preferencesConfig.getEnv())
+                    .useNFC(preferencesConfig.getUseNFC())
+                    .captureImage(preferencesConfig.getCaptureImage())
+                    .withLanguage(preferencesConfig.getLanguage())
+                    .build();
+            LogUtils.Companion.printLog("Pulling language: " + sdkConfig.getLanguage() + " - " + lang);
+//            if (shouldUpdateLanguage){
+//                sdkConfig.pullLanguage();
+//            }
+            KalapaSDK.config = sdkConfig;
         }
     }
 
@@ -586,7 +582,7 @@ public class MainActivityJava extends BaseActivity {
     public void onResume() {
         super.onResume();
         LogUtils.Companion.printLog("onResume");
-        getPreferencesValuesAndApply(true);
+        getPreferencesValuesAndApply();
     }
 
     private void refreshColor(String btnColor, String btnTxtColor) {
