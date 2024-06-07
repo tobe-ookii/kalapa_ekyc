@@ -94,6 +94,8 @@ class KalapaAPI {
         fun doRequestGetSession(
             endPoint: String,
             token: String,
+            captureImage: Boolean,
+            useNFC: Boolean,
             verifyCheck: String,
             fraudCheck: String,
             normalCheckOnly: String,
@@ -119,7 +121,8 @@ class KalapaAPI {
                 "scan_full_information" to cardSidesCheck.toString(),
                 "mobile_device" to Build.MODEL,
                 "accepted_documents" to acceptedDocuments,
-                "face_matching_thr" to faceMatchingThreshold.toString()
+                "face_matching_thr" to faceMatchingThreshold.toString(),
+                "flow" to if (captureImage && useNFC) "nfc_ekyc" else if (captureImage) "ekyc" else "nfc_only"
             )
             Helpers.printLog("Get Session $url")
 

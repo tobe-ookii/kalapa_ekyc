@@ -286,8 +286,10 @@
     <string name="klp_environment_dev">Development</string>
     <string name="klp_language_en">English</string>
     <string name="klp_language_vi">Vietnamese</string>
-    <string name="klp_yes">On</string>
-    <string name="klp_no">Off</string>
+    <string name="klp_yes">Yes</string>
+    <string name="klp_no">No</string>
+    <string name="klp_on">On</string>
+    <string name="klp_off">Off</string>
     <string name="klp_liveness_version_2">2.0</string>
     <string name="klp_liveness_version_3">3.0</string>
     <string name="sw_strict_quality_basic">Basic</string>

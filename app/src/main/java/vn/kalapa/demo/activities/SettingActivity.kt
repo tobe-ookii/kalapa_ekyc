@@ -11,7 +11,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import android.widget.RadioGroup.OnCheckedChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.slider.Slider
 import vn.kalapa.demo.R
@@ -96,7 +95,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var rgFraudCheck: KLPCustomSwitch
     private lateinit var rgStrictQualityCheck: KLPCustomSwitch
     private lateinit var rgCardSidesMatchCheck: KLPCustomSwitch
-    private lateinit var rgCaptureIMage: KLPCustomSwitch
+    private lateinit var rgCaptureImage: KLPCustomSwitch
     private lateinit var rgScanNFC: KLPCustomSwitch
 
     private lateinit var cbAcceptedOldIdCard: CheckBox
@@ -152,19 +151,19 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             refreshUI()
         }
         rgScanNFC = findViewById(R.id.sw_enable_nfc)
-        rgCaptureIMage = findViewById(R.id.sw_capture_image)
+        rgCaptureImage = findViewById(R.id.sw_capture_image)
         cbAcceptedEidWithChip = findViewById(R.id.cb_acceptance_document_4)
         rgScanNFC.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             if (it) cbAcceptedEidWithChip.isChecked = true
         }
-        rgCaptureIMage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
+        rgCaptureImage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             if (!it) cbAcceptedEidWithChip.isChecked = true // Only work with eid
         }
         cbAcceptedEidWithChip.setOnCheckedChangeListener { _, b ->
             LogUtils.printLog("cbAcceptedEidWithChip onCheckedChanged $b")
             if (!b) {
                 rgScanNFC.switchChangeListener(false)
-                rgCaptureIMage.switchChangeListener(true)
+                rgCaptureImage.switchChangeListener(true)
             }
         }
 //        rgLanguage.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
@@ -256,12 +255,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
 
-    private fun refreshColor(
-        strMainColor: String,
-        strMainTextColor: String,
-        strButtonTextColor: String,
-        strBackgroundColor: String
-    ) {
+    private fun refreshColor(strMainColor: String, strMainTextColor: String, strButtonTextColor: String, strBackgroundColor: String) {
         refreshMainColor(strMainColor)
         refreshBtnTextColor(strButtonTextColor)
         refreshBackgroundColor(strBackgroundColor)
@@ -280,8 +274,15 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgFraudCheck.setMainColor(mainColor)
         rgStrictQualityCheck.setMainColor(mainColor)
         rgCardSidesMatchCheck.setMainColor(mainColor)
-        rgCaptureIMage.setMainColor(mainColor)
+        rgCaptureImage.setMainColor(mainColor)
         rgScanNFC.setMainColor(mainColor)
+
+        Helpers.setCheckboxTintList(cbAcceptedOldIdCard,Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbAcceptedEidWithoutChip,Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbAcceptedOld12DigitsIdCard,Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbAcceptedEidWithChip,Color.parseColor(mainColor))
+
+        Helpers.setSliderTintList(sliderFaceMatchingThreshold,Color.parseColor(mainColor))
     }
 
     private fun refreshBtnTextColor(txtColor: String) {
@@ -296,7 +297,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgFraudCheck.setTextColor(txtColor)
         rgStrictQualityCheck.setTextColor(txtColor)
         rgCardSidesMatchCheck.setTextColor(txtColor)
-        rgCaptureIMage.setTextColor(txtColor)
+        rgCaptureImage.setTextColor(txtColor)
         rgScanNFC.setTextColor(txtColor)
     }
 
@@ -327,20 +328,20 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgLivenessVersion.rbSecond.text = resources.getString(R.string.klp_liveness_semi_activate)
         rgLivenessVersion.rbThird.text = resources.getString(R.string.klp_liveness_activate)
 
-        rgScanNFC.rbOne.text = resources.getString(R.string.klp_yes)
-        rgScanNFC.rbOther.text = resources.getString(R.string.klp_no)
+        rgScanNFC.rbOne.text = resources.getString(R.string.klp_on)
+        rgScanNFC.rbOther.text = resources.getString(R.string.klp_off)
 
-        rgCaptureIMage.rbOne.text = resources.getString(R.string.klp_yes)
-        rgCaptureIMage.rbOther.text = resources.getString(R.string.klp_no)
+        rgCaptureImage.rbOne.text = resources.getString(R.string.klp_on)
+        rgCaptureImage.rbOther.text = resources.getString(R.string.klp_off)
 
-        rgVerifyCheck.rbOne.text = resources.getString(R.string.klp_yes)
-        rgVerifyCheck.rbOther.text = resources.getString(R.string.klp_no)
+        rgVerifyCheck.rbOne.text = resources.getString(R.string.klp_on)
+        rgVerifyCheck.rbOther.text = resources.getString(R.string.klp_off)
 
-        rgFraudCheck.rbOne.text = resources.getString(R.string.klp_yes)
-        rgFraudCheck.rbOther.text = resources.getString(R.string.klp_no)
+        rgFraudCheck.rbOne.text = resources.getString(R.string.klp_on)
+        rgFraudCheck.rbOther.text = resources.getString(R.string.klp_off)
 
-        rgCardSidesMatchCheck.rbOne.text = resources.getString(R.string.klp_yes)
-        rgCardSidesMatchCheck.rbOther.text = resources.getString(R.string.klp_no)
+        rgCardSidesMatchCheck.rbOne.text = resources.getString(R.string.klp_on)
+        rgCardSidesMatchCheck.rbOther.text = resources.getString(R.string.klp_off)
 
         rgStrictQualityCheck.rbOne.text = resources.getString(R.string.sw_strict_quality_basic)
         rgStrictQualityCheck.rbOther.text = resources.getString(R.string.sw_strict_quality_advance)
@@ -401,7 +402,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPostitiveCheck) KLP_PROD else KLP_DEV)
 
             Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPostitiveCheck)
-            Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureIMage.isPostitiveCheck)
+            Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureImage.isPostitiveCheck)
             Helpers.savePrefs(MY_KEY_VERIFY_CHECK, rgVerifyCheck.isPostitiveCheck)
             Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPostitiveCheck)
             Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPostitiveCheck)
@@ -525,7 +526,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgFraudCheck.switchChangeListener(fraudCheck)
         rgStrictQualityCheck.switchChangeListener(normalCheckOnly)
         rgCardSidesMatchCheck.switchChangeListener(cardSideMatchesCheck)
-        rgCaptureIMage.switchChangeListener(captureImage)
+        rgCaptureImage.switchChangeListener(captureImage)
         rgScanNFC.switchChangeListener(enableNFC)
     }
 

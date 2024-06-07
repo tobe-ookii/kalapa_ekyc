@@ -93,6 +93,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
 //        super.onBackPressed()
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
+                KalapaSDK.handler.onError(KalapaSDKResultCode.USER_LEAVE)
                 finish()
             }
 
@@ -382,6 +383,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                         Helpers.printLog("Confirm Selfie Data ${confirmResult.selfie_data}")
                         Helpers.printLog("Confirm Result NFC ${confirmResult.nfc_data}")
                         ProgressView.hideProgress()
+                        KalapaSDK.handler.onComplete(kalapaResult = kalapaResult)
                         finish()
                     }
                 })
@@ -568,7 +570,6 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
 //                    Kalapa.kalapaListener!!.completion(Kalapa.result!!)
 //            }
 //        }
-        KalapaSDK.handler.onComplete(kalapaResult = kalapaResult)
         super.finish()
     }
 

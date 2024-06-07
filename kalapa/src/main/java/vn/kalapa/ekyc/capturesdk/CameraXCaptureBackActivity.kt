@@ -84,7 +84,7 @@ class CameraXCaptureBackActivity : CameraXActivity(
     private var currError = ""
     override fun sendError(message: String?) {
         ProgressView.hideProgress()
-        if (currError.isNotEmpty() && currError == message) return
+        if (currError.isNotEmpty() && currError == message && tvError.visibility == View.VISIBLE) return
         currError = message ?: KalapaSDK.config.languageUtils.getLanguageString(
             resources.getString(
                 R.string.klp_liveness_processing_failed

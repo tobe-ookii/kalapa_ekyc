@@ -19,10 +19,13 @@ import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import androidx.core.widget.CompoundButtonCompat
+import com.google.android.material.slider.Slider
 import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.R
@@ -212,7 +215,7 @@ internal class Helpers {
 
             val yesBtn = dialog.findViewById(R.id.custom_dialog_btn_yes) as Button
             val tvTitle = dialog.findViewById(R.id.custom_dialog_title) as TextView
-//            dialog.findViewById<TextView>(R.id.tv_alert_title).text = myTitle
+            if (!myTitle.isNullOrEmpty()) dialog.findViewById<TextView>(R.id.tv_alert_title).text = myTitle
 //                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_face_otp_alert_title))
             tvTitle.text = myTitle
 
@@ -221,7 +224,7 @@ internal class Helpers {
             if (yesTxt != null) yesBtn.text = yesTxt
             val noBtn = dialog.findViewById(R.id.custom_dialog_btn_no) as TextView
             if (noTxt != null) noBtn.text = noTxt
-            if (ExampleGlobalClass.isFaceImageInitialized()) {
+            if (ExampleGlobalClass.isPreferencesConfigInitialized()) {
                 tvTitle.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 noBtn.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 body.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
@@ -296,6 +299,28 @@ internal class Helpers {
             )
             radio.buttonTintList = colorStateList // set the color tint list
             radio.invalidate() // Could not be necessary
+        }
+
+        fun setCheckboxTintList(cb: CheckBox, checkedColor: Int) {
+            val colorStateList = ColorStateList(
+                arrayOf(intArrayOf(-android.R.attr.state_empty), intArrayOf(android.R.attr.state_checked)), intArrayOf(
+                    checkedColor,  // disabled
+                    checkedColor // enabled
+                )
+            )
+            CompoundButtonCompat.setButtonTintList(cb, colorStateList)
+        }
+
+        fun setSliderTintList(sliderFaceMatchingThreshold: Slider, checkedColor: Int) {
+            val colorStateList = ColorStateList(
+                arrayOf(intArrayOf(-android.R.attr.state_empty), intArrayOf(android.R.attr.state_checked)), intArrayOf(
+                    checkedColor,  // disabled
+                    checkedColor // enabled
+                )
+            )
+            sliderFaceMatchingThreshold.thumbStrokeColor = colorStateList
+            sliderFaceMatchingThreshold.trackTintList = colorStateList
+            sliderFaceMatchingThreshold.thumbTintList = colorStateList
         }
     }
 }

@@ -194,6 +194,8 @@
     <string name="klp_language_vi">Tiếng Việt</string>
     <string name="klp_yes">Có</string>
     <string name="klp_no">Không</string>
+    <string name="klp_on">Bật</string>
+    <string name="klp_off">Tắt</string>
     <string name="klp_liveness_version_2">2.0</string>
     <string name="klp_liveness_version_3">3.0</string>
     <string name="sw_strict_quality_basic">Cơ bản</string>

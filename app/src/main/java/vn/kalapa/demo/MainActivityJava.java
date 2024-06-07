@@ -74,7 +74,7 @@ public class MainActivityJava extends BaseActivity {
             if (isAppConfigSet()) {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {
                     Helpers.Companion.showDialog(MainActivityJava.this,
-                            getResources().getString(R.string.klp_face_otp_demo),
+                            getResources().getString(R.string.klp_face_otp_alert_title),
                             getResources().getString(R.string.klp_face_otp_error_network), R.drawable.frowning_face);
                     return;
                 }
@@ -84,30 +84,27 @@ public class MainActivityJava extends BaseActivity {
 //                LogUtils.Companion.printLog(AESCryptor.encryptText(message));
 //                startFaceOTP();
 //                startCapture();
-                if (preferencesConfig.getCaptureImage())
                     startEKYC();
-                else {
-                    startLivenessAndNFC("https://api-ekyc.kalapa.vn/face-otp");
-                }
+
 //                KalapaSDK.Companion.startConfirmForResult(MainActivityJava.this,
-//                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZmZmFjNGQwNTg2YTRiOTk4MWNiNzlmMTJmOTZkODliIiwidWlkIjoiNzUyZWNiY2QzZGNjNGQyYWE4YzgyNWZlYjQwZjgxMjQiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NzE3MDE5fQ.AJG3MxjY00pe-whKQ4hRHp8qmcM54NlFxmqZHDPCruo"
-//                , sdkConfig, new KalapaHandler() {
-//                    @Override
-//                    public void onError(@NonNull KalapaSDKResultCode resultCode) {
+//                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc0ODQzZDViZjEyMDQyOWI4YjYxNGRjMzZkODQ2NDVlIiwidWlkIjoiNzUyZWNiY2QzZGNjNGQyYWE4YzgyNWZlYjQwZjgxMjQiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NzM2NDI5fQ.2TkyQF_us1fJj_04WOlUf5jj4e-MvwDHP1H5QuTprmk"
+//                        , sdkConfig, new KalapaHandler() {
+//                            @Override
+//                            public void onError(@NonNull KalapaSDKResultCode resultCode) {
 //
-//                    }
+//                            }
 //
-//                    @Override
-//                    public void onComplete(@NonNull KalapaResult kalapaResult) {
-//                        super.onComplete(kalapaResult);
-//                        ExampleGlobalClass.kalapaResult = kalapaResult;
-//                        if (KalapaSDK.Companion.isFaceBitmapInitialized()) ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
-//                        if (KalapaSDK.Companion.isFrontBitmapInitialized()) ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
-//                        if (KalapaSDK.Companion.isBackBitmapInitialized()) ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
-//                        ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
-//                        startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-//                    }
-//                });
+//                            @Override
+//                            public void onComplete(@NonNull KalapaResult kalapaResult) {
+//                                super.onComplete(kalapaResult);
+//                                ExampleGlobalClass.kalapaResult = kalapaResult;
+//                                if (KalapaSDK.Companion.isFaceBitmapInitialized()) ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
+//                                if (KalapaSDK.Companion.isFrontBitmapInitialized()) ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
+//                                if (KalapaSDK.Companion.isBackBitmapInitialized()) ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
+//                                ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
+//                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+//                            }
+//                        });
 
             }
         });
@@ -160,9 +157,10 @@ public class MainActivityJava extends BaseActivity {
 
     private void startEKYC() {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
-            String[] acceptedDocument = {"CCCD", "CMND", "CMND12"};
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, null, null);
             KalapaAPI.Companion.doRequestGetSession(preferencesConfig.getEnv(), preferencesConfig.getToken(),
+                    preferencesConfig.getCaptureImage(),
+                    preferencesConfig.getUseNFC(),
                     preferencesConfig.getVerifyCheck() + "",
                     preferencesConfig.getFraudCheck() + "",
                     preferencesConfig.getNormalCheckOnly() + "",
@@ -177,7 +175,7 @@ public class MainActivityJava extends BaseActivity {
                             public void onError(@NonNull KalapaSDKResultCode resultCode) {
                                 Helpers.Companion.showDialog(MainActivityJava.this,
                                         getString(R.string.klp_face_otp_alert_title),
-                                        "Error happened due to " + resultCode.name(),
+                                        getString(R.string.klp_face_otp_error_happended) + resultCode.name(),
                                         R.drawable.frowning_face
                                 );
                             }

@@ -97,6 +97,7 @@ class ResultActivity : AppCompatActivity() {
                 ColorStateList.valueOf(Color.parseColor(mainColor))
             )
         }
+        findViewById<TextView>(R.id.tv_title_face_matching).setTextColor(Color.parseColor(mainColor))
 //        ViewCompat.setBackgroundTintList(
 //            containerNFCInfo,
 //            ColorStateList.valueOf(Color.parseColor(mainColor))
@@ -286,9 +287,8 @@ class ResultActivity : AppCompatActivity() {
             ivBack.visibility = View.GONE
 
         if (ExampleGlobalClass.isKalapaResultInitialized()) {
-            containerOCRInfo.visibility = View.VISIBLE
             val myFields = ExampleGlobalClass.kalapaResult
-
+            containerOCRInfo.visibility = if (myFields.idNumber.isNullOrEmpty()) View.GONE else View.VISIBLE
             if (myFields.selfie_data != null && myFields.selfie_data!!.is_matched != null && myFields.selfie_data!!.matching_score != null) {
                 // Set selfie
                 containerMatchingHolder.visibility = View.VISIBLE
