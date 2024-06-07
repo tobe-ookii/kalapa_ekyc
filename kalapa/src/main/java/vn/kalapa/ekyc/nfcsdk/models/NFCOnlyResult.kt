@@ -16,7 +16,6 @@ data class NFCOnlyResult(
         fun fromJson(json: String) = klaxon.parse<NFCOnlyResult>(json)
     }
 }
-
 data class NFCResultData(
     var mrz: String? = "",
 

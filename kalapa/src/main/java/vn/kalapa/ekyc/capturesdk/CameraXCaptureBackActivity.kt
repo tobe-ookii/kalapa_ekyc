@@ -13,8 +13,10 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
 
 
-
-class CameraXCaptureBackActivity : CameraXActivity(activityLayoutId = R.layout.activity_camera_x_back_card, hideAutoCapture = true), KalapaSDKCallback {
+class CameraXCaptureBackActivity : CameraXActivity(
+    activityLayoutId = R.layout.activity_camera_x_back_card,
+    hideAutoCapture = true
+), KalapaSDKCallback {
     private lateinit var ivPreviewImage: ImageView
     private lateinit var tvTitle: TextView
     private lateinit var tvGuide1: TextView
@@ -40,7 +42,7 @@ class CameraXCaptureBackActivity : CameraXActivity(activityLayoutId = R.layout.a
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
 //        tvGuide0.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
         tvGuide1.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_subtitle_back))
 //        tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
 
@@ -128,11 +130,22 @@ class CameraXCaptureBackActivity : CameraXActivity(activityLayoutId = R.layout.a
         })
     }
 
-    override fun onCaptureSuccess(rotationDegree: Int) {
+    override fun onCaptureSuccess(cameraDegree: Int) {
         // We dont use it
+        val rotation =
+            if (cameraDegree != getCameraRotationDegree()) ((getCameraRotationDegree() - cameraDegree + 270) % 360) else cameraDegree
+        Helpers.printLog("onCaptureSuccess $cameraDegree ${getCameraRotationDegree()} $rotation")
+        tmpBitmap =
+            BitmapUtil.rotateBitmapToStraight(tmpBitmap!!, rotation, false) // tmpBitmap!! //
+        tmpBitmap =
+            BitmapUtil.crop(tmpBitmap!!, tmpBitmap!!.width, tmpBitmap!!.width * 5 / 8, 0.5f, 0.5f)
+        ivPreviewImage.visibility = View.VISIBLE
+        ivPreviewImage.setImageBitmap(tmpBitmap)
     }
 
     private fun renewSession() {
+        ivPreviewImage.visibility = View.INVISIBLE
+        tmpBitmap = null
     }
 
     override fun onResume() {
@@ -149,8 +162,16 @@ class CameraXCaptureBackActivity : CameraXActivity(activityLayoutId = R.layout.a
         )
     }
 
+    override fun onRetryClicked() {
+        super.onRetryClicked()
+        renewSession()
+    }
+
     override fun onBackBtnClicked() {
-        showEndEkyc()
+        if (!isCameraMode)
+            onRetryClicked()
+        else
+            showEndEkyc()
     }
 
     override fun onInfoBtnClicked() {

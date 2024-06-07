@@ -38,6 +38,7 @@ data class KalapaResult(
     var qr_code: QrCode? = QrCode(),
     var mrz_data: MRZ? = MRZ(),
     var nfc_data: NFCResultData? = NFCResultData(),
+    var selfie_data: SelfieResultData? = SelfieResultData(),
     @Json(name = "decision_detail")
     var decisionDetail: List<DecisionDetail>? = null
 ) {
@@ -85,7 +86,9 @@ data class ConfirmResult(
     @Json(ignored = false)
     val recorrect_data: KLPFields? = KLPFields(),
     @Json(ignored = false)
-    val nfc_data: NFCResultData? = null
+    val nfc_data: NFCResultData? = null,
+    @Json(ignored = false)
+    val selfie_data: SelfieResult? = null
 ) {
     fun toJson() = klaxon.toJsonString(this)
 
@@ -442,6 +445,28 @@ data class PassportFields(
 
     val type: String
 )
+
+data class SelfieResult(
+    var error: KalapaError? = null,
+    var data: SelfieResultData? = SelfieResultData()
+) {
+    fun toJson() = klaxon.toJsonString(this)
+
+    companion object {
+        fun fromJson(json: String) = klaxon.parse<SelfieResult>(json)
+    }
+}
+
+data class SelfieResultData(
+    val is_matched: Boolean? = null,
+    val matching_score: Int? = null
+) {
+    fun toJson() = klaxon.toJsonString(this)
+
+    companion object {
+        fun fromJson(json: String) = klaxon.parse<SelfieResultData>(json)
+    }
+}
 
 data class BackResult(
     @Json(name = "card_type")

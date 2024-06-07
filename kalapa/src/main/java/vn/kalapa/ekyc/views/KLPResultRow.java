@@ -2,19 +2,23 @@ package vn.kalapa.ekyc.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import vn.kalapa.R;
+import vn.kalapa.ekyc.KalapaSDK;
 
 
 public class KLPResultRow extends LinearLayout {
     private static final String TAG = KLPResultRow.class.getSimpleName();
     TextView tvKey;
     TextView tvValue;
+    View viewSplit;
 
     public KLPResultRow(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,4 +38,10 @@ public class KLPResultRow extends LinearLayout {
     public void setRecordValue(String value) {
         tvValue.setText(value);
     }
+
+    public void hideLastRow() {
+//        viewSplit = findViewById(R.id.view_split);
+//        viewSplit.setVisibility(View.GONE);
+    }
+
 }

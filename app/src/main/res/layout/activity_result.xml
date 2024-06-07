@@ -116,13 +116,51 @@
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
+                    android:id="@+id/container_matching_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_side"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/border_button_solid"
+                    android:backgroundTint="@color/white40"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_title_face_matching"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_mid"
+                        android:text="@string/klp_face_matching"
+                        android:textColor="@color/mainColor"
+                        android:textSize="@dimen/klp_txt_size_header"
+                        android:textStyle="bold" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_is_matched"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_demo_is_matched"
+                        app:tvValue="@string/klp_demo_is_matched" />
+
+                    <vn.kalapa.ekyc.views.KLPResultRow
+                        android:id="@+id/row_matching_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tvKey="@string/klp_demo_matching_score"
+                        app:tvValue="@string/klp_demo_matching_score" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/ll_ocr_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_side"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/border_button_only"
-                    android:backgroundTint="@color/mainColor"
+                    android:background="@drawable/border_button_solid"
+                    android:backgroundTint="@color/white40"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -202,43 +240,6 @@
                         app:tvValue="@string/klp_card_type" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/container_matching_holder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_side"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/border_button_only"
-                    android:backgroundTint="@color/mainColor"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_title_face_matching"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/margin_small"
-                        android:layout_marginBottom="@dimen/margin_mid"
-                        android:text="@string/klp_face_matching"
-                        android:textColor="@color/mainColor"
-                        android:textSize="@dimen/klp_txt_size_header"
-                        android:textStyle="bold" />
-
-                    <vn.kalapa.ekyc.views.KLPResultRow
-                        android:id="@+id/row_is_matched"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_demo_is_matched"
-                        app:tvValue="@string/klp_demo_is_matched" />
-
-                    <vn.kalapa.ekyc.views.KLPResultRow
-                        android:id="@+id/row_matching_score"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_demo_matching_score"
-                        app:tvValue="@string/klp_demo_matching_score" />
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/holder_nfc_data"
@@ -246,8 +247,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_side"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/border_button_only"
-                    android:backgroundTint="@color/mainColor"
+                    android:background="@drawable/border_button_solid"
+                    android:backgroundTint="@color/white40"
                     android:orientation="vertical">
 
                     <TextView
@@ -389,8 +390,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_side"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/border_button_only"
-                    android:backgroundTint="@color/mainColor"
+                    android:background="@drawable/border_button_solid"
+                    android:backgroundTint="@color/white40"
                     android:orientation="vertical"
                     android:visibility="gone">
 

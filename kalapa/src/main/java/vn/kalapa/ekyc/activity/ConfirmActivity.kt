@@ -35,7 +35,8 @@ import vn.kalapa.ekyc.views.ProgressView
 import java.util.*
 
 
-class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestListener, DialogListener, OnEditorActionListener {
+class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestListener,
+    DialogListener, OnEditorActionListener {
     private var isFinishedConfirm = false
     private lateinit var edName: EditText
     private lateinit var edDOB: LinearLayout
@@ -108,7 +109,8 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         containerView.setBackgroundColor(Color.parseColor(KalapaSDK.config.backgroundColor))
         tvTitle = findViewById(R.id.tv_title)
         tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-        tvTitle.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_confirm))
+        tvTitle.text =
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_confirm))
         edName = findViewById(R.id.edName)
         edName.setOnEditorActionListener(this)
 //        edName.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
@@ -197,7 +199,10 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
             )
         }
         Helpers.setRadioButtonTintList(this.radioMale, Color.parseColor(KalapaSDK.config.mainColor))
-        Helpers.setRadioButtonTintList(this.radioFemale, Color.parseColor(KalapaSDK.config.mainColor))
+        Helpers.setRadioButtonTintList(
+            this.radioFemale,
+            Color.parseColor(KalapaSDK.config.mainColor)
+        )
     }
 
     override fun onEmulatorDetected() {
@@ -370,8 +375,11 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                         result.resident_entities = frontResult.myFields?.residentEntities
                         result.decisionDetail = confirmResult.decision_detail?.details
                         result.nfc_data = confirmResult.nfc_data
+                        if (confirmResult.selfie_data != null)
+                            result.selfie_data = confirmResult.selfie_data.data
                         kalapaResult = result
 //                        Kalapa.klpHandler.onResult(result)
+                        Helpers.printLog("Confirm Selfie Data ${confirmResult.selfie_data}")
                         Helpers.printLog("Confirm Result NFC ${confirmResult.nfc_data}")
                         ProgressView.hideProgress()
                         finish()
@@ -524,7 +532,12 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 this
             )
         } else {
-            Helpers.showDialog(this@ConfirmActivity, KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_error)), error.getMessageError(), R.drawable.sad_face)
+            Helpers.showDialog(
+                this@ConfirmActivity,
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_error)),
+                error.getMessageError(),
+                R.drawable.sad_face
+            )
         }
 //        messageLabel.setText(error.message)
 //        reviewImageLayout.show()

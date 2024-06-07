@@ -98,10 +98,11 @@
     <string name="klp_demo_rejected">BỊ TỪ CHỐI</string>
     <string name="klp_demo_manual">ĐANG ĐƯỢC XÉT DUYỆT</string>
     <string name="klp_demo_field_nfc_is_valid">Hợp lệ</string>
-    <string name="klp_demo_is_matched">Khuôn mặt trùng khớp</string>
+    <string name="klp_demo_is_matched">Mặt trùng khớp</string>
     <string name="klp_demo_matching_score">Độ trùng khớp</string>
     <string name="klp_field_nation">Dân tộc</string>
     <string name="klp_field_doi">Ngày tạo</string>
-    <string name="klp_your_application_were">Hồ sơ của bạn</string>
+    <string name="klp_your_application_were">Kết quả hồ sơ: </string>
     <string name="klp_setting_capture_image">Thu tập ảnh giấy tờ</string>
+    <string name="please_choose_atleast_one_document">Vui lòng chọn ít nhất một loại giấy tờ để tiếp tục</string>
 </resources>

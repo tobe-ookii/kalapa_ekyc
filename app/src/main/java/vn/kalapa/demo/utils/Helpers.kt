@@ -29,6 +29,17 @@ import vn.kalapa.R
 import vn.kalapa.ekyc.models.KalapaOTP
 import vn.kalapa.ekyc.models.PreferencesConfig
 import vn.kalapa.ekyc.utils.Common
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_2
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_3
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_4
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,14 +56,36 @@ internal class Helpers {
             val lang = getValuePreferences(Common.MY_KEY_LANGUAGE)
             val livenessVersion = getIntPreferences(Common.MY_KEY_LIVENESS_VERSION, Common.LIVENESS_VERSION.PASSIVE.version)
             val backgroundColor = getValuePreferences(Common.MY_KEY_BACKGROUND_COLOR)
-            val scenario = getValuePreferences(Common.MY_KEY_SCENARIO)
             val mainColor = getValuePreferences(Common.MY_KEY_MAIN_COLOR)
             val mainTextColor = getValuePreferences(Common.MY_KEY_MAIN_TEXT_COLOR)
             val btnTextColor = getValuePreferences(Common.MY_KEY_BTN_TEXT_COLOR)
             val env = getValuePreferences(Common.MY_KEY_ENV)
-            return if (lang == null || scenario == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
+            val faceMatchingThreshold: Int =
+                getIntPreferences(MY_KEY_FACE_MATCHING_THRESHOLD, 50)
+
+            val accept9DigitsIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_1, true)
+            val accept12DigitIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_2, true)
+            val acceptEidWithoutChip = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_3, true)
+            val acceptEidWithChip = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_4, true)
+
+            val enableNFC = getBooleanPreferences(MY_KEY_ENABLE_NFC, true)
+            val captureImage =
+                getBooleanPreferences(MY_KEY_CAPTURE_IMAGE, true)
+            val verifyCheck =
+                getBooleanPreferences(MY_KEY_VERIFY_CHECK, false)
+            val fraudCheck =
+                getBooleanPreferences(MY_KEY_FRAUD_CHECK, true)
+            val normalCheckOnly = getBooleanPreferences(
+                MY_KEY_NORMAL_CHECK_ONLY,
+                true
+            )
+            val cardSideMatchesCheck = getBooleanPreferences(
+                MY_KEY_CARD_SIDE_CHECK,
+                true
+            )
+            return if (lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, true, true, true, true, true, true, 50, true, true, true, true)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip)
             }
         }
 

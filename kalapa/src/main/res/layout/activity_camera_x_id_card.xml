@@ -166,7 +166,7 @@
 
     <TextView
         android:id="@+id/tv_guide"
-        android:layout_width="220dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_action"
         android:layout_centerHorizontal="true"
@@ -175,7 +175,6 @@
         android:lines="2"
         android:text="@string/klp_passport_guide_2"
         android:textAlignment="center"
-        android:textColor="@color/white"
         android:textSize="@dimen/klp_shinhan_text_normal_13" />
 
     <TextView

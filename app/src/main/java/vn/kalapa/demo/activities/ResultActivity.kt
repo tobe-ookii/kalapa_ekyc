@@ -97,18 +97,18 @@ class ResultActivity : AppCompatActivity() {
                 ColorStateList.valueOf(Color.parseColor(mainColor))
             )
         }
-        ViewCompat.setBackgroundTintList(
-            containerNFCInfo,
-            ColorStateList.valueOf(Color.parseColor(mainColor))
-        )
-        ViewCompat.setBackgroundTintList(
-            containerOCRInfo,
-            ColorStateList.valueOf(Color.parseColor(mainColor))
-        )
-        ViewCompat.setBackgroundTintList(
-            containerViolatedRule,
-            ColorStateList.valueOf(Color.parseColor(mainColor))
-        )
+//        ViewCompat.setBackgroundTintList(
+//            containerNFCInfo,
+//            ColorStateList.valueOf(Color.parseColor(mainColor))
+//        )
+//        ViewCompat.setBackgroundTintList(
+//            containerOCRInfo,
+//            ColorStateList.valueOf(Color.parseColor(mainColor))
+//        )
+//        ViewCompat.setBackgroundTintList(
+//            containerViolatedRule,
+//            ColorStateList.valueOf(Color.parseColor(mainColor))
+//        )
 
     }
 
@@ -210,12 +210,14 @@ class ResultActivity : AppCompatActivity() {
             if (nfcResult.motherName != null && nfcResult.motherName!!.isNotEmpty()) row_nfc_mother_name.setRecordValue(
                 nfcResult.motherName
             ) else row_nfc_mother_name.visibility = View.GONE
-            if (nfcResult.fatherName != null && nfcResult.fatherName!!.isNotEmpty()) row_nfc_father_name.setRecordValue(
-                nfcResult.fatherName
-            ) else row_nfc_father_name.visibility = View.GONE
-            if (nfcResult.spouseName != null && nfcResult.spouseName!!.isNotEmpty()) row_nfc_spouse_name.setRecordValue(
-                nfcResult.spouseName
-            ) else row_nfc_spouse_name.visibility = View.GONE
+            if (nfcResult.fatherName != null && nfcResult.fatherName!!.isNotEmpty()) {
+                row_nfc_father_name.setRecordValue(nfcResult.fatherName)
+                if (nfcResult.spouseName.isNullOrEmpty()) row_nfc_father_name.hideLastRow()
+            } else row_nfc_father_name.visibility = View.GONE
+            if (nfcResult.spouseName != null && nfcResult.spouseName!!.isNotEmpty()) {
+                row_nfc_spouse_name.setRecordValue(nfcResult.spouseName)
+                row_nfc_spouse_name.hideLastRow()
+            } else row_nfc_spouse_name.visibility = View.GONE
             if (nfcResult.religion != null && nfcResult.religion!!.isNotEmpty()) row_nfc_religion.setRecordValue(
                 nfcResult.religion
             ) else row_nfc_religion.visibility = View.GONE
@@ -235,11 +237,16 @@ class ResultActivity : AppCompatActivity() {
         }
         // is_valid & matching_score
         if (nfcVerificationData?.isMatch != null && nfcVerificationData.matchingScore != null) {
+            containerMatchingHolder.visibility = View.VISIBLE
             // Set selfie
             LogUtils.printLog("Selfie: ${nfcVerificationData.matchingScore} ")
             row_is_matched.visibility = View.VISIBLE
             row_matching_score.visibility = View.VISIBLE
-            row_is_matched.setRecordValue(if (nfcVerificationData.isMatch!!) resources.getString(R.string.klp_demo_yes) else resources.getString(R.string.klp_demo_no))
+            row_is_matched.setRecordValue(
+                if (nfcVerificationData.isMatch!!) resources.getString(R.string.klp_demo_yes) else resources.getString(
+                    R.string.klp_demo_no
+                )
+            )
             row_matching_score.setRecordValue(nfcVerificationData.matchingScore.toString())
         } else containerMatchingHolder.visibility = View.GONE
 
@@ -248,7 +255,11 @@ class ResultActivity : AppCompatActivity() {
             // Set Card is valid or not
             LogUtils.printLog("isValid: ${nfcVerificationData.data?.isValid} ")
             row_nfc_is_valid.visibility = View.VISIBLE
-            row_nfc_is_valid.setRecordValue(if (nfcVerificationData.data?.isValid!!) resources.getString(R.string.klp_demo_yes) else resources.getString(R.string.klp_demo_no))
+            row_nfc_is_valid.setRecordValue(
+                if (nfcVerificationData.data?.isValid!!) resources.getString(
+                    R.string.klp_demo_yes
+                ) else resources.getString(R.string.klp_demo_no)
+            )
         } else row_nfc_is_valid.visibility = View.GONE
     }
 
@@ -277,28 +288,60 @@ class ResultActivity : AppCompatActivity() {
         if (ExampleGlobalClass.isKalapaResultInitialized()) {
             containerOCRInfo.visibility = View.VISIBLE
             val myFields = ExampleGlobalClass.kalapaResult
-            if (myFields.idNumber != null) rowId.setRecordValue(myFields.idNumber) else rowId.visibility = View.GONE
-            if (myFields.name != null) rowName.setRecordValue(myFields.name) else rowName.visibility = View.GONE
-            if (myFields.birthday != null) rowDob.setRecordValue(myFields.birthday) else rowDob.visibility = View.GONE
-            if (myFields.home != null) rowHometown.setRecordValue(myFields.home) else rowHometown.visibility = View.GONE
-            if (myFields.resident != null) rowAddress.setRecordValue(myFields.resident) else rowAddress.visibility = View.GONE
-            if (myFields.doi != null) rowDoi.setRecordValue(myFields.doi) else rowDoi.visibility = View.GONE
-            if (myFields.poi != null) rowPoi.setRecordValue(myFields.poi) else rowPoi.visibility = View.GONE
-            if (myFields.features != null) rowPersonalIdentification.setRecordValue(myFields.features) else rowPersonalIdentification.visibility = View.GONE
-            if (myFields.type != null) rowCardType.setRecordValue(myFields.type) else rowCardType.visibility = View.GONE
+
+            if (myFields.selfie_data != null && myFields.selfie_data!!.is_matched != null && myFields.selfie_data!!.matching_score != null) {
+                // Set selfie
+                containerMatchingHolder.visibility = View.VISIBLE
+                row_is_matched.visibility = View.VISIBLE
+                row_matching_score.visibility = View.VISIBLE
+                row_is_matched.setRecordValue(
+                    if (myFields.selfie_data!!.is_matched!!) resources.getString(R.string.klp_demo_yes) else resources.getString(
+                        R.string.klp_demo_no
+                    )
+                )
+                row_matching_score.setRecordValue(myFields.selfie_data!!.matching_score.toString())
+            } else containerMatchingHolder.visibility = View.GONE
+
+
+            if (myFields.idNumber != null) rowId.setRecordValue(myFields.idNumber) else rowId.visibility =
+                View.GONE
+            if (myFields.name != null) rowName.setRecordValue(myFields.name) else rowName.visibility =
+                View.GONE
+            if (myFields.birthday != null) rowDob.setRecordValue(myFields.birthday) else rowDob.visibility =
+                View.GONE
+            if (myFields.home != null) rowHometown.setRecordValue(myFields.home) else rowHometown.visibility =
+                View.GONE
+            if (myFields.resident != null) rowAddress.setRecordValue(myFields.resident) else rowAddress.visibility =
+                View.GONE
+            if (myFields.doi != null) rowDoi.setRecordValue(myFields.doi) else rowDoi.visibility =
+                View.GONE
+            if (myFields.poi != null) rowPoi.setRecordValue(myFields.poi) else rowPoi.visibility =
+                View.GONE
+            if (myFields.features != null) rowPersonalIdentification.setRecordValue(myFields.features) else rowPersonalIdentification.visibility =
+                View.GONE
+            if (myFields.type != null) {
+                rowCardType.setRecordValue(myFields.type)
+                rowCardType.hideLastRow()
+            } else rowCardType.visibility = View.GONE
 
             if (myFields.decision != null && myFields.decisionDetail != null) {
                 findViewById<View>(R.id.container_decision).visibility = View.VISIBLE
                 tvResult.visibility = View.VISIBLE
                 tvResultStatus.visibility = View.VISIBLE
-                tvResultStatus.text = if (myFields.decision == "REJECTED") resources.getString(R.string.klp_your_application_were) else resources.getString(R.string.klp_your_application_is)
+                tvResultStatus.text =
+                    if (myFields.decision == "REJECTED") resources.getString(R.string.klp_your_application_were) else resources.getString(
+                        R.string.klp_your_application_is
+                    )
                 if (myFields.decision == "APPROVED") {
                     containerViolatedRule.visibility = View.GONE
                     tvResult.setTextColor(resources.getColor(R.color.ekyc_green))
                     tvResult.text = resources.getString(R.string.klp_demo_approved)
                 } else {
                     tvResult.setTextColor(resources.getColor(if (myFields.decision == "REJECTED") R.color.ekyc_red else R.color.ekyc_warning))
-                    tvResult.text = if (myFields.decision == "REJECTED") resources.getString(R.string.klp_demo_rejected) else resources.getString(R.string.klp_demo_manual)
+                    tvResult.text =
+                        if (myFields.decision == "REJECTED") resources.getString(R.string.klp_demo_rejected) else resources.getString(
+                            R.string.klp_demo_manual
+                        )
                     containerViolatedRule.visibility = View.VISIBLE
                     var decisionDetails = myFields.decisionDetail
                     var count = 0

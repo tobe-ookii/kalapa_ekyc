@@ -85,7 +85,8 @@ public class MainActivityJava extends BaseActivity {
 //                startFaceOTP();
 //                startCapture();
                 startEKYC();
-//                KalapaSDK.Companion.startConfirmForResult(MainActivityJava.this, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1NGM2ZWM4YmNlYzQ4OTk5NDM1OTJkZTA4YjZkMmE0IiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NjY4OTk4fQ.KPPuHUk_gNnuDhB8evoU2_VekxY77x96U1s6L6eZYAY"
+//                KalapaSDK.Companion.startConfirmForResult(MainActivityJava.this,
+//                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZmZmFjNGQwNTg2YTRiOTk4MWNiNzlmMTJmOTZkODliIiwidWlkIjoiNzUyZWNiY2QzZGNjNGQyYWE4YzgyNWZlYjQwZjgxMjQiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NzE3MDE5fQ.AJG3MxjY00pe-whKQ4hRHp8qmcM54NlFxmqZHDPCruo"
 //                , sdkConfig, new KalapaHandler() {
 //                    @Override
 //                    public void onError(@NonNull KalapaSDKResultCode resultCode) {
@@ -157,7 +158,13 @@ public class MainActivityJava extends BaseActivity {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             String[] acceptedDocument = {"CCCD", "CMND", "CMND12"};
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, null, null);
-            KalapaAPI.Companion.doRequestGetSession(preferencesConfig.getEnv(), preferencesConfig.getToken(), "true", "true", "true", true, acceptedDocument, 50,
+            KalapaAPI.Companion.doRequestGetSession(preferencesConfig.getEnv(), preferencesConfig.getToken(),
+                    preferencesConfig.getVerifyCheck() + "",
+                    preferencesConfig.getFraudCheck() + "",
+                    preferencesConfig.getNormalCheckOnly() + "",
+                    preferencesConfig.getCardSidesCheck(),
+                    preferencesConfig.getAcceptedDocument(),
+                    preferencesConfig.getFaceMatchThreshold(),
                     createSessionResult -> {
                         ProgressView.Companion.hideProgress(true);
                         LogUtils.Companion.printLog("doRequestGetSession createSessionResult: " + createSessionResult.component1());
@@ -176,9 +183,12 @@ public class MainActivityJava extends BaseActivity {
                             public void onComplete(@NonNull KalapaResult kalapaResult) {
                                 LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult + " \n " + kalapaResult.component1());
                                 ExampleGlobalClass.kalapaResult = kalapaResult;
-                                if (KalapaSDK.Companion.isFaceBitmapInitialized()) ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
-                                if (KalapaSDK.Companion.isFrontBitmapInitialized()) ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
-                                if (KalapaSDK.Companion.isBackBitmapInitialized()) ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
+                                if (KalapaSDK.Companion.isFaceBitmapInitialized())
+                                    ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
+                                if (KalapaSDK.Companion.isFrontBitmapInitialized())
+                                    ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
+                                if (KalapaSDK.Companion.isBackBitmapInitialized())
+                                    ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
                                 ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
                                 startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
                             }
@@ -495,7 +505,9 @@ public class MainActivityJava extends BaseActivity {
                     preferencesConfig.getLivenessVersion(),
                     preferencesConfig.getLanguage(),
                     3,
-                    preferencesConfig.getEnv()
+                    preferencesConfig.getEnv(),
+                    preferencesConfig.getUseNFC(),
+                    preferencesConfig.getCaptureImage()
             );
         } else {
             LogUtils.Companion.printLog("Setting preferencesConfig is null");
@@ -524,7 +536,9 @@ public class MainActivityJava extends BaseActivity {
                         livenessVersion,
                         lang,
                         3,
-                        preferencesConfig.getEnv()
+                        preferencesConfig.getEnv(),
+                        preferencesConfig.getUseNFC(),
+                        preferencesConfig.getCaptureImage()
                 );
             }
         }

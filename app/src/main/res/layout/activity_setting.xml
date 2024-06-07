@@ -64,13 +64,20 @@
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
-        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
+<!--        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices-->
+<!--            android:id="@+id/sw_language"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:kmc_first_label="@string/klp_faceOTP_language_vi"-->
+<!--            app:kmc_second_label="@string/klp_faceOTP_language_en"-->
+<!--            app:kmc_third_label="@string/klp_faceOTP_language_ko" />-->
+
+        <vn.kalapa.ekyc.views.KLPCustomSwitch
             android:id="@+id/sw_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:kmc_first_label="@string/klp_faceOTP_language_vi"
-            app:kmc_second_label="@string/klp_faceOTP_language_en"
-            app:kmc_third_label="@string/klp_faceOTP_language_ko" />
+            app:rb_first_label="@string/klp_faceOTP_language_vi"
+            app:rb_second_label="@string/klp_faceOTP_language_en"/>
 
         <TextView
             android:id="@+id/tv_liveness_version"
@@ -123,6 +130,105 @@
             android:layout_height="wrap_content"
             app:rb_first_label="@string/klp_yes"
             app:rb_second_label="@string/klp_no" />
+
+
+        <TextView
+            android:id="@+id/tv_acceptance_document"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_mid"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:text="@string/klp_setting_acceptance_document"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_old_id_card" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_12_digits_id_card" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_eid_no_chip" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_acceptance_document_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/mainColor"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/tv_acceptance_document_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_mid"
+                android:text="@string/klp_eid_with_chip" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_verify_check"
@@ -257,103 +363,6 @@
                 android:translationY="-10dp"/>
 
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_acceptance_document"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
-            android:text="@string/klp_setting_acceptance_document"
-            android:textSize="@dimen/klp_txt_size_header"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/cb_acceptance_document_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/mainColor"
-                android:checked="true" />
-
-            <TextView
-                android:id="@+id/tv_acceptance_document_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
-                android:text="@string/klp_old_id_card" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/cb_acceptance_document_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/mainColor"
-                android:checked="true" />
-
-            <TextView
-                android:id="@+id/tv_acceptance_document_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
-                android:text="@string/klp_12_digits_id_card" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/cb_acceptance_document_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/mainColor"
-                android:checked="true" />
-
-            <TextView
-                android:id="@+id/tv_acceptance_document_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
-                android:text="@string/klp_eid_no_chip" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/cb_acceptance_document_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/mainColor"
-                android:checked="true" />
-
-            <TextView
-                android:id="@+id/tv_acceptance_document_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
-                android:text="@string/klp_eid_with_chip" />
-
-        </LinearLayout>
 
 
         <!--        <vn.kalapa.faceotp.views.KLPCustomSwitch-->

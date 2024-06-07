@@ -21,6 +21,7 @@
     <color name="ocr_colorPrimary">#0a1b2c</color>
     <color name="white">#ffffffff</color>
     <color name="white40">#66FFFFFF</color>
+    <color name="white60">#99FFFFFF</color>
     <color name="textColor">#AAB2C1</color>
     <color name="background">#123121</color>
     <color name="ekyc_btn_color">#1c8dec</color>

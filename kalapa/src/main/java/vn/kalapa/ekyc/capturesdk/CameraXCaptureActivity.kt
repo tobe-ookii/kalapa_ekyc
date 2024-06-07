@@ -41,7 +41,7 @@ class CameraXCaptureActivity :
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
 //        tvGuide0.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
         tvGuide1.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_front_document))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_subtitle_front))
 //        tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
 
@@ -70,6 +70,11 @@ class CameraXCaptureActivity :
                 return ""
             Thread.sleep(100)
         }
+    }
+
+    override fun onRetryClicked() {
+        super.onRetryClicked()
+        renewSession()
     }
 
     private fun onCardOutOfMaskHandleUI() {
@@ -129,11 +134,21 @@ class CameraXCaptureActivity :
         })
     }
 
-    override fun onCaptureSuccess(rotationDegree: Int) {
+    override fun onCaptureSuccess(cameraDegree: Int) {
         // We dont use it
+        val rotation =
+            if (cameraDegree != getCameraRotationDegree()) ((getCameraRotationDegree() - cameraDegree + 270) % 360) else cameraDegree
+        Helpers.printLog("onCaptureSuccess $cameraDegree ${getCameraRotationDegree()} $rotation")
+        tmpBitmap = BitmapUtil.rotateBitmapToStraight(tmpBitmap!!, rotation, false) // tmpBitmap!! //
+        tmpBitmap =
+            BitmapUtil.crop(tmpBitmap!!, tmpBitmap!!.width, tmpBitmap!!.width * 5 / 8, 0.5f, 0.5f)
+        ivPreviewImage.visibility = View.VISIBLE
+        ivPreviewImage.setImageBitmap(tmpBitmap)
     }
 
     private fun renewSession() {
+        ivPreviewImage.visibility = View.INVISIBLE
+        tmpBitmap = null
     }
 
     override fun onResume() {
@@ -151,7 +166,10 @@ class CameraXCaptureActivity :
     }
 
     override fun onBackBtnClicked() {
-        showEndEkyc()
+        if (!isCameraMode)
+            onRetryClicked()
+        else
+            showEndEkyc()
     }
 
     override fun onInfoBtnClicked() {

@@ -10,26 +10,36 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import android.widget.RadioGroup.OnCheckedChangeListener
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.slider.Slider
 import vn.kalapa.demo.R
 import vn.kalapa.demo.utils.Helpers
 import vn.kalapa.demo.utils.LogUtils
 import vn.kalapa.ekyc.FaceOTPFlowType
 import vn.kalapa.ekyc.KalapaSDKConfig
 import vn.kalapa.ekyc.utils.Common
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_2
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_3
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_4
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BACKGROUND_COLOR
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BTN_TEXT_COLOR
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENV
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LANGUAGE
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LIVENESS_VERSION
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MAIN_COLOR
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MAIN_TEXT_COLOR
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_SCENARIO
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_TOKEN
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
 import vn.kalapa.ekyc.utils.LocaleHelper
 import vn.kalapa.ekyc.views.KLPCustomMultipleChoices
 import vn.kalapa.ekyc.views.KLPCustomSwitch
@@ -37,13 +47,16 @@ import vn.kalapa.ekyc.views.KLPCustomSwitch
 // prod: api-ekyc.kalapa.vn/face-otp
 // dev: faceotp-dev.kalapa.vn/api
 class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
-//    private val KLP_PROD = "https://api-ekyc.kalapa.vn/face-otp"
+    //    private val KLP_PROD = "https://api-ekyc.kalapa.vn/face-otp"
 //    private val KLP_DEV = "https://faceotp-dev.kalapa.vn/api"
     private val KLP_PROD = "https://ekyc-api.kalapa.vn"
     private val KLP_DEV = "https://ekyc-dev-internal.kalapa.vn"
     private val defaultConfig = KalapaSDKConfig(this@SettingActivity, language = "en")
-    private lateinit var rgLanguage: KLPCustomMultipleChoices
 
+    //    private lateinit var rgLanguage: KLPCustomMultipleChoices
+    private lateinit var rgLanguage: KLPCustomSwitch
+
+    private lateinit var tvEnvironment: TextView
     private lateinit var rgEnvironment: KLPCustomSwitch
     private lateinit var rgLivenessVersion: KLPCustomMultipleChoices
     private lateinit var tvLanguage: TextView
@@ -63,7 +76,38 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvMainTextColor: TextView
     private lateinit var tvButtonTextColor: TextView
     private lateinit var tvBackgroundColor: TextView
-//    private lateinit var tvScenario: TextView
+    private lateinit var tvScanNFC: TextView
+    private lateinit var tvCaptureImage: TextView
+
+    private lateinit var tvVerifyCheck: TextView
+    private lateinit var tvFraudCheck: TextView
+    private lateinit var tvStrictQualityCheck: TextView
+    private lateinit var tvCardSidesMatchCheck: TextView // tv_card_sides_match_check
+
+
+    private lateinit var tvAcceptanceDocument: TextView //tv_acceptance_document
+    private lateinit var tvAcceptanceDocument1: TextView // tv_acceptance_document_1
+    private lateinit var tvAcceptanceDocument2: TextView // tv_acceptance_document_2
+    private lateinit var tvAcceptanceDocument3: TextView // tv_acceptance_document_3
+    private lateinit var tvAcceptanceDocument4: TextView // tv_acceptance_document_4
+    private lateinit var tvAcceptanceFaceMatchingThreshold: TextView // tv_acceptance_face_matching_threshold
+
+    private lateinit var rgVerifyCheck: KLPCustomSwitch
+    private lateinit var rgFraudCheck: KLPCustomSwitch
+    private lateinit var rgStrictQualityCheck: KLPCustomSwitch
+    private lateinit var rgCardSidesMatchCheck: KLPCustomSwitch
+    private lateinit var rgCaptureIMage: KLPCustomSwitch
+    private lateinit var rgScanNFC: KLPCustomSwitch
+
+    private lateinit var cbAcceptedOldIdCard: CheckBox
+    private lateinit var cbAcceptedOld12DigitsIdCard: CheckBox
+    private lateinit var cbAcceptedEidWithoutChip: CheckBox
+    private lateinit var cbAcceptedEidWithChip: CheckBox
+
+    private lateinit var sliderFaceMatchingThreshold: Slider
+
+
+    //    private lateinit var tvScenario: TextView
 //    private lateinit var rgScenario: KLPCustomMultipleChoices
     private lateinit var edtToken: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +134,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 //        tvScenario = findViewById(R.id.tv_scenario)
         rgEnvironment = findViewById(R.id.sw_enviroment)
 //        rgScenario = findViewById(R.id.sw_scenario)
-
+        tvEnvironment = findViewById(R.id.tv_enviroment)
         btnSaveConfig = findViewById(R.id.btn_next)
 
         tvLanguage = findViewById(R.id.tv_language)
@@ -99,11 +143,38 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         btnSaveConfig.setOnClickListener {
             setConfigBeforeExit()
         }
-        rgLanguage.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
+        rgLanguage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             LogUtils.printLog("Current language is $it")
-            LocaleHelper.setLocale(this@SettingActivity, if (it == 0) "vi" else if (it == 1) "en" else "ko")
+            LocaleHelper.setLocale(
+                this@SettingActivity,
+                if (it) "vi" else "en"
+            )
             refreshUI()
         }
+        rgScanNFC = findViewById(R.id.sw_enable_nfc)
+        rgCaptureIMage = findViewById(R.id.sw_capture_image)
+        cbAcceptedEidWithChip = findViewById(R.id.cb_acceptance_document_4)
+        rgScanNFC.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
+            if (it) cbAcceptedEidWithChip.isChecked = true
+        }
+        rgCaptureIMage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
+            if (!it) cbAcceptedEidWithChip.isChecked = true // Only work with eid
+        }
+        cbAcceptedEidWithChip.setOnCheckedChangeListener { _, b ->
+            LogUtils.printLog("cbAcceptedEidWithChip onCheckedChanged $b")
+            if (!b) {
+                rgScanNFC.switchChangeListener(false)
+                rgCaptureIMage.switchChangeListener(true)
+            }
+        }
+//        rgLanguage.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
+//            LogUtils.printLog("Current language is $it")
+//            LocaleHelper.setLocale(
+//                this@SettingActivity,
+//                if (it == 0) "vi" else if (it == 1) "en" else "ko"
+//            )
+//            refreshUI()
+//        }
         btnMainColor = findViewById(R.id.btn_main_color)
         btnMainTextColor = findViewById(R.id.btn_main_text_color)
         btnBackgroundColor = findViewById(R.id.btn_background_color)
@@ -118,30 +189,79 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvButtonTextColor = findViewById(R.id.tv_button_text_color)
         tvBackgroundColor = findViewById(R.id.tv_background_color)
 
-        edtMainColor.addTextChangedListener(EditTextWatcher(edtMainColor, object : EditTextWatcherListener {
-            override fun completion(colorStr: String) {
-                refreshMainColor(colorStr)
-            }
-        }))
-        edtMainTextColor.addTextChangedListener(EditTextWatcher(edtMainTextColor, object : EditTextWatcherListener {
-            override fun completion(colorStr: String) {
-                refreshMainTextColor(colorStr)
-            }
-        }))
-        edtBackgroundColor.addTextChangedListener(EditTextWatcher(edtBackgroundColor, object : EditTextWatcherListener {
-            override fun completion(colorStr: String) {
-                refreshBackgroundColor(colorStr)
-            }
-        }))
-        edtButtonTextColor.addTextChangedListener(EditTextWatcher(edtButtonTextColor, object : EditTextWatcherListener {
-            override fun completion(colorStr: String) {
-                refreshBtnTextColor(colorStr)
-            }
-        }))
+        cbAcceptedOldIdCard = findViewById(R.id.cb_acceptance_document_1)
+        cbAcceptedOld12DigitsIdCard = findViewById(R.id.cb_acceptance_document_2)
+        cbAcceptedEidWithoutChip = findViewById(R.id.cb_acceptance_document_3)
+        sliderFaceMatchingThreshold = findViewById(R.id.slider_face_matching_threshold)
+
+        edtMainColor.addTextChangedListener(
+            EditTextWatcher(
+                edtMainColor,
+                object : EditTextWatcherListener {
+                    override fun completion(colorStr: String) {
+                        refreshMainColor(colorStr)
+                    }
+                })
+        )
+        edtMainTextColor.addTextChangedListener(
+            EditTextWatcher(
+                edtMainTextColor,
+                object : EditTextWatcherListener {
+                    override fun completion(colorStr: String) {
+                        refreshMainTextColor(colorStr)
+                    }
+                })
+        )
+        edtBackgroundColor.addTextChangedListener(
+            EditTextWatcher(
+                edtBackgroundColor,
+                object : EditTextWatcherListener {
+                    override fun completion(colorStr: String) {
+                        refreshBackgroundColor(colorStr)
+                    }
+                })
+        )
+        edtButtonTextColor.addTextChangedListener(
+            EditTextWatcher(
+                edtButtonTextColor,
+                object : EditTextWatcherListener {
+                    override fun completion(colorStr: String) {
+                        refreshBtnTextColor(colorStr)
+                    }
+                })
+        )
+
+        // New
+        tvScanNFC = findViewById(R.id.tv_enable_nfc)
+        tvCaptureImage = findViewById(R.id.tv_capture_image)
+
+        tvVerifyCheck = findViewById(R.id.tv_verify_check)
+        tvFraudCheck = findViewById(R.id.tv_fraud_check)
+        tvStrictQualityCheck = findViewById(R.id.tv_strict_quality_check)
+        tvCardSidesMatchCheck = findViewById(R.id.tv_card_sides_match_check)
+
+
+        tvAcceptanceDocument = findViewById(R.id.tv_acceptance_document)
+        tvAcceptanceDocument1 = findViewById(R.id.tv_acceptance_document_1)
+        tvAcceptanceDocument2 = findViewById(R.id.tv_acceptance_document_2)
+        tvAcceptanceDocument3 = findViewById(R.id.tv_acceptance_document_3)
+        tvAcceptanceDocument4 = findViewById(R.id.tv_acceptance_document_4)
+        tvAcceptanceFaceMatchingThreshold = findViewById(R.id.tv_acceptance_face_matching_threshold)
+
+        rgVerifyCheck = findViewById(R.id.sw_verify_check)
+        rgFraudCheck = findViewById(R.id.sw_fraud_check)
+        rgStrictQualityCheck = findViewById(R.id.sw_strict_quality_check)
+        rgCardSidesMatchCheck = findViewById(R.id.sw_card_sides_match_check)
+
     }
 
 
-    private fun refreshColor(strMainColor: String, strMainTextColor: String, strButtonTextColor: String, strBackgroundColor: String) {
+    private fun refreshColor(
+        strMainColor: String,
+        strMainTextColor: String,
+        strButtonTextColor: String,
+        strBackgroundColor: String
+    ) {
         refreshMainColor(strMainColor)
         refreshBtnTextColor(strButtonTextColor)
         refreshBackgroundColor(strBackgroundColor)
@@ -156,6 +276,12 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgLivenessVersion.setMainColor(mainColor)
 //        rgScenario.setMainColor(mainColor)
         rgEnvironment.setMainColor(mainColor)
+        rgVerifyCheck.setMainColor(mainColor)
+        rgFraudCheck.setMainColor(mainColor)
+        rgStrictQualityCheck.setMainColor(mainColor)
+        rgCardSidesMatchCheck.setMainColor(mainColor)
+        rgCaptureIMage.setMainColor(mainColor)
+        rgScanNFC.setMainColor(mainColor)
     }
 
     private fun refreshBtnTextColor(txtColor: String) {
@@ -166,6 +292,12 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgLivenessVersion.setTextColor(txtColor)
 //        rgScenario.setTextColor(txtColor)
         rgEnvironment.setTextColor(txtColor)
+        rgVerifyCheck.setTextColor(txtColor)
+        rgFraudCheck.setTextColor(txtColor)
+        rgStrictQualityCheck.setTextColor(txtColor)
+        rgCardSidesMatchCheck.setTextColor(txtColor)
+        rgCaptureIMage.setTextColor(txtColor)
+        rgScanNFC.setTextColor(txtColor)
     }
 
     private fun refreshBackgroundColor(backgroundColor: String) {
@@ -182,8 +314,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 //        tvScenario.text = resources.getString(R.string.klp_index_scenario)
         tvLanguage.text = resources.getString(R.string.klp_index_language)
         rgLanguage.rbOne.text = resources.getString(R.string.klp_faceOTP_language_vi)
-        rgLanguage.rbSecond.text = resources.getString(R.string.klp_faceOTP_language_en)
-        rgLanguage.rbThird.text = resources.getString(R.string.klp_faceOTP_language_ko)
+        rgLanguage.rbOther.text = resources.getString(R.string.klp_faceOTP_language_en)
+//        rgLanguage.rbSecond.text = resources.getString(R.string.klp_faceOTP_language_en)
+//        rgLanguage.rbThird.text = resources.getString(R.string.klp_faceOTP_language_ko)
 
         rgEnvironment.rbOne.text = resources.getString(R.string.klp_environment_production)
         rgEnvironment.rbOther.text = resources.getString(
@@ -194,6 +327,24 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgLivenessVersion.rbSecond.text = resources.getString(R.string.klp_liveness_semi_activate)
         rgLivenessVersion.rbThird.text = resources.getString(R.string.klp_liveness_activate)
 
+        rgScanNFC.rbOne.text = resources.getString(R.string.klp_yes)
+        rgScanNFC.rbOther.text = resources.getString(R.string.klp_no)
+
+        rgCaptureIMage.rbOne.text = resources.getString(R.string.klp_yes)
+        rgCaptureIMage.rbOther.text = resources.getString(R.string.klp_no)
+
+        rgVerifyCheck.rbOne.text = resources.getString(R.string.klp_yes)
+        rgVerifyCheck.rbOther.text = resources.getString(R.string.klp_no)
+
+        rgFraudCheck.rbOne.text = resources.getString(R.string.klp_yes)
+        rgFraudCheck.rbOther.text = resources.getString(R.string.klp_no)
+
+        rgCardSidesMatchCheck.rbOne.text = resources.getString(R.string.klp_yes)
+        rgCardSidesMatchCheck.rbOther.text = resources.getString(R.string.klp_no)
+
+        rgStrictQualityCheck.rbOne.text = resources.getString(R.string.sw_strict_quality_basic)
+        rgStrictQualityCheck.rbOther.text = resources.getString(R.string.sw_strict_quality_advance)
+
 //        rgScenario.rbOne.text = "nfc_ekyc"
 //        rgScenario.rbSecond.text = "verify"
 //        rgScenario.rbThird.text = "passport"
@@ -203,15 +354,42 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvMainTextColor.text = resources.getString(R.string.klp_index_main_text_color)
         tvButtonTextColor.text = resources.getString(R.string.klp_index_button_text_color)
         tvBackgroundColor.text = resources.getString(R.string.klp_index_background_color)
+
+        tvAcceptanceDocument1.text = resources.getString(R.string.klp_old_id_card)
+        tvAcceptanceDocument2.text = resources.getString(R.string.klp_12_digits_id_card)
+        tvAcceptanceDocument3.text = resources.getString(R.string.klp_eid_no_chip)
+        tvAcceptanceDocument4.text = resources.getString(R.string.klp_eid_with_chip)
+        tvAcceptanceDocument.text = resources.getString(R.string.klp_setting_acceptance_document)
+        tvAcceptanceFaceMatchingThreshold.text =
+            resources.getString(R.string.klp_setting_acceptance_face_matching_threshold)
+
+        tvStrictQualityCheck.text = resources.getString(R.string.klp_strict_quality_check)
+        tvCardSidesMatchCheck.text = resources.getString(R.string.klp_check_if_card_sides_match)
+        tvVerifyCheck.text = resources.getString(R.string.klp_setting_verify_check)
+        tvFraudCheck.text = resources.getString(R.string.klp_setting_fraud_check)
+
+        tvEnvironment.text = resources.getString(R.string.klp_environment)
+        tvScanNFC.text = resources.getString(R.string.klp_setting_nfc)
+        tvCaptureImage.text = resources.getString(R.string.klp_setting_capture_image)
     }
 
     private fun setConfigBeforeExit() {
-        if (edtToken.text.toString().isNotEmpty()) {
+        if (edtToken.text.toString().isNotEmpty() &&
+            (cbAcceptedEidWithChip.isChecked
+                    || cbAcceptedEidWithoutChip.isChecked
+                    || cbAcceptedEidWithChip.isChecked
+                    || cbAcceptedOld12DigitsIdCard.isChecked)
+        ) {
             Helpers.savePrefs(
-                MY_KEY_LIVENESS_VERSION, if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version
+                MY_KEY_LIVENESS_VERSION,
+                if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version
                 else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
             )
-            Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.selectedIndex == 0) "vi" else if (rgLanguage.selectedIndex == 1) "en" else "ko")
+            Helpers.savePrefs(
+                MY_KEY_LANGUAGE,
+//                if (rgLanguage.selectedIndex == 0) "vi" else if (rgLanguage.selectedIndex == 1) "en" else "ko"
+                if (rgLanguage.isPostitiveCheck) "vi" else "en"
+            )
 //        Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPostitiveCheck) "vi" else "en")
             Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString())
 
@@ -222,21 +400,60 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPostitiveCheck) KLP_PROD else KLP_DEV)
 
-            if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(MY_KEY_MAIN_COLOR)!!)
+            Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPostitiveCheck)
+            Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureIMage.isPostitiveCheck)
+            Helpers.savePrefs(MY_KEY_VERIFY_CHECK, rgVerifyCheck.isPostitiveCheck)
+            Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPostitiveCheck)
+            Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPostitiveCheck)
+            Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPostitiveCheck)
+
+            if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(
+                    MY_KEY_MAIN_COLOR
+                )!!
+            )
                 Helpers.savePrefs(MY_KEY_MAIN_COLOR, edtMainColor.text.toString())
 
-            if (Helpers.getValuePreferences(MY_KEY_BTN_TEXT_COLOR) == null || edtButtonTextColor.text.toString() != Helpers.getValuePreferences(MY_KEY_BTN_TEXT_COLOR)!!)
+            if (Helpers.getValuePreferences(MY_KEY_BTN_TEXT_COLOR) == null || edtButtonTextColor.text.toString() != Helpers.getValuePreferences(
+                    MY_KEY_BTN_TEXT_COLOR
+                )!!
+            )
                 Helpers.savePrefs(MY_KEY_BTN_TEXT_COLOR, edtButtonTextColor.text.toString())
 
-            if (Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) == null || edtMainTextColor.text.toString() != Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR)!!)
+            if (Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) == null || edtMainTextColor.text.toString() != Helpers.getValuePreferences(
+                    MY_KEY_MAIN_TEXT_COLOR
+                )!!
+            )
                 Helpers.savePrefs(MY_KEY_MAIN_TEXT_COLOR, edtMainTextColor.text.toString())
 
-            if (Helpers.getValuePreferences(MY_KEY_BACKGROUND_COLOR) == null || edtBackgroundColor.text.toString() != Helpers.getValuePreferences(MY_KEY_BACKGROUND_COLOR)!!)
-                Helpers.savePrefs(MY_KEY_BACKGROUND_COLOR, edtBackgroundColor.text.toString())
-
+            if (Helpers.getValuePreferences(MY_KEY_BACKGROUND_COLOR) == null || edtBackgroundColor.text.toString() != Helpers.getValuePreferences(
+                    MY_KEY_BACKGROUND_COLOR
+                )!!
+            ) Helpers.savePrefs(MY_KEY_BACKGROUND_COLOR, edtBackgroundColor.text.toString())
+            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_1, cbAcceptedOldIdCard.isChecked)
+            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_2, cbAcceptedOld12DigitsIdCard.isChecked)
+            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_3, cbAcceptedEidWithoutChip.isChecked)
+            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_4, cbAcceptedEidWithChip.isChecked)
+            Helpers.savePrefs(
+                MY_KEY_FACE_MATCHING_THRESHOLD,
+                sliderFaceMatchingThreshold.value.toInt().toString()
+            )
             finish()
         } else {
-            Helpers.showDialog(this@SettingActivity, resources.getString(R.string.klp_faceOTP_alert_title), "Token " + resources.getString(R.string.klp_faceotp_can_not_leave_empty), R.drawable.frowning_face)
+            if (edtToken.text.toString().isEmpty())
+                Helpers.showDialog(
+                    this@SettingActivity,
+                    resources.getString(R.string.klp_faceOTP_alert_title),
+                    "Token " + resources.getString(R.string.klp_faceotp_can_not_leave_empty),
+                    R.drawable.frowning_face
+                )
+            else {
+                Helpers.showDialog(
+                    this@SettingActivity,
+                    resources.getString(R.string.klp_faceOTP_alert_title),
+                    resources.getString(R.string.please_choose_atleast_one_document),
+                    R.drawable.frowning_face
+                )
+            }
         }
     }
 
@@ -247,15 +464,48 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private fun onInitValue() {
         val token = Helpers.getValuePreferences(MY_KEY_TOKEN) ?: ""
         val env = Helpers.getValuePreferences(MY_KEY_ENV) ?: KLP_DEV
+
         val secnario = Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: FaceOTPFlowType.ONBOARD.name
         val lang = Helpers.getValuePreferences(MY_KEY_LANGUAGE)
         val livenessVersion = Helpers.getIntPreferences(MY_KEY_LIVENESS_VERSION, 2)
 
-        val mainTextColor = Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) ?: defaultConfig.mainTextColor
+        val mainTextColor =
+            Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) ?: defaultConfig.mainTextColor
         val mainColor = Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) ?: defaultConfig.mainColor
-        val backgroundColor = Helpers.getValuePreferences(MY_KEY_BACKGROUND_COLOR) ?: defaultConfig.backgroundColor
-        val btnTextColor = Helpers.getValuePreferences(MY_KEY_BTN_TEXT_COLOR) ?: defaultConfig.btnTextColor
+        val backgroundColor =
+            Helpers.getValuePreferences(MY_KEY_BACKGROUND_COLOR) ?: defaultConfig.backgroundColor
+        val btnTextColor =
+            Helpers.getValuePreferences(MY_KEY_BTN_TEXT_COLOR) ?: defaultConfig.btnTextColor
         refreshColor(mainColor, mainTextColor, btnTextColor, backgroundColor)
+        val faceMatchingThreshold: Int =
+            Helpers.getIntPreferences(MY_KEY_FACE_MATCHING_THRESHOLD, 50)
+
+        val accept9DigitsIdCard = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_1, true)
+        val accept12DigitIdCard = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_2, true)
+        val acceptEidWithoutChip = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_3, true)
+        val acceptEidWithChip = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_4, true)
+
+        val enableNFC = Helpers.getBooleanPreferences(MY_KEY_ENABLE_NFC, true)
+        val captureImage =
+            Helpers.getBooleanPreferences(MY_KEY_CAPTURE_IMAGE, true)
+        val verifyCheck =
+            Helpers.getBooleanPreferences(MY_KEY_VERIFY_CHECK, false)
+        val fraudCheck =
+            Helpers.getBooleanPreferences(MY_KEY_FRAUD_CHECK, true)
+        val normalCheckOnly = Helpers.getBooleanPreferences(
+            MY_KEY_NORMAL_CHECK_ONLY,
+            true
+        )
+        val cardSideMatchesCheck = Helpers.getBooleanPreferences(
+            MY_KEY_CARD_SIDE_CHECK,
+            true
+        )
+        sliderFaceMatchingThreshold.value = faceMatchingThreshold.toFloat()
+
+        cbAcceptedOldIdCard.isChecked = accept9DigitsIdCard
+        cbAcceptedOld12DigitsIdCard.isChecked = accept12DigitIdCard
+        cbAcceptedEidWithoutChip.isChecked = acceptEidWithoutChip
+        cbAcceptedEidWithChip.isChecked = acceptEidWithChip
 
         edtButtonTextColor.setText(btnTextColor)
         edtMainTextColor.setText(mainTextColor)
@@ -268,8 +518,15 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgLivenessVersion.switchChangeListener(if (livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version) 0 else if (livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version) 1 else 2)
 //        rgScenario.switchChangeListener(if (secnario == FaceOTPFlowType.ONBOARD.name) 0 else if (secnario == FaceOTPFlowType.VERIFY.name) 1 else 2)
 
-        rgLanguage.switchChangeListener(if (lang == "vi") 0 else if (lang == "en") 1 else 2)
+        rgLanguage.switchChangeListener(lang == "vi")
         rgEnvironment.switchChangeListener(env == KLP_PROD)
+
+        rgVerifyCheck.switchChangeListener(verifyCheck)
+        rgFraudCheck.switchChangeListener(fraudCheck)
+        rgStrictQualityCheck.switchChangeListener(normalCheckOnly)
+        rgCardSidesMatchCheck.switchChangeListener(cardSideMatchesCheck)
+        rgCaptureIMage.switchChangeListener(captureImage)
+        rgScanNFC.switchChangeListener(enableNFC)
     }
 
     override fun onEditorAction(textView: TextView?, actionId: Int, keyEvent: KeyEvent?): Boolean {

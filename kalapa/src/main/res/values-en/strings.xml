@@ -1,101 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="klp_alert_title" translatable="false">klp_alert_title</string>
-    <string name="klp_angle_not_correct" translatable="false">klp_angle_not_correct</string>
-    <string name="klp_cancel" translatable="false">klp_cancel</string>
-    <string name="klp_cancel_button" translatable="false">klp_cancel_button</string>
-    <string name="klp_check_permission_camera" translatable="false">klp_check_permission_camera</string>
-    <string name="klp_check_permission_camera_title" translatable="false">klp_check_permission_camera_title</string>
-    <string name="klp_confirm" translatable="false">klp_confirm</string>
-    <string name="klp_create_camera_error" translatable="false">klp_create_camera_error</string>
-    <string name="klp_done_title" translatable="false">klp_done_title</string>
-    <string name="klp_error_happen" translatable="false">klp_error_happen</string>
-    <!--    <string name="klp_error_network" translatable="false">klp_error_network</string>-->
-    <!--    <string name="klp_error_service_temporary_down" translatable="false">klp_error_service_temporary_down</string>-->
-    <!--    <string name="klp_error_unknown_short" translatable="false">klp_error_unknown_short</string>-->
-    <string name="klp_guide_nfc_1" translatable="false">klp_guide_nfc_1</string>
-    <string name="klp_guide_nfc_2"  translatable="false">klp_guide_nfc_2</string>
-    <string name="klp_guide_nfc_3" translatable="false">klp_guide_nfc_3</string>
-    <string name="klp_guide_nfc_4" translatable="false">klp_guide_nfc_4</string>
-    <string name="klp_guide_nfc_position_1" translatable="false">klp_guide_nfc_position_1</string>
-    <string name="klp_guide_nfc_position_2" translatable="false">klp_guide_nfc_position_2</string>
-    <string name="klp_guide_title" translatable="false">klp_guide_title</string>
-    <string name="klp_guild_liveness_closer_face" translatable="false">klp_guild_liveness_closer_face</string>
-    <string name="klp_guild_liveness_not_face" translatable="false">klp_guild_liveness_not_face</string>
-    <string name="klp_leave_confirm_content" translatable="false">klp_leave_confirm_content</string>
-    <string name="klp_leave_confirm_title" translatable="false">klp_leave_confirm_title</string>
-    <string name="klp_liveness_error_timeout" translatable="false">klp_liveness_error_timeout</string>
-    <string name="klp_liveness_guide_title" translatable="false">klp_liveness_guide_title</string>
-    <string name="klp_liveness_look_straight" translatable="false">klp_liveness_look_straight</string>
-    <string name="klp_liveness_processing_failed" translatable="false">klp_liveness_processing_failed</string>
-    <string name="klp_liveness_processing_finish" translatable="false">klp_liveness_processing_finish</string>
-    <string name="klp_liveness_tiltleft" translatable="false">klp_liveness_tiltleft</string>
-    <string name="klp_liveness_tiltright" translatable="false">klp_liveness_tiltright</string>
-    <string name="klp_liveness_too_close" translatable="false">klp_liveness_too_close</string>
-    <string name="klp_liveness_too_far" translatable="false">klp_liveness_too_far</string>
-    <!--    <string name="klp_liveness_too_many_faces" translatable="false">klp_liveness_too_many_faces</string>-->
-    <!--    <string name="klp_liveness_turndown" translatable="false">klp_liveness_turndown</string>-->
-    <!--    <string name="klp_liveness_turnleft" translatable="false">klp_liveness_turnleft</string>-->
-    <!--    <string name="klp_liveness_turnright" translatable="false">klp_liveness_turnright</string>-->
-    <!--    <string name="klp_liveness_turnup" translatable="false">klp_liveness_turnup</string>-->
-    <string name="klp_next_btn" translatable="false">klp_next_btn</string>
-    <string name="klp_nfc_authentication" translatable="false">klp_nfc_authentication</string>
-    <string name="klp_nfc_common_error" translatable="false">klp_nfc_common_error</string>
-    <string name="klp_nfc_connection_error" translatable="false">klp_nfc_connection_error</string>
-    <string name="klp_nfc_invalid_mrz" translatable="false">klp_nfc_invalid_mrz</string>
-    <string name="klp_nfc_more_one_tag_found" translatable="false">klp_nfc_more_one_tag_found</string>
-    <string name="klp_nfc_read_successfully" translatable="false">klp_nfc_read_successfully</string>
-    <string name="klp_nfc_request_present" translatable="false">klp_nfc_request_present</string>
-    <string name="klp_nfc_tag_not_valid" translatable="false">klp_nfc_tag_not_valid</string>
-    <!--    <string name="klp_no" translatable="false">klp_no</string>-->
-    <string name="klp_please_wait" translatable="false">klp_please_wait</string>
-    <string name="klp_retry_btn" translatable="false">klp_retry_btn</string>
-    <string name="klp_scan_back_document" translatable="false">klp_scan_back_document</string>
-    <string name="klp_scan_mrz" translatable="false">klp_scan_mrz</string>
-    <string name="klp_timeout_body" translatable="false">klp_timeout_body</string>
-    <string name="klp_title_liveness_detection" translatable="false">klp_title_liveness_detection</string>
-    <string name="klp_toggle_flash_error" translatable="false">klp_toggle_flash_error</string>
-    <!--    <string name="klp_yes" translatable="false">klp_yes</string>-->
-    <string name="klp_check_nfc_text" translatable="false">klp_check_nfc_text</string>
-    <string name="klp_nfc_antenna_title" translatable="false">klp_nfc_antenna_title</string>
-    <string name="klp_nfc_start_button" translatable="false">klp_nfc_start_button</string>
-    <string name="klp_nfc_title" translatable="false">klp_nfc_title</string>
-    <string name="klp_not_support_nfc" translatable="false">klp_not_support_nfc</string>
-    <string name="klp_guild_liveness_further_face" translatable="false">klp_guild_liveness_further_face</string>
-    <!--    <string name="klp_message_nfc_ready" translatable="false">klp_message_nfc_ready</string>-->
-    <!--    <string name="klp_error_nfc_card_lost_connection" translatable="false">klp_error_nfc_card_lost_connection</string>-->
-    <!--    <string name="klp_error_nfc_card_not_found" translatable="false">klp_error_nfc_card_not_found</string>-->
-    <string name="klp_nfc_hold_still" translatable="false">klp_nfc_hold_still</string>
-    <!--    <string name="klp_error_nfc_not_enabled" translatable="false">klp_error_nfc_not_enabled</string>-->
-    <string name="klp_emulator_warning_body" translatable="false">klp_emulator_warning_body</string>
-    <string name="klp_warning_title" translatable="false">klp_warning_title</string>
-    <string name="klp_passport_guide_title" translatable="false">klp_passport_guide_title</string>
-    <string name="klp_instruction" translatable="false">klp_instruction</string>
-    <!--    <string name="klp_title_front" translatable="false">klp_title_front</string>-->
-    <!--    <string name="klp_title_back" translatable="false">klp_title_back</string>-->
-    <string name="klp_title_mrz" translatable="false">klp_title_mrz</string>
-    <!--    <string name="klp_title_selfie" translatable="false">klp_title_selfie</string>-->
-    <!--    <string name="klp_title_passport" translatable="false">klp_title_passport</string>-->
-    <string name="klp_guide_passport_1" translatable="false">klp_guide_passport_1</string>
-    <string name="klp_guide_passport_2" translatable="false">klp_guide_passport_2</string>
-    <string name="klp_guide_passport_3" translatable="false">klp_guide_passport_3</string>
-    <string name="klp_guide_passport_4" translatable="false">klp_guide_passport_4</string>
-    <string name="klp_guide_reject_title" translatable="false">klp_guide_reject_title</string>
-    <!--    <string name="klp_guide_reject_1" translatable="false">klp_guide_reject_1</string>-->
-    <!--    <string name="klp_guide_reject_2" translatable="false">klp_guide_reject_2</string>-->
-    <!--    <string name="klp_guide_reject_3" translatable="false">klp_guide_reject_3</string>-->
-    <string name="klp_guide_passport" translatable="false">klp_guide_passport</string>
-    <string name="klp_capture_note" translatable="false">klp_capture_note</string>
-    <string name="tv_instruction" translatable="false">tv_instruction</string>
-    <string name="klp_guide_button" translatable="false">klp_guide_button</string>
-    <string name="klp_passport_title" translatable="false">klp_passport_title</string>
-    <string name="klp_passport_guide_2" translatable="false">klp_passport_guide_2</string>
-    <string name="klp_passport_guide_1" translatable="false">klp_passport_guide_1</string>
-    <!--    <string name="klp_error_token" translatable="false">klp_error_token</string>-->
-    <string name="klp_liveness_eye_closes" translatable="false">klp_liveness_eye_closes\n</string>
-    <!--    <string name="please_place_card_into_mask" translatable="false">please_place_card_into_mask</string>-->
-    <string name="klp_scan_front_document" translatable="false">klp_scan_front_document</string>
-
     <string name="klp_title_front">Front side of ID card</string>
     <string name="klp_title_passport">Take photo of passport</string>
     <string name="klp_title_back">Back side of ID card</string>
@@ -278,7 +182,7 @@
     <string name="klp_setting_liveness_version">Liveness version</string>
     <string name="klp_setting_verify_check">ID - Name verification</string>
     <string name="klp_setting_fraud_check">Forgery and fraud check</string>
-    <string name="klp_strict_quality_check">Quality check level</string>
+    <string name="klp_strict_quality_check">Advance quality check</string>
     <string name="klp_setting_token">Token</string>
     <string name="klp_setting_save">Save settings</string>
     <string name="klp_setting_liveness_description">2.0: Active\t\t3.0: Semi-Active\t\t4.0: Passive</string>
@@ -315,6 +219,7 @@
     <string name="klp_demo_ocr">OCR Result</string>
     <string name="klp_demo_not_satisfy_rule">Your application has not meeting the conditions listed below:</string>
     <string name="klp_your_application_is">Application status: </string>
+    <string name="klp_your_application_were">Application status: </string>
     <string name="klp_demo_approved">APPROVED</string>
     <string name="klp_demo_manual">PROCESSED MANUAL</string>
     <string name="klp_demo_rejected">REJECTED</string>
@@ -350,4 +255,21 @@
     <string name="klp_field_religion">Religion</string>
     <string name="klp_liveness_face_too_close_to_border">Face too close to the border.</string>
     <string name="klp_message_please_change_device_to_scan_nfc">Your device does not support this feature. Please switch to a different device and try again later</string>
+    <string name="klp_liveness_too_long">Liveness session is expired, please try again</string>
+    <string name="klp_liveness_holdon">Keep your head still</string>
+    <string name="klp_liveness_go_far">Move your face further from the frame</string>
+    <string name="klp_liveness_come_close">Move your face closer to the frame</string>
+    <string name="klp_flow_ekyc">eKYC</string>
+    <string name="klp_flow_nfc_ekyc">eKYC &amp; NFC</string>
+    <string name="klp_flow_nfc_only">NFC</string>
+    <string name="klp_flow_type">eKYC FlowC</string>
+    <string name="klp_upgrade_your_account">Upgrade your account</string>
+    <string name="klp_do_you_want_to_verify_nfc_to_upgrade">You need to verify your eid card in order to upgrade ?</string>
+    <string name="klp_btn_upgrade">Upgrade now</string>
+    <string name="you_need_to_scan_mrz_first">You need to scan MRZ first</string>
+    <string name="klp_focus_on_mrz">Please focus on your MRZ field and let it clearly visible</string>
+    <string name="congratulations">Congratulation</string>
+    <string name="you_have_upgraded_account">You</string>
+    <string name="klp_setting_advantage_check">Advantage check</string>
+    <string name="klp_title_mrz">Quét thông tin MRZ</string>
 </resources>
