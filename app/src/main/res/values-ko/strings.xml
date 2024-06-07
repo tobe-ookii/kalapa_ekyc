@@ -45,7 +45,7 @@
     <string name="klp_index_background_color">배경색</string>
     <string name="klp_index_button_text_color">버튼 텍스트 색상</string>
     <string name="klp_index_environment">환경</string>
-    <string name="klp_index_faceOTP_liveness">Face OTP 생동감 버전</string>
+    <string name="klp_index_faceOTP_liveness">생동감 버전</string>
     <string name="klp_index_language">언어</string>
     <string name="klp_index_main_color">주 색상</string>
     <string name="klp_index_main_text_color">주 텍스트 색상</string>

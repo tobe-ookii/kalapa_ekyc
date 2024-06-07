@@ -78,13 +78,17 @@ public class MainActivityJava extends BaseActivity {
                             getResources().getString(R.string.klp_face_otp_error_network), R.drawable.frowning_face);
                     return;
                 }
-//                startLivenessAndNFC();
+//                startLivenessAndNFC(null);
 //                String message = "Something!!!";
 //                LogUtils.Companion.printLog("Try Encrypt " + message);
 //                LogUtils.Companion.printLog(AESCryptor.encryptText(message));
 //                startFaceOTP();
 //                startCapture();
-                startEKYC();
+                if (preferencesConfig.getCaptureImage())
+                    startEKYC();
+                else {
+                    startLivenessAndNFC("https://api-ekyc.kalapa.vn/face-otp");
+                }
 //                KalapaSDK.Companion.startConfirmForResult(MainActivityJava.this,
 //                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZmZmFjNGQwNTg2YTRiOTk4MWNiNzlmMTJmOTZkODliIiwidWlkIjoiNzUyZWNiY2QzZGNjNGQyYWE4YzgyNWZlYjQwZjgxMjQiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NzE3MDE5fQ.AJG3MxjY00pe-whKQ4hRHp8qmcM54NlFxmqZHDPCruo"
 //                , sdkConfig, new KalapaHandler() {
@@ -169,7 +173,6 @@ public class MainActivityJava extends BaseActivity {
                         ProgressView.Companion.hideProgress(true);
                         LogUtils.Companion.printLog("doRequestGetSession createSessionResult: " + createSessionResult.component1());
                         KalapaSDK.Companion.startFullEKYC(MainActivityJava.this, createSessionResult.component1(), sdkConfig, new KalapaHandler() {
-
                             @Override
                             public void onError(@NonNull KalapaSDKResultCode resultCode) {
                                 Helpers.Companion.showDialog(MainActivityJava.this,
@@ -214,10 +217,10 @@ public class MainActivityJava extends BaseActivity {
         }
     }
 
-    public void startLivenessAndNFC() {
+    public void startLivenessAndNFC(String customBaseURL) {
         KalapaSDK.Companion.startLivenessForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
             String selfieFace = null;
-            String NFC_SELFIE_PATH = preferencesConfig.getEnv() + "/verify?lang=" + preferencesConfig.getLanguage();
+            String NFC_SELFIE_PATH = (customBaseURL != null ? customBaseURL : preferencesConfig.getEnv()) + "/verify?lang=" + preferencesConfig.getLanguage();
 
             @Override
             public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
