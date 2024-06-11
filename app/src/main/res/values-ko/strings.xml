@@ -102,8 +102,10 @@
     <string name="klp_demo_matching_score">일치 점수</string>
     <string name="klp_field_nation">Nation</string>
     <string name="klp_field_doi">발행일</string>
-    <string name="klp_your_application_were">klp_your_application_were</string>
-    <string name="klp_setting_capture_image">Capture image</string>
-    <string name="please_choose_atleast_one_document">Please select at least one document to Please select at least one document to proceed</string>
-    <string name="klp_face_otp_error_happended">Error happened due to </string>
+    <string name="klp_your_application_were">응용 프로그램 상태: </string>
+    <string name="klp_setting_capture_image">이미지 캡처</string>
+    <string name="please_choose_atleast_one_document">진행하려면 적어도 하나의 문서를 선택하십시오</string>
+    <string name="klp_face_otp_error_happended">다음으로 인한 오류 발생 </string>
+    <string name="klp_faceotp_loading">로딩 중…</string>
+
 </resources>

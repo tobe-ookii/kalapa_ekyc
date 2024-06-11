@@ -14,32 +14,10 @@ import vn.kalapa.ekyc.utils.Helpers
 class KalapaAPI {
 
     companion object {
-        var client = Client(KalapaSDK.config.baseURL)
+        var client = Client(KalapaSDK.config.baseURL) //Client(KalapaSDK.config.baseURL)
         val NFC_PATH = "/api/nfc/get-token"
         val VERSION_PATH = "/api/kyc/get-version"
 
-        fun getNFCSession(listener: Client.RequestListener) {
-            val header = mapOf(
-                "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.session
-            )
-            Helpers.printLog("Call getNFCSession")
-
-            client.get(NFC_PATH, header, handleDataResultListener(listener))
-        }
-
-        fun postVersion(listener: Client.RequestListener) {
-            val header = mapOf(
-                "Content-Type" to "application/json",
-                "Authorization" to "efd361jwh10A@"
-            )
-            val body = mapOf<String, String>(
-                "os_version" to "${Build.VERSION.SDK_INT}",
-                "mobile_device" to Build.MODEL
-            )
-            Helpers.printLog("Call postVersion")
-            client.post(VERSION_PATH, header, body, handleDataResultListener(listener))
-        }
 
         fun nfcCheck(
             endPoint: String,
@@ -91,20 +69,69 @@ class KalapaAPI {
             })
         }
 
+//        fun doRequestGetSession(
+//            endPoint: String,
+//            token: String,
+//            captureImage: Boolean,
+//            useNFC: Boolean,
+//            verifyCheck: String,
+//            fraudCheck: String,
+//            normalCheckOnly: String,
+//            cardSidesCheck: Boolean,
+//            acceptedDocuments: Array<String>,
+//            faceMatchingThreshold: Int,
+//            onSuccess: (sessionResult: CreateSessionResult) -> Unit,
+//            onFail: (error: KalapaError?) -> Unit
+//        ): String? {
+//            client = Client(endPoint)
+//            val url = "$endPoint/api/auth/get-token"
+//            val client = Client(url)
+//            val header = mapOf(
+//                "Authorization" to token,
+//                "Content-Type" to "application/json",
+//                "mobile_device" to Build.MODEL
+//            )
+//            val body = mapOf(
+//                "app_token" to token,
+//                "allow_sdk_full_results" to "true",
+//                "verify_check" to verifyCheck,
+//                "fraud_check" to fraudCheck,
+//                "strict_quality_check" to if (normalCheckOnly == "true") "false" else "true",
+//                "scan_full_information" to cardSidesCheck.toString(),
+//                "mobile_device" to Build.MODEL,
+//                "accepted_documents" to acceptedDocuments,
+//                "face_matching_thr" to faceMatchingThreshold.toString(),
+//                "flow" to if (captureImage && useNFC) "nfc_ekyc" else if (captureImage) "ekyc" else "nfc_only"
+//            )
+//            Helpers.printLog("Get Session $url")
+//
+//            client.post(url, header, body, object : Client.RequestListener {
+//                override fun success(jsonObject: JSONObject) {
+//                    Helpers.printLog("getSession success")
+//                    var sessionResult: CreateSessionResult = CreateSessionResult.fromJson(jsonObject.toString())!!
+//                    Helpers.printLog(sessionResult.token)
+//                    onSuccess(sessionResult)
+//                }
+//
+//                override fun fail(error: KalapaError) {
+//                    Helpers.printLog("Call getSession error $error")
+//                    onFail(error)
+//                }
+//
+//                override fun timeout() {
+//                    onFail(KalapaError(403, "Token không đúng, vui lòng thử lại"))
+//                }
+//            })
+//            return ""
+//        }
+
         fun doRequestGetSession(
             endPoint: String,
             token: String,
-            captureImage: Boolean,
-            useNFC: Boolean,
-            verifyCheck: String,
-            fraudCheck: String,
-            normalCheckOnly: String,
-            cardSidesCheck: Boolean,
-            acceptedDocuments: Array<String>,
-            faceMatchingThreshold: Int,
             onSuccess: (sessionResult: CreateSessionResult) -> Unit,
             onFail: (error: KalapaError?) -> Unit
         ): String? {
+            client = Client(endPoint)
             val url = "$endPoint/api/auth/get-token"
             val client = Client(url)
             val header = mapOf(
@@ -112,16 +139,16 @@ class KalapaAPI {
                 "Content-Type" to "application/json",
                 "mobile_device" to Build.MODEL
             )
+            val captureImage = false
+            val useNFC = true
             val body = mapOf(
                 "app_token" to token,
                 "allow_sdk_full_results" to "true",
-                "verify_check" to verifyCheck,
-                "fraud_check" to fraudCheck,
-                "strict_quality_check" to if (normalCheckOnly == "true") "false" else "true",
-                "scan_full_information" to cardSidesCheck.toString(),
+                "verify_check" to "true",
+                "fraud_check" to "true",
+                "strict_quality_check" to "true",
+                "scan_full_information" to "true",
                 "mobile_device" to Build.MODEL,
-                "accepted_documents" to acceptedDocuments,
-                "face_matching_thr" to faceMatchingThreshold.toString(),
                 "flow" to if (captureImage && useNFC) "nfc_ekyc" else if (captureImage) "ekyc" else "nfc_only"
             )
             Helpers.printLog("Get Session $url")
@@ -145,8 +172,6 @@ class KalapaAPI {
             })
             return ""
         }
-
-
         fun confirm(
             endPoint: String,
             name: String,

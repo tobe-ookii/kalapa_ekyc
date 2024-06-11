@@ -114,6 +114,7 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun setupLivenessProcess() {
+        Helpers.printLog("setupLivenessProcess ${KalapaSDK.config.livenessVersion}")
         val livenessVersion =
             if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.ACTIVE.version) Common.LIVENESS_VERSION.ACTIVE else if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version) Common.LIVENESS_VERSION.SEMI_ACTIVE else Common.LIVENESS_VERSION.PASSIVE
         klpLivenessHandler = LivenessHandler(
@@ -446,15 +447,15 @@ class CameraXSelfieActivity : CameraXActivity(
         } else return if (status == LivenessSessionStatus.TOO_SMALL) {
             if (input == "ComeClose") {
                 tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guild_liveness_closer_face))
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_liveness_closer_face))
             } else
                 return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_far))
         } else return if (status == LivenessSessionStatus.TOO_MANY_FACES) {
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_many_faces))
         } else return if (status == LivenessSessionStatus.NO_FACE && NO_FACE_COUNT > 3) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guild_liveness_not_face))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_liveness_no_face))
         } else return if (status == LivenessSessionStatus.OFF_CENTER) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guild_liveness_not_face))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_liveness_no_face))
         } else { // PROCESSING
             setCircleViewAnimation(AnimStatus.ANIM_LOADING)
             tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
@@ -493,10 +494,10 @@ class CameraXSelfieActivity : CameraXActivity(
                         R.string.klp_liveness_turndown
                     )
                 )//"Quay xuống")
-                "GoFar" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guild_liveness_further_face)) //"Tiến mặt lại gần camera hơn một chút")
+                "GoFar" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_close)) //"Tiến mặt lại gần camera hơn một chút")
                 "ComeClose" -> KalapaSDK.config.languageUtils.getLanguageString(
                     resources.getString(
-                        R.string.klp_guild_liveness_closer_face
+                        R.string.klp_guide_liveness_closer_face
                     )
                 ) //"Lùi mặt ra xa khỏi camera một chút")
                 "HoldSteady2Second" -> KalapaSDK.config.languageUtils.getLanguageString(

@@ -3,40 +3,39 @@ package vn.kalapa.ekyc.capturesdk
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.icu.text.SimpleDateFormat
-import android.os.Build
-import android.os.Bundle
-import android.os.SystemClock
+import android.os.*
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
 import android.view.Surface
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCapture.OnImageCapturedCallback
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import vn.kalapa.R
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.activity.BaseActivity
-import vn.kalapa.ekyc.activity.LumaListener
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.CameraUtils
 import vn.kalapa.ekyc.utils.Helpers
@@ -46,15 +45,17 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+typealias LumaListener = (luma: Double) -> Unit
+
 abstract class CameraXActivity(
     private var activityLayoutId: Int = R.layout.activity_camera_x,
     private var lensFacing: LENS_FACING = LENS_FACING.REAR,
     private val hideAutoCapture: Boolean = true,
     private val refocusFrequency: Int = 100
-) : BaseActivity(), View.OnClickListener {
+) : BaseActivity(), OnClickListener {
     private val log = Logger()
     var tmpBitmap: Bitmap? = null
-    var isAutocapturing = true
+    private var isAutocapturing = true
 
     //    private var imageAnalyzer: ImageAnalysis? = null
     var cameraAnalyzer: ImageAnalysis? = null
@@ -72,7 +73,7 @@ abstract class CameraXActivity(
     lateinit var rootContainer: View
 
     // camera X
-    lateinit var viewFinder: PreviewView
+    private lateinit var viewFinder: PreviewView
 
     var isCameraMode = false
     var mLastClickTime: Long = 0
@@ -131,7 +132,6 @@ abstract class CameraXActivity(
         }
         tvError = findViewById(R.id.tv_error)
         btnCapture = findViewById(R.id.btn_capture)
-        Helpers.setBackgroundColorTintList(btnCapture, KalapaSDK.config.mainColor)
         holderCapture = findViewById(R.id.holder_capture)
         holderAutoCapture = findViewById(R.id.holder_auto_capture)
         tvGuide = findViewById(R.id.tv_guide)
@@ -142,7 +142,7 @@ abstract class CameraXActivity(
         btnRetry.text =
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_retry_btn))
         ivAutoCapture = findViewById(R.id.toggle_auto_capture)
-        if (hideAutoCapture) ivAutoCapture.visibility = View.INVISIBLE
+        if (hideAutoCapture) ivAutoCapture.visibility = View.GONE
         Helpers.setColorTintList(ivAutoCapture, KalapaSDK.config.mainColor)
         ivAutoCapture.setOnClickListener {
             this.isAutocapturing = !isAutocapturing
@@ -159,9 +159,16 @@ abstract class CameraXActivity(
 
     protected open fun setupUI() {
 //        cardMaskView.strokeWidth = 5F
-        Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
-        Helpers.setBackgroundColorTintList(btnNext, KalapaSDK.config.mainColor)
+        ViewCompat.setBackgroundTintList(
+            btnRetry,
+            ColorStateList.valueOf(resources.getColor(R.color.white))
+        )
         btnRetry.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
+
+        ViewCompat.setBackgroundTintList(
+            btnNext,
+            ColorStateList.valueOf(Color.parseColor(KalapaSDK.config.mainColor))
+        )
         btnNext.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
         setupCustomUI()
     }
@@ -174,7 +181,7 @@ abstract class CameraXActivity(
      * Camera X function
      * */
 
-    fun takePhoto(shouldStopCamera: Boolean = false) {
+    fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
@@ -190,49 +197,16 @@ abstract class CameraXActivity(
         }
 
         // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(
-            contentResolver,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            contentValues
-        )
+        val outputOptions = ImageCapture.OutputFileOptions
+            .Builder(
+                contentResolver,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
             .build()
 
-//        // Set up image capture listener, which is triggered after photo has been taken
-//        imageCapture.takePicture(
-//            outputOptions,
-//            ContextCompat.getMainExecutor(this),
-//            object : ImageCapture.OnImageSavedCallback {
-//                override fun onError(exc: ImageCaptureException) {
-//                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-//                }
-//
-//                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-//                    val msg = "Photo capture succeeded: ${output.savedUri}"
-//                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-//                    Log.d(TAG, msg)
-//                }
-//            }
-//        )
-
-//        imageCapture.takePicture(
-//            ContextCompat.getMainExecutor(this),
-//            object : ImageCapture.OnImageCapturedCallback() {
-//                override fun onCaptureSuccess(image: ImageProxy) {
-//                    super.onCaptureSuccess(image)
-////                    tmpBitmap = cardMaskView.crop(
-////                        image.toBitmap(),
-////                        image.imageInfo.rotationDegrees.toFloat()
-////                    )
-////                    tmpBitmap = image.image.toBitmap()
-//                    // BitmapUtil.resizeBitmapToBitmap(image.toBitmap())
-//                    onCaptureSuccess(image.imageInfo.rotationDegrees)
-//                    stopCamera()
-//                }
-//            })
-
-        imageCapture.takePicture(
-            ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageCapturedCallback() {
+        imageCapture.takePicture(ContextCompat.getMainExecutor(this),
+            object : OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
                     tmpBitmap = BitmapUtil.imageProxyToBitmap(image)
@@ -294,6 +268,7 @@ abstract class CameraXActivity(
              */
             // Preview
             val preview = Preview.Builder()
+//                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .build()
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
@@ -302,11 +277,21 @@ abstract class CameraXActivity(
             // Select back camera as a default
             val cameraSelector =
                 if (lensFacing == LENS_FACING.FRONT) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA
-
+            val MIN_WITH_ACCEPTED_SIZE = if (lensFacing == LENS_FACING.FRONT) 1080 else 1088
+            var opticalResolution = Size(1080, 1920)
+            for (s in getOutputSizes(cameraSelector.lensFacing!!)!!) {
+//                Helpers.printLog("opticalResolution S: Choosing ${s.width} ${s.height}")
+                if (s.width < MIN_WITH_ACCEPTED_SIZE)
+                    break
+                opticalResolution = s
+            }
+            Helpers.printLog("opticalResolution S: ${opticalResolution.width} ${opticalResolution.height}")
             imageCapture = ImageCapture.Builder()
                 .setJpegQuality(85)
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setMaxResolution(Size(1920, 1080))
+//                .setMaxResolution(opticalResolution)
+//                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetResolution(opticalResolution)
                 .setTargetRotation(Surface.ROTATION_0)
                 .build()
             cameraAnalyzer = setupAnalyzer()
@@ -333,8 +318,11 @@ abstract class CameraXActivity(
 
                 if (camera != null) {
                     var cameraFov = CameraUtils.getCameraFov(camera.cameraInfo)
-                    if (cameraFov > 75)
-                        camera.cameraControl.setZoomRatio(cameraFov / 75)
+                    if (cameraFov > 75) {
+                        val zoomRatio = cameraFov / 75
+                        camera.cameraControl.setZoomRatio(zoomRatio)
+                        Helpers.printLog("onCaptureSuccess Zoom Ratio $zoomRatio")
+                    }
                 }
                 previewViewLayerMode(true)
                 /**
@@ -364,6 +352,20 @@ abstract class CameraXActivity(
     /**Verify Image*/
     protected abstract fun verifyImage()
 
+    private fun getOutputSizes(lensFacing: Int = CameraCharacteristics.LENS_FACING_BACK): Array<Size>? {
+        val manager = this@CameraXActivity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
+        for (cameraId in manager.cameraIdList) {
+            val characteristics = manager.getCameraCharacteristics(cameraId)
+            val orientation = characteristics[CameraCharacteristics.LENS_FACING]!!
+
+            if (orientation == lensFacing) {
+                val configurationMap = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
+                return configurationMap.getOutputSizes(SurfaceTexture::class.java)
+            }
+        }
+        return null
+    }
 
     /**Get Layout from inherited class*/
 //    protected abstract fun getLayoutId(): Int
@@ -375,17 +377,20 @@ abstract class CameraXActivity(
         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
         holderCapture.visibility = View.VISIBLE
         holderAutoCapture.visibility =
-            if (lensFacing == LENS_FACING.REAR && !hideAutoCapture) View.VISIBLE else View.INVISIBLE
+            if (lensFacing == LENS_FACING.REAR && !hideAutoCapture) View.VISIBLE else View.GONE
         tvGuide.visibility = View.VISIBLE
         btnNext.visibility = View.INVISIBLE
         btnRetry.visibility = View.INVISIBLE
-
+//        cardMaskView.setBackgroundColor(resources.getColor(R.color.black20))
+//        viewFinder.visibility = View.VISIBLE
     } else { // stop camera
         btnNext.visibility = View.VISIBLE
         btnRetry.visibility = View.VISIBLE
         holderCapture.visibility = View.INVISIBLE
-        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.INVISIBLE
+        holderAutoCapture.visibility = if (!hideAutoCapture) View.INVISIBLE else View.GONE
         this.isCameraMode = false
+//        viewFinder.visibility = View.INVISIBLE
+//        cardMaskView.setBackgroundColor(Color.parseColor(KalapaSDK.config.backgroundColor))
     }
 
 
@@ -436,7 +441,7 @@ abstract class CameraXActivity(
 
     var focusRequestTime = 0
     fun getCameraRotationDegree(): Int {
-        val manager = getSystemService(CAMERA_SERVICE) as CameraManager
+        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         focusRequestTime++
         if (focusRequestTime % refocusFrequency == 0 && focusRequestTime / refocusFrequency < 2) {
             runOnUiThread {
@@ -521,4 +526,6 @@ abstract class CameraXActivity(
             image.close()
         }
     }
+
+
 }

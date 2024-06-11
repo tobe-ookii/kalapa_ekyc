@@ -86,7 +86,8 @@ internal class Helpers {
                 MY_KEY_CARD_SIDE_CHECK,
                 true
             )
-            return if (lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
+            LogUtils.printLog("Preferences: ",token.isEmpty(),lang == null,backgroundColor == null,mainColor == null,mainTextColor == null,btnTextColor == null,env == null)
+            return if (token.isEmpty() || lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
                 PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip)
             }
@@ -143,7 +144,9 @@ internal class Helpers {
         }
 
         private fun initPrefs() {
+            LogUtils.printLog("initPrefs")
             this.prefs = this.activity.getSharedPreferences(Common.MY_PREFERENCES, Context.MODE_PRIVATE)
+            LogUtils.printLog("done initPrefs")
         }
 
         fun init(activity: Activity) {

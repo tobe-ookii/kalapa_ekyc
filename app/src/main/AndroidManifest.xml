@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:theme">
         <activity
-            android:name=".MainActivityJava"
+            android:name=".PaymeDemoJava"
             android:resizeableActivity="true"
             android:exported="true">
             <intent-filter>

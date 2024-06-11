@@ -30,7 +30,7 @@ class ProgressView {
         private var viewHolder: View? = null
         private var showing = false
         private var currentContext: Context? = null
-        fun showProgress(context: Context, progressType: ProgressViewType? = ProgressViewType.LOADING, title: String? = null, message: String? = null) {
+        fun showProgress(context: Context, progressType: ProgressViewType? = ProgressViewType.LOADING, mainColor: String? = null, mainTextColor: String? = null, title: String? = null, message: String? = null) {
             try {
                 if (currentContext != context) {
                     sDialog?.dismiss()
@@ -43,8 +43,6 @@ class ProgressView {
                     }
                 }
                 startTime = System.currentTimeMillis()
-                val mainTextColor = KalapaSDK.config.mainTextColor
-                val mainColor = KalapaSDK.config.mainColor
                 showing = true
                 sDialog = Dialog(context)
                 sDialog?.setOnDismissListener { showing = false }
@@ -58,17 +56,21 @@ class ProgressView {
                 val gifImageView: KLPGifImageView? = sDialog?.findViewById(R.id.klp_gif_image_view)
                 val progressBar =
                     sDialog?.findViewById<View>(R.id.progress_container_progressbar) as ProgressBar
-                val textView = sDialog?.findViewById(R.id.progress_container_title) as TextView
 
+                val textView = sDialog?.findViewById(R.id.progress_container_title) as TextView
                 val body = sDialog?.findViewById(R.id.custom_dialog_body) as TextView
-                textView.text = KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_alert_title))
-                body.text = KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_please_wait))
+
+                val mainTextColor = mainTextColor ?: KalapaSDK.config.mainTextColor
+                val mainColor = mainColor ?: KalapaSDK.config.mainColor
+                Helpers.printLog("Title: $title - $message ")
+                textView.text = title ?: KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_alert_title))
+                body.text = message ?: KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_please_wait))
 
                 textView.setTextColor(Color.parseColor(mainTextColor))
                 body.setTextColor(Color.parseColor(mainTextColor))
-                if (title != null && title.isNotEmpty())
+                if (!title.isNullOrEmpty())
                     textView.text = title
-                if (message != null && message.isNotEmpty())
+                if (!message.isNullOrEmpty())
                     body.text = message
                 if (progressType == ProgressViewType.LOADING || gifImageView == null) {
                     gifImageView?.visibility = View.GONE

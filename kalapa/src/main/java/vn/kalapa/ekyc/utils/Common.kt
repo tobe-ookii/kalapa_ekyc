@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.nfc.NfcManager
+import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.util.Log
-import vn.kalapa.ekyc.KalapaSDK
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -35,7 +35,7 @@ class Common {
 
 
     companion object {
-        val MY_PREFERENCES = "KLP_FACE_OTP_PREF"
+        val MY_PREFERENCES = PACKAGE_NAME
         val MY_KEY_TOKEN = "KLP_EKYC_KEY_TOKEN"
         val MY_KEY_LANGUAGE = "KLP_EKYC_KEY_LANGUAGE"
         val MY_KEY_LIVENESS_VERSION = "KLP_EKYC_KEY_LIVENESS_VERSION"
@@ -66,8 +66,7 @@ class Common {
         }
 
         fun isOnline(context: Context): Boolean {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (connectivityManager != null) {
                 val capabilities =
                     connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)

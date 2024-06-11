@@ -1,5 +1,6 @@
 package vn.kalapa.ekyc
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -35,14 +36,13 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.utils.LanguageUtils
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
 import vn.kalapa.ekyc.utils.BitmapUtil
-import vn.kalapa.ekyc.utils.Common
-import vn.kalapa.ekyc.views.ProgressView
 import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
     companion object {
         lateinit var session: String
-        lateinit var config: KalapaSDKConfig
+        @SuppressLint("StaticFieldLeak")
+        internal lateinit var config: KalapaSDKConfig
         lateinit var handler: KalapaHandler
         lateinit var kalapaResult: KalapaResult
         lateinit var frontResult: FrontResult
@@ -52,6 +52,9 @@ class KalapaSDK {
         lateinit var frontBitmap: Bitmap
         lateinit var backBitmap: Bitmap
 
+        fun isConfigInitialized(): Boolean{
+            return this::config.isInitialized
+        }
         fun isFrontAndBackResultInitialized(): Boolean {
             return this::frontResult.isInitialized
         }
@@ -68,6 +71,9 @@ class KalapaSDK {
             return this::backBitmap.isInitialized
         }
 
+        fun configure(sdkConfig: KalapaSDKConfig){
+            this.config = sdkConfig
+        }
         var flowType: FaceOTPFlowType = FaceOTPFlowType.ONBOARD
         fun startLivenessForResult(
             activity: Activity,
@@ -496,20 +502,19 @@ class KalapaSDKConfig private constructor(
     var minNFCRetry: Int = 3,
     var baseURL: String = "api-ekyc.kalapa.vn/face-otp",
     var useNFC: Boolean = true,
-    var captureImage: Boolean = true
+    var captureImage: Boolean = false
 ) {
     class KalapaSDKConfigBuilder(val context: Context) {
-
         var backgroundColor: String = "#FFFFFF"
         var mainColor: String = "#62A583"
         var mainTextColor: String = "#65657B"
         var btnTextColor: String = "#FFFFFF"
-        var livenessVersion: Int = 0
+        var livenessVersion: Int = 1
         var language: String = "vi"
-        var minNFCRetry: Int = 3
+        private val minNFCRetry: Int = 3
         var baseURL: String = "api-ekyc.kalapa.vn/face-otp"
-        var useNFC: Boolean = true
-        var captureImage: Boolean = true
+        private val useNFC: Boolean = true
+        private val captureImage: Boolean = false
 
         fun build(): KalapaSDKConfig {
             return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL, useNFC, captureImage)
@@ -536,7 +541,7 @@ class KalapaSDKConfig private constructor(
         }
 
         fun withLivenessVersion(version: Int): KalapaSDKConfigBuilder {
-            if (version in 0..2)
+            if (version in 1..3)
                 this.livenessVersion = version
             return this
         }
@@ -557,20 +562,20 @@ class KalapaSDKConfig private constructor(
             return this
         }
 
-        fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
-            this.useNFC = useNFC
-            return this
-        }
+//        private fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
+//            this.useNFC = useNFC
+//            return this
+//        }
 
-        fun withMinNFCTimes(nfcRetryTimes: Int): KalapaSDKConfigBuilder {
-            this.minNFCRetry = nfcRetryTimes
-            return this
-        }
+//        fun withMinNFCTimes(nfcRetryTimes: Int): KalapaSDKConfigBuilder {
+//            this.minNFCRetry = nfcRetryTimes
+//            return this
+//        }
 
-        fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
-            this.captureImage = captureImage
-            return this
-        }
+//        private fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
+//            this.captureImage = captureImage
+//            return this
+//        }
     }
 
     lateinit var languageUtils: LanguageUtils
@@ -583,19 +588,19 @@ class KalapaSDKConfig private constructor(
 
     private fun pullLanguage() {
         Helpers.printLog("| $language")
-        val languageJsonBody: String? = GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
-        if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
-            Helpers.printLog("pullLanguage $languageJsonBody")
-            val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
-            if ((klpLanguageModel?.error != null) && (klpLanguageModel.error.code == 0) && klpLanguageModel.data != null) {
-                // Thành công
-                if (klpLanguageModel.data.data?.sdk?.isNotEmpty() == true) {
-                    Helpers.printLog("setLanguage ${klpLanguageModel.data.data.sdk}")
-                    languageUtils = LanguageUtils(context)
-                    languageUtils.setLanguage(klpLanguageModel.data.data.sdk)
+        languageUtils = LanguageUtils(context)
+            val languageJsonBody: String? = GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
+            if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
+                Helpers.printLog("pullLanguage $languageJsonBody")
+                val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
+                if ((klpLanguageModel?.error != null) && (klpLanguageModel.error.code == 0) && klpLanguageModel.data != null) {
+                    // Thành công
+                    if (klpLanguageModel.data.data?.sdk?.isNotEmpty() == true) {
+                        Helpers.printLog("setLanguage ${klpLanguageModel.data.data.sdk}")
+                        languageUtils.setLanguage(klpLanguageModel.data.data.sdk)
+                    }
                 }
             }
-        }
     }
 }
 

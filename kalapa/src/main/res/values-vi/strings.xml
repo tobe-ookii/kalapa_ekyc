@@ -259,21 +259,5 @@
     <string name="klp_field_religion">Tôn giáo</string>
     <string name="klp_liveness_face_too_close_to_border">Khuôn mặt sát biên, vui lòng đặt vào chính giữa</string>
     <string name="klp_message_please_change_device_to_scan_nfc">Thiết bị của bạn không hỗ trợ quét e-chip, vui lòng đổi thiết bị khác và quay lại xác thực NFC sau</string>
-    <string name="klp_liveness_too_long">Quá thời gian thực hiện, vui lòng thực hiện lại</string>
-    <string name="klp_liveness_holdon">Vui lòng giữ nguyên trạng thái khuôn mặt</string>
-    <string name="klp_liveness_go_far">Đặt gương mặt tại vị trí xa khung hình</string>
-    <string name="klp_liveness_come_close">Đặt gương mặt tại vị trí gần khung hình</string>
-    <string name="klp_flow_ekyc">eKYC</string>
-    <string name="klp_flow_nfc_ekyc">eKYC &amp; NFC</string>
-    <string name="klp_flow_nfc_only">NFC</string>
-    <string name="klp_flow_type">Luồng xác thực eKYC</string>
-    <string name="klp_upgrade_your_account">Nâng hạng tài khoản</string>
-    <string name="klp_do_you_want_to_verify_nfc_to_upgrade">Bạn có muốn xác thực chip điện tử để nâng hạng tài khoản không?</string>
-    <string name="klp_btn_upgrade">Nâng hạng</string>
-    <string name="you_need_to_scan_mrz_first">Bạn cần quét MRZ trước</string>
-    <string name="klp_focus_on_mrz">Vui lòng đặt toàn bộ phần MRZ vào trong khung hình và để nhìn được rõ nét không chói sáng</string>
-    <string name="congratulations">Chúc mừng</string>
-    <string name="you_have_upgraded_account">Bạn đã nâng hạng tài khoản của mình thành công</string>
-    <string name="klp_setting_advantage_check">Kiểm tra nâng cao</string>
     <string name="klp_title_mrz">Quét thông tin MRZ</string>
 </resources>

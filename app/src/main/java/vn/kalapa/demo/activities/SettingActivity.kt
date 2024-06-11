@@ -488,7 +488,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
         val enableNFC = Helpers.getBooleanPreferences(MY_KEY_ENABLE_NFC, true)
         val captureImage =
-            Helpers.getBooleanPreferences(MY_KEY_CAPTURE_IMAGE, true)
+            Helpers.getBooleanPreferences(MY_KEY_CAPTURE_IMAGE, false)
         val verifyCheck =
             Helpers.getBooleanPreferences(MY_KEY_VERIFY_CHECK, false)
         val fraudCheck =

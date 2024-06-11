@@ -2,6 +2,7 @@ package vn.kalapa.ekyc.utils
 
 import android.content.Context
 import vn.kalapa.ekyc.KalapaSDK
+import java.util.Locale
 import kotlin.collections.HashMap
 
 class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, String> = HashMap()) {
@@ -15,16 +16,16 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
     fun getLanguageString(tag: String): String {
 //        val string = Helpers.getStringPreferences(activity, tag)
         Helpers.printLog("Get $tag: $mapLanguage")
-        val k = tag.toLowerCase()
-        if (mapLanguage[k] != null) return mapLanguage[k]!!
-//        else if (KalapaSDK.config.language.contains("vi") && VI_DEFAULT[k] != null)
-//            return VI_DEFAULT[k]!!
-//        else if (KalapaSDK.config.language.contains("ko") && KO_DEFAULT[k] != null)
-//            return KO_DEFAULT[k]!!
-//        else if (EN_DEFAULT[k] != null)
-//            return EN_DEFAULT[k]!!
-//        else
-        return tag
+        val k = tag.lowercase(Locale.ROOT)
+        return if (mapLanguage[k] != null) mapLanguage[k]!!
+        else if (KalapaSDK.config.language.contains("vi") && VI_DEFAULT[k] != null)
+            VI_DEFAULT[k]!!
+        else if (KalapaSDK.config.language.contains("ko") && KO_DEFAULT[k] != null)
+            KO_DEFAULT[k]!!
+        else if (EN_DEFAULT[k] != null)
+            EN_DEFAULT[k]!!
+        else
+            tag
     }
 
     private val EN_DEFAULT = mapOf(
@@ -51,8 +52,8 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
         "klp_guide_nfc_position_1" to "The NFC location locates in the back of your device, please try moving the card slowly to find the correct spot.",
         "klp_guide_nfc_position_2" to "Keep the card still when the vibration occurs.",
         "klp_guide_title" to "Please make sure that:",
-        "klp_guild_liveness_closer_face" to "Slowly move you face towards the camera",
-        "klp_guild_liveness_not_face" to "Keep your face centered and within the camera frame",
+        "klp_guide_liveness_closer_face" to "Slowly move you face towards the camera",
+        "klp_guide_liveness_no_face" to "Keep your face centered and within the camera frame",
         "klp_leave_confirm_content" to "Do you want to terminate the current process?",
         "klp_leave_confirm_title" to "Process termination!",
         "klp_liveness_error_timeout" to "Taking too long, please retry",
@@ -95,7 +96,7 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
         "klp_nfc_title" to "Verify electronic chip",
         "klp_not_support_nfc" to "This device does not support NFC",
         "klp_renew_nfc" to "Refreshing the NFC module, please wait...",
-        "klp_guild_liveness_further_face" to "Please move a bit away",
+        "klp_guide_liveness_further_face" to "Please move a bit away",
         "klp_warning_title" to "Something went wrong",
         "klp_emulator_warning_body" to "This application is not allowed to run on emulators",
         "klp_virtual_camera_warning_body" to "Invalid camera settings",
@@ -126,8 +127,8 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
         "klp_guide_nfc_position_1" to "Vị trí NFC ở phía sau điện thoại, vui lòng chạm thẻ và di chuyển chậm để tìm điểm tiếp xúc.",
         "klp_guide_nfc_position_2" to "Khi có tín hiệu rung, giữ nguyên thẻ cho đến khi có thông báo thành công.",
         "klp_guide_title" to "Bạn chú ý đảm bảo:",
-        "klp_guild_liveness_closer_face" to "Vui lòng di chuyển khuôn mặt lại gần camera",
-        "klp_guild_liveness_not_face" to "Khuôn mặt đang quá sát viền camera, vui lòng chỉnh lại",
+        "klp_guide_liveness_closer_face" to "Vui lòng di chuyển khuôn mặt lại gần camera",
+        "klp_guide_liveness_no_face" to "Khuôn mặt đang quá sát viền camera, vui lòng chỉnh lại",
         "klp_leave_confirm_content" to "Bạn có chắc muốn thoát không?",
         "klp_leave_confirm_title" to "Thoát khỏi quá trình xác thực!",
         "klp_liveness_error_timeout" to "Quá thời gian thực hiện, vui lòng thực hiện lại",
@@ -169,7 +170,7 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
         "klp_title_liveness_detection" to "Xác thực chân dung",
         "klp_toggle_flash_error" to "Không thể thay đổi trạng thái flash, vui lòng thử lại.",
         "klp_yes" to "Có",
-        "klp_guild_liveness_further_face" to "Vui lòng di chuyển ra xa một chút",
+        "klp_guide_liveness_further_face" to "Vui lòng di chuyển ra xa một chút",
         "klp_warning_title" to "Có lỗi xảy ra",
         "klp_emulator_warning_body" to "Ứng dụng không được phép chạy trên máy ảo",
         "klp_virtual_camera_warning_body" to "Camera không hợp lệ",
@@ -201,8 +202,8 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
         "klp_guide_nfc_position_1" to "NFC 위치는 기기의 뒷면에 있습니다, 올바른 위치를 찾기 위해 카드를 천천히 움직여 보세요.",
         "klp_guide_nfc_position_2" to "진동이 일어나면 카드를 그대로 두세요.",
         "klp_guide_title" to "다음을 확인해 주세요:",
-        "klp_guild_liveness_closer_face" to "카메라를 향해 천천히 얼굴을 움직여 주세요",
-        "klp_guild_liveness_not_face" to "얼굴을 중앙에 두고 카메라 프레임 내에 있도록 유지하세요",
+        "klp_guide_liveness_closer_face" to "카메라를 향해 천천히 얼굴을 움직여 주세요",
+        "klp_guide_liveness_no_face" to "얼굴을 중앙에 두고 카메라 프레임 내에 있도록 유지하세요",
         "klp_leave_confirm_content" to "현재 과정을 종료하시겠습니까?",
         "klp_leave_confirm_title" to "과정 종료!",
         "klp_liveness_error_timeout" to "너무 오래 걸립니다, 다시 시도해 주세요",
@@ -244,7 +245,7 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
         "klp_title_liveness_detection" to "얼굴 검증",
         "klp_toggle_flash_error" to "플래시 상태를 변경할 수 없습니다, 나중에 다시 시도해 주세요.",
         "klp_yes" to "예",
-        "klp_guild_liveness_further_face" to "조금 뒤로 가세요",
+        "klp_guide_liveness_further_face" to "조금 뒤로 가세요",
         "klp_warning_title" to "문제가 발생했습니다",
         "klp_emulator_warning_body" to "이 애플리케이션은 에뮬레이터에서 실행할 수 없습니다",
         "klp_virtual_camera_warning_body" to "카메라 설정이 잘못되었습니다",

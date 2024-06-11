@@ -107,4 +107,6 @@
     <string name="klp_setting_capture_image">Capture image</string>
     <string name="please_choose_atleast_one_document">Please select at least one document to Please select at least one document to proceed</string>
     <string name="klp_face_otp_error_happended">Error happened due to </string>
+    <string name="klp_faceotp_loading">Loading…</string>
+
 </resources>

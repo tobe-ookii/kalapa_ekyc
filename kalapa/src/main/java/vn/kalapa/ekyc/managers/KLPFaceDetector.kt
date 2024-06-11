@@ -63,7 +63,7 @@ interface KLPFaceDetectorListener {
 //                } else {
 //                    faceDetectConfidence--
 //                    if (faceDetectConfidence < 0) faceDetectConfidence = 0
-//                    klpFaceDetectorListener.onMessage(null, context.getString(R.string.klp_guild_liveness_not_face))
+//                    klpFaceDetectorListener.onMessage(null, context.getString(R.string.klp_guide_liveness_no_face))
 //                    Helpers.printLog("No face detected $cameraOrientation")
 //                }
 //            }
