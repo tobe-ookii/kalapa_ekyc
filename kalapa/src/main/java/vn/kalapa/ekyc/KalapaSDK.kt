@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream
 class KalapaSDK {
     companion object {
         lateinit var session: String
+
         @SuppressLint("StaticFieldLeak")
         internal lateinit var config: KalapaSDKConfig
         lateinit var handler: KalapaHandler
@@ -51,10 +52,10 @@ class KalapaSDK {
         lateinit var faceBitmap: Bitmap
         lateinit var frontBitmap: Bitmap
         lateinit var backBitmap: Bitmap
-
-        fun isConfigInitialized(): Boolean{
-            return this::config.isInitialized
+        fun isHandlerInitialized(): Boolean {
+            return this::handler.isInitialized
         }
+
         fun isFrontAndBackResultInitialized(): Boolean {
             return this::frontResult.isInitialized
         }
@@ -71,9 +72,10 @@ class KalapaSDK {
             return this::backBitmap.isInitialized
         }
 
-        fun configure(sdkConfig: KalapaSDKConfig){
+        fun configure(sdkConfig: KalapaSDKConfig) {
             this.config = sdkConfig
         }
+
         var flowType: FaceOTPFlowType = FaceOTPFlowType.ONBOARD
         fun startLivenessForResult(
             activity: Activity,
@@ -512,9 +514,9 @@ class KalapaSDKConfig private constructor(
         var livenessVersion: Int = 1
         var language: String = "vi"
         private val minNFCRetry: Int = 3
-        var baseURL: String = "api-ekyc.kalapa.vn/face-otp"
-        private val useNFC: Boolean = true
-        private val captureImage: Boolean = false
+        var baseURL: String = "https://ekyc-api.kalapa.vn"
+        var useNFC: Boolean = true
+        var captureImage: Boolean = false
 
         fun build(): KalapaSDKConfig {
             return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL, useNFC, captureImage)
@@ -562,20 +564,21 @@ class KalapaSDKConfig private constructor(
             return this
         }
 
-//        private fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
-//            this.useNFC = useNFC
-//            return this
-//        }
 
+        fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
+            this.useNFC = useNFC
+            return this
+        }
+//
 //        fun withMinNFCTimes(nfcRetryTimes: Int): KalapaSDKConfigBuilder {
 //            this.minNFCRetry = nfcRetryTimes
 //            return this
 //        }
 
-//        private fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
-//            this.captureImage = captureImage
-//            return this
-//        }
+        fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
+            this.captureImage = captureImage
+            return this
+        }
     }
 
     lateinit var languageUtils: LanguageUtils
@@ -589,18 +592,18 @@ class KalapaSDKConfig private constructor(
     private fun pullLanguage() {
         Helpers.printLog("| $language")
         languageUtils = LanguageUtils(context)
-            val languageJsonBody: String? = GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
-            if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
-                Helpers.printLog("pullLanguage $languageJsonBody")
-                val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
-                if ((klpLanguageModel?.error != null) && (klpLanguageModel.error.code == 0) && klpLanguageModel.data != null) {
-                    // Thành công
-                    if (klpLanguageModel.data.data?.sdk?.isNotEmpty() == true) {
-                        Helpers.printLog("setLanguage ${klpLanguageModel.data.data.sdk}")
-                        languageUtils.setLanguage(klpLanguageModel.data.data.sdk)
-                    }
+        val languageJsonBody: String? = GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
+        if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
+            Helpers.printLog("pullLanguage $languageJsonBody")
+            val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
+            if ((klpLanguageModel?.error != null) && (klpLanguageModel.error.code == 0) && klpLanguageModel.data != null) {
+                // Thành công
+                if (klpLanguageModel.data.data?.sdk?.isNotEmpty() == true) {
+                    Helpers.printLog("setLanguage ${klpLanguageModel.data.data.sdk}")
+                    languageUtils.setLanguage(klpLanguageModel.data.data.sdk)
                 }
             }
+        }
     }
 }
 

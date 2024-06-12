@@ -1,4 +1,5 @@
 package vn.kalapa.demo;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -156,7 +157,7 @@ public class MainActivityJava extends BaseActivity {
 
     private void startEKYC() {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
-            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, null, null);
+            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, null, null, null, null);
             KalapaAPI.Companion.doRequestGetSession(preferencesConfig.getEnv(), preferencesConfig.getToken(),
                     preferencesConfig.getCaptureImage(),
                     preferencesConfig.getUseNFC(),
@@ -502,7 +503,6 @@ public class MainActivityJava extends BaseActivity {
                     .captureImage(preferencesConfig.getCaptureImage())
                     .build();
 //            if (shouldUpdateLanguage) sdkConfig.pullLanguage();
-            KalapaSDK.config = sdkConfig;
         } else {
             LogUtils.Companion.printLog("Setting preferencesConfig is null");
         }
@@ -533,10 +533,6 @@ public class MainActivityJava extends BaseActivity {
                     .withLanguage(preferencesConfig.getLanguage())
                     .build();
             LogUtils.Companion.printLog("Pulling language: " + sdkConfig.getLanguage() + " - " + lang);
-//            if (shouldUpdateLanguage){
-//                sdkConfig.pullLanguage();
-//            }
-            KalapaSDK.config = sdkConfig;
         }
     }
 

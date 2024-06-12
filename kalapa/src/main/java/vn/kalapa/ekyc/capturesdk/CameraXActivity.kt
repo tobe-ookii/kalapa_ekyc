@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -13,8 +14,10 @@ import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.icu.text.SimpleDateFormat
+import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.util.Size
 import android.view.Surface
@@ -31,10 +34,13 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import vn.kalapa.R
+import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.activity.BaseActivity
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.CameraUtils
@@ -98,15 +104,60 @@ abstract class CameraXActivity(
         setupCamera()
     }
 
+    private var declineCount = 0
     private fun setupCamera() {
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
         } else {
-            requestPermissions()
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted
+                // Show an explanation to the user *asynchronously*
+                // After the user sees the explanation, try again to request the permission.
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA))
+                    askToGoToSetting()
+                else {
+                    // No explanation needed; request the permission
+                    declineCount++
+                    if (declineCount < 3)
+                        requestPermissions()
+                    else
+                        askToGoToSetting()
+                }
+            } else {
+                // Permission has already been granted
+            }
         }
         // Set up the listeners for take photo and video capture buttons
         cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    private fun askToGoToSetting() {
+        Helpers.showDialog(this@CameraXActivity,
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera_title)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_cancel_button)),
+            R.drawable.frowning_face,
+            object : DialogListener {
+                override fun onYes() {
+                    // The user has permanently denied the camera permission
+                    // Open the app's system settings to allow the user to enable the permission
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri: Uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+
+                override fun onNo() {
+                    // Leave
+                    if (KalapaSDK.isHandlerInitialized())
+                        KalapaSDK.handler.onError(KalapaSDKResultCode.PERMISSION_DENIED)
+                    finish()
+                }
+
+            }
+        )
     }
 
     private fun reFocus() {

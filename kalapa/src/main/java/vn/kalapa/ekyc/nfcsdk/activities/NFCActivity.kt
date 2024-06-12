@@ -257,23 +257,32 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                         Helpers.printLog("NFCActivity initNFC isNFCSupport $isNFCSupport isNFCNotEnabled $isNFCNotEnabled")
                         if (!isNFCNotEnabled && isNFCSupport) {
                             tvError.setTextColor(resources.getColor(R.color.ekyc_green))
-                            getIntentData()
                             tvError.visibility = View.INVISIBLE
                             btnScanNFC.visibility = View.VISIBLE
                             llPleaseMakeSure.visibility = View.VISIBLE
                             llShowPosition.visibility = View.VISIBLE
+                            btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_start_button))
+                            btnScanNFC.setOnClickListener {
+                                onButtonScanClicked()
+                            }
                         } else {
                             llPleaseMakeSure.visibility = View.GONE
                             llShowPosition.visibility = View.GONE
                             nfcUtils.forceCall = false
                             btnScanNFC.visibility = View.GONE
                             tvError.text =
-                                if (isNFCNotEnabled)
+                                if (isNFCNotEnabled) {
+                                    btnScanNFC.visibility = View.VISIBLE
+                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm))
+                                    btnScanNFC.setOnClickListener {
+                                        KLPNFCUtils.openNFCSetting(this@NFCActivity)
+                                    }
                                     KalapaSDK.config.languageUtils.getLanguageString(
                                         resources.getString(
                                             R.string.klp_error_nfc_not_enabled
                                         )
-                                    ) else {
+                                    )
+                                } else {
                                     btnScanNFC.visibility = View.VISIBLE
                                     btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm))
                                     btnScanNFC.setOnClickListener {
@@ -290,6 +299,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                     }
 
                 }
+
             })
 
     }
@@ -337,6 +347,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         Helpers.printLog("$TAG - onResume")
         super.onResume()
 //        nfcUtils.isOnBackground = false
+        getIntentData()
         nfcUtils.callOnResume()
     }
 
