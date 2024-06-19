@@ -32,7 +32,7 @@ import vn.kalapa.demo.models.NFCVerificationData;
 import vn.kalapa.demo.network.Client;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
-import vn.kalapa.ekyc.FaceOTPFlowType;
+import vn.kalapa.ekyc.KalapaFlowType;
 import vn.kalapa.ekyc.KalapaCaptureHandler;
 import vn.kalapa.ekyc.KalapaHandler;
 import vn.kalapa.ekyc.KalapaNFCHandler;
@@ -55,13 +55,11 @@ public class MainActivityJava extends BaseActivity {
     private Button ekycButton;
     private TextView tvWelcome;
     private TextView tvWelcomeSubtitle;
-    private View container;
     private TextView tvVersion;
 
     private PreferencesConfig preferencesConfig;
 
     private int livenessVersion = Common.LIVENESS_VERSION.PASSIVE.getVersion();
-    private String scenario = FaceOTPFlowType.VERIFY.name();
     private KalapaSDKConfig sdkConfig;
 
     @Override
@@ -74,93 +72,118 @@ public class MainActivityJava extends BaseActivity {
             if (isAppConfigSet()) {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {
                     Helpers.Companion.showDialog(MainActivityJava.this,
-                            getResources().getString(R.string.klp_face_otp_alert_title),
-                            getResources().getString(R.string.klp_face_otp_error_network), R.drawable.frowning_face);
+                            getResources().getString(R.string.klp_demo_notice_title),
+                            getResources().getString(R.string.klp_demo_error_network), R.drawable.frowning_face);
                     return;
                 }
-//                startLivenessAndNFC(null);
-//                String message = "Something!!!";
-//                LogUtils.Companion.printLog("Try Encrypt " + message);
-//                LogUtils.Companion.printLog(AESCryptor.encryptText(message));
-//                startFaceOTP();
-//                startCapture();
-                startEKYC();
-
-//                KalapaSDK.Companion.startConfirmForResult(MainActivityJava.this,
-//                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc0ODQzZDViZjEyMDQyOWI4YjYxNGRjMzZkODQ2NDVlIiwidWlkIjoiNzUyZWNiY2QzZGNjNGQyYWE4YzgyNWZlYjQwZjgxMjQiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE3NzM2NDI5fQ.2TkyQF_us1fJj_04WOlUf5jj4e-MvwDHP1H5QuTprmk"
-//                        , sdkConfig, new KalapaHandler() {
-//                            @Override
-//                            public void onError(@NonNull KalapaSDKResultCode resultCode) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onComplete(@NonNull KalapaResult kalapaResult) {
-//                                super.onComplete(kalapaResult);
-//                                ExampleGlobalClass.kalapaResult = kalapaResult;
-//                                if (KalapaSDK.Companion.isFaceBitmapInitialized()) ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
-//                                if (KalapaSDK.Companion.isFrontBitmapInitialized()) ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
-//                                if (KalapaSDK.Companion.isBackBitmapInitialized()) ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
-//                                ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
-//                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-//                            }
-//                        });
-
+//                startEKYC();
+                startCustomEKYC();
             }
         });
     }
 
-    private void startCapture() {
-        KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
-            @Override
-            public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
-                callback.sendDone(() -> {
-                    KalapaSDK.Companion.startCaptureBackForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
-                        @Override
-                        public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
-                            KalapaSDK.Companion.startLivenessForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
-                                @Override
-                                public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
-                                    callback.sendDone(() -> {
-                                        return null;
-                                    });
-                                }
-
-                                @Override
-                                public void onError(@NonNull KalapaSDKResultCode resultCode) {
-
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onError(@NonNull KalapaSDKResultCode resultCode) {
-
-                        }
+    KalapaCaptureHandler ocrHandler = new KalapaCaptureHandler() {
+        @Override
+        public void process(@NonNull String base64, @NonNull KalapaSDKMediaType kalapaSDKMediaType, @NonNull KalapaSDKCallback kalapaSDKCallback) {
+            // SDK will return liveness face as base64. mediaType is always PORTRAIT.
+            // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
+            boolean asumeSuccessProcess = true;
+            if (kalapaSDKMediaType == KalapaSDKMediaType.FRONT) {
+                // Process your FRONT side Document image
+                if (asumeSuccessProcess)
+                    kalapaSDKCallback.sendDone(() -> {
+                        // SDK will call this function right before close the SDK. You need to define what to do next.
+                        // If nothing declared here, SDK will shut down and simply finish the flow
+                        // Example: Call get Back-side document or liveness step
+                        startBackCaptureStep();
+                        return null;
                     });
+                else
+                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
+            } else if (kalapaSDKMediaType == KalapaSDKMediaType.BACK) { // BACK
+                // Process your BACK side Document image
+                if (asumeSuccessProcess)
+                    kalapaSDKCallback.sendDone(() -> {
+                        // Tell SDK what should do next. Example: Call liveness step
+                        startLivenessStep();
+                        return null;
+                    });
+                else
+                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
+            } else if (kalapaSDKMediaType == KalapaSDKMediaType.PORTRAIT) { // PORTRAIT
+                // Process your PORTRAIT image
+                if (asumeSuccessProcess)
+                    kalapaSDKCallback.sendDone(() -> {
+                        // Tell SDK what should do next. Example: Call nfc step
+                        startNFCStep();
+                        return null;
+                    });
+                else
+                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
+            } else {
+                LogUtils.Companion.printLog("Should not go here");
+            }
+        }
+
+        @Override
+        public void onError(@NonNull KalapaSDKResultCode kalapaSDKResultCode) {
+
+        }
+    };
+    private KalapaNFCHandler nfcHandler = new KalapaNFCHandler("<OPTIONAL_YOUR_MRZ_IF_YOU_HAVE_FROM_PREVIOUS_STEPS>") {
+        @Override
+        public void process(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
+            // SDK will return valid id card number that read from back-side card or your input mrz if it valid and raw nfc data.
+            // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
+            boolean asumeSuccessProcess = true;
+            if (asumeSuccessProcess)
+                callback.sendDone(() -> {
+                    // SDK will call this function right before close the SDK. You need to define what to do next.
+                    // If nothing declared here, SDK will shut down and simply finish the flow
+                    // In your scenario, after an NFC flow. Next step is liveness, so you will call
                     return null;
                 });
-            }
+            else
+                callback.sendError("Tell SDK what goes wrong");
+        }
 
-            @Override
-            public void onError(@NonNull KalapaSDKResultCode resultCode) {
+        @Override
+        public void onError(@NonNull KalapaSDKResultCode resultCode) {
+            // SDK throw error if user can not finish the nfc step.
+            // Usual error code is: USER_LEAVE and DEVICE_NOT_SUPPORTED
+        }
+    };
 
-            }
-        });
+    private void startCustomEKYC() {
+        startFrontCaptureStep();
     }
 
-    public void startFaceOTP() {
-//        if (preferencesConfig.getScenario().equals(FaceOTPFlowType.PASSPORT.name()))
-//            startPassport();
-//        else startLiveness();
+    private void startFrontCaptureStep() {
+        KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, ocrHandler);
+    }
+
+    private void startBackCaptureStep() {
+        KalapaSDK.Companion.startCaptureBackForResult(MainActivityJava.this, sdkConfig, ocrHandler);
+    }
+
+    private void startNFCStep() {
+        KalapaSDK.Companion.startNFCForResult(MainActivityJava.this, sdkConfig, nfcHandler);
+    }
+
+    private void startLivenessStep() {
+        KalapaSDK.Companion.startLivenessForResult(MainActivityJava.this, sdkConfig, ocrHandler);
     }
 
     private void startEKYC() {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
-            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, null, null, null, null);
-            KalapaAPI.Companion.doRequestGetSession(preferencesConfig.getEnv(), preferencesConfig.getToken(),
-                    preferencesConfig.getCaptureImage(),
-                    preferencesConfig.getUseNFC(),
+            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
+
+            KalapaFlowType flowType = !preferencesConfig.getCaptureImage() && !preferencesConfig.getUseNFC() ? KalapaFlowType.NA :
+                    preferencesConfig.getCaptureImage() ? preferencesConfig.getUseNFC() ? KalapaFlowType.NFC_EKYC : KalapaFlowType.EKYC : KalapaFlowType.NFC_ONLY;
+            KalapaAPI.Companion.doRequestGetSession(
+                    preferencesConfig.getEnv(),
+                    preferencesConfig.getToken(),
+                    flowType,
                     preferencesConfig.getVerifyCheck() + "",
                     preferencesConfig.getFraudCheck() + "",
                     preferencesConfig.getNormalCheckOnly() + "",
@@ -169,11 +192,11 @@ public class MainActivityJava extends BaseActivity {
                     preferencesConfig.getFaceMatchThreshold(),
                     createSessionResult -> {
                         ProgressView.Companion.hideProgress(true);
-                        LogUtils.Companion.printLog("doRequestGetSession createSessionResult: " + createSessionResult.component1());
-                        KalapaSDK.Companion.startFullEKYC(MainActivityJava.this, createSessionResult.component1(), sdkConfig, new KalapaHandler() {
+                        LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.component3(), createSessionResult.component1());
+                        KalapaSDK.Companion.startFullEKYC(MainActivityJava.this, createSessionResult.component1(), createSessionResult.component3(), sdkConfig, new KalapaHandler() {
                             @Override
                             public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
+                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
                             }
 
                             @Override
@@ -195,7 +218,7 @@ public class MainActivityJava extends BaseActivity {
                     }, kalapaError -> {
                         ProgressView.Companion.hideProgress(true);
                         Helpers.Companion.showDialog(MainActivityJava.this,
-                                getString(R.string.klp_face_otp_alert_title),
+                                getString(R.string.klp_demo_notice_title),
                                 kalapaError.getMessageError(),
                                 R.drawable.ic_failed_solid
                         );
@@ -204,275 +227,11 @@ public class MainActivityJava extends BaseActivity {
                     });
         } else {
             Helpers.Companion.showDialog(MainActivityJava.this,
-                    getString(R.string.klp_face_otp_alert_title),
-                    getString(R.string.klp_face_otp_error_network),
+                    getString(R.string.klp_demo_notice_title),
+                    getString(R.string.klp_demo_error_network),
                     R.drawable.ic_failed_solid
             );
         }
-    }
-
-    public void startLivenessAndNFC(String customBaseURL) {
-        KalapaSDK.Companion.startLivenessForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
-            String selfieFace = null;
-            String NFC_SELFIE_PATH = (customBaseURL != null ? customBaseURL : preferencesConfig.getEnv()) + "/verify?lang=" + preferencesConfig.getLanguage();
-
-            @Override
-            public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
-                selfieFace = base64;
-                callback.sendDone(() -> {
-                    KalapaSDK.Companion.startNFCForResult(MainActivityJava.this, sdkConfig, new KalapaNFCHandler("") {
-                        @Override
-                        public void process(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
-                            /*  Check NFC + Face
-                             *  What if Face not valid (At Selfie Step?)
-                             * */
-                            byte[] imageInBytes = BitmapUtil.Companion.convertBase64ToBytes(base64);
-
-                            RequestBody requestFile = RequestBody.create(imageInBytes);
-                            new Client(preferencesConfig.getEnv()).postFormData(NFC_SELFIE_PATH, new HashMap<String, String>() {{
-                                        put("Authorization",
-//                                                preferencesConfig.getToken());
-                                                "5bb42ea331ee010001a0b7d76py45b3907n6vki4on4a087778352090");
-                                    }},
-                                    new HashMap<String, String>() {{
-                                        put("user_id", idCardNumber);
-//                                        put("nfc_data", nfcData);
-                                        put("signature", AESCryptor.encryptText(AESCryptor.hash(imageInBytes)));
-                                        put("nfc_data", AESCryptor.encryptText(nfcData));
-                                    }},
-                                    requestFile, "face_image", new Client.RequestListener() {
-
-                                        @Override
-                                        public void timeout() {
-                                            LogUtils.Companion.printLog("timeout");
-                                        }
-
-                                        @Override
-                                        public void fail(@NonNull String error) {
-                                            LogUtils.Companion.printLog("fail" + error);
-                                            callback.sendError(error);
-                                        }
-
-                                        @Override
-                                        public void success(@NonNull JSONObject jsonObject) {
-                                            LogUtils.Companion.printLog("success" + jsonObject);
-                                            // Done!
-                                            callback.sendDone(() -> {
-                                                LogUtils.Companion.printLog("startNFCOnly ", jsonObject.toString());
-                                                NFCVerificationData nfcData = NFCVerificationData.Companion.fromJson(jsonObject.toString());
-                                                ExampleGlobalClass.nfcData = nfcData;
-                                                ExampleGlobalClass.faceImage = BitmapUtil.Companion.base64ToBitmap(base64);
-                                                LogUtils.Companion.printLog("nfcData ", nfcData);
-
-                                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-//                                                    Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_faceOTP_register_successful), getString(R.string.klp_faceOTP_register_successful_desc), R.drawable.image_checkmark);
-                                                return null;
-                                            });
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                            Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-                        }
-                    });
-                    return null;
-                });
-            }
-
-            @Override
-            public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-            }
-        });
-    }
-
-    private void startPassport() {
-        KalapaSDK.Companion.startCapturingPassportForResult(MainActivityJava.this, sdkConfig, new KalapaCaptureHandler() {
-            String PASSPORT_PATH = "/passport/check";
-
-            @Override
-            public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-            }
-
-            @Override
-            public void process(@NonNull String base64, @NonNull KalapaSDKMediaType mediaType, @NonNull KalapaSDKCallback callback) {
-                RequestBody requestFile = RequestBody.create(BitmapUtil.Companion.convertBase64ToBytes(base64));
-                String fullUrl = sdkConfig.getBaseURL() + PASSPORT_PATH + "?lang=" + sdkConfig.getLanguage();
-//                         RequestBody.create(MediaType.get("multipart/form-data"));
-//                        new Client(BASE_URL).postFormData(SELFIE_PATH, new HashMap<>(), requestFile, "face_image", new Client.RequestListener() {
-                new Client(sdkConfig.getBaseURL()).postFormData(fullUrl, new HashMap<>(), requestFile, null, new Client.RequestListener() {
-                    //                new Client(sdkConfig.getBaseURL()).postFormData(fullUrl, new HashMap<>(), null, requestFile, null, new Client.RequestListener() {
-                    @Override
-                    public void timeout() {
-
-                    }
-
-                    @Override
-                    public void fail(@NonNull String error) {
-                        callback.sendError(error);
-                    }
-
-                    @Override
-                    public void success(@NonNull JSONObject jsonObject) {
-                        callback.sendDone(() -> {
-                            LogUtils.Companion.printLog("Scenario? ", scenario);
-                            try {
-                                Helpers.Companion.showDialog(MainActivityJava.this, "Congratulation", jsonObject.get("data").toString(), R.drawable.image_checkmark);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Helpers.Companion.showDialog(MainActivityJava.this, "Congratulation, but", e.getLocalizedMessage(), R.drawable.image_checkmark);
-                            }
-                            return null; // Never use this return.
-                        });
-                    }
-                });
-            }
-        });
-    }
-
-    private void startLiveness() {
-        KalapaSDK.Companion.startLivenessForResult(
-                MainActivityJava.this,
-                sdkConfig,
-                new KalapaCaptureHandler() {
-                    String SELFIE_PATH = "/bank-svc/ekyc/check/face/base64";
-
-                    @Override
-                    public void process(String base64, KalapaSDKMediaType mediaType, KalapaSDKCallback callback) {
-//                        LogUtils.Companion.printLog("Base64: ", base64);
-                        RequestBody requestFile = RequestBody.create(BitmapUtil.Companion.convertBase64ToBytes(base64));
-                        Map<String, String> body = new HashMap<>();
-                        body.put("face_data", base64);
-//                         RequestBody.create(MediaType.get("multipart/form-data"));
-//                        new Client(BASE_URL).postFormData(SELFIE_PATH, new HashMap<>(), requestFile, "face_image", new Client.RequestListener() {
-                        new Client(preferencesConfig.getEnv()).postFormData(SELFIE_PATH, new HashMap<>(), body, null, null, new Client.RequestListener() {
-                            @Override
-                            public void success(JSONObject jsonObject) {
-                                // Your liveness / check selfie response here. Save it to use
-                                callback.sendDone(() -> {
-                                    LogUtils.Companion.printLog("Scenario? ", scenario);
-                                    if (scenario.equals(FaceOTPFlowType.VERIFY.name()))
-                                        Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_faceOTP_successful_transaction), getString(R.string.klp_faceOTP_verify_transaction_desc), R.drawable.image_checkmark);
-                                    else {
-//                                        Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_title_congratulation), getString(R.string.klp_message_device_activated_successfully), R.drawable.image_checkmark);
-                                        startNFC();
-                                    }
-                                    return null; // Never use this return.
-                                });
-                            }
-
-                            @Override
-                            public void fail(String error) {
-                                callback.sendError(error);
-                            }
-
-                            @Override
-                            public void timeout() {
-                                callback.sendError(getString(R.string.klp_error_happen));
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(KalapaSDKResultCode resultCode) {
-                        // Capture not finished return an occurred
-                        Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-                    }
-                }
-        );
-    }
-
-    public void startNFC() {
-        KalapaSDK.Companion.startNFCForResult(this, sdkConfig, new KalapaNFCHandler("") {
-            @Override
-            public void process(String idCardNumber, String nfcData, KalapaSDKCallback callback) {
-                final String NFC_PATH = "/bank-svc/ekyc/check/nfc";
-//                LogUtils.Companion.printLog("nfcData: " + nfcData);
-                new Client(preferencesConfig.getEnv()).postXWWWFormData(NFC_PATH, new HashMap<>(), new HashMap<String, String>() {{
-                    put("nfc_data", nfcData);
-                }}, new Client.RequestListener() {
-                    @Override
-                    public void success(JSONObject jsonObject) {
-                        callback.sendDone(() -> {
-                            Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_faceOTP_register_successful), getString(R.string.klp_faceOTP_register_successful_desc), R.drawable.image_checkmark);
-                            return null;
-                        });
-                    }
-
-                    @Override
-                    public void fail(String error) {
-                        callback.sendError(error);
-                    }
-
-                    @Override
-                    public void timeout() {
-                        callback.sendError(getString(R.string.klp_error_happen));
-                    }
-                });
-                LogUtils.Companion.printLog("callback.onDone startNFCForResult");
-            }
-
-            @Override
-            public void onError(KalapaSDKResultCode resultCode) {
-                // MRZ not finished return an occurred
-                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-            }
-        });
-    }
-
-    public void startNFCOnly(String token) {
-        KalapaSDK.Companion.startNFCOnly(this, token, sdkConfig, new KalapaNFCHandler("") {
-            @Override
-            public void process(String idCardNumber, String nfcData, KalapaSDKCallback callback) {
-                final String NFC_VERIFY_PATH = "https://ekyc-api.kalapa.vn/c06/verify/id";
-//                LogUtils.Companion.printLog("nfcData: " + nfcData);
-                new Client(preferencesConfig.getEnv()).postXWWWFormData(NFC_VERIFY_PATH, new HashMap<String, String>() {{
-                    put("Authorization", token);
-                }}, new HashMap<String, String>() {{
-                    try {
-                        put("nfc_data", URLEncoder.encode(nfcData, "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        put("nfc_data", nfcData);
-                        throw new RuntimeException(e);
-                    }
-                    put("id_number", idCardNumber);
-                }}, new Client.RequestListener() {
-                    @Override
-                    public void success(JSONObject jsonObject) {
-                        callback.sendDone(() -> {
-                            LogUtils.Companion.printLog("startNFCOnly", jsonObject.toString());
-                            try {
-                                NFCVerificationData nfcData = NFCVerificationData.Companion.fromJson(jsonObject.getString("data"));
-                                ExampleGlobalClass.nfcData = nfcData;
-                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-                            } catch (JSONException e) {
-                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_faceOTP_register_successful), getString(R.string.klp_faceOTP_register_successful_desc), R.drawable.image_checkmark);
-                            }
-                            return null;
-                        });
-                    }
-
-                    @Override
-                    public void fail(String error) {
-                        callback.sendError(error);
-                    }
-
-                    @Override
-                    public void timeout() {
-                        callback.sendError(getString(R.string.klp_error_happen));
-                    }
-                });
-                LogUtils.Companion.printLog("callback.onDone startNFCForResult");
-            }
-
-            @Override
-            public void onError(KalapaSDKResultCode resultCode) {
-                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_face_otp_alert_title), getString(R.string.klp_face_otp_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-            }
-        });
     }
 
     private boolean isAppConfigSet() {
@@ -484,8 +243,8 @@ public class MainActivityJava extends BaseActivity {
             ExampleGlobalClass.preferencesConfig = preferencesConfig;
             Log.d(TAG, "isAppConfigSet Preferences " + preferencesConfig);
             initConfig();
+            return true;
         }
-        return true;
     }
 
     private void initConfig() {
@@ -499,8 +258,7 @@ public class MainActivityJava extends BaseActivity {
                     .withMainTextColor(preferencesConfig.getMainTextColor())
                     .withLivenessVersion(livenessVersion)
                     .withBaseURL(preferencesConfig.getEnv())
-                    .useNFC(preferencesConfig.getUseNFC())
-                    .captureImage(preferencesConfig.getCaptureImage())
+                    .withLanguage(preferencesConfig.getLanguage())
                     .build();
 //            if (shouldUpdateLanguage) sdkConfig.pullLanguage();
         } else {
@@ -528,8 +286,6 @@ public class MainActivityJava extends BaseActivity {
                     .withMainTextColor(txtColor)
                     .withLivenessVersion(livenessVersion)
                     .withBaseURL(preferencesConfig.getEnv())
-                    .useNFC(preferencesConfig.getUseNFC())
-                    .captureImage(preferencesConfig.getCaptureImage())
                     .withLanguage(preferencesConfig.getLanguage())
                     .build();
             LogUtils.Companion.printLog("Pulling language: " + sdkConfig.getLanguage() + " - " + lang);
@@ -545,31 +301,16 @@ public class MainActivityJava extends BaseActivity {
         configuration.setLayoutDirection(locale);
         this.getResources().updateConfiguration(configuration, this.getResources().getDisplayMetrics());
         if (preferencesConfig != null) {
-//            if (preferencesConfig.getLanguage().contains("vi")) {
-//                ekycButton.setText("Bắt đầu");
-//                ekycButton.invalidate();
-//                tvWelcome.setText("Mời trải nghiệm");
-//                tvWelcome.invalidate();
-//                tvWelcomeSubtitle.setText("Xác thực khuôn mặt");
-//                tvWelcomeSubtitle.invalidate();
-//            } else {
-//                ekycButton.setText("Start");
-//                ekycButton.invalidate();
-//                tvWelcome.setText("Welcome to");
-//                tvWelcome.invalidate();
-//                tvWelcomeSubtitle.setText("Face OTP Demo");
-//                tvWelcomeSubtitle.invalidate();
-//            }
             ekycButton.setText(getResources().getString(R.string.klp_start));
             ekycButton.invalidate();
             tvWelcome.setText(getResources().getString(R.string.klp_name));
             tvWelcome.invalidate();
-            tvWelcomeSubtitle.setText(getResources().getString(R.string.klp_face_otp_demo));
+            tvWelcomeSubtitle.setText(getResources().getString(R.string.klp_demo_name));
             tvWelcomeSubtitle.invalidate();
         } else {
             ekycButton.setText(getResources().getString(R.string.klp_start));
             tvWelcome.setText(getResources().getString(R.string.klp_name));
-            tvWelcomeSubtitle.setText(getResources().getString(R.string.klp_face_otp_demo));
+            tvWelcomeSubtitle.setText(getResources().getString(R.string.klp_demo_name));
         }
     }
 
@@ -602,7 +343,6 @@ public class MainActivityJava extends BaseActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        container = findViewById(R.id.container);
         findViewById(R.id.iv_setting).setOnClickListener(v -> openSettingUI());
         ekycButton.setText(getResources().getText(R.string.klp_start));
     }

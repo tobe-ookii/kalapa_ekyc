@@ -223,7 +223,6 @@
     <string name="klp_demo_ocr">Thông tin OCR</string>
     <string name="klp_demo_not_satisfy_rule">Hồ sơ của bạn không thỏa mãn các điều kiện:</string>
     <string name="klp_your_application_is">Kết quả hồ sơ: </string>
-    <string name="klp_your_application_were">Kết quả hồ sơ: </string>
     <string name="klp_demo_approved">ĐƯỢC DUYỆT</string>
     <string name="klp_demo_manual">ĐANG XEM XÉT</string>
     <string name="klp_demo_rejected">BỊ LOẠI</string>

@@ -11,7 +11,7 @@ interface AlertListener {
 
 
 interface KLPFaceOTPListener {
-    fun complete(flowType: FaceOTPFlowType, userId: String, transactionId: String)
-    fun cancel(flowType: FaceOTPFlowType, userId: String, message: String)
+    fun complete(flowType: KalapaFlowType, userId: String, transactionId: String)
+    fun cancel(flowType: KalapaFlowType, userId: String, message: String)
 
 }

@@ -12,19 +12,24 @@ import android.os.Vibrator
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetector
+import com.google.mlkit.vision.face.FaceDetectorOptions
+import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
+import vn.kalapa.ekyc.KalapaCaptureHandler
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDKCallback
 import vn.kalapa.ekyc.KalapaSDKMediaType
-import vn.kalapa.R
-import vn.kalapa.ekyc.KalapaCaptureHandler
 import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.capturesdk.CameraXActivity
 import vn.kalapa.ekyc.liveness.LivenessHandler
-import vn.kalapa.ekyc.liveness.LivenessSessionStatus
+import vn.kalapa.ekyc.liveness.models.LivenessAction
 import vn.kalapa.ekyc.managers.KLPFaceDetectorListener
 import vn.kalapa.ekyc.toBitmap
 import vn.kalapa.ekyc.utils.BitmapUtil
@@ -32,6 +37,8 @@ import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.KLPGifImageView
 import vn.kalapa.ekyc.views.ProgressView
+import vn.kalapa.ekyc.liveness.InputFace
+import vn.kalapa.ekyc.liveness.LivenessSessionStatus
 
 typealias InputImageListener = (inputImage: Bitmap) -> Unit
 
@@ -46,7 +53,7 @@ class CameraXSelfieActivity : CameraXActivity(
     private lateinit var ivError: KLPGifImageView
     private lateinit var klpLivenessHandler: LivenessHandler
 
-//    private lateinit var ivBitmapReview: ImageView
+    //    private lateinit var ivBitmapReview: ImageView
     private var computingDetection = false
     private lateinit var tvTitle: TextView
 
@@ -72,18 +79,19 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun setupFaceAnalyzer(): ImageAnalysis {
+        var targetResolution = getOpticalResolution(CameraSelector.DEFAULT_FRONT_CAMERA, true)
+        Helpers.printLog("setupFaceAnalyzer targetResolution $targetResolution")
         return ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-//            .setTargetResolution(Size(1080, 1080))
+            .setTargetResolution(targetResolution)
             .build()
             .also {
-
                 it.setAnalyzer(cameraExecutor, FaceDetectionAnalyzer { inputImage ->
                     var croppedImage = BitmapUtil.crop(inputImage, inputImage.width, inputImage.width, 0.5f, 0.5f)
-                    runOnUiThread {
+//                    runOnUiThread {
 //                        ivBitmapReview.setImageBitmap(croppedImage)
-                    }
-                    klpLivenessHandler.processSession(inputImage, croppedImage, 5f, 0f)
+//                    }
+                    klpLivenessHandler.processSession(croppedImage, croppedImage, 1f, 0f)
                     computingDetection = true
                     while (true) {
 //                        Helpers.printLog("Still Processing")
@@ -114,7 +122,6 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun setupLivenessProcess() {
-        Helpers.printLog("setupLivenessProcess ${KalapaSDK.config.livenessVersion}")
         val livenessVersion =
             if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.ACTIVE.version) Common.LIVENESS_VERSION.ACTIVE else if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version) Common.LIVENESS_VERSION.SEMI_ACTIVE else Common.LIVENESS_VERSION.PASSIVE
         klpLivenessHandler = LivenessHandler(
@@ -152,42 +159,28 @@ class CameraXSelfieActivity : CameraXActivity(
 //                    Helpers.printLog("$TAG onFaceDetected")
                     computingDetection = false
                     faceDetected = true
-//                    Helpers.printLog("Typical Frame: ${typicalFrame.width} ${typicalFrame.height}")
-                    takePhoto()
-//                    Handler(Looper.getMainLooper()).post {
-//                        stopCamera()
-//                    }
-//                    runOnUiThread {
-//                        setCircleViewAnimation(AnimStatus.ANIM_SUCCESS)
-//                        previewViewLayerMode(false)
-//                        ivPreviewImage.visibility = View.VISIBLE
-//                        val matrix = Matrix()
-                    // Mirror is basically a rotation
-//                        matrix.setScale(1f, -1f)
-//                        matrix.postRotate(getCameraRotationDegree().toFloat())
-                    // so you got to move your bitmap back to it's place. otherwise you will not see it
-//                        ivError.setGifImageResource(R.drawable.gif_success)
-//                        tmpBitmap =
-//                            Bitmap.createBitmap(
-//                                typicalFrame,
-//                                0,
-//                                0,
-//                                typicalFrame.width,
-//                                typicalFrame.height,
-//                                matrix,
-//                                false
-//                            )
-//                        if (typicalFace != null) {
-//                            faceBitmap = typicalFace
-//                            ivPreviewImage.setImageBitmap(
-//                                faceBitmap
-//                            )
-//                        }
-//                        ivPreviewImage.setImageBitmap(
-//                            tmpBitmap
-//                        )
-//
-//                    }
+                    Helpers.printLog("opticalResolution Frame: ${typicalFrame.width} ${typicalFrame.height}")
+//                    takePhoto()
+                    Handler(Looper.getMainLooper()).post {
+                        stopCamera()
+                    }
+                    runOnUiThread {
+                        if (typicalFace != null) {
+//                            val matrix = Matrix()
+//                            matrix.setScale(1f, -1f)
+//                            matrix.postRotate(getCameraRotationDegree().toFloat())
+//                            faceBitmap = typicalFrame
+                            faceBitmap = BitmapUtil.rotateBitmapToStraight(typicalFrame, getCameraRotationDegree(), true)
+//                            faceBitmap = BitmapUtil.crop(faceBitmap, faceBitmap.width, faceBitmap.width, 0.5f, 0.5f)
+//                            faceBitmap = Bitmap.createBitmap(typicalFrame, 0, 0, typicalFrame.width, typicalFrame.height, matrix, false)
+                            faceBitmap = BitmapUtil.resizeImageFromGallery(faceBitmap)
+//                            ivBitmapReview.setImageBitmap(faceBitmap)
+                            Helpers.printLog("opticalResolution Frame: ${faceBitmap.width} ${faceBitmap.height}")
+//                            ivPreviewImage.setImageBitmap(faceBitmap)
+                            isCapturedFaceOK()
+                        } else
+                            takePhoto()
+                    }
                 }
 
                 override fun onExpired() {
@@ -196,7 +189,7 @@ class CameraXSelfieActivity : CameraXActivity(
                     runOnUiThread {
                         previewViewLayerMode(false)
                         stopCamera()
-                        btnNext.visibility = View.GONE
+                        btnNext.visibility = View.INVISIBLE
                         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
                         tvError.visibility = View.VISIBLE
                         tvError.text =
@@ -211,19 +204,75 @@ class CameraXSelfieActivity : CameraXActivity(
 
     override fun onCaptureSuccess(cameraDegree: Int) {
         // No Capture in this
-        val rotation = if (cameraDegree != getCameraRotationDegree()) ((getCameraRotationDegree() - cameraDegree + 270) % 360) else cameraDegree
-        Helpers.printLog("onCaptureSuccess $cameraDegree ${getCameraRotationDegree()} $rotation")
+        vibratePhone()
+        val degreeDifferent = cameraDegree != getCameraRotationDegree()
+        val rotation = if (degreeDifferent) {
+            ((getCameraRotationDegree() - cameraDegree + 270) % 360)
+        } else cameraDegree
+//        Helpers.printLog("onCaptureSuccess $cameraDegree ${getCameraRotationDegree()} $rotation")
         faceBitmap = BitmapUtil.rotateBitmapToStraight(tmpBitmap!!, rotation, true) // tmpBitmap!! //
-        faceBitmap = BitmapUtil.crop(faceBitmap, faceBitmap.width, faceBitmap.width, 0.5f, 0.5f)
-        ivPreviewImage.visibility = View.VISIBLE
-        ivPreviewImage.setImageBitmap(faceBitmap)
-//        ivBitmapReview.setImageBitmap(faceBitmap)
+        Helpers.printLog("opticalResolution S: ${faceBitmap.width} ${faceBitmap.height} ${ivPreviewImage.width} ${ivPreviewImage.height} $cameraDegree ${getCameraRotationDegree()}  $rotation")
+        if (faceBitmap.width > 1200 && faceBitmap.height > 1200)
+            faceBitmap = BitmapUtil.resizeImageFromGallery(faceBitmap)
+        Helpers.printLog("opticalResolution S: ${faceBitmap.width} ${faceBitmap.height} ${ivPreviewImage.width} ${ivPreviewImage.height} $cameraDegree ${getCameraRotationDegree()}  $rotation")
+        isCapturedFaceOK()
         stopCamera()
     }
+
+    private fun isCapturedFaceOK() {
+        val faceDetectorOptions: FaceDetectorOptions = FaceDetectorOptions.Builder()
+            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+            .setMinFaceSize(0.9f)
+            .build()
+        var faceDetector: FaceDetector = FaceDetection.getClient(faceDetectorOptions)
+        faceDetector.process(InputImage.fromBitmap(faceBitmap, 0))
+            .addOnSuccessListener {
+                var errorMessage: String
+                ivError.setGifImageResource(R.drawable.gif_error_small)
+                if (it.size == 0) {
+                    // No face
+                    Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: No faces!")
+                    errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_not_center))
+                    tvError.setTextColor(resources.getColor(R.color.ekyc_red))
+                    btnNext.visibility = View.INVISIBLE
+                } else {
+                    var isFaceSizeJustBiggerThanTooSmall = 0
+                    for (face in it) {
+                        val inputFace = InputFace(System.currentTimeMillis(), face, faceBitmap.width, faceBitmap.height)
+                        if (LivenessAction.isFaceSizeJustBiggerThanTooSmall(inputFace)) isFaceSizeJustBiggerThanTooSmall++
+                    }
+
+                    if (it.size > 1 && isFaceSizeJustBiggerThanTooSmall > 1) {
+                        Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: Too many faces!")
+                        // More than one face
+                        errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_many_faces))
+                        btnNext.visibility = View.INVISIBLE
+                    } else {
+                        if (LivenessAction.isFaceMarginRight(it[0], faceBitmap.width, faceBitmap.height, 0f, 0f)) {
+                            Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: OK!")
+                            ivError.setGifImageResource(R.drawable.gif_success_small)
+                            tvError.setTextColor(resources.getColor(R.color.ekyc_green))
+                            errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_done_title))
+                            btnNext.visibility = View.VISIBLE
+                        } else {
+                            btnNext.visibility = View.INVISIBLE
+                            Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: Not margin right!")
+                            errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_not_center))
+                        }
+                    }
+                }
+                // Only one face. Margin right or not
+                ivPreviewImage.visibility = View.VISIBLE
+                ivPreviewImage.setImageBitmap(faceBitmap)
+                tvError.text = errorMessage
+            }
+    }
+
 
     override fun setupCustomUI() {
 //        ivBitmapReview = findViewById(R.id.iv_bitmap_preview)
         this.ivError = findViewById(R.id.iv_error)
+        ivError.setGifImageResource(if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.ACTIVE.version) R.drawable.gif_hold_steady else R.drawable.gif_success_small)
         this.tvTitle = findViewById(R.id.tv_title)
         this.ivPreviewImage = findViewById(R.id.iv_preview_image)
         this.ivError.visibility = View.INVISIBLE
@@ -246,6 +295,7 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     override fun setupAnalyzer(): ImageAnalysis? {
+//        return null
         return setupFaceAnalyzer()
     }
 
@@ -269,14 +319,18 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun renewSession() {
+        clearSession()
+        startCamera()
+//        Helpers.printLog("on retry clicked computingDetection $computingDetection")
+    }
+
+    private fun clearSession() {
         faceDetected = false
         klpLivenessHandler.renewSession()
         ivError.visibility = View.INVISIBLE
         ivPreviewImage.visibility = View.INVISIBLE
         cameraAnalyzer = setupFaceAnalyzer()
         computingDetection = false
-        startCamera()
-//        Helpers.printLog("on retry clicked computingDetection $computingDetection")
     }
 
     override fun onRetryClicked() {
@@ -287,7 +341,7 @@ class CameraXSelfieActivity : CameraXActivity(
 
     override fun onResume() {
         super.onResume()
-        renewSession()
+        clearSession()
     }
 
     override fun onInfoBtnClicked() {
@@ -336,14 +390,16 @@ class CameraXSelfieActivity : CameraXActivity(
         }
         if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version || KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version) {
             return when (status) {
-                LivenessSessionStatus.VERIFIED -> R.drawable.gif_success_small
+                // REMOVE VERIFIED ICON
+//                LivenessSessionStatus.VERIFIED -> R.drawable.gif_success_small
                 else -> null
             }
         }
         return when (status) {
-            LivenessSessionStatus.VERIFIED -> {
-                return R.drawable.gif_success_small
-            }
+            // REMOVE VERIFIED ICON
+//            LivenessSessionStatus.VERIFIED -> {
+//                return R.drawable.gif_success_small
+//            }
 
             LivenessSessionStatus.UNVERIFIED -> {
 //                setCircleViewAnimation(AnimStatus.ANIM_LOADING)
@@ -447,15 +503,17 @@ class CameraXSelfieActivity : CameraXActivity(
         } else return if (status == LivenessSessionStatus.TOO_SMALL) {
             if (input == "ComeClose") {
                 tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_liveness_closer_face))
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_move_closer))
             } else
                 return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_far))
         } else return if (status == LivenessSessionStatus.TOO_MANY_FACES) {
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_many_faces))
         } else return if (status == LivenessSessionStatus.NO_FACE && NO_FACE_COUNT > 3) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_liveness_no_face))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_no_face))
         } else return if (status == LivenessSessionStatus.OFF_CENTER) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_liveness_no_face))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_not_center))
+        } else return if (status == LivenessSessionStatus.ANGLE_NOT_CORRECT) {
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_angle_not_correct))
         } else { // PROCESSING
             setCircleViewAnimation(AnimStatus.ANIM_LOADING)
             tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
@@ -497,7 +555,7 @@ class CameraXSelfieActivity : CameraXActivity(
                 "GoFar" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_close)) //"Tiến mặt lại gần camera hơn một chút")
                 "ComeClose" -> KalapaSDK.config.languageUtils.getLanguageString(
                     resources.getString(
-                        R.string.klp_guide_liveness_closer_face
+                        R.string.klp_liveness_move_closer
                     )
                 ) //"Lùi mặt ra xa khỏi camera một chút")
                 "HoldSteady2Second" -> KalapaSDK.config.languageUtils.getLanguageString(
@@ -533,10 +591,11 @@ class CameraXSelfieActivity : CameraXActivity(
                 } //"Đang khởi tạo..."
                 "Processing" -> {
                     if (status != null && status == LivenessSessionStatus.VERIFIED) {
+                        // REMOVE VERIFIED ICON
                         ivError.setGifImageResource(R.drawable.gif_success_small)
-                        tvError.setTextColor(resources.getColor(R.color.ekyc_green))
+                        tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
                         return if (errCode != null) input else KalapaSDK.config.languageUtils.getLanguageString(
-                            resources.getString(R.string.klp_done_title)
+                            resources.getString(R.string.klp_liveness_look_straight)
                         )
                     } // "Xác thực thành công"
                     if (status != null && status == LivenessSessionStatus.FAILED) {

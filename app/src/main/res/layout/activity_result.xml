@@ -403,6 +403,7 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:layout_marginBottom="@dimen/margin_mid"
                         android:textColor="@color/mainColor"
+                        android:text="@string/klp_demo_decision_details_title"
                         android:textSize="@dimen/klp_txt_size_header"
                         android:textStyle="bold" />
                 </LinearLayout>

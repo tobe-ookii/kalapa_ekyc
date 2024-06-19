@@ -30,31 +30,76 @@ abstract class LivenessAction {
     var timeout = 30
 
     companion object x {
+        val TOO_SMALL_WIDTH_RATIO = 0.21f
+        val TOO_SMALL_HEIGHT_RATIO = 0.36f
+
+        val TOO_BIG_WIDTH_RATIO = 0.37f
+        val TOO_BIG_HEIGHT_RATIO = 0.66f
+
+        val SMALL_ENOUGH_WIDTH_RATIO = 0.25f
+        val SMALL_ENOUGH_HEIGHT_RATIO = 0.3f
+
+        val BIG_ENOUGH_WIDTH_RATIO = 0.33f
+        val BIG_ENOUGH_HEIGTH_RATIO = 0.55f
+
+
+        val TOO_SMALL_RATIO = 0.3f
+        val TOO_BIG_RATIO = 0.75f
+        val SMALL_ENOUGH_RATIO = 0.4f
+        val BIG_ENOUGH_RATIO = 0.6f
+
+        val TOO_SMALL_WIDTH_AND_HEIGHT = 300
         fun isFaceTooSmall(face: InputFace): Boolean { // Khuôn mặt nằm trọn trong khung hình
             val trueWidth = min(face.frameWidth, face.frameHeight)
             val trueHeight = max(face.frameWidth, face.frameHeight)
             val bounds = face.face.boundingBox
-            val isFaceTooSmall =
-                bounds.width() < trueWidth * 0.3f || bounds.height() < trueHeight * 0.3f
-//            if (!isFaceTooSmall) Helpers.printLog("isFaceTooSmall ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
+            val isFaceTooSmall = bounds.width() < trueWidth * TOO_SMALL_RATIO || bounds.height() < trueHeight * TOO_SMALL_RATIO || bounds.width() < TOO_SMALL_WIDTH_AND_HEIGHT || bounds.height() < TOO_SMALL_WIDTH_AND_HEIGHT
+            if (!isFaceTooSmall) Helpers.printLog("isFaceTooSmall ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceTooSmall
+        }
+
+        fun isFaceLookStraight(face: Face): Boolean {
+            val rotY = face.headEulerAngleY // Trái phải
+            val rotZ = face.headEulerAngleZ // Xa Gần
+            val rotX = face.headEulerAngleX // Trên dưới
+            val faceNotStraight =
+                rotZ < -15 || rotZ > 15 || rotX < -15 || rotX > 15 || rotY < -15 || rotY > 15
+            return !faceNotStraight
+        }
+
+        fun isFaceTooBig(face: InputFace): Boolean { // Khuôn mặt nằm trọn trong khung hình
+            val trueWidth = min(face.frameWidth, face.frameHeight)
+            val trueHeight = max(face.frameWidth, face.frameHeight)
+            val bounds = face.face.boundingBox
+            val isFaceTooBig = bounds.width() > trueWidth * TOO_BIG_RATIO || bounds.height() > trueHeight * TOO_BIG_RATIO
+//            if (!isFaceTooBig) Helpers.printLog("isFaceTooBig ${bounds.width()} > $trueWidth ${bounds.height()} > $trueHeight")
+            return isFaceTooBig
         }
 
         fun isFaceSmallEnough(face: InputFace): Boolean {
             val trueWidth = min(face.frameWidth, face.frameHeight)
             val trueHeight = max(face.frameWidth, face.frameHeight)
             val bounds = face.face.boundingBox
-            val isFaceSmallEnough = bounds.width() < trueWidth * 0.4f || bounds.height() < trueHeight * 0.4f
-//            if(!isFaceSmallEnough) Helpers.printLog("isFaceSmallEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
+            val isFaceSmallEnough = bounds.width() < trueWidth * SMALL_ENOUGH_RATIO || bounds.height() < trueHeight * SMALL_ENOUGH_RATIO
+//            if (!isFaceSmallEnough) Helpers.printLog("isFaceSmallEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceSmallEnough
+        }
+
+        fun isFaceSizeJustBiggerThanTooSmall(face: InputFace): Boolean {
+            val trueWidth = min(face.frameWidth, face.frameHeight)
+            val trueHeight = max(face.frameWidth, face.frameHeight)
+            val bounds = face.face.boundingBox
+            val isFaceSizeInGoodCondition = bounds.width() > trueWidth * TOO_SMALL_RATIO || bounds.height() > trueHeight * TOO_SMALL_RATIO || bounds.width() > TOO_SMALL_WIDTH_AND_HEIGHT || bounds.height() > TOO_SMALL_WIDTH_AND_HEIGHT
+//            if (!isFaceSizeInGoodCondition) Helpers.printLog("isFaceSizeInGoodCondition ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
+            return isFaceSizeInGoodCondition
         }
 
         fun isFaceBigEnough(face: InputFace): Boolean {
             val trueWidth = min(face.frameWidth, face.frameHeight)
             val trueHeight = max(face.frameWidth, face.frameHeight)
             val bounds = face.face.boundingBox
-            val isFaceSmallEnough = bounds.width() > trueWidth * 0.5f || bounds.height() > trueHeight * 0.5f
-//            if(!isFaceSmallEnough) Helpers.printLog("isFaceBigEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
+            val isFaceSmallEnough = bounds.width() > trueWidth * BIG_ENOUGH_RATIO || bounds.height() > trueHeight * BIG_ENOUGH_RATIO
+//            if (!isFaceSmallEnough) Helpers.printLog("isFaceBigEnough ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceSmallEnough
         }
 
@@ -67,13 +112,15 @@ abstract class LivenessAction {
             translationY: Float
         ): Boolean {
             val bounds = face.boundingBox
-            val isTooCloseToVertical = bounds.top <= 2 *  offset || bounds.bottom >= frameHeight - translationY - offset
-            val isTooCloseToHorizontal = bounds.left <= offset || bounds.right >= frameWidth - offset
+            val isTooCloseToVertical = bounds.top <= frameHeight * 0.02f || bounds.bottom >= frameHeight * 0.95f || bounds.bottom >= frameHeight - offset * 2
+            val isTooCloseToHorizontal = bounds.left <= frameWidth * 0.02f || bounds.right >= frameWidth * 0.95f || bounds.right >= frameWidth - offset * 2
             val isFaceMarginRight = !isTooCloseToHorizontal && !isTooCloseToVertical
 //            if (!isFaceMarginRight)
-//                Helpers.printLog("isFaceMarginRight False Face: isTooCloseToHorizontal $isTooCloseToHorizontal isTooCloseToVertical $isTooCloseToVertical " +
-//                        "\n offset: $offset $translationY Bounds: Top ${bounds.top} Bottom ${bounds.bottom} Left ${bounds.left} Right  ${bounds.right} \n Width ${bounds.width()} Height ${bounds.height()} \n Image w $trueWidth h $trueHeight")
-//            else Helpers.printLog("isFaceMarginRight True Face: Bounds: Top ${bounds.top} Bottom ${bounds.bottom} Left ${bounds.left} Right  ${bounds.right} \n Width ${bounds.width()} Height ${bounds.height()} \n Image w $trueWidth h $trueHeight")
+//                Helpers.printLog(
+//                    "isFaceMarginRight False Face: isTooCloseToHorizontal $isTooCloseToHorizontal isTooCloseToVertical $isTooCloseToVertical " +
+//                            "\n offset: $offset $translationY Bounds: Top ${bounds.top} Bottom ${bounds.bottom} Left ${bounds.left} Right  ${bounds.right} \n Width ${bounds.width()} Height ${bounds.height()} \n Image w $frameWidth h $frameHeight"
+//                )
+//            else Helpers.printLog("isFaceMarginRight True Face: Bounds: Top ${bounds.top} Bottom ${bounds.bottom} Left ${bounds.left} Right  ${bounds.right} \n Width ${bounds.width()} Height ${bounds.height()} \n Image w $frameWidth h $frameHeight")
             return isFaceMarginRight
         }
 
@@ -121,14 +168,6 @@ abstract class LivenessAction {
         return facePosition
     }
 
-    fun isFaceLookStraight(face: Face): Boolean {
-        val rotY = face.headEulerAngleY // Trái phải
-        val rotZ = face.headEulerAngleZ // Xa Gần
-        val rotX = face.headEulerAngleX // Trên dưới
-        val faceNotStraight =
-            rotZ < -15 || rotZ > 15 || rotX < -15 || rotX > 15 || rotY < -15 || rotY > 15
-        return !faceNotStraight
-    }
 
     private fun isEyesClosed(face: Face): Boolean {
         return face.rightEyeOpenProbability == null || face.rightEyeOpenProbability!! < 0.3f || face.leftEyeOpenProbability == null || face.leftEyeOpenProbability!! < 0.3f

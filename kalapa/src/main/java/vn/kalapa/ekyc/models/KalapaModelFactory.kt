@@ -386,7 +386,8 @@ data class MRZDataField(
 data class CreateSessionResult(
     val token: String,
     @Json(name = "client_id")
-    val username: String
+    val username: String,
+    val flow: String
 ) {
     public fun toJson() = klaxon.toJsonString(this)
 

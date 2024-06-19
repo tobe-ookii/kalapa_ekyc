@@ -3,6 +3,7 @@ package vn.kalapa.ekyc.networks
 import android.graphics.Bitmap
 import android.os.Build
 import org.json.JSONObject
+import vn.kalapa.ekyc.KalapaFlowType
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.managers.AESCryptor
 import vn.kalapa.ekyc.models.ConfirmResult
@@ -14,10 +15,13 @@ import vn.kalapa.ekyc.utils.Helpers
 class KalapaAPI {
 
     companion object {
-        var client = Client(KalapaSDK.config.baseURL) //Client(KalapaSDK.config.baseURL)
+        private lateinit var client: Client//= Client(KalapaSDK.config.baseURL) //Client(KalapaSDK.config.baseURL)
         val NFC_PATH = "/api/nfc/get-token"
         val VERSION_PATH = "/api/kyc/get-version"
 
+        fun configure(baseURL: String) {
+            this.client = Client(baseURL)
+        }
 
         fun nfcCheck(
             endPoint: String,
@@ -83,7 +87,7 @@ class KalapaAPI {
             onSuccess: (sessionResult: CreateSessionResult) -> Unit,
             onFail: (error: KalapaError?) -> Unit
         ): String? {
-            client = Client(endPoint)
+            configure(endPoint)
             val url = "$endPoint/api/auth/get-token"
             val client = Client(url)
             val header = mapOf(
@@ -125,6 +129,7 @@ class KalapaAPI {
             return ""
         }
 
+
         fun doRequestGetSession(
             endPoint: String,
             token: String,
@@ -142,8 +147,35 @@ class KalapaAPI {
             val captureImage = false
             val useNFC = true
 
-            return doRequestGetSession(endPoint,token,captureImage,useNFC,"true","true","true",true, arrayOf(""),50,onSuccess,onFail)
+            return doRequestGetSession(endPoint, token, captureImage, useNFC, "true", "true", "true", true, arrayOf(""), 50, onSuccess, onFail)
         }
+
+        fun doRequestGetSession(
+            endPoint: String,
+            token: String,
+            flow: KalapaFlowType,
+            verifyCheck: String,
+            fraudCheck: String,
+            normalCheckOnly: String,
+            cardSidesCheck: Boolean,
+            acceptedDocuments: Array<String>,
+            faceMatchingThreshold: Int,
+            onSuccess: (sessionResult: CreateSessionResult) -> Unit,
+            onFail: (error: KalapaError?) -> Unit
+        ): String? {
+            client = Client(endPoint)
+            val url = "$endPoint/api/auth/get-token"
+            val client = Client(url)
+            val header = mapOf(
+                "Authorization" to token,
+                "Content-Type" to "application/json",
+                "mobile_device" to Build.MODEL
+            )
+            val captureImage = flow == KalapaFlowType.EKYC || flow == KalapaFlowType.NFC_EKYC
+            val useNFC = flow == KalapaFlowType.NFC_EKYC || flow == KalapaFlowType.NFC_ONLY
+            return doRequestGetSession(endPoint, token, captureImage, useNFC, verifyCheck, fraudCheck, normalCheckOnly, cardSidesCheck, acceptedDocuments, faceMatchingThreshold, onSuccess, onFail)
+        }
+
         fun confirm(
             endPoint: String,
             name: String,

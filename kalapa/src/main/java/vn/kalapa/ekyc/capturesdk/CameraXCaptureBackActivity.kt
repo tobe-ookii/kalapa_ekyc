@@ -45,7 +45,8 @@ class CameraXCaptureBackActivity : CameraXActivity(
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_subtitle_back))
 //        tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-
+        Helpers.setBackgroundColorTintList(btnCapture, KalapaSDK.config.mainColor)
+        Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
     }
 
 
@@ -157,7 +158,7 @@ class CameraXCaptureBackActivity : CameraXActivity(
         ProgressView.showProgress(this@CameraXCaptureBackActivity)
         (KalapaSDK.handler as KalapaCaptureHandler).process(
             BitmapUtil.convertBitmapToBase64(tmpBitmap!!),
-            KalapaSDKMediaType.FRONT,
+            KalapaSDKMediaType.BACK,
             this@CameraXCaptureBackActivity
         )
     }

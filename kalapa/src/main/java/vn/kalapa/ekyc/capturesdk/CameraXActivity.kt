@@ -104,10 +104,12 @@ abstract class CameraXActivity(
         setupCamera()
     }
 
-    private var declineCount = 0
+    var declineCount = 0
+
     private fun setupCamera() {
         // Request camera permissions
         if (allPermissionsGranted()) {
+            Helpers.printLog("allPermissionsGranted - startCamera")
             startCamera()
         } else {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -126,7 +128,10 @@ abstract class CameraXActivity(
                 }
             } else {
                 // Permission has already been granted
+                Helpers.printLog("allPermissionsGranted - startCamera")
+                startCamera()
             }
+
         }
         // Set up the listeners for take photo and video capture buttons
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -160,6 +165,8 @@ abstract class CameraXActivity(
         )
     }
 
+    // Go to Setting
+    // Leave
     private fun reFocus() {
     }
 
@@ -193,7 +200,7 @@ abstract class CameraXActivity(
         btnRetry.text =
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_retry_btn))
         ivAutoCapture = findViewById(R.id.toggle_auto_capture)
-        if (hideAutoCapture) ivAutoCapture.visibility = View.GONE
+        if (hideAutoCapture) ivAutoCapture.visibility = View.INVISIBLE
         Helpers.setColorTintList(ivAutoCapture, KalapaSDK.config.mainColor)
         ivAutoCapture.setOnClickListener {
             this.isAutocapturing = !isAutocapturing
@@ -318,30 +325,23 @@ abstract class CameraXActivity(
              * Initialize our Preview object, call build on it, get a surface provider from viewfinder, and then set it on the preview.
              */
             // Preview
+            // Select back camera as a default
+            val cameraSelector =
+                if (lensFacing == LENS_FACING.FRONT) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA
+            val opticalResolution = getOpticalResolution(cameraSelector, lensFacing == LENS_FACING.FRONT)
             val preview = Preview.Builder()
 //                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetResolution(opticalResolution)
                 .build()
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
-            // Select back camera as a default
-            val cameraSelector =
-                if (lensFacing == LENS_FACING.FRONT) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA
-            val MIN_WITH_ACCEPTED_SIZE = if (lensFacing == LENS_FACING.FRONT) 1080 else 1088
-            var opticalResolution = Size(1080, 1920)
-            for (s in getOutputSizes(cameraSelector.lensFacing!!)!!) {
-//                Helpers.printLog("opticalResolution S: Choosing ${s.width} ${s.height}")
-                if (s.width < MIN_WITH_ACCEPTED_SIZE)
-                    break
-                opticalResolution = s
-            }
+
             Helpers.printLog("opticalResolution S: ${opticalResolution.width} ${opticalResolution.height}")
             imageCapture = ImageCapture.Builder()
                 .setJpegQuality(85)
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-//                .setMaxResolution(opticalResolution)
-//                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .setTargetResolution(opticalResolution)
                 .setTargetRotation(Surface.ROTATION_0)
                 .build()
@@ -387,6 +387,25 @@ abstract class CameraXActivity(
         previewViewLayerMode(true)
     }
 
+    @SuppressLint("RestrictedApi")
+    fun getOpticalResolution(cameraSelector: CameraSelector, isFacingFront: Boolean): Size {
+        var opticalResolution = Size(1920, 1080)
+        val MIN_ACCEPTED_SIZE = if (isFacingFront) 1080 else 1088
+        var perfectResolution: Size? = null
+        for (s in getOutputSizes(cameraSelector.lensFacing!!)!!) {
+//            Helpers.printLog("opticalResolution S: Choosing ${s.width} ${s.height}")
+            if (s.width <= MIN_ACCEPTED_SIZE && s.height <= MIN_ACCEPTED_SIZE)
+                break
+            opticalResolution = s
+            if (s.width > MIN_ACCEPTED_SIZE && s.height > MIN_ACCEPTED_SIZE && s.width == s.height)
+                perfectResolution = s
+        }
+        Helpers.printLog("opticalResolution S: ${if (perfectResolution != null) "perfectResolution" else "opticalResolution"} ${perfectResolution ?: opticalResolution}")
+        if (isFacingFront)
+            return perfectResolution ?: opticalResolution
+        else return opticalResolution
+    }
+
     private fun requestPermissions() {
         activityResultLauncher.launch(REQUIRED_PERMISSIONS)
     }
@@ -427,8 +446,7 @@ abstract class CameraXActivity(
         tvError.visibility = View.INVISIBLE
         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
         holderCapture.visibility = View.VISIBLE
-        holderAutoCapture.visibility =
-            if (lensFacing == LENS_FACING.REAR && !hideAutoCapture) View.VISIBLE else View.GONE
+        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.INVISIBLE
         tvGuide.visibility = View.VISIBLE
         btnNext.visibility = View.INVISIBLE
         btnRetry.visibility = View.INVISIBLE
@@ -438,7 +456,7 @@ abstract class CameraXActivity(
         btnNext.visibility = View.VISIBLE
         btnRetry.visibility = View.VISIBLE
         holderCapture.visibility = View.INVISIBLE
-        holderAutoCapture.visibility = if (!hideAutoCapture) View.INVISIBLE else View.GONE
+        holderAutoCapture.visibility = if (!hideAutoCapture) View.INVISIBLE else View.INVISIBLE
         this.isCameraMode = false
 //        viewFinder.visibility = View.INVISIBLE
 //        cardMaskView.setBackgroundColor(Color.parseColor(KalapaSDK.config.backgroundColor))

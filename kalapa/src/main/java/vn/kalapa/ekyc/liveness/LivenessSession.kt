@@ -6,7 +6,20 @@ import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import vn.kalapa.ekyc.liveness.models.*
+import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.liveness.models.ComeClose
+import vn.kalapa.ekyc.liveness.models.GoFar
+import vn.kalapa.ekyc.liveness.models.HoldSteady2Seconds
+import vn.kalapa.ekyc.liveness.models.LivenessAction
+import vn.kalapa.ekyc.liveness.models.LivenessActionStatus
+import vn.kalapa.ekyc.liveness.models.Processing
+import vn.kalapa.ekyc.liveness.models.Success
+import vn.kalapa.ekyc.liveness.models.TiltLeft
+import vn.kalapa.ekyc.liveness.models.TiltRight
+import vn.kalapa.ekyc.liveness.models.TurnDown
+import vn.kalapa.ekyc.liveness.models.TurnLeft
+import vn.kalapa.ekyc.liveness.models.TurnRight
+import vn.kalapa.ekyc.liveness.models.TurnUp
 import vn.kalapa.ekyc.managers.KLPFaceDetectorListener
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
@@ -42,7 +55,7 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
         genActionList()
     }
 
-    private fun refreshFaceList(){
+    private fun refreshFaceList() {
         faceList = ArrayList()
     }
 
@@ -68,22 +81,22 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
 
             Common.LIVENESS_VERSION.ACTIVE -> {
                 index2Action = mapOf(
-                    1 to HoldSteady2Seconds(1),
+                    1 to HoldSteady2Seconds(2),
                     2 to if (Random.nextInt(2) % 2 == 0) TurnLeft() else TurnRight(),
                     3 to if (Random.nextInt(2) % 2 == 0) TurnUp() else TurnDown(),
                     4 to if (Random.nextInt(2) % 2 == 0) TiltLeft() else TiltRight(),
-                    5 to HoldSteady2Seconds(2),
-                    6 to Processing(),
+//                    5 to HoldSteady2Seconds(2),
+                    5 to Processing(),
                 )
             }
 
             Common.LIVENESS_VERSION.SEMI_ACTIVE -> {
                 index2Action = mapOf(
-                    1 to HoldSteady2Seconds(1),
+                    1 to HoldSteady2Seconds(2),
                     2 to GoFar(),
                     3 to ComeClose(),
-                    4 to HoldSteady2Seconds(2),
-                    5 to Processing(),
+//                    4 to HoldSteady2Seconds(2),
+                    4 to Processing(),
                 )
             }
         }
@@ -103,7 +116,8 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
         rotationAngle: Int,
         offset: Float,
         translationY: Float,
-        faceDetectorListener: KLPFaceDetectorListener) {
+        faceDetectorListener: KLPFaceDetectorListener
+    ) {
         // Processing. Tối đa 60s 1 session.
         if (!isFinished())
             faceDetector.process(InputImage.fromBitmap(cropImage, rotationAngle))
@@ -112,28 +126,31 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
                         if (it.size == 0) {  // No Face
                             sessionStatus = LivenessSessionStatus.NO_FACE
                         } else {
-                            var faceIsSmallEnough = 0
+                            var isFaceSizeJustBiggerThanTooSmall = 0
                             for (face in it) {
-                                val inputFace = InputFace(
-                                    System.currentTimeMillis(),
-                                    face,
-                                    cropImage.width,
-                                    cropImage.height
-                                )
-                                if (LivenessAction.isFaceSmallEnough(inputFace)) faceIsSmallEnough++
+                                val inputFace = InputFace(System.currentTimeMillis(), face, cropImage.width, cropImage.height)
+                                if (LivenessAction.isFaceSizeJustBiggerThanTooSmall(inputFace)) isFaceSizeJustBiggerThanTooSmall++
                             }
-                            if (it.size > 1 && faceIsSmallEnough > 1) { // More than one face
+                            if (it.size > 1)
+                                Helpers.printLog("So many faces... $isFaceSizeJustBiggerThanTooSmall counted")
+                            if (it.size > 1 && isFaceSizeJustBiggerThanTooSmall > 1) { // More than one face
                                 sessionStatus = LivenessSessionStatus.TOO_MANY_FACES
                                 refreshFaceList()
                             } else {
-                                val face = it[0]
-                                if (!LivenessAction.isFaceMarginRight(face, cropImage.width, cropImage.height, offset, translationY)) {
+                                val face = InputFace(System.currentTimeMillis(), it[0], cropImage.width, cropImage.height)
+
+                                if (LivenessAction.isFaceTooSmall(face)) {
+                                    sessionStatus = LivenessSessionStatus.TOO_SMALL
+                                } else if (LivenessAction.isFaceTooBig(face)) {
+                                    sessionStatus = LivenessSessionStatus.TOO_LARGE
+                                } else if (!LivenessAction.isFaceMarginRight(face.face, cropImage.width, cropImage.height, offset, translationY)) {
                                     sessionStatus = LivenessSessionStatus.OFF_CENTER
                                     refreshFaceList()
-                                } else if (livenessSessionType != Common.LIVENESS_VERSION.SEMI_ACTIVE && LivenessAction.isFaceTooSmall(InputFace(System.currentTimeMillis(), face, cropImage.width, cropImage.height))) {
-                                    sessionStatus = LivenessSessionStatus.TOO_SMALL
+                                } else if (KalapaSDK.config.livenessVersion != Common.LIVENESS_VERSION.ACTIVE.version && !LivenessAction.isFaceLookStraight(face.face)) {
+                                    sessionStatus = LivenessSessionStatus.ANGLE_NOT_CORRECT
+                                    refreshFaceList()
                                 } else {
-                                    _process(face, cropImage.width, cropImage.height)
+                                    _process(face.face, cropImage.width, cropImage.height)
                                     handleAction(frame, cropImage)
                                 }
                             }
@@ -227,7 +244,8 @@ enum class LivenessSessionStatus(val status: Int) {
     OFF_CENTER(6),
     TOO_MANY_FACES(7),
     NO_FACE(8),
-    EYE_CLOSED(9)
+    EYE_CLOSED(9),
+    ANGLE_NOT_CORRECT(10)
 }
 //val PROCESSING = 0
 //val VERIFIED = 1

@@ -18,6 +18,7 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.nio.ByteBuffer
 import java.util.*
+import kotlin.math.min
 
 
 class BitmapUtil {
@@ -50,6 +51,17 @@ class BitmapUtil {
         fun resizeBitmapToBitmap(srcBmp: Bitmap): Bitmap {
             val image = convertBitmapToBytes(srcBmp)//srcBmp.convertToByteArray()
             return BitmapFactory.decodeByteArray(image, 0, image.size)
+        }
+
+        fun resizeImageFromGallery(bitmap: Bitmap): Bitmap {
+            val ratio = min(
+                if (bitmap.width > 6479) 6f else if (bitmap.width > 5399) 5f else if (bitmap.width > 4319) 4f else if (bitmap.width > 3240) 3f else if (bitmap.width > 2159) 2f else if (bitmap.width >= 1619) 1.5f else if (bitmap.width >= 1400) 1.3f else 1f,
+                if (bitmap.height > 6479) 6f else if (bitmap.height > 5399) 5f else if (bitmap.height > 4319) 4f else if (bitmap.height > 3240) 3f else if (bitmap.height > 2159) 2f  else if (bitmap.height > 1619) 1.5f  else if (bitmap.height > 1400) 1.3f else 1f
+            )
+            val desiredWidth = (bitmap.width / ratio).toInt()
+            val desiredHeight = (bitmap.height / ratio).toInt()
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, desiredWidth, desiredHeight, true)
+            return scaledBitmap
         }
 
         fun convertBitmapToBytes(srcBmp: Bitmap): ByteArray {

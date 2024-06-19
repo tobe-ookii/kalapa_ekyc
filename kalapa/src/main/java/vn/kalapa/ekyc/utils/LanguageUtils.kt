@@ -15,7 +15,7 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
 
     fun getLanguageString(tag: String): String {
 //        val string = Helpers.getStringPreferences(activity, tag)
-        Helpers.printLog("Get $tag: $mapLanguage")
+        Helpers.printLog("Get $tag: ${KalapaSDK.config.language}")
         val k = tag.lowercase(Locale.ROOT)
         return if (mapLanguage[k] != null) mapLanguage[k]!!
         else if (KalapaSDK.config.language.contains("vi") && VI_DEFAULT[k] != null)

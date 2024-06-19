@@ -16,7 +16,7 @@ import com.google.android.material.slider.Slider
 import vn.kalapa.demo.R
 import vn.kalapa.demo.utils.Helpers
 import vn.kalapa.demo.utils.LogUtils
-import vn.kalapa.ekyc.FaceOTPFlowType
+import vn.kalapa.ekyc.KalapaFlowType
 import vn.kalapa.ekyc.KalapaSDKConfig
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
@@ -314,8 +314,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private fun refreshUI() {
 //        tvScenario.text = resources.getString(R.string.klp_index_scenario)
         tvLanguage.text = resources.getString(R.string.klp_index_language)
-        rgLanguage.rbOne.text = resources.getString(R.string.klp_faceOTP_language_vi)
-        rgLanguage.rbOther.text = resources.getString(R.string.klp_faceOTP_language_en)
+        rgLanguage.rbOne.text = resources.getString(R.string.klp_demo_language_vi)
+        rgLanguage.rbOther.text = resources.getString(R.string.klp_demo_language_en)
 //        rgLanguage.rbSecond.text = resources.getString(R.string.klp_faceOTP_language_en)
 //        rgLanguage.rbThird.text = resources.getString(R.string.klp_faceOTP_language_ko)
 
@@ -323,7 +323,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgEnvironment.rbOther.text = resources.getString(
             R.string.klp_environment_dev
         )
-        tvLivenessVersion.text = resources.getString(R.string.klp_index_faceOTP_liveness)
+        tvLivenessVersion.text = resources.getString(R.string.klp_demo_liveness)
         rgLivenessVersion.rbOne.text = resources.getString(R.string.klp_liveness_passive)
         rgLivenessVersion.rbSecond.text = resources.getString(R.string.klp_liveness_semi_activate)
         rgLivenessVersion.rbThird.text = resources.getString(R.string.klp_liveness_activate)
@@ -443,14 +443,14 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             if (edtToken.text.toString().isEmpty())
                 Helpers.showDialog(
                     this@SettingActivity,
-                    resources.getString(R.string.klp_faceOTP_alert_title),
-                    "Token " + resources.getString(R.string.klp_faceotp_can_not_leave_empty),
+                    resources.getString(R.string.klp_demo_alert_title),
+                    "Token " + resources.getString(R.string.klp_demo_can_not_leave_empty),
                     R.drawable.frowning_face
                 )
             else {
                 Helpers.showDialog(
                     this@SettingActivity,
-                    resources.getString(R.string.klp_faceOTP_alert_title),
+                    resources.getString(R.string.klp_demo_alert_title),
                     resources.getString(R.string.please_choose_atleast_one_document),
                     R.drawable.frowning_face
                 )
@@ -466,7 +466,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         val token = Helpers.getValuePreferences(MY_KEY_TOKEN) ?: ""
         val env = Helpers.getValuePreferences(MY_KEY_ENV) ?: defaultConfig.baseURL
 
-        val secnario = Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: FaceOTPFlowType.ONBOARD.name
+        val secnario = Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: KalapaFlowType.EKYC.name
         val lang = Helpers.getValuePreferences(MY_KEY_LANGUAGE)
         val livenessVersion = Helpers.getIntPreferences(MY_KEY_LIVENESS_VERSION, 2)
 

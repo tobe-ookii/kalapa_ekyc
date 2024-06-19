@@ -44,7 +44,8 @@ class CameraXCaptureActivity :
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_subtitle_front))
 //        tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-
+        Helpers.setBackgroundColorTintList(btnCapture, KalapaSDK.config.mainColor)
+        Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
     }
 
 

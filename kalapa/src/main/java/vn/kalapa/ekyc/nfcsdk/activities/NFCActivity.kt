@@ -41,14 +41,23 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     }
 
     private fun getIntentData() {
-        mrz = intent.getStringExtra("mrz")
-        idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
-        Helpers.printLog("Get idCardNumber $idCardNumber from mrz $mrz ")
-        if (idCardNumber == null)
-            openMRZScanner()
-        else
-            nfcUtils.setIdCardNumber(idCardNumber)
-
+        KLPNFCUtils.checkNFCCapacity(this@NFCActivity, {
+            mrz = intent.getStringExtra("mrz")
+            idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
+            if (idCardNumber == null)
+                openMRZScanner()
+            else
+                nfcUtils.setIdCardNumber(idCardNumber)
+        }, {
+            mrz = intent.getStringExtra("mrz")
+            idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
+            if (idCardNumber == null)
+                openMRZScanner()
+            else
+                nfcUtils.setIdCardNumber(idCardNumber)
+        }, {
+            // Do nothing
+        })
     }
 
     private fun openMRZScanner() {

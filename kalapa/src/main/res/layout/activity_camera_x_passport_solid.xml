@@ -38,19 +38,18 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:scaleType="centerCrop"
                 android:layout_marginEnd="0dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/guide_id"
+                android:visibility="invisible"
                 app:layout_constraintDimensionRatio="H,8:5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="invisible"
-                android:src="@drawable/guide_id"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 
     <include
@@ -201,6 +200,7 @@
         android:textSize="@dimen/klp_txt_size_normal"
         android:visibility="gone" />
 
+
     <LinearLayout
         android:id="@+id/holder_capture"
         android:layout_width="match_parent"
@@ -214,22 +214,30 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="bottom">
 
             <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <ImageButton
                     android:id="@+id/btn_pick_image"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
                     android:background="@drawable/ic_image_gallery"
-                    android:backgroundTint="@color/black"
-                    />
+                    android:backgroundTint="@color/black" />
 
+                <TextView
+                    android:id="@+id/tv_pick_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btn_pick_image"
+                    android:lines="1"
+                    android:text="@string/klp_upload_passport"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/klp_txt_size_description" />
             </RelativeLayout>
 
             <ImageButton
@@ -245,6 +253,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
         </LinearLayout>
+
     </LinearLayout>
 
     <!--    <ImageView-->

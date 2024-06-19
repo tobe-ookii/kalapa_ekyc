@@ -33,7 +33,7 @@ class CameraXPassportActivity :
     private lateinit var tvGuide1: TextView
     private lateinit var ivGuide: ImageView
     private lateinit var btnPickImage: ImageButton
-
+    private lateinit var tvPickImage: TextView
 
     //    private val changeImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 //        if (it.resultCode == Activity.RESULT_OK) {
@@ -53,27 +53,23 @@ class CameraXPassportActivity :
 
     private fun processFromActivityResult(imgUri: Uri?) {
         if (imgUri != null) {
-            val path = BitmapUtil.getRealPathFromUri(imgUri, contentResolver)
-            if (path != null) {
-//                if (BitmapUtil.isImageFile(path)) {
-                val exif = ExifInterface(path)
+            val inputStream = contentResolver.openInputStream(imgUri)
+            if (inputStream != null) {
+                Helpers.printLog("Picked image from inputStream $imgUri")
+                val exif = ExifInterface(inputStream)
                 val rotation = when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
                     6 -> 90
                     3 -> 180
                     8 -> 270
                     else -> 0
                 }
-                Helpers.printLog("Picked image: $imgUri with Rotation $rotation")
                 tmpBitmap = BitmapUtil.rotateBitmapToStraight(MediaStore.Images.Media.getBitmap(contentResolver, imgUri), rotation)
+                Helpers.printLog("Picked image: $imgUri with Rotation $rotation ${tmpBitmap!!.width} ${tmpBitmap!!.height} ${tmpBitmap!!.byteCount}")
+                tmpBitmap = BitmapUtil.resizeImageFromGallery(tmpBitmap!!)
+                Helpers.printLog("Picked image: Compress ${tmpBitmap!!.byteCount} ${tmpBitmap!!.width} ${tmpBitmap!!.height}")
                 Handler(Looper.getMainLooper()).postDelayed({
                     stopCamera()
                 }, 100)
-//                ivPreviewImage.setImageBitmap(tmpBitmap)
-//                } else {
-//                    Helpers.showDialog(this@CameraXPassportActivity, "Something", "Please pick only image", R.drawable.frowning_face) {
-//                    }
-//                }
-
             }
         }
     }
@@ -92,6 +88,9 @@ class CameraXPassportActivity :
         tvGuide1 = findViewById(R.id.tv_guide)
         ivGuide = findViewById(R.id.iv_action)
         btnPickImage = findViewById(R.id.btn_pick_image)
+        tvPickImage = findViewById(R.id.tv_pick_image)
+        tvPickImage.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        tvPickImage.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_upload_passport))
         Helpers.setBackgroundColorTintList(btnPickImage, KalapaSDK.config.mainTextColor)
         btnPickImage.setOnClickListener {
             pickImageFromGallery()
@@ -172,6 +171,8 @@ class CameraXPassportActivity :
             0.5f,
             0.5f
         )
+        tmpBitmap = BitmapUtil.resizeImageFromGallery(tmpBitmap!!)
+        Helpers.printLog("opticalResolution onCaptureSuccess ${tmpBitmap?.width} ${tmpBitmap?.height} ${tmpBitmap?.byteCount}")
         //  cardMaskView.crop(tmpBitmap!!, rotationDegree.toFloat())
     }
 

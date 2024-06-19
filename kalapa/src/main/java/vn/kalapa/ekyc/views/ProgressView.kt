@@ -60,11 +60,11 @@ class ProgressView {
                 val textView = sDialog?.findViewById(R.id.progress_container_title) as TextView
                 val body = sDialog?.findViewById(R.id.custom_dialog_body) as TextView
 
-                val mainTextColor = mainTextColor ?: KalapaSDK.config.mainTextColor
-                val mainColor = mainColor ?: KalapaSDK.config.mainColor
+                val mainTextColor = mainTextColor ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.mainTextColor else ""
+                val mainColor = mainColor ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.mainColor else ""
                 Helpers.printLog("Title: $title - $message ")
-                textView.text = title ?: KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_alert_title))
-                body.text = message ?: KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_please_wait))
+                textView.text = title ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_alert_title)) else context.getString(R.string.klp_alert_title)
+                body.text = message ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_please_wait)) else context.getString(R.string.klp_please_wait)
 
                 textView.setTextColor(Color.parseColor(mainTextColor))
                 body.setTextColor(Color.parseColor(mainTextColor))

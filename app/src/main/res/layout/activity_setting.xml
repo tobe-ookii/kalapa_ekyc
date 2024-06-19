@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_mid"
-            android:text="@string/klp_face_otp_token"
+            android:text="@string/klp_demo_token"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_mid"
-            android:text="@string/klp_faceotp_environment"
+            android:text="@string/klp_demo_environment"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -76,8 +76,8 @@
             android:id="@+id/sw_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:rb_first_label="@string/klp_faceOTP_language_vi"
-            app:rb_second_label="@string/klp_faceOTP_language_en" />
+            app:rb_first_label="@string/klp_demo_language_vi"
+            app:rb_second_label="@string/klp_demo_language_en" />
 
         <TextView
             android:id="@+id/tv_liveness_version"
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_mid"
             android:layout_marginBottom="@dimen/margin_mid"
-            android:text="@string/klp_index_faceOTP_liveness"
+            android:text="@string/klp_demo_liveness"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold"
             android:visibility="visible" />
@@ -103,7 +103,6 @@
             android:id="@+id/invisible_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:orientation="vertical">
 
             <TextView

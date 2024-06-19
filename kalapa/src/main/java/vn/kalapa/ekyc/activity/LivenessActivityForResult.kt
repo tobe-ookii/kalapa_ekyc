@@ -14,7 +14,6 @@ import com.google.mlkit.vision.face.Face
 import vn.kalapa.R
 import vn.kalapa.ekyc.*
 import vn.kalapa.ekyc.liveness.LivenessHandler
-import vn.kalapa.ekyc.liveness.LivenessSessionStatus
 import vn.kalapa.ekyc.managers.KLPFaceDetectorListener
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
@@ -22,6 +21,7 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.utils.Res
 import vn.kalapa.ekyc.views.KLPGifImageView
 import vn.kalapa.ekyc.views.ProgressView
+import vn.kalapa.ekyc.liveness.LivenessSessionStatus
 
 class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_liveness_no_step, LENS_FACING.FRONT, hideAutoCapture = true, refocusFrequency = 10000), KalapaSDKCallback {
     private var showingGuide = false

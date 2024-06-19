@@ -78,7 +78,6 @@
             android:backgroundTint="@color/white"
             android:text="@string/klp_retry_btn"
             android:textColor="@color/betall_inactive_button"
-            android:textStyle="bold"
             android:visibility="invisible" />
 
         <Button

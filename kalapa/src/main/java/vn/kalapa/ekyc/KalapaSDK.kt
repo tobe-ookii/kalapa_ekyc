@@ -36,6 +36,7 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.utils.LanguageUtils
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
 import vn.kalapa.ekyc.utils.BitmapUtil
+import vn.kalapa.ekyc.utils.Common
 import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
@@ -56,6 +57,11 @@ class KalapaSDK {
             return this::handler.isInitialized
         }
 
+        fun isConfigInitialized(): Boolean {
+            return this::config.isInitialized
+        }
+
+
         fun isFrontAndBackResultInitialized(): Boolean {
             return this::frontResult.isInitialized
         }
@@ -72,17 +78,18 @@ class KalapaSDK {
             return this::backBitmap.isInitialized
         }
 
-        fun configure(sdkConfig: KalapaSDKConfig) {
+        private fun configure(sdkConfig: KalapaSDKConfig) {
             this.config = sdkConfig
+            KalapaAPI.configure(config.baseURL)
         }
 
-        var flowType: FaceOTPFlowType = FaceOTPFlowType.ONBOARD
+        var flowType: KalapaFlowType = KalapaFlowType.EKYC
         fun startLivenessForResult(
             activity: Activity,
             config: KalapaSDKConfig,
             handler: KalapaCaptureHandler
         ) {
-            this.config = config
+            configure(config)
             isFoldOpen(activity)
             this.handler = handler
 //            val intent = Intent(activity, LivenessActivityForResult::class.java)
@@ -117,7 +124,7 @@ class KalapaSDK {
             handler: KalapaCaptureHandler
         ) {
             val metrics = activity.resources.displayMetrics
-            this.config = config
+            configure(config)
             this.handler = handler
             val intent = Intent(activity, CameraXCaptureActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -130,7 +137,7 @@ class KalapaSDK {
             handler: KalapaCaptureHandler
         ) {
             val metrics = activity.resources.displayMetrics
-            this.config = config
+            configure(config)
             this.handler = handler
             val intent = Intent(activity, CameraXCaptureBackActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -144,7 +151,7 @@ class KalapaSDK {
             handler: KalapaHandler
         ) {
             this.session = session
-            this.config = config
+            configure(config)
             this.handler = handler
             val intent = Intent(activity, ConfirmActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -157,7 +164,7 @@ class KalapaSDK {
             config: KalapaSDKConfig,
             handler: KalapaCaptureHandler
         ) {
-            this.config = config
+            configure(config)
             this.handler = handler
             val intent = Intent(activity, CameraXPassportActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -169,7 +176,7 @@ class KalapaSDK {
             config: KalapaSDKConfig,
             nfcHandler: KalapaNFCHandler
         ) {
-            this.config = config
+            configure(config)
             this.handler = nfcHandler
             val intent = Intent(activity, NFCActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -184,7 +191,7 @@ class KalapaSDK {
             nfcHandler: KalapaNFCHandler
         ) {
             this.session = session
-            this.config = config
+            configure(config)
             this.handler = nfcHandler
             val intent = Intent(activity, NFCActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -195,11 +202,18 @@ class KalapaSDK {
         fun startFullEKYC(
             activity: Activity,
             session: String,
+            flow: String,
             config: KalapaSDKConfig,
             kalapaCustomHandler: KalapaHandler
         ) {
             this.session = session
-            this.config = config
+            val sessionFlow = KalapaFlowType.ofFlow(flow)
+            if (config.baseURL.isEmpty() || !config.baseURL.contains("http") || sessionFlow == KalapaFlowType.NA) {
+                kalapaCustomHandler.onError(KalapaSDKResultCode.CONFIGURATION_NOT_ACCEPTABLE)
+                return
+            }
+            config.withFlow(sessionFlow)
+            configure(config)
             this.kalapaResult = KalapaResult()
             val onGeneralError: (resultCode: KalapaSDKResultCode) -> Unit = {
                 kalapaCustomHandler.onError(it)
@@ -238,7 +252,7 @@ class KalapaSDK {
                             object : Client.RequestListener {
                                 override fun success(jsonObject: JSONObject) {
                                     // Set Liveness. Call Confirm
-                                    if (config.captureImage)
+                                    if (config.getCaptureImage())
                                         callback.sendDone {
                                             localStartConfirmForResult()
                                         }
@@ -357,7 +371,7 @@ class KalapaSDK {
                                 Helpers.printLog("imageCheck $endpoint $jsonObject")
                                 callback.sendDone {
                                     // Call NFC if needed!
-                                    if (backResult.cardType?.contains("eid") == true && KalapaSDK.config.useNFC) {
+                                    if (backResult.cardType?.contains("eid") == true && KalapaSDK.config.getUseNFC()) {
                                         localStartNFCForResult()
                                     } else {
                                         localStartLivenessForResult()
@@ -438,7 +452,7 @@ class KalapaSDK {
                 })
             }
 
-            if (KalapaSDK.config.captureImage) {
+            if (KalapaSDK.config.getCaptureImage()) {
                 localStartFrontForResult()
             } else {
                 localStartNFCForResult()
@@ -502,10 +516,25 @@ class KalapaSDKConfig private constructor(
     var livenessVersion: Int = 0,
     var language: String,
     var minNFCRetry: Int = 3,
-    var baseURL: String = "api-ekyc.kalapa.vn/face-otp",
-    var useNFC: Boolean = true,
-    var captureImage: Boolean = false
+    var baseURL: String = "api-ekyc.kalapa.vn/face-otp"
 ) {
+    private var useNFC: Boolean = true
+    private var captureImage: Boolean = true
+
+    fun withFlow(flow: KalapaFlowType) {
+        // ekyc, nfc_ekyc, nfc_only.
+        this.useNFC = flow == KalapaFlowType.NFC_EKYC || flow == KalapaFlowType.NFC_ONLY
+        this.captureImage = flow == KalapaFlowType.EKYC || flow == KalapaFlowType.NFC_EKYC
+    }
+
+    fun getCaptureImage(): Boolean {
+        return this.captureImage
+    }
+
+    fun getUseNFC(): Boolean {
+        return this.useNFC
+    }
+
     class KalapaSDKConfigBuilder(val context: Context) {
         var backgroundColor: String = "#FFFFFF"
         var mainColor: String = "#62A583"
@@ -515,11 +544,8 @@ class KalapaSDKConfig private constructor(
         var language: String = "vi"
         private val minNFCRetry: Int = 3
         var baseURL: String = "https://ekyc-api.kalapa.vn"
-        var useNFC: Boolean = true
-        var captureImage: Boolean = false
-
         fun build(): KalapaSDKConfig {
-            return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL, useNFC, captureImage)
+            return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL)
         }
 
         fun withBackgroundColor(color: String): KalapaSDKConfigBuilder {
@@ -549,12 +575,11 @@ class KalapaSDKConfig private constructor(
         }
 
         fun withLanguage(language: String): KalapaSDKConfigBuilder {
-            if (language == "vi" || language == "vi-VN")
-                this.language = "vi"
-            else if (language == "en" || language == "en-US")
-                this.language = "en"
-            else if (language == "ko" || language == "ko-KR")
-                this.language = "ko"
+            when (language) {
+                "vi", "vi-VN" -> this.language = "vi"
+                "en", "en-US" -> this.language = "en"
+                "ko", "ko-KR" -> this.language = "ko"
+            }
             return this
         }
 
@@ -565,20 +590,20 @@ class KalapaSDKConfig private constructor(
         }
 
 
-        fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
-            this.useNFC = useNFC
-            return this
-        }
+//        fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
+//            this.useNFC = useNFC
+//            return this
+//        }
 //
 //        fun withMinNFCTimes(nfcRetryTimes: Int): KalapaSDKConfigBuilder {
 //            this.minNFCRetry = nfcRetryTimes
 //            return this
 //        }
 
-        fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
-            this.captureImage = captureImage
-            return this
-        }
+//        fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
+//            this.captureImage = captureImage
+//            return this
+//        }
     }
 
     lateinit var languageUtils: LanguageUtils
@@ -645,7 +670,8 @@ enum class KalapaSDKResultCode(val vi: String, val en: String) {
     CARD_LOST_CONNECTION("Mất kết nối tới thẻ", "Card lost connection"),
     USER_LEAVE("Người dùng hủy bỏ xác thực", "User leave ekyc process"),
     EMULATOR_DETECTED("Phát hiện máy ảo", "Emulator detection"),
-    DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "Device does not support")
+    DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "Device does not support"),
+    CONFIGURATION_NOT_ACCEPTABLE("Cấu hình chưa đúng, vui lòng kiểm tra lại", "Configuration not acceptable, please try again")
 }
 
 
@@ -659,10 +685,20 @@ interface KalapaSDKCallback {
 
 }
 
-enum class FaceOTPFlowType(val flow: String?) {
-    ONBOARD("ONBOARD"),
-    PASSPORT("PASSPORT"),
-    VERIFY(null)
+enum class KalapaFlowType(val flow: String?) {
+    EKYC("ekyc"),
+    NFC_EKYC("nfc_ekyc"),
+    NFC_ONLY("nfc_only"),
+    NA("not_applicable");
+
+    companion object {
+        fun ofFlow(flow: String): KalapaFlowType {
+            return if (flow == EKYC.flow) EKYC
+            else if (flow == NFC_EKYC.flow) NFC_EKYC
+            else if (flow == NFC_ONLY.flow) NFC_ONLY
+            else NA
+        }
+    }
 }
 
 fun ImageProxy.toBitmap(): Bitmap? {
