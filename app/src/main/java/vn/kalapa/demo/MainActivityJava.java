@@ -76,8 +76,8 @@ public class MainActivityJava extends BaseActivity {
                             getResources().getString(R.string.klp_demo_error_network), R.drawable.frowning_face);
                     return;
                 }
-//                startEKYC();
-                startCustomEKYC();
+                startEKYC();
+//                startCustomEKYC();
             }
         });
     }

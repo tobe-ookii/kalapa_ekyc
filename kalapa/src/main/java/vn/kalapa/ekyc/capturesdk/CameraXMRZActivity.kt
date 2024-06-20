@@ -15,13 +15,14 @@ import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.activity.CameraXActivity
 import vn.kalapa.ekyc.toBitmap
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
 
-typealias InputImageListener = (inputImage: Bitmap, degree: Int) -> Unit
+typealias OCROnlyImageInput = (inputImage: Bitmap, degree: Int) -> Unit
 
 class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_camera_x_mrz) {
     //    private lateinit var cardMaskView: CardMaskView
@@ -191,7 +192,7 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
 
 }
 
-class MRZAnalyzer(private val listener: InputImageListener) : ImageAnalysis.Analyzer {
+class MRZAnalyzer(private val listener: OCROnlyImageInput) : ImageAnalysis.Analyzer {
 
     override fun analyze(image: ImageProxy) {
         image.toBitmap()?.let { listener(it, image.imageInfo.rotationDegrees) }

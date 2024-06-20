@@ -169,7 +169,7 @@ class BitmapUtil {
         }
 
         fun rotateBitmapToStraight(srcBmp: Bitmap, cameraDegree: Int, mirrorFlipped: Boolean = false): Bitmap {
-            Helpers.printLog("rotateBitmapToStraight $cameraDegree mirrorFlipped $mirrorFlipped")
+//            Helpers.printLog("rotateBitmapToStraight $cameraDegree mirrorFlipped $mirrorFlipped")
             val matrix = Matrix()
             // Mirror is basically a rotation
             matrix.setScale(1f, if (mirrorFlipped) -1f else 1f)

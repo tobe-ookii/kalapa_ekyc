@@ -19,6 +19,7 @@ import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDKCallback
 import vn.kalapa.ekyc.KalapaSDKMediaType
 import vn.kalapa.ekyc.KalapaSDKResultCode
+import vn.kalapa.ekyc.activity.CameraXActivity
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView

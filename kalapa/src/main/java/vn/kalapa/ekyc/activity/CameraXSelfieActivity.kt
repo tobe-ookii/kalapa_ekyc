@@ -27,7 +27,6 @@ import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDKCallback
 import vn.kalapa.ekyc.KalapaSDKMediaType
 import vn.kalapa.ekyc.KalapaSDKResultCode
-import vn.kalapa.ekyc.capturesdk.CameraXActivity
 import vn.kalapa.ekyc.liveness.LivenessHandler
 import vn.kalapa.ekyc.liveness.models.LivenessAction
 import vn.kalapa.ekyc.managers.KLPFaceDetectorListener
