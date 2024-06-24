@@ -8,44 +8,32 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
-import okhttp3.RequestBody;
 import vn.kalapa.demo.activities.BaseActivity;
 import vn.kalapa.demo.activities.ResultActivity;
 import vn.kalapa.demo.models.NFCCardData;
 import vn.kalapa.demo.models.NFCVerificationData;
-import vn.kalapa.demo.network.Client;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.KalapaFlowType;
 import vn.kalapa.ekyc.KalapaCaptureHandler;
 import vn.kalapa.ekyc.KalapaHandler;
 import vn.kalapa.ekyc.KalapaNFCHandler;
+import vn.kalapa.ekyc.KalapaSDKCallback;
 import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
-import vn.kalapa.ekyc.KalapaSDKCallback;
 import vn.kalapa.ekyc.KalapaSDKConfig;
 import vn.kalapa.ekyc.KalapaSDKMediaType;
-import vn.kalapa.ekyc.managers.AESCryptor;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
-import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
@@ -84,46 +72,33 @@ public class MainActivityJava extends BaseActivity {
 
     KalapaCaptureHandler ocrHandler = new KalapaCaptureHandler() {
         @Override
-        public void process(@NonNull String base64, @NonNull KalapaSDKMediaType kalapaSDKMediaType, @NonNull KalapaSDKCallback kalapaSDKCallback) {
+        public void process$kalapa_debug(@NonNull String base64, @NonNull KalapaSDKMediaType kalapaSDKMediaType, @NonNull KalapaSDKCallback kalapaSDKCallback) {
             // SDK will return liveness face as base64. mediaType is always PORTRAIT.
             // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
-            boolean asumeSuccessProcess = true;
+            boolean assumeSuccessProcess = true;
             if (kalapaSDKMediaType == KalapaSDKMediaType.FRONT) {
                 // Process your FRONT side Document image
-                if (asumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(() -> {
-                        // SDK will call this function right before close the SDK. You need to define what to do next.
-                        // If nothing declared here, SDK will shut down and simply finish the flow
-                        // Example: Call get Back-side document or liveness step
-                        startBackCaptureStep();
-                        return null;
-                    });
+                if (assumeSuccessProcess)
+                    kalapaSDKCallback.sendDone(()->{ return null;});
                 else
                     kalapaSDKCallback.sendError("Tell SDK what goes wrong");
             } else if (kalapaSDKMediaType == KalapaSDKMediaType.BACK) { // BACK
                 // Process your BACK side Document image
-                if (asumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(() -> {
-                        // Tell SDK what should do next. Example: Call liveness step
-                        startLivenessStep();
-                        return null;
-                    });
+                if (assumeSuccessProcess)
+                    kalapaSDKCallback.sendDone(()->{ return null;});
                 else
                     kalapaSDKCallback.sendError("Tell SDK what goes wrong");
             } else if (kalapaSDKMediaType == KalapaSDKMediaType.PORTRAIT) { // PORTRAIT
                 // Process your PORTRAIT image
-                if (asumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(() -> {
-                        // Tell SDK what should do next. Example: Call nfc step
-                        startNFCStep();
-                        return null;
-                    });
+                if (assumeSuccessProcess)
+                    kalapaSDKCallback.sendDone(()->{ return null;});
                 else
-                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
+                kalapaSDKCallback.sendError("Tell SDK what goes wrong");
             } else {
                 LogUtils.Companion.printLog("Should not go here");
             }
         }
+
 
         @Override
         public void onError(@NonNull KalapaSDKResultCode kalapaSDKResultCode) {
@@ -131,18 +106,14 @@ public class MainActivityJava extends BaseActivity {
         }
     };
     private KalapaNFCHandler nfcHandler = new KalapaNFCHandler("<OPTIONAL_YOUR_MRZ_IF_YOU_HAVE_FROM_PREVIOUS_STEPS>") {
+
         @Override
-        public void process(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
+        public void process$kalapa_debug(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
             // SDK will return valid id card number that read from back-side card or your input mrz if it valid and raw nfc data.
             // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
-            boolean asumeSuccessProcess = true;
-            if (asumeSuccessProcess)
-                callback.sendDone(() -> {
-                    // SDK will call this function right before close the SDK. You need to define what to do next.
-                    // If nothing declared here, SDK will shut down and simply finish the flow
-                    // In your scenario, after an NFC flow. Next step is liveness, so you will call
-                    return null;
-                });
+            boolean assumeSuccessProcess = true;
+            if (assumeSuccessProcess)
+                callback.sendDone(()->{return null;});
             else
                 callback.sendError("Tell SDK what goes wrong");
         }
@@ -259,6 +230,8 @@ public class MainActivityJava extends BaseActivity {
                     .withLivenessVersion(livenessVersion)
                     .withBaseURL(preferencesConfig.getEnv())
                     .withLanguage(preferencesConfig.getLanguage())
+//                    .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
+//                    .withMRZ("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
                     .build();
 //            if (shouldUpdateLanguage) sdkConfig.pullLanguage();
         } else {

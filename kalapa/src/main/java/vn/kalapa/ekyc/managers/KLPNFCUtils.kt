@@ -28,14 +28,14 @@ class KLPNFCUtils(val activity: AppCompatActivity) : NFCUtils() {
             activity.startActivity(intent)
         }
 
-        fun checkNFCCapacity(activity: Activity, onNFCEnabled: () -> Unit, onNFCDisabled: () -> Unit, onNFCNotSupported: () -> Unit) {
+        fun checkNFCCapacity(activity: Activity, onNFCSupported: () -> Unit, onNFCNotSupported: () -> Unit, onNFCDisabled: (() -> Unit?)? = null) {
             val nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
             if (nfcAdapter != null) {
+                onNFCSupported()
                 if (!nfcAdapter.isEnabled) {
-                    onNFCDisabled()
-                } else {
-                    // NFC is enabled
-                    onNFCEnabled()
+                    if (onNFCDisabled != null) {
+                        onNFCDisabled()
+                    }
                 }
             } else {
                 // NFC is not supported on this device

@@ -470,7 +470,7 @@ class KalapaAPI {
                 "Content-Type" to "application/json",
                 "Authorization" to KalapaSDK.session
             )
-            Helpers.printLog("Call getData")
+            Helpers.printLog("Call getData $endPoint")
 
             client.get(endPoint, header, handleDataResultListener(listener))
         }

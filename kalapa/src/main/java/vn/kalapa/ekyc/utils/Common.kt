@@ -142,8 +142,9 @@ class Common {
             if (!input.isNullOrEmpty()) {
                 if (input.length == 12) return input
                 if (input.contains("IDVNM")) {
-                    val lines = input.split("\n")
+                    val lines = if (input.contains("\\n")) input.split("\\n") else input.split("\n")
                     for (line in lines) {
+                        Helpers.printLog("Lines: $line")
                         if (line.length == 30 && line.contains("IDVNM") && line.contains("<<")) {
                             val pattern = Regex("IDVNM\\d+(\\d{12})<<\\d")
                             val match = pattern.find(line.replace("O", "0").replace("o", "0"))

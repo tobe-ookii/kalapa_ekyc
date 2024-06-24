@@ -11,12 +11,17 @@ import android.widget.TextView
 import android.widget.Toast
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
+import org.json.JSONObject
 import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.*
 import vn.kalapa.ekyc.capturesdk.CameraXMRZActivity
 import vn.kalapa.ekyc.activity.LivenessActivityForResult
 import vn.kalapa.ekyc.managers.KLPNFCUtils
+import vn.kalapa.ekyc.models.KalapaError
+import vn.kalapa.ekyc.models.MRZ
+import vn.kalapa.ekyc.networks.Client
+import vn.kalapa.ekyc.networks.KalapaAPI
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
@@ -40,21 +45,53 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         finish()
     }
 
+    private fun validateMRZOrOpenMRZScanner() {
+        if (mrz == null || mrz?.isEmpty() == true)
+            mrz = KalapaSDK.config.mrz
+        Helpers.printLog("KalapaSDK.config.mrz : ${KalapaSDK.config.mrz}")
+        idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
+        Helpers.printLog("idCardNumber: $idCardNumber")
+        if (idCardNumber == null)
+            openMRZScanner()
+        else
+            nfcUtils.setIdCardNumber(idCardNumber)
+
+    }
+
     private fun getIntentData() {
         KLPNFCUtils.checkNFCCapacity(this@NFCActivity, {
-            mrz = intent.getStringExtra("mrz")
-            idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
-            if (idCardNumber == null)
-                openMRZScanner()
-            else
-                nfcUtils.setIdCardNumber(idCardNumber)
-        }, {
-            mrz = intent.getStringExtra("mrz")
-            idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
-            if (idCardNumber == null)
-                openMRZScanner()
-            else
-                nfcUtils.setIdCardNumber(idCardNumber)
+            if (KalapaSDK.config.leftoverSession.isNotEmpty()) {
+                Helpers.printLog("leftoverSession : ${KalapaSDK.config.leftoverSession}")
+                val PATH_GET_MRZ = "/api/data/get?type=MRZ"
+                ProgressView.showProgress(this@NFCActivity)
+                KalapaAPI.getData(PATH_GET_MRZ, object : Client.RequestListener {
+                    override fun success(jsonObject: JSONObject) {
+                        ProgressView.hideProgress()
+                        val mrzJSON = MRZ.fromJson(jsonObject.toString())
+                        if (mrzJSON != null && mrzJSON.error?.code?.equals(0) == true && mrzJSON.data?.rawMRZ != null) {
+                            mrz = mrzJSON.data.rawMRZ
+                        } else {
+                            KalapaSDK.config.leftoverSession = ""
+                            validateMRZOrOpenMRZScanner()
+                        }
+                    }
+
+                    override fun fail(error: KalapaError) {
+                        // Don't care
+                        ProgressView.hideProgress()
+                        KalapaSDK.config.leftoverSession = ""
+                        validateMRZOrOpenMRZScanner()
+                    }
+
+                    override fun timeout() {
+                        // Don't care
+                        ProgressView.hideProgress()
+                        KalapaSDK.config.leftoverSession = ""
+                        validateMRZOrOpenMRZScanner()
+                    }
+                })
+            } else
+                validateMRZOrOpenMRZScanner()
         }, {
             // Do nothing
         })

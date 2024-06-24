@@ -234,6 +234,8 @@ class MRZScannerActivity : CameraActivity(R.layout.activity_camera_mrz, LENS_FAC
             enteredNFCActivity = true
             val intent = Intent(this@MRZScannerActivity, NFCActivity::class.java)
             intent.putExtra("mrz", ocrMRZ)
+            KalapaSDK.config.mrz = ocrMRZ
+            Helpers.printLog("Return to NFCActivity: MRZ: $ocrMRZ")
             startActivity(intent)
             finish()
         }

@@ -37,7 +37,6 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.utils.LanguageUtils
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
 import vn.kalapa.ekyc.utils.BitmapUtil
-import vn.kalapa.ekyc.utils.Common
 import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
@@ -127,8 +126,8 @@ class KalapaSDK {
             val metrics = activity.resources.displayMetrics
             configure(config)
             this.handler = handler
-//            val intent = Intent(activity, CameraXCaptureActivity::class.java)
-            val intent = Intent(activity, CameraXAutoCaptureActivity::class.java)
+            val intent = Intent(activity, CameraXCaptureActivity::class.java)
+//            val intent = Intent(activity, CameraXAutoCaptureActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("layout", R.layout.activity_camera_x_id_card)
             intent.putExtra("capture_type", KalapaSDKMediaType.FRONT)
@@ -520,7 +519,10 @@ class KalapaSDKConfig private constructor(
     var livenessVersion: Int = 0,
     var language: String,
     var minNFCRetry: Int = 3,
-    var baseURL: String = "api-ekyc.kalapa.vn/face-otp"
+    var baseURL: String = "api-ekyc.kalapa.vn/face-otp",
+    var faceData: String = "",
+    var mrz: String = "",
+    var leftoverSession: String = ""
 ) {
     private var useNFC: Boolean = true
     private var captureImage: Boolean = true
@@ -530,6 +532,7 @@ class KalapaSDKConfig private constructor(
         this.useNFC = flow == KalapaFlowType.NFC_EKYC || flow == KalapaFlowType.NFC_ONLY
         this.captureImage = flow == KalapaFlowType.EKYC || flow == KalapaFlowType.NFC_EKYC
     }
+
 
     fun getCaptureImage(): Boolean {
         return this.captureImage
@@ -548,14 +551,40 @@ class KalapaSDKConfig private constructor(
         var language: String = "vi"
         private val minNFCRetry: Int = 3
         var baseURL: String = "https://ekyc-api.kalapa.vn"
+        private var faceData: String = ""
+        private var mrz: String = ""
+        private var leftoverSession: String = ""
+
         fun build(): KalapaSDKConfig {
-            return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL)
+            return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL, faceData, mrz, leftoverSession)
         }
 
         fun withBackgroundColor(color: String): KalapaSDKConfigBuilder {
             this.backgroundColor = color
             return this
         }
+
+        fun withFaceData(face: String): KalapaSDKConfigBuilder {
+            try {
+                val imageBytes = android.util.Base64.decode(face, android.util.Base64.DEFAULT)
+                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                this.faceData = face
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Invalid base64 string")
+            }
+            return this
+        }
+
+        fun withMRZ(mrz: String): KalapaSDKConfigBuilder {
+            this.mrz = mrz
+            return this
+        }
+
+        fun withSessionID(leftoverSession: String): KalapaSDKConfigBuilder {
+            this.leftoverSession = leftoverSession
+            return this
+        }
+
 
         fun withMainColor(color: String): KalapaSDKConfigBuilder {
             this.mainColor = color
@@ -638,8 +667,9 @@ class KalapaSDKConfig private constructor(
 
 
 abstract class KalapaCaptureHandler : KalapaHandler() {
-    abstract fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback)
+    internal abstract fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback)
 }
+
 
 abstract class KalapaHandler {
     abstract fun onError(resultCode: KalapaSDKResultCode)
@@ -653,7 +683,7 @@ abstract class KalapaHandler {
 }
 
 abstract class KalapaNFCHandler(val mrz: String?) : KalapaHandler() {
-    abstract fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback)
+    internal abstract fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback)
 }
 
 enum class KalapaSDKNFCStatus(status: Int) {
@@ -688,6 +718,7 @@ interface KalapaSDKCallback {
     fun sendDone(nextAction: () -> Unit)
 
 }
+
 
 enum class KalapaFlowType(val flow: String?) {
     EKYC("ekyc"),
