@@ -350,7 +350,7 @@
     <string name="klp_field_religion">Religion</string>
     <string name="klp_liveness_face_too_close_to_border">Face too close to the border.</string>
     <string name="klp_message_please_change_device_to_scan_nfc">Your device does not support this feature. Please switch to a different device and try again later</string>
-    <string name="klp_liveness_not_center">klp_liveness_not_center</string>
-    <string name="klp_liveness_move_closer">klp_liveness_move_closer</string>
-    <string name="klp_liveness_no_face">klp_liveness_no_face</string>
+    <string name="klp_liveness_not_center" translatable="false">klp_liveness_not_center</string>
+    <string name="klp_liveness_move_closer" translatable="false">klp_liveness_move_closer</string>
+    <string name="klp_liveness_no_face" translatable="false">klp_liveness_no_face</string>
 </resources>

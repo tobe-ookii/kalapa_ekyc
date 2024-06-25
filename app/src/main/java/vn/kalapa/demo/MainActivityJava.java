@@ -58,6 +58,7 @@ public class MainActivityJava extends BaseActivity {
         setContentView(R.layout.activity_main);
         Helpers.Companion.init(this);
         setupBinding();
+        getPreferencesValuesAndApply();
         ekycButton.setOnClickListener(v -> {
             if (isAppConfigSet()) {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {
@@ -174,27 +175,29 @@ public class MainActivityJava extends BaseActivity {
                     createSessionResult -> {
                         ProgressView.Companion.hideProgress(true);
                         LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.component3(), createSessionResult.component1());
-                        KalapaSDK.Companion.startFullEKYC(MainActivityJava.this, createSessionResult.component1(), createSessionResult.component3(), sdkConfig, new KalapaHandler() {
-                            @Override
-                            public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-                            }
+                        KalapaSDK.Companion.startFullEKYC(MainActivityJava.this,
+                                "createSessionResult.component1()",
+                                createSessionResult.component3(), sdkConfig, new KalapaHandler() {
+                                    @Override
+                                    public void onError(@NonNull KalapaSDKResultCode resultCode) {
+                                        Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
+                                    }
 
-                            @Override
-                            public void onComplete(@NonNull KalapaResult kalapaResult) {
-                                LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult + " \n " + kalapaResult.component1());
-                                ExampleGlobalClass.kalapaResult = kalapaResult;
-                                if (KalapaSDK.Companion.isFaceBitmapInitialized())
-                                    ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
-                                if (KalapaSDK.Companion.isFrontBitmapInitialized())
-                                    ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
-                                if (KalapaSDK.Companion.isBackBitmapInitialized())
-                                    ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
-                                ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
-                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-                            }
+                                    @Override
+                                    public void onComplete(@NonNull KalapaResult kalapaResult) {
+                                        LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult + " \n " + kalapaResult.component1());
+                                        ExampleGlobalClass.kalapaResult = kalapaResult;
+                                        if (KalapaSDK.Companion.isFaceBitmapInitialized())
+                                            ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
+                                        if (KalapaSDK.Companion.isFrontBitmapInitialized())
+                                            ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
+                                        if (KalapaSDK.Companion.isBackBitmapInitialized())
+                                            ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
+                                        ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
+                                        startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+                                    }
 
-                        });
+                                });
                         return null;
                     }, kalapaError -> {
                         ProgressView.Companion.hideProgress(true);
@@ -218,35 +221,16 @@ public class MainActivityJava extends BaseActivity {
     private boolean isAppConfigSet() {
         preferencesConfig = Helpers.Companion.getSharedPreferencesConfig(MainActivityJava.this);
         if (preferencesConfig == null) {
-            openSettingUI();
+            openSettingUI(() -> {
+                getPreferencesValuesAndApply();
+                return null;
+            });
             return false;
         } else {
             ExampleGlobalClass.preferencesConfig = preferencesConfig;
             Log.d(TAG, "isAppConfigSet Preferences " + preferencesConfig);
-            initConfig();
+            getPreferencesValuesAndApply();
             return true;
-        }
-    }
-
-    private void initConfig() {
-        if (preferencesConfig != null) {
-            LogUtils.Companion.printLog("Setting Config " + preferencesConfig);
-            boolean shouldUpdateLanguage = sdkConfig == null || !sdkConfig.getLanguage().equals(preferencesConfig.getLanguage());
-            sdkConfig = new KalapaSDKConfig.KalapaSDKConfigBuilder(MainActivityJava.this)
-                    .withBackgroundColor(preferencesConfig.getBackgroundColor())
-                    .withMainColor(preferencesConfig.getMainColor())
-                    .withBtnTextColor(preferencesConfig.getBtnTextColor())
-                    .withMainTextColor(preferencesConfig.getMainTextColor())
-                    .withLivenessVersion(livenessVersion)
-                    .withBaseURL(preferencesConfig.getEnv())
-                    .withLanguage(preferencesConfig.getLanguage())
-//                    .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
-                    .withFaceData(BitmapUtil.Companion.getTHANG_BASE64())
-                    .withMRZ("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
-                    .build();
-//            if (shouldUpdateLanguage) sdkConfig.pullLanguage();
-        } else {
-            LogUtils.Companion.printLog("Setting preferencesConfig is null");
         }
     }
 
@@ -271,6 +255,9 @@ public class MainActivityJava extends BaseActivity {
                     .withLivenessVersion(livenessVersion)
                     .withBaseURL(preferencesConfig.getEnv())
                     .withLanguage(preferencesConfig.getLanguage())
+                    .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
+                    .withFaceData(BitmapUtil.Companion.getTU_BASE64())
+//                    .withMRZ("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
                     .build();
             LogUtils.Companion.printLog("Pulling language: " + sdkConfig.getLanguage() + " - " + lang);
         }
@@ -302,7 +289,6 @@ public class MainActivityJava extends BaseActivity {
     public void onResume() {
         super.onResume();
         LogUtils.Companion.printLog("onResume");
-        getPreferencesValuesAndApply();
     }
 
     private void refreshColor(String btnColor, String btnTxtColor) {
@@ -327,7 +313,10 @@ public class MainActivityJava extends BaseActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        findViewById(R.id.iv_setting).setOnClickListener(v -> openSettingUI());
+        findViewById(R.id.iv_setting).setOnClickListener(v -> openSettingUI(() -> {
+            getPreferencesValuesAndApply();
+            return null;
+        }));
         ekycButton.setText(getResources().getText(R.string.klp_start));
     }
 

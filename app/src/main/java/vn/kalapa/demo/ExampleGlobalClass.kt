@@ -17,6 +17,9 @@ class ExampleGlobalClass {
             return this::nfcData.isInitialized
         }
 
+        fun isHaveResult(): Boolean{
+            return this::kalapaResult.isInitialized
+        }
         fun isFaceImageInitialized(): Boolean {
             return this::faceImage.isInitialized
         }

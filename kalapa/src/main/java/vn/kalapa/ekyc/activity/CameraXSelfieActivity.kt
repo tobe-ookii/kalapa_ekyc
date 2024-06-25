@@ -339,6 +339,8 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun renewSession() {
+        if(!this::klpLivenessHandler.isInitialized)
+            setupLivenessProcess()
         clearSession()
         startCamera()
 //        Helpers.printLog("on retry clicked computingDetection $computingDetection")

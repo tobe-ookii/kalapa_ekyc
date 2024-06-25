@@ -190,6 +190,7 @@ class KalapaSDK {
             val intent = Intent(activity, NFCActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("mrz", nfcHandler.mrz)
+            if (nfcHandler.mrz != null) config.mrz = nfcHandler.mrz
             activity.startActivity(intent)
         }
 
@@ -249,28 +250,39 @@ class KalapaSDK {
 
             fun backgroundConfirm(callback: KalapaSDKCallback) {
                 val path = "${Companion.config.baseURL}/api/kyc/confirm"
-                KalapaAPI.confirm(path, "", "", "", "", "", "", "", "", "", object : Client.ConfirmListener {
-                    override fun success(confirmResult: ConfirmResult) {
-                        Helpers.printLog("confirmResult")
-                        kalapaResult.decision = confirmResult.decision_detail?.decision
-                        kalapaResult.decisionDetail = confirmResult.decision_detail?.details
-                        kalapaResult.nfc_data = confirmResult.nfc_data
-                        if (confirmResult.selfie_data != null)
-                            kalapaResult.selfie_data = confirmResult.selfie_data.data
-                        callback.sendDone {
-                            kalapaCustomHandler.onComplete(kalapaResult)
+                KalapaAPI.confirm(
+                    path,
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    object : Client.ConfirmListener {
+                        override fun success(confirmResult: ConfirmResult) {
+                            Helpers.printLog("confirmResult")
+                            kalapaResult.decision = confirmResult.decision_detail?.decision
+                            kalapaResult.decisionDetail = confirmResult.decision_detail?.details
+                            kalapaResult.nfc_data = confirmResult.nfc_data
+                            if (confirmResult.selfie_data != null)
+                                kalapaResult.selfie_data = confirmResult.selfie_data.data
+                            callback.sendDone {
+                                kalapaCustomHandler.onComplete(kalapaResult)
+                            }
                         }
-                    }
 
-                    override fun fail(error: KalapaError) {
-                        callback.sendError(error.getMessageError())
-                    }
+                        override fun fail(error: KalapaError) {
+                            callback.sendError(error.getMessageError())
+                        }
 
-                    override fun timeout() {
-                        config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body))
-                    }
+                        override fun timeout() {
+                            config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body))
+                        }
 
-                })
+                    })
             }
 
             /*****-STEP 4-*****/
@@ -344,12 +356,44 @@ class KalapaSDK {
                                     override fun success(jsonObject: JSONObject) {
                                         // Set NFC. Call liveness.
                                         Helpers.printLog("nfcCheck $jsonObject")
-                                        callback.sendDone {
-                                            if (jsonObject.has("data") && jsonObject.getJSONObject("data").has("is_nfc_face_match_selfie"))
-                                                backgroundConfirm(callback)
-                                            else
+                                        if (jsonObject.has("data") && jsonObject.getJSONObject("data")
+                                                .has("is_nfc_face_match_selfie")
+                                        ) {
+                                            // First we need to get SELFIE
+                                            val PATH_GET_SELFIE = "/api/data/image?type=SELFIE"
+                                            KalapaAPI.getImage(PATH_GET_SELFIE,
+                                                object : Client.RequestImageListener {
+                                                    override fun success(byteArray: ByteArray) {
+                                                        try {
+                                                            faceBitmap =
+                                                                BitmapFactory.decodeByteArray(
+                                                                    byteArray,
+                                                                    0,
+                                                                    byteArray.size
+                                                                )
+                                                        } catch (e: java.lang.Exception) {
+                                                            e.printStackTrace()
+                                                        }
+                                                    }
+
+                                                    override fun fail(error: KalapaError) {
+                                                        // Do nothing
+                                                        Helpers.printLog("getData onError $error")
+                                                    }
+
+                                                    override fun timeout() {
+                                                        Helpers.printLog("getData onTimeout")
+                                                    }
+
+                                                }) {
+                                                callback.sendDone {
+                                                    backgroundConfirm(callback)
+                                                }
+                                            }
+                                        } else
+                                            callback.sendDone {
                                                 localStartLivenessForResult()
-                                        }
+                                            }
                                     }
 
                                     override fun fail(error: KalapaError) {
@@ -613,7 +657,20 @@ class KalapaSDKConfig private constructor(
         private var leftoverSession: String = ""
 
         fun build(): KalapaSDKConfig {
-            return KalapaSDKConfig(context, backgroundColor, mainColor, mainTextColor, btnTextColor, livenessVersion, language, minNFCRetry, baseURL, faceData, mrz, leftoverSession)
+            return KalapaSDKConfig(
+                context,
+                backgroundColor,
+                mainColor,
+                mainTextColor,
+                btnTextColor,
+                livenessVersion,
+                language,
+                minNFCRetry,
+                baseURL,
+                faceData,
+                mrz,
+                leftoverSession
+            )
         }
 
         fun withBackgroundColor(color: String): KalapaSDKConfigBuilder {
@@ -707,7 +764,8 @@ class KalapaSDKConfig private constructor(
     private fun pullLanguage() {
         Helpers.printLog("| $language")
         languageUtils = LanguageUtils(context)
-        val languageJsonBody: String? = GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
+        val languageJsonBody: String? =
+            GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
         if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
             Helpers.printLog("pullLanguage $languageJsonBody")
             val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
@@ -724,7 +782,11 @@ class KalapaSDKConfig private constructor(
 
 
 abstract class KalapaCaptureHandler : KalapaHandler() {
-    internal abstract fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback)
+    internal abstract fun process(
+        base64: String,
+        mediaType: KalapaSDKMediaType,
+        callback: KalapaSDKCallback
+    )
 }
 
 
@@ -740,7 +802,11 @@ abstract class KalapaHandler {
 }
 
 abstract class KalapaNFCHandler(val mrz: String?) : KalapaHandler() {
-    internal abstract fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback)
+    internal abstract fun process(
+        idCardNumber: String,
+        nfcData: String,
+        callback: KalapaSDKCallback
+    )
 }
 
 enum class KalapaSDKNFCStatus(status: Int) {
@@ -756,13 +822,19 @@ enum class KalapaSDKResultCode(val vi: String, val en: String) {
     USER_CONSENT_DECLINED("Không đồng ý điều khoản", "User declines consent"),
     SUCCESS_WITH_WARNING("Thành công", "Success with warning"),
     CANNOT_OPEN_DEVICE("Lỗi phần cứng", "Device issues"),
-    CARD_NOT_FOUND("Không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ", "Document not found or invalid"),
+    CARD_NOT_FOUND(
+        "Không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ",
+        "Document not found or invalid"
+    ),
     WRONG_CCCDID("Giấy tờ không hợp lệ", "Document invalid"),
     CARD_LOST_CONNECTION("Mất kết nối tới thẻ", "Card lost connection"),
     USER_LEAVE("Người dùng hủy bỏ xác thực", "User leave ekyc process"),
     EMULATOR_DETECTED("Phát hiện máy ảo", "Emulator detection"),
     DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "Device does not support"),
-    CONFIGURATION_NOT_ACCEPTABLE("Cấu hình chưa đúng, vui lòng kiểm tra lại", "Configuration not acceptable, please try again")
+    CONFIGURATION_NOT_ACCEPTABLE(
+        "Cấu hình chưa đúng, vui lòng kiểm tra lại",
+        "Configuration not acceptable, please try again"
+    )
 }
 
 

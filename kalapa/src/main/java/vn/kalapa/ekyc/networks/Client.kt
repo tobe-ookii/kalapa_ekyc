@@ -206,7 +206,12 @@ class Client {
         })
     }
 
-    fun get(endPoint: String, headers: Map<String, String>, listener: RequestListener, postRequest: (() -> Unit)? = null) {
+    fun getImage(
+        endPoint: String,
+        headers: Map<String, String>,
+        listener: RequestImageListener,
+        postRequest: (() -> Unit)? = null
+    ) {
         val api = retrofit.create(API::class.java)
 
         val fullURL = if (endPoint.startsWith("http", true)) {
@@ -214,26 +219,56 @@ class Client {
         } else {
             KalapaSDK.config.baseURL + endPoint
         }
-
         Helpers.printLog("get url:", fullURL)
         Helpers.printLog("headers:", headers)
-//        if (headers.contains("Content-Type") && !headers["Content-Type"].isNullOrEmpty()
-//            && headers["Content-Type"].equals("application/x-protobuf")) {
-//            val objAsBytes: ByteArray = jsonParams.toString().toByteArray()
-//            body = RequestBody.create(MediaType.parse("application/x-protobuf"), objAsBytes)
-//        }
+        api.getImage(fullURL, headers).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val byteArray = response.body()?.bytes()
+                    // Handle the byte array here
+                    if (byteArray != null) listener.success(byteArray)
+                    else listener.fail(KalapaError.UnknownError)
+                } else {
+                    // Handle unsuccessful response
+                    listener.fail(KalapaError.UnknownError)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                listener.fail(KalapaError.UnknownError)
+            }
+
+        }.apply {
+            if (postRequest != null) postRequest()
+        })
+    }
+
+    fun get(
+        endPoint: String,
+        headers: Map<String, String>,
+        listener: RequestListener,
+        postRequest: (() -> Unit)? = null
+    ) {
+        val api = retrofit.create(API::class.java)
+
+        val fullURL = if (endPoint.startsWith("http", true)) {
+            endPoint
+        } else {
+            KalapaSDK.config.baseURL + endPoint
+        }
+        Helpers.printLog("get url:", fullURL)
+        Helpers.printLog("headers:", headers)
         api.get(fullURL, headers).enqueue(object : Callback<JSONObject> {
             override fun onResponse(call: Call<JSONObject>, response: Response<JSONObject>) {
                 handleOnResponse(response, listener)
-                if (postRequest != null) postRequest()
-
             }
 
             override fun onFailure(call: Call<JSONObject>, t: Throwable) {
                 handleOnFailure(t, listener)
-                if (postRequest != null) postRequest()
             }
-        })
+        }).apply {
+            if (postRequest != null) postRequest()
+        }
     }
 
     fun postFormData(
@@ -257,7 +292,8 @@ class Client {
         // image.convertToByteArray()
         requestBody.addFormDataPart(
             if (endPoint.contains("selfie")) "image" else "image",
-            if (endPoint.contains("selfie")) "SELFIE.jpeg" else if (endPoint.contains("front")) "FRONT.jpeg" else "BACK.jpeg", imageInByteArray.toRequestBody()
+            if (endPoint.contains("selfie")) "SELFIE.jpeg" else if (endPoint.contains("front")) "FRONT.jpeg" else "BACK.jpeg",
+            imageInByteArray.toRequestBody()
         )
         val hashImage = FileUtil.hash(imageInByteArray)
         val signature = AESCryptor.encryptText(hashImage)
@@ -303,8 +339,14 @@ class Client {
                     listener.fail(KalapaError(-1, "Wrong Token"))
                 }
             } else if (response.code() == 400) {
-                if (response.errorBody()?.string() != null && response.errorBody()!!.string().isNotEmpty()) {
-                    Helpers.printLog("request fail: response.errorBody() ${response.code()} - ${response.errorBody()?.string()}")
+                if (response.errorBody()?.string() != null && response.errorBody()!!.string()
+                        .isNotEmpty()
+                ) {
+                    Helpers.printLog(
+                        "request fail: response.errorBody() ${response.code()} - ${
+                            response.errorBody()?.string()
+                        }"
+                    )
                     val myError = MyError.fromJson(response.errorBody()?.string()!!)
                     if (myError?.message != null && myError.code != null) {
                         listener.fail(KalapaError(myError.code, myError.message))
@@ -362,6 +404,9 @@ class Client {
         @GET
         fun get(@Url url: String, @HeaderMap headers: Map<String, String>): Call<JSONObject>
 
+        @GET
+        fun getImage(@Url url: String, @HeaderMap headers: Map<String, String>): Call<ResponseBody>
+
         @POST
         fun post(
             @Url url: String,
@@ -381,6 +426,13 @@ class Client {
 
     interface RequestListener {
         fun success(jsonObject: JSONObject)
+        fun fail(error: KalapaError)
+        fun timeout()
+    }
+
+
+    interface RequestImageListener {
+        fun success(byteArray: ByteArray)
         fun fail(error: KalapaError)
         fun timeout()
     }

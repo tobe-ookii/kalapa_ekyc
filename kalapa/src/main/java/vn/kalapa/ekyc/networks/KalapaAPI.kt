@@ -471,8 +471,14 @@ class KalapaAPI {
                 "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
             )
             Helpers.printLog("Call getData $endPoint")
-
             client.get(endPoint, header, handleDataResultListener(listener), postRequest)
+        }
+        fun getImage(endPoint: String, listener: Client.RequestImageListener, postRequest: (() -> Unit)? = null) {
+            val header = mapOf(
+                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+            )
+            Helpers.printLog("Call getData $endPoint")
+            client.getImage(endPoint, header, listener, postRequest)
         }
 
         fun getNFCLocation(endPoint: String, listener: Client.RequestListener) {
