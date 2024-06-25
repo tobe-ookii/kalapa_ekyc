@@ -77,6 +77,23 @@ class CameraXSelfieActivity : CameraXActivity(
         })
     }
 
+
+    private fun getIntentData() {
+        try {
+            if (KalapaSDK.config.faceData.isNotEmpty()) {
+                // Đã qua bước mrz.
+                // Call verify and loading
+                faceBitmap = BitmapUtil.base64ToBitmap(KalapaSDK.config.faceData)
+                stopCamera()
+                isCapturedFaceOK()
+                verifyImage()
+            }
+        } catch (e: Exception) {
+            setupLivenessProcess()
+        }
+
+    }
+
     private fun setupFaceAnalyzer(): ImageAnalysis {
         var targetResolution = getOpticalResolution(CameraSelector.DEFAULT_FRONT_CAMERA, true)
         Helpers.printLog("setupFaceAnalyzer targetResolution $targetResolution")
@@ -90,7 +107,8 @@ class CameraXSelfieActivity : CameraXActivity(
 //                    runOnUiThread {
 //                        ivBitmapReview.setImageBitmap(croppedImage)
 //                    }
-                    klpLivenessHandler.processSession(croppedImage, croppedImage, 1f, 0f)
+                    if (this::klpLivenessHandler.isInitialized)
+                        klpLivenessHandler.processSession(croppedImage, croppedImage, 1f, 0f)
                     computingDetection = true
                     while (true) {
 //                        Helpers.printLog("Still Processing")
@@ -117,7 +135,10 @@ class CameraXSelfieActivity : CameraXActivity(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupLivenessProcess()
+        if (KalapaSDK.config.faceData.isNotEmpty())
+            getIntentData()
+        else
+            setupLivenessProcess()
     }
 
     private fun setupLivenessProcess() {
@@ -324,12 +345,14 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun clearSession() {
-        faceDetected = false
-        klpLivenessHandler.renewSession()
-        ivError.visibility = View.INVISIBLE
-        ivPreviewImage.visibility = View.INVISIBLE
-        cameraAnalyzer = setupFaceAnalyzer()
-        computingDetection = false
+        if (this::klpLivenessHandler.isInitialized) {
+            faceDetected = false
+            klpLivenessHandler.renewSession()
+            ivError.visibility = View.INVISIBLE
+            ivPreviewImage.visibility = View.INVISIBLE
+            cameraAnalyzer = setupFaceAnalyzer()
+            computingDetection = false
+        }
     }
 
     override fun onRetryClicked() {
@@ -364,6 +387,7 @@ class CameraXSelfieActivity : CameraXActivity(
             tvError.setTextColor(resources.getColor(R.color.ekyc_red))
 //            cardMaskView.dashColor = resources.getColor(R.color.ekyc_red)
             btnNext.visibility = View.INVISIBLE
+            btnRetry.visibility = View.VISIBLE
             ivError.setGifImageResource(R.drawable.gif_error_small)
             tvError.text = message
                 ?: KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_processing_failed))

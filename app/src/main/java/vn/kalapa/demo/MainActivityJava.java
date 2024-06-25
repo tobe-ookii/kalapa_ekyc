@@ -1,5 +1,6 @@
 package vn.kalapa.demo;
 
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -34,6 +35,7 @@ import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
+import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
@@ -79,21 +81,27 @@ public class MainActivityJava extends BaseActivity {
             if (kalapaSDKMediaType == KalapaSDKMediaType.FRONT) {
                 // Process your FRONT side Document image
                 if (assumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(()->{ return null;});
+                    kalapaSDKCallback.sendDone(() -> {
+                        return null;
+                    });
                 else
                     kalapaSDKCallback.sendError("Tell SDK what goes wrong");
             } else if (kalapaSDKMediaType == KalapaSDKMediaType.BACK) { // BACK
                 // Process your BACK side Document image
                 if (assumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(()->{ return null;});
+                    kalapaSDKCallback.sendDone(() -> {
+                        return null;
+                    });
                 else
                     kalapaSDKCallback.sendError("Tell SDK what goes wrong");
             } else if (kalapaSDKMediaType == KalapaSDKMediaType.PORTRAIT) { // PORTRAIT
                 // Process your PORTRAIT image
                 if (assumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(()->{ return null;});
+                    kalapaSDKCallback.sendDone(() -> {
+                        return null;
+                    });
                 else
-                kalapaSDKCallback.sendError("Tell SDK what goes wrong");
+                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
             } else {
                 LogUtils.Companion.printLog("Should not go here");
             }
@@ -113,7 +121,9 @@ public class MainActivityJava extends BaseActivity {
             // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
             boolean assumeSuccessProcess = true;
             if (assumeSuccessProcess)
-                callback.sendDone(()->{return null;});
+                callback.sendDone(() -> {
+                    return null;
+                });
             else
                 callback.sendError("Tell SDK what goes wrong");
         }
@@ -231,7 +241,8 @@ public class MainActivityJava extends BaseActivity {
                     .withBaseURL(preferencesConfig.getEnv())
                     .withLanguage(preferencesConfig.getLanguage())
 //                    .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
-//                    .withMRZ("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
+                    .withFaceData(BitmapUtil.Companion.getTHANG_BASE64())
+                    .withMRZ("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
                     .build();
 //            if (shouldUpdateLanguage) sdkConfig.pullLanguage();
         } else {

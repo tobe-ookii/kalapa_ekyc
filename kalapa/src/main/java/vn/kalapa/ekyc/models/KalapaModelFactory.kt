@@ -279,7 +279,7 @@ data class MRZ(
     public fun toJson() = klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<MRZ>(json)
+         fun fromJson(json: String) = klaxon.parse<MRZ>(json)
     }
 }
 

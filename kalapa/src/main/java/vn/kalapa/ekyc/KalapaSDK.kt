@@ -10,10 +10,13 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
 import android.graphics.Rect
 import android.graphics.YuvImage
+import android.os.Handler
+import android.os.Looper
 import androidx.camera.core.ImageProxy
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
+import lombok.experimental.Helper
 import org.json.JSONObject
 import vn.kalapa.R
 import vn.kalapa.ekyc.capturesdk.CameraXPassportActivity
@@ -29,6 +32,8 @@ import vn.kalapa.ekyc.models.FrontResult
 import vn.kalapa.ekyc.models.KalapaError
 import vn.kalapa.ekyc.models.KalapaLanguageModel
 import vn.kalapa.ekyc.models.KalapaResult
+import vn.kalapa.ekyc.models.MRZ
+import vn.kalapa.ekyc.models.MRZData
 import vn.kalapa.ekyc.models.NFCRawData
 import vn.kalapa.ekyc.models.PassportResult
 import vn.kalapa.ekyc.networks.Client
@@ -37,6 +42,7 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.utils.LanguageUtils
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
 import vn.kalapa.ekyc.utils.BitmapUtil
+import vn.kalapa.ekyc.views.ProgressView
 import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
@@ -222,6 +228,7 @@ class KalapaSDK {
                 kalapaCustomHandler.onError(it)
             }
 
+
             /*****-STEP 5-*****/
             val localStartConfirmForResult = {
                 startConfirmForResult(activity, session, config, object : KalapaHandler() {
@@ -235,6 +242,33 @@ class KalapaSDK {
                         kalapaCustomHandler.onComplete(kalapaResult)
                     }
 
+
+                })
+            }
+
+
+            fun backgroundConfirm(callback: KalapaSDKCallback) {
+                val path = "${Companion.config.baseURL}/api/kyc/confirm"
+                KalapaAPI.confirm(path, "", "", "", "", "", "", "", "", "", object : Client.ConfirmListener {
+                    override fun success(confirmResult: ConfirmResult) {
+                        Helpers.printLog("confirmResult")
+                        kalapaResult.decision = confirmResult.decision_detail?.decision
+                        kalapaResult.decisionDetail = confirmResult.decision_detail?.details
+                        kalapaResult.nfc_data = confirmResult.nfc_data
+                        if (confirmResult.selfie_data != null)
+                            kalapaResult.selfie_data = confirmResult.selfie_data.data
+                        callback.sendDone {
+                            kalapaCustomHandler.onComplete(kalapaResult)
+                        }
+                    }
+
+                    override fun fail(error: KalapaError) {
+                        callback.sendError(error.getMessageError())
+                    }
+
+                    override fun timeout() {
+                        config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body))
+                    }
 
                 })
             }
@@ -259,31 +293,8 @@ class KalapaSDK {
                                         callback.sendDone {
                                             localStartConfirmForResult()
                                         }
-                                    else {
-                                        val path = "${Companion.config.baseURL}/api/kyc/confirm"
-                                        KalapaAPI.confirm(path, "", "", "", "", "", "", "", "", "", object : Client.ConfirmListener {
-                                            override fun success(confirmResult: ConfirmResult) {
-                                                Helpers.printLog("confirmResult")
-                                                kalapaResult.decision = confirmResult.decision_detail?.decision
-                                                kalapaResult.decisionDetail = confirmResult.decision_detail?.details
-                                                kalapaResult.nfc_data = confirmResult.nfc_data
-                                                if (confirmResult.selfie_data != null)
-                                                    kalapaResult.selfie_data = confirmResult.selfie_data.data
-                                                callback.sendDone {
-                                                    kalapaCustomHandler.onComplete(kalapaResult)
-                                                }
-                                            }
-
-                                            override fun fail(error: KalapaError) {
-                                                callback.sendError(error.getMessageError())
-                                            }
-
-                                            override fun timeout() {
-                                                config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body))
-                                            }
-
-                                        })
-                                    }
+                                    else
+                                        backgroundConfirm(callback)
                                 }
 
                                 override fun fail(error: KalapaError) {
@@ -301,6 +312,7 @@ class KalapaSDK {
                             })
 
                     }
+
 
                     override fun onError(resultCode: KalapaSDKResultCode) {
                         onGeneralError(resultCode)
@@ -330,9 +342,13 @@ class KalapaSDK {
                                 body = NFCRawData.fromJson(nfcData)!!,
                                 object : Client.RequestListener {
                                     override fun success(jsonObject: JSONObject) {
-                                        // Set NFC. Call liveness
+                                        // Set NFC. Call liveness.
+                                        Helpers.printLog("nfcCheck $jsonObject")
                                         callback.sendDone {
-                                            localStartLivenessForResult()
+                                            if (jsonObject.has("data") && jsonObject.getJSONObject("data").has("is_nfc_face_match_selfie"))
+                                                backgroundConfirm(callback)
+                                            else
+                                                localStartLivenessForResult()
                                         }
                                     }
 
@@ -455,10 +471,51 @@ class KalapaSDK {
                 })
             }
 
-            if (KalapaSDK.config.getCaptureImage()) {
-                localStartFrontForResult()
+
+            /** STEP 0: Get previous session information if needed
+             **/
+            if (config.leftoverSession.isNotEmpty()) {
+                ProgressView.showProgress(activity)
+                Helpers.printLog("leftoverSession: ${KalapaSDK.config.leftoverSession}")
+                val PATH_GET_MRZ = "/api/data/get?type=MRZ"
+                KalapaAPI.getData(PATH_GET_MRZ, object : Client.RequestListener {
+                    override fun success(jsonObject: JSONObject) {
+                        ProgressView.hideProgress()
+                        val mrzJSON = MRZData.fromJson(jsonObject.toString())
+                        if (mrzJSON != null && mrzJSON.rawMRZ?.isNotEmpty() == true) {
+                            Helpers.printLog("leftoverSession MRZ: ${mrzJSON.rawMRZ}")
+                            config.mrz = mrzJSON.rawMRZ
+                        } else {
+                            KalapaSDK.config.leftoverSession = ""
+                        }
+                    }
+
+                    override fun fail(error: KalapaError) {
+                        // Don't care
+                        ProgressView.hideProgress()
+                        KalapaSDK.config.leftoverSession = ""
+                    }
+
+                    override fun timeout() {
+                        // Don't care
+                        ProgressView.hideProgress()
+                        KalapaSDK.config.leftoverSession = ""
+                    }
+                }) {
+                    Helpers.printLog("leftoverSession: End of request")
+                    if (KalapaSDK.config.getCaptureImage()) {
+                        localStartFrontForResult()
+                    } else {
+                        localStartNFCForResult()
+                    }
+                }
             } else {
-                localStartNFCForResult()
+                Helpers.printLog("leftoverSession: End of request")
+                if (KalapaSDK.config.getCaptureImage()) {
+                    localStartFrontForResult()
+                } else {
+                    localStartNFCForResult()
+                }
             }
         }
 

@@ -19,6 +19,7 @@ import vn.kalapa.ekyc.managers.AESCryptor
 import vn.kalapa.ekyc.models.ConfirmResult
 import vn.kalapa.ekyc.models.CreateSessionResult
 import vn.kalapa.ekyc.models.KalapaError
+import vn.kalapa.ekyc.models.MyError
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.FileUtil
 import vn.kalapa.ekyc.utils.Helpers
@@ -205,7 +206,7 @@ class Client {
         })
     }
 
-    fun get(endPoint: String, headers: Map<String, String>, listener: RequestListener) {
+    fun get(endPoint: String, headers: Map<String, String>, listener: RequestListener, postRequest: (() -> Unit)? = null) {
         val api = retrofit.create(API::class.java)
 
         val fullURL = if (endPoint.startsWith("http", true)) {
@@ -224,10 +225,13 @@ class Client {
         api.get(fullURL, headers).enqueue(object : Callback<JSONObject> {
             override fun onResponse(call: Call<JSONObject>, response: Response<JSONObject>) {
                 handleOnResponse(response, listener)
+                if (postRequest != null) postRequest()
+
             }
 
             override fun onFailure(call: Call<JSONObject>, t: Throwable) {
                 handleOnFailure(t, listener)
+                if (postRequest != null) postRequest()
             }
         })
     }
@@ -298,6 +302,16 @@ class Client {
                 if (response.code() == 403 || response.code() == 401) {
                     listener.fail(KalapaError(-1, "Wrong Token"))
                 }
+            } else if (response.code() == 400) {
+                if (response.errorBody()?.string() != null && response.errorBody()!!.string().isNotEmpty()) {
+                    Helpers.printLog("request fail: response.errorBody() ${response.code()} - ${response.errorBody()?.string()}")
+                    val myError = MyError.fromJson(response.errorBody()?.string()!!)
+                    if (myError?.message != null && myError.code != null) {
+                        listener.fail(KalapaError(myError.code, myError.message))
+                    } else
+                        listener.fail(KalapaError.NetworkError)
+                } else
+                    listener.fail(KalapaError.NetworkError)
             } else {
                 Helpers.printLog("request fail ${response.code()} - ${response.body()}")
                 listener.fail(KalapaError.NetworkError)
