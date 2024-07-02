@@ -29,7 +29,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
@@ -74,7 +74,7 @@ dependencies {
     implementation "androidx.window:window-extensions:1.0.0-alpha01"
 
     // klaxon for demo
-    implementation 'com.beust:klaxon:5.5'
+//    implementation 'com.beust:klaxon:5.5'
     
 
 //    implementation project(':faceotpsdk')

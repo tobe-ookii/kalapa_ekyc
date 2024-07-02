@@ -264,7 +264,7 @@
                     android:scrollHorizontally="true"
                     android:textColor="@color/black"
                     android:textColorHint="#C4C4C6"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -300,7 +300,7 @@
                     android:scrollHorizontally="true"
                     android:textColor="@color/black"
                     android:textColorHint="#C4C4C6"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -343,7 +343,7 @@
                             android:gravity="left|center"
                             android:textColor="@color/black"
                             android:textColorHint="#C4C4C6"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/klp_txt_size_normal"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -382,7 +382,7 @@
                             android:gravity="left|center"
                             android:textColor="@color/black"
                             android:textColorHint="#C4C4C6"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/klp_txt_size_normal"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -420,7 +420,7 @@
                     android:scrollHorizontally="true"
                     android:textColor="@color/black"
                     android:textColorHint="#C4C4C6"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:textStyle="bold" />
 
             </LinearLayout>

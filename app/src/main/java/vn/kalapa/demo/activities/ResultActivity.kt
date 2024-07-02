@@ -175,20 +175,20 @@ class ResultActivity : AppCompatActivity() {
     }
 
     private fun setNFCValue(nfcVerificationData: NFCVerificationData?) {
-        val nfcResult = nfcVerificationData?.data?.data
+        val nfcResult = nfcVerificationData?.nfc_data?.card_data
         LogUtils.printLog("NFC Result: $nfcResult")
         if (nfcResult != null) {
             containerNFCInfo.visibility = View.VISIBLE
-            if (nfcResult.idCardNo != null && nfcResult.idCardNo!!.isNotEmpty())
-                row_nfc_id.setRecordValue(nfcResult.idCardNo) else row_nfc_id.visibility = View.GONE
-            if (nfcResult.oldIdCardNo != null && nfcResult.oldIdCardNo!!.isNotEmpty()) row_nfc_old_id.setRecordValue(
-                nfcResult.oldIdCardNo
+            if (nfcResult.id_number != null && nfcResult.id_number!!.isNotEmpty())
+                row_nfc_id.setRecordValue(nfcResult.id_number) else row_nfc_id.visibility = View.GONE
+            if (nfcResult.old_id_number != null && nfcResult.old_id_number!!.isNotEmpty()) row_nfc_old_id.setRecordValue(
+                nfcResult.old_id_number
             ) else row_nfc_old_id.setRecordValue(resources.getString(R.string.no_information))
             if (nfcResult.name != null && nfcResult.name!!.isNotEmpty()) row_nfc_name.setRecordValue(
                 nfcResult.name
             ) else row_nfc_name.visibility = View.GONE
-            if (nfcResult.dateOfBirth != null && nfcResult.dateOfBirth!!.isNotEmpty()) row_nfc_dob.setRecordValue(
-                nfcResult.dateOfBirth
+            if (nfcResult.date_of_birth != null && nfcResult.date_of_birth!!.isNotEmpty()) row_nfc_dob.setRecordValue(
+                nfcResult.date_of_birth
             ) else row_nfc_dob.visibility = View.GONE
             if (nfcResult.gender != null && nfcResult.gender!!.isNotEmpty()) row_nfc_gender.setRecordValue(
                 nfcResult.gender
@@ -196,39 +196,39 @@ class ResultActivity : AppCompatActivity() {
             if (nfcResult.nationality != null && nfcResult.nationality!!.isNotEmpty()) row_nfc_nationality.setRecordValue(
                 nfcResult.nationality
             ) else row_nfc_nationality.visibility = View.GONE
-            if (nfcResult.placeOfOrigin != null && nfcResult.placeOfOrigin!!.isNotEmpty()) row_nfc_hometown.setRecordValue(
-                nfcResult.placeOfOrigin
+            if (nfcResult.hometown != null && nfcResult.hometown!!.isNotEmpty()) row_nfc_hometown.setRecordValue(
+                nfcResult.hometown
             ) else row_nfc_hometown.visibility = View.GONE
-            if (nfcResult.residenceAddress != null && nfcResult.residenceAddress!!.isNotEmpty()) row_nfc_address.setRecordValue(
-                nfcResult.residenceAddress
+            if (nfcResult.address != null && nfcResult.address!!.isNotEmpty()) row_nfc_address.setRecordValue(
+                nfcResult.address
             ) else row_nfc_address.visibility = View.GONE
-            if (nfcResult.dateOfIssuance != null && nfcResult.dateOfIssuance!!.isNotEmpty()) row_nfc_doi.setRecordValue(
-                nfcResult.dateOfIssuance
+            if (nfcResult.date_of_issuance != null && nfcResult.date_of_issuance!!.isNotEmpty()) row_nfc_doi.setRecordValue(
+                nfcResult.date_of_issuance
             ) else row_nfc_doi.visibility = View.GONE
-            if (nfcResult.personalSpecificIdentification != null && nfcResult.personalSpecificIdentification!!.isNotEmpty()) row_nfc_personal_identification.setRecordValue(
-                nfcResult.personalSpecificIdentification
+            if (nfcResult.personal_identification != null && nfcResult.personal_identification!!.isNotEmpty()) row_nfc_personal_identification.setRecordValue(
+                nfcResult.personal_identification
             ) else row_nfc_personal_identification.visibility = View.GONE
-            if (nfcResult.motherName != null && nfcResult.motherName!!.isNotEmpty()) row_nfc_mother_name.setRecordValue(
-                nfcResult.motherName
+            if (nfcResult.mother_name != null && nfcResult.mother_name!!.isNotEmpty()) row_nfc_mother_name.setRecordValue(
+                nfcResult.mother_name
             ) else row_nfc_mother_name.visibility = View.GONE
-            if (nfcResult.fatherName != null && nfcResult.fatherName!!.isNotEmpty()) {
-                row_nfc_father_name.setRecordValue(nfcResult.fatherName)
-                if (nfcResult.spouseName.isNullOrEmpty()) row_nfc_father_name.hideLastRow()
+            if (nfcResult.father_name != null && nfcResult.father_name!!.isNotEmpty()) {
+                row_nfc_father_name.setRecordValue(nfcResult.father_name)
+                if (nfcResult.spouse_name.isNullOrEmpty()) row_nfc_father_name.hideLastRow()
             } else row_nfc_father_name.visibility = View.GONE
-            if (nfcResult.spouseName != null && nfcResult.spouseName!!.isNotEmpty()) {
-                row_nfc_spouse_name.setRecordValue(nfcResult.spouseName)
+            if (nfcResult.spouse_name != null && nfcResult.spouse_name!!.isNotEmpty()) {
+                row_nfc_spouse_name.setRecordValue(nfcResult.spouse_name)
                 row_nfc_spouse_name.hideLastRow()
             } else row_nfc_spouse_name.visibility = View.GONE
             if (nfcResult.religion != null && nfcResult.religion!!.isNotEmpty()) row_nfc_religion.setRecordValue(
                 nfcResult.religion
             ) else row_nfc_religion.visibility = View.GONE
-            if (nfcResult.ethnic != null && nfcResult.ethnic!!.isNotEmpty()) row_nfc_nation.setRecordValue(
-                nfcResult.ethnic
+            if (nfcResult.nation != null && nfcResult.nation!!.isNotEmpty()) row_nfc_nation.setRecordValue(
+                nfcResult.nation
             ) else row_nfc_nation.visibility = View.GONE
-            if (nfcResult.image != null && nfcResult.image!!.isNotEmpty())
+            if (nfcResult.face_image != null && nfcResult.face_image!!.isNotEmpty())
                 try {
                     container_eid_photo.visibility = View.VISIBLE
-                    iv_eid_photo.setImageBitmap(BitmapUtil.base64ToBitmap(nfcResult.image!!))
+                    iv_eid_photo.setImageBitmap(BitmapUtil.base64ToBitmap(nfcResult.face_image!!))
                 } catch (e: Exception) {
                     container_eid_photo.visibility = View.GONE
                     e.printStackTrace()
@@ -237,27 +237,27 @@ class ResultActivity : AppCompatActivity() {
             containerNFCInfo.visibility = View.GONE
         }
         // is_valid & matching_score
-        if (nfcVerificationData?.isMatch != null && nfcVerificationData.matchingScore != null) {
+        if (nfcVerificationData?.is_match != null && nfcVerificationData.matching_score != null) {
             containerMatchingHolder.visibility = View.VISIBLE
             // Set selfie
-            LogUtils.printLog("Selfie: ${nfcVerificationData.matchingScore} ")
+            LogUtils.printLog("Selfie: ${nfcVerificationData.matching_score} ")
             row_is_matched.visibility = View.VISIBLE
             row_matching_score.visibility = View.VISIBLE
             row_is_matched.setRecordValue(
-                if (nfcVerificationData.isMatch!!) resources.getString(R.string.klp_demo_yes) else resources.getString(
+                if (nfcVerificationData.is_match!!) resources.getString(R.string.klp_demo_yes) else resources.getString(
                     R.string.klp_demo_no
                 )
             )
-            row_matching_score.setRecordValue(nfcVerificationData.matchingScore.toString())
+            row_matching_score.setRecordValue(nfcVerificationData.matching_score.toString())
         } else containerMatchingHolder.visibility = View.GONE
 
 
-        if (nfcVerificationData?.data?.isValid != null) {
+        if (nfcVerificationData?.nfc_data?.is_valid != null) {
             // Set Card is valid or not
-            LogUtils.printLog("isValid: ${nfcVerificationData.data?.isValid} ")
+            LogUtils.printLog("isValid: ${nfcVerificationData.nfc_data?.is_valid} ")
             row_nfc_is_valid.visibility = View.VISIBLE
             row_nfc_is_valid.setRecordValue(
-                if (nfcVerificationData.data?.isValid!!) resources.getString(
+                if (nfcVerificationData.nfc_data?.is_valid!!) resources.getString(
                     R.string.klp_demo_yes
                 ) else resources.getString(R.string.klp_demo_no)
             )
@@ -324,7 +324,7 @@ class ResultActivity : AppCompatActivity() {
                 rowCardType.hideLastRow()
             } else rowCardType.visibility = View.GONE
 
-            if (myFields.decision != null && myFields.decisionDetail != null) {
+            if (myFields.decision != null && myFields.decision_detail != null) {
                 findViewById<View>(R.id.container_decision).visibility = View.VISIBLE
                 tvResult.visibility = View.VISIBLE
                 tvResultStatus.visibility = View.VISIBLE
@@ -343,13 +343,13 @@ class ResultActivity : AppCompatActivity() {
                             R.string.klp_demo_manual
                         )
                     containerViolatedRule.visibility = View.VISIBLE
-                    var decisionDetails = myFields.decisionDetail
+                    var decisionDetails = myFields.decision_detail
                     var count = 0
                     decisionDetails!!.forEach {
-                        if (it.isPass != null && (it.isPass == 0)) { // || it.isPass == -1
+                        if (it.is_pass != null && (it.is_pass == 0)) { // || it.isPass == -1
                             // Add into Linear Layout
                             var row = KLPDecisionRow(this@ResultActivity)
-                            row.setRuleValue(if (language == "en") it.description else it.descriptionVi)
+                            row.setRuleValue(if (language == "en") it.description else it.description_vi)
                             containerViolatedRule.addView(row)
                             count++
                         }

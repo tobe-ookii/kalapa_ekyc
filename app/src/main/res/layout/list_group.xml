@@ -9,5 +9,6 @@
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textColor="@android:color/black"
         android:paddingTop="10dp"
+        android:textSize="@dimen/klp_txt_size_normal"
         android:paddingBottom="10dp" />
 </LinearLayout>

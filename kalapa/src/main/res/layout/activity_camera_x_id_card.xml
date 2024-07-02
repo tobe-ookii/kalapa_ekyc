@@ -149,7 +149,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/margin_xxsmall"
             android:gravity="center"
-            android:textSize="@dimen/klp_txt_size_description" />
+            android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>
 
 
@@ -174,7 +174,7 @@
         android:lines="2"
         android:text="@string/klp_passport_guide_2"
         android:textAlignment="center"
-        android:textSize="@dimen/klp_shinhan_text_normal_13" />
+        android:textSize="@dimen/klp_txt_size_normal" />
 
     <TextView
         android:id="@+id/tv_instruction"
@@ -222,10 +222,10 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <!--    <FrameLayout-->
-    <!--        android:id="@+id/fragment_container"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_alignParentBottom="true" />-->
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

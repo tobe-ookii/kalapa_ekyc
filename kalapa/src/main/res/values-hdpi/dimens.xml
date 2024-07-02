@@ -13,7 +13,7 @@
     <dimen name="size_80">80dp</dimen>
     <dimen name="klp_txt_size_step">10dp</dimen>
     <dimen name="klp_txt_size_description">10dp</dimen>
-    <dimen name="klp_txt_size_normal">12dp</dimen>
+    <dimen name="klp_txt_size_normal">14dp</dimen>
     <dimen name="klp_txt_size_title">14dp</dimen>
     <dimen name="klp_txt_size_header">16dp</dimen>
     <dimen name="klp_step_height">80dp</dimen>

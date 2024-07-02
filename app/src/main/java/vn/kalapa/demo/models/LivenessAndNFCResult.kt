@@ -1,47 +1,40 @@
 package vn.kalapa.demo.models
 
-import com.beust.klaxon.Json
-import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import vn.kalapa.ekyc.models.KalapaError
 import vn.kalapa.ekyc.nfcsdk.models.NFCResultData
 
-private val klaxon = Klaxon()
 
 data class NFCVerificationResponse(
     var error: KalapaError? = null,
     var data: NFCVerificationData? = NFCVerificationData()
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCVerificationResponse>(json)
+        fun fromJson(json: String): NFCVerificationResponse = Gson().fromJson(json, NFCVerificationResponse::class.java)//klaxon.parse<NFCVerificationResponse>(json)
     }
 }
 
 data class NFCVerificationData(
-    @Json(name = "nfc_data")
-    var data: NFCCardData? = NFCCardData(),
-    @Json(name = "is_match")
-    var isMatch: Boolean? = null,
-    @Json(name = "matching_score")
-    var matchingScore: Int? = null
+    var nfc_data: NFCCardData? = NFCCardData(),
+    var is_match: Boolean? = null,
+    var matching_score: Int? = null
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this) //klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCVerificationData>(json)
+        fun fromJson(json: String): NFCVerificationData = Gson().fromJson(json, NFCVerificationData::class.java)// klaxon.parse<NFCVerificationData>(json)
     }
 }
 
 data class NFCCardData(
-    @Json(name = "card_data")
-    var data: NFCResultData? = NFCResultData(),
-    @Json(name = "is_valid")
-    var isValid: Boolean? = null
+    var card_data: NFCResultData? = NFCResultData(),
+    var is_valid: Boolean? = null
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)//klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCCardData>(json)
+        fun fromJson(json: String): NFCCardData = Gson().fromJson(json, NFCCardData::class.java) // klaxon.parse<NFCCardData>(json)
     }
 }

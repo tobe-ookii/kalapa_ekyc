@@ -74,9 +74,9 @@ public class MainActivityJava extends BaseActivity {
     }
 
     KalapaCaptureHandler ocrHandler = new KalapaCaptureHandler() {
+
         @Override
         public void process$kalapa_debug(@NonNull String base64, @NonNull KalapaSDKMediaType kalapaSDKMediaType, @NonNull KalapaSDKCallback kalapaSDKCallback) {
-            // SDK will return liveness face as base64. mediaType is always PORTRAIT.
             // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
             boolean assumeSuccessProcess = true;
             if (kalapaSDKMediaType == KalapaSDKMediaType.FRONT) {
@@ -174,9 +174,9 @@ public class MainActivityJava extends BaseActivity {
                     preferencesConfig.getFaceMatchThreshold(),
                     createSessionResult -> {
                         ProgressView.Companion.hideProgress(true);
-                        LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.component3(), createSessionResult.component1());
+                        LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.getFlow(), createSessionResult.getToken());
                         KalapaSDK.Companion.startFullEKYC(MainActivityJava.this,
-                                "createSessionResult.component1()",
+                                createSessionResult.getToken(),
                                 createSessionResult.component3(), sdkConfig, new KalapaHandler() {
                                     @Override
                                     public void onError(@NonNull KalapaSDKResultCode resultCode) {
@@ -255,8 +255,8 @@ public class MainActivityJava extends BaseActivity {
                     .withLivenessVersion(livenessVersion)
                     .withBaseURL(preferencesConfig.getEnv())
                     .withLanguage(preferencesConfig.getLanguage())
-                    .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
-                    .withFaceData(BitmapUtil.Companion.getTU_BASE64())
+//                    .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
+//                    .withFaceData(BitmapUtil.Companion.getTU_BASE64())
 //                    .withMRZ("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
                     .build();
             LogUtils.Companion.printLog("Pulling language: " + sdkConfig.getLanguage() + " - " + lang);

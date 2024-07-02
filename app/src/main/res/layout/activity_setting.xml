@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edt_default_background"
+            android:textSize="@dimen/klp_txt_size_normal"
             android:contentDescription="Enter your background color"
             android:maxLines="3" />
 
@@ -157,6 +158,7 @@
                     android:id="@+id/cb_acceptance_document_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:buttonTint="@color/mainColor"
                     android:checked="true" />
 
@@ -165,6 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/margin_mid"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:text="@string/klp_old_id_card" />
 
             </LinearLayout>
@@ -187,6 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/margin_mid"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:text="@string/klp_12_digits_id_card" />
 
             </LinearLayout>
@@ -207,6 +211,7 @@
                 <TextView
                     android:id="@+id/tv_acceptance_document_3"
                     android:layout_width="wrap_content"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/margin_mid"
                     android:text="@string/klp_eid_no_chip" />
@@ -230,6 +235,7 @@
                     android:id="@+id/tv_acceptance_document_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_marginVertical="@dimen/margin_mid"
                     android:text="@string/klp_eid_with_chip" />
 
@@ -336,7 +342,6 @@
                     android:layout_height="wrap_content"
                     android:stepSize="1"
                     android:theme="@style/MyMaterialTheme"
-
                     android:value="50"
                     android:valueFrom="1"
                     android:valueTo="99" />
@@ -348,6 +353,7 @@
                     android:layout_alignStart="@id/slider_face_matching_threshold"
                     android:layout_marginStart="@dimen/margin_mid"
                     android:text="0"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:translationY="-10dp" />
 
                 <TextView
@@ -356,12 +362,14 @@
                     android:layout_below="@id/slider_face_matching_threshold"
                     android:layout_centerHorizontal="true"
                     android:text="50"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:translationY="-10dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/slider_face_matching_threshold"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_alignEnd="@id/slider_face_matching_threshold"
                     android:layout_marginEnd="@dimen/margin_mid"
                     android:text="100"
@@ -405,6 +413,7 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:textSize="@dimen/klp_txt_size_normal"
                 android:background="@drawable/edt_default_background"
                 android:contentDescription="Enter your main color (also your button color)"
                 android:maxLines="1" />
@@ -428,6 +437,7 @@
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/margin_mid"
+                android:textSize="@dimen/klp_txt_size_normal"
                 android:background="@drawable/border_button_solid"
                 android:contentDescription="Enter your button text color"
                 android:textAllCaps="true" />
@@ -436,6 +446,7 @@
             <EditText
                 android:id="@+id/edt_button_text_color"
                 android:layout_width="130dp"
+                android:textSize="@dimen/klp_txt_size_normal"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
                 android:background="@drawable/edt_default_background"
@@ -471,6 +482,7 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:textSize="@dimen/klp_txt_size_normal"
                 android:background="@drawable/edt_default_background"
                 android:maxLines="1" />
         </LinearLayout>
@@ -492,6 +504,7 @@
                 android:id="@+id/btn_main_text_color"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
+                android:textSize="@dimen/klp_txt_size_normal"
                 android:layout_marginRight="@dimen/margin_mid"
                 android:background="@drawable/border_button_solid"
                 android:textAllCaps="true" />
@@ -500,6 +513,7 @@
                 android:id="@+id/edt_main_text_color"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/klp_txt_size_normal"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
                 android:background="@drawable/edt_default_background"
                 android:maxLines="1" />
@@ -515,6 +529,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_vertical"
+            android:textSize="@dimen/klp_txt_size_normal"
             android:background="@drawable/border_button_solid"
             android:text="@string/klp_save_setting_title"
             android:textColor="@color/white" />

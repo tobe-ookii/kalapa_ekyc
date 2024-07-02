@@ -10,19 +10,15 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
 import android.graphics.Rect
 import android.graphics.YuvImage
-import android.os.Handler
-import android.os.Looper
 import androidx.camera.core.ImageProxy
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
-import lombok.experimental.Helper
 import org.json.JSONObject
 import vn.kalapa.R
 import vn.kalapa.ekyc.capturesdk.CameraXPassportActivity
 import vn.kalapa.ekyc.activity.CameraXSelfieActivity
 import vn.kalapa.ekyc.activity.ConfirmActivity
-import vn.kalapa.ekyc.capturesdk.CameraXAutoCaptureActivity
 import vn.kalapa.ekyc.capturesdk.CameraXCaptureActivity
 import vn.kalapa.ekyc.capturesdk.CameraXCaptureBackActivity
 import vn.kalapa.ekyc.handlers.GetDynamicLanguageHandler
@@ -32,7 +28,6 @@ import vn.kalapa.ekyc.models.FrontResult
 import vn.kalapa.ekyc.models.KalapaError
 import vn.kalapa.ekyc.models.KalapaLanguageModel
 import vn.kalapa.ekyc.models.KalapaResult
-import vn.kalapa.ekyc.models.MRZ
 import vn.kalapa.ekyc.models.MRZData
 import vn.kalapa.ekyc.models.NFCRawData
 import vn.kalapa.ekyc.models.PassportResult
@@ -239,14 +234,13 @@ class KalapaSDK {
 
                     override fun onComplete(kalapaResult: KalapaResult) {
                         super.onComplete(kalapaResult)
-                        Helpers.printLog("startFullEKYC localStartConfirmForResult onComplete KalapaResult: $kalapaResult \n ${kalapaResult.decision} ${kalapaResult.decisionDetail} ")
+                        Helpers.printLog("startFullEKYC localStartConfirmForResult onComplete KalapaResult: $kalapaResult \n ${kalapaResult.decision} ${kalapaResult.decision_detail} ")
                         kalapaCustomHandler.onComplete(kalapaResult)
                     }
 
 
                 })
             }
-
 
             fun backgroundConfirm(callback: KalapaSDKCallback) {
                 val path = "${Companion.config.baseURL}/api/kyc/confirm"
@@ -265,7 +259,7 @@ class KalapaSDK {
                         override fun success(confirmResult: ConfirmResult) {
                             Helpers.printLog("confirmResult")
                             kalapaResult.decision = confirmResult.decision_detail?.decision
-                            kalapaResult.decisionDetail = confirmResult.decision_detail?.details
+                            kalapaResult.decision_detail = confirmResult.decision_detail?.details
                             kalapaResult.nfc_data = confirmResult.nfc_data
                             if (confirmResult.selfie_data != null)
                                 kalapaResult.selfie_data = confirmResult.selfie_data.data
@@ -339,8 +333,8 @@ class KalapaSDK {
                     activity,
                     config,
                     object : KalapaNFCHandler(
-                        if (!isFrontAndBackResultInitialized()) "" else frontResult.myFields?.idNumber
-                            ?: frontResult.mrzData?.data?.rawMRZ ?: ""
+                        if (!isFrontAndBackResultInitialized()) "" else frontResult.fields?.id_number
+                            ?: frontResult.mrz_data?.data?.raw_mrz ?: ""
                     ) {
                         private val endpoint = "/api/nfc/verify"
                         override fun process(
@@ -434,7 +428,7 @@ class KalapaSDK {
                                 Helpers.printLog("imageCheck $endpoint $jsonObject")
                                 callback.sendDone {
                                     // Call NFC if needed!
-                                    if (backResult.cardType?.contains("eid") == true && KalapaSDK.config.getUseNFC()) {
+                                    if (backResult.card_type?.contains("eid") == true && KalapaSDK.config.getUseNFC()) {
                                         localStartNFCForResult()
                                     } else {
                                         localStartLivenessForResult()
@@ -526,9 +520,9 @@ class KalapaSDK {
                     override fun success(jsonObject: JSONObject) {
                         ProgressView.hideProgress()
                         val mrzJSON = MRZData.fromJson(jsonObject.toString())
-                        if (mrzJSON != null && mrzJSON.rawMRZ?.isNotEmpty() == true) {
-                            Helpers.printLog("leftoverSession MRZ: ${mrzJSON.rawMRZ}")
-                            config.mrz = mrzJSON.rawMRZ
+                        if (mrzJSON != null && mrzJSON.raw_mrz?.isNotEmpty() == true) {
+                            Helpers.printLog("leftoverSession MRZ: ${mrzJSON.raw_mrz}")
+                            config.mrz = mrzJSON.raw_mrz
                         } else {
                             KalapaSDK.config.leftoverSession = ""
                         }
@@ -771,9 +765,9 @@ class KalapaSDKConfig private constructor(
             val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
             if ((klpLanguageModel?.error != null) && (klpLanguageModel.error.code == 0) && klpLanguageModel.data != null) {
                 // Thành công
-                if (klpLanguageModel.data.data?.sdk?.isNotEmpty() == true) {
-                    Helpers.printLog("setLanguage ${klpLanguageModel.data.data.sdk}")
-                    languageUtils.setLanguage(klpLanguageModel.data.data.sdk)
+                if (klpLanguageModel.data.data?.SDK?.isNotEmpty() == true) {
+                    Helpers.printLog("setLanguage ${klpLanguageModel.data.data.SDK}")
+                    languageUtils.setLanguage(klpLanguageModel.data.data.SDK)
                 }
             }
         }

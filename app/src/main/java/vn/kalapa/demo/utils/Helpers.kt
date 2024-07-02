@@ -29,7 +29,6 @@ import com.google.android.material.slider.Slider
 import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.R
-import vn.kalapa.ekyc.models.KalapaOTP
 import vn.kalapa.ekyc.models.PreferencesConfig
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
@@ -95,16 +94,6 @@ internal class Helpers {
 
         fun isAllDigits(input: String): Boolean {
             return input.all { it.isDigit() }
-        }
-
-        fun getRandomOTP(): KalapaOTP {
-            // It will generate 6 digit random Number.
-            // from 0 to 999999
-            val rnd = Random()
-            val number = rnd.nextInt(999999)
-
-            // this will convert any number sequence into 6 character.
-            return KalapaOTP(String.format("%06d", number), 30)
         }
 
         fun formatMoney(number: Int): String {

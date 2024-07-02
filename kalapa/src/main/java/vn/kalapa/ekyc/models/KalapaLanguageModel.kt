@@ -1,46 +1,40 @@
 package vn.kalapa.ekyc.models
+
+import com.google.gson.Gson
+
 // To parse the JSON, install Klaxon and do:
 //
 //   val welcome8 = Welcome8.fromJson(jsonString)
 
-import com.beust.klaxon.*
-
-private val klaxon = Klaxon()
-
 
 data class KalapaLanguageModel(
-    @Json(name = "data")
     val data: LanguageModelData? = null,
-    @Json(name = "error", ignored = false)
     val error: MyError?,
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<KalapaLanguageModel>(json)
+        fun fromJson(json: String): KalapaLanguageModel = Gson().fromJson(json, KalapaLanguageModel::class.java)// klaxon.parse<KalapaLanguageModel>(json)
     }
 }
 
 data class LanguageModelData(
-    @Json(name = "data", ignored = false)
     val data: LanguageModelDataData? = null,
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<LanguageModelData>(json)
+        fun fromJson(json: String): LanguageModelData = Gson().fromJson(json, LanguageModelData::class.java)// klaxon.parse<LanguageModelData>(json)
     }
 }
 
 data class LanguageModelDataData(
-    @Json(name = "APP_DEMO", ignored = false)
-    val appDemo: Map<String, String>,
-    @Json(name = "SDK", ignored = false)
-    val sdk:  Map<String, String>
+    val APP_DEMO: Map<String, String>,
+    val SDK: Map<String, String>
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<LanguageModelDataData>(json)
+        fun fromJson(json: String): LanguageModelDataData = Gson().fromJson(json, LanguageModelDataData::class.java)//klaxon.parse<LanguageModelDataData>(json)
     }
 }

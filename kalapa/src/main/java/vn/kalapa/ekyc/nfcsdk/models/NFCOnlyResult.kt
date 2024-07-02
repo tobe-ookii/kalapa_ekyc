@@ -1,61 +1,47 @@
 package vn.kalapa.ekyc.nfcsdk.models
 
-import com.beust.klaxon.Json
-import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import vn.kalapa.ekyc.models.KalapaError
 
-private val klaxon = Klaxon()
 
 data class NFCOnlyResult(
     var error: KalapaError? = null,
     var data: NFCResultData? = NFCResultData()
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)//klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCOnlyResult>(json)
+        fun fromJson(json: String): NFCOnlyResult = Gson().fromJson(json, NFCOnlyResult::class.java)// klaxon.parse<NFCOnlyResult>(json)
     }
 }
+
 data class NFCResultData(
     var mrz: String? = "",
 
-    @Json(name = "id_number")
-    var idCardNo: String? = "",
-    @Json(name = "old_id_number")
-    val oldIdCardNo: String? = "",
+    var id_number: String? = "",
+    val old_id_number: String? = "",
     val name: String? = "",
 
-    @Json(name = "date_of_birth")
-    val dateOfBirth: String? = "",
+    val date_of_birth: String? = "",
     val gender: String? = "",
     val nationality: String? = "",
-    @Json(name = "nation")
-    val ethnic: String? = "",
+    val nation: String? = "",
     val religion: String? = "",
-    @Json(name = "hometown")
-    val placeOfOrigin: String? = "",
-    @Json(name = "address")
-    val residenceAddress: String? = "",
-    @Json(name = "personal_identification")
-    val personalSpecificIdentification: String? = "",
-    @Json(name = "date_of_issuance")
-    val dateOfIssuance: String? = "",
-    @Json(name = "date_of_expiry")
-    val dateOfExpiry: String? = "",
-    @Json(name = "mother_name")
-    val motherName: String? = "",
-    @Json(name = "father_name")
-    val fatherName: String? = "",
-    @Json(name = "spouse_name")
-    val spouseName: String? = "",
+    val hometown: String? = "",
+    val address: String? = "",
+    val personal_identification: String? = "",
+    val date_of_issuance: String? = "",
+    val date_of_expiry: String? = "",
+    val mother_name: String? = "",
+    val father_name: String? = "",
+    val spouse_name: String? = "",
     val serial: String? = "",
     val transID: String? = "",
-    @Json(name = "face_image")
-    var image: String? = "", // base64
+    var face_image: String? = "", // base64
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCResultData>(json)
+        fun fromJson(json: String): NFCResultData = Gson().fromJson(json, NFCResultData::class.java)// klaxon.parse<NFCResultData>(json)
     }
 }

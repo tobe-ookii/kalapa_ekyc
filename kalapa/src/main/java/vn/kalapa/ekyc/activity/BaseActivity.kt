@@ -1,6 +1,8 @@
 package vn.kalapa.ekyc.activity
 
+import android.content.Context
 import android.os.Build
+import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import vn.kalapa.ekyc.utils.Helpers
 
@@ -28,6 +30,14 @@ abstract class BaseActivity : AppCompatActivity() {
         }
         super.onResume()
     }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val configuration = newBase!!.resources.configuration
+        configuration.densityDpi = DisplayMetrics.DENSITY_DEVICE_STABLE
+        applyOverrideConfiguration(configuration)
+        super.attachBaseContext(newBase)
+    }
+
 
     private var isRunningOnEmulator: Boolean? = null
 

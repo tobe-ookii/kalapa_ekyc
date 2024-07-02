@@ -422,6 +422,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/margin_mid"
                         android:textAlignment="center"
+                        android:textSize="@dimen/klp_txt_size_normal"
+
                         android:textColor="@color/black_txt"
                         android:textStyle="bold" />
 
@@ -434,6 +436,7 @@
                         android:text="@string/klp_demo_approved"
                         android:textAlignment="center"
                         android:textAllCaps="true"
+                        android:textSize="@dimen/klp_txt_size_normal"
                         android:textColor="@color/black_txt"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -448,6 +451,7 @@
                     android:layout_marginBottom="@dimen/margin_vertical"
                     android:background="@drawable/border_button_solid"
                     android:backgroundTint="@color/mainColor"
+                    android:textSize="@dimen/klp_shinhan_title_17"
                     android:text="@string/klp_demo_done"
                     android:textAllCaps="false" />
             </androidx.appcompat.widget.LinearLayoutCompat>

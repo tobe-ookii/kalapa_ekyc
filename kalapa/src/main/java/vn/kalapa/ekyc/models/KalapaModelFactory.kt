@@ -1,14 +1,7 @@
 package vn.kalapa.ekyc.models
 
-import com.beust.klaxon.Json
-import com.beust.klaxon.Klaxon
-import com.google.gson.annotations.SerializedName
+import com.google.gson.Gson
 import vn.kalapa.ekyc.nfcsdk.models.NFCResultData
-
-private val klaxon = Klaxon()
-
-//class KalapaModelFactory{}
-
 
 data class KalapaResult(
     var session: String? = "",
@@ -39,10 +32,9 @@ data class KalapaResult(
     var mrz_data: MRZ? = MRZ(),
     var nfc_data: NFCResultData? = NFCResultData(),
     var selfie_data: SelfieResultData? = SelfieResultData(),
-    @Json(name = "decision_detail")
-    var decisionDetail: List<DecisionDetail>? = null
+    var decision_detail: List<DecisionDetail>? = null
 ) {
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)
     fun toMap(): Map<String, Any?> {
         return mapOf(
             "gender" to gender,
@@ -73,59 +65,41 @@ data class KalapaResult(
     }
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<KalapaResult>(json)
+        fun fromJson(json: String): KalapaResult = Gson().fromJson(json, KalapaResult::class.java)// klaxon.parse<KalapaResult>(json)
     }
 }
 
 
 data class ConfirmResult(
-    @Json(ignored = false)
     val session: String? = "",
-    @Json(ignored = false)
     val decision_detail: Decision? = Decision(),
-    @Json(ignored = false)
     val recorrect_data: KLPFields? = KLPFields(),
-    @Json(ignored = false)
     val nfc_data: NFCResultData? = null,
-    @Json(ignored = false)
     val selfie_data: SelfieResult? = null
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this) // klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<ConfirmResult>(json)
+        fun fromJson(json: String): ConfirmResult = Gson().fromJson(json, ConfirmResult::class.java)//  = klaxon.parse<ConfirmResult>(json)
     }
 }
 
 data class Decision(
-    @Json(ignored = false)
     val decision: String? = "",
-    @Json(ignored = false)
     val details: List<DecisionDetail>? = listOf()
 )
 
 data class DecisionDetail(
-    @Json(ignored = false)
     val code: String? = "",
-    @Json(ignored = false)
     val description: String? = "",
-
-    @Json(name = "description_vi")
-    val descriptionVi: String? = "",
-    @Json(ignored = false)
+    val description_vi: String? = "",
     val info: Info? = null,
-
-    @Json(name = "is_pass")
-    val isPass: Int? = 0,
-
-    @Json(name = "alias")
+    val is_pass: Int? = 0,
     val alias: String? = ""
 )
 
 data class Info(
-    @Json(ignored = false)
     val level: Int,
-    @Json(ignored = false)
     val sensitivity: Int? = null
 )
 
@@ -148,80 +122,49 @@ data class Entities(
         )
     }
 
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<Entities>(json)
+        fun fromJson(json: String): Entities = Gson().fromJson(json, Entities::class.java) // klaxon.parse<Entities>(json)
     }
 }
 
 data class KLPFields(
-    @Json(name = "birthday", ignored = false)
     val birthday: String? = "",
-    @Json(name = "doe", ignored = false)
     val doe: String? = "",
-    @Json(name = "doi", ignored = false)
     val doi: String? = "",
-    @Json(name = "ethnicity", ignored = false)
     val ethnicity: String? = "",
-    @Json(name = "features", ignored = false)
     val features: String? = "",
-    @Json(name = "gender", ignored = false)
     val gender: String? = "",
-    @Json(name = "home", ignored = false)
     val home: String? = "",
 
-    @Json(name = "id_number", ignored = false)
-    @SerializedName("id_number")
-    val idNumber: String? = "",
-    @Json(name = "name", ignored = false)
+    val id_number: String? = "",
     val name: String? = "",
-    @Json(name = "poi", ignored = false)
     val poi: String? = "",
-    @Json(name = "religion", ignored = false)
     val religion: String? = "",
-    @Json(name = "resident", ignored = false)
     val resident: String? = "",
-    @Json(name = "type", ignored = false)
     val type: String? = "",
-    @Json(name = "national", ignored = false)
     val national: String? = "",
-    @Json(name = "country", ignored = false)
     val country: String? = "",
-    @Json(name = "code", ignored = false)
     val code: String? = "",
-    @Json(name = "dob", ignored = false)
     val dob: String? = "",
-    @Json(name = "nationality", ignored = false)
     val nationality: String? = "",
-    @Json(name = "pob", ignored = false)
     val pob: String? = "",
 
-    @Json(name = "pp_number", ignored = false)
-    @SerializedName("pp_number")
-    val ppNumber: String? = "",
+    val pp_number: String? = "",
+    val home_entities: Entities? = Entities(),
 
-    @Json(name = "home_entities", ignored = false)
-    @SerializedName("home_entities")
-    val homeEntities: Entities? = Entities(),
-
-    @Json(name = "resident_entities", ignored = false)
-    @SerializedName("resident_entities")
-    val residentEntities: Entities = Entities()
+    val resident_entities: Entities = Entities()
 ) {
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<KLPFields>(json)
+        fun fromJson(json: String): KLPFields = Gson().fromJson(json, KLPFields::class.java) //klaxon.parse<KLPFields>(json)
     }
 }
 
 data class QrCode(
-    @SerializedName("data")
-    @Json(name = "data", ignored = false)
     val data: QrCodeData? = QrCodeData(),
-    @SerializedName("error")
-    @Json(name = "error", ignored = false)
     val error: MyError? = MyError()
 ) {
     override fun toString(): String {
@@ -237,16 +180,16 @@ data class QrCode(
         )
     }
 
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<QrCode>(json)
+        fun fromJson(json: String): QrCode = Gson().fromJson(json, QrCode::class.java) //  klaxon.parse<QrCode>(json)
     }
 }
 
 data class QrCodeData(
-    @SerializedName("decoded_text") val decoded_text: String? = null,
-    @SerializedName("stage") val stage: Int? = 0
+    val decoded_text: String? = null,
+    val stage: Int? = 0
 ) {
     fun toMap(): Map<String, Any?> {
         return mapOf(
@@ -255,10 +198,10 @@ data class QrCodeData(
         )
     }
 
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<QrCodeData>(json)
+        fun fromJson(json: String): QrCodeData = Gson().fromJson(json, QrCodeData::class.java)
     }
 
 }
@@ -266,7 +209,6 @@ data class QrCodeData(
 
 data class MRZ(
     val data: MRZData? = MRZData(),
-    @Json(name = "error", ignored = false)
     val error: MyError? = MyError()
 ) {
     fun toMap(): Map<String, Any?> {
@@ -276,10 +218,10 @@ data class MRZ(
         )
     }
 
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)
 
     companion object {
-         fun fromJson(json: String) = klaxon.parse<MRZ>(json)
+        fun fromJson(json: String): MRZ = Gson().fromJson(json, MRZ::class.java) //  = klaxon.parse<MRZ>(json)
     }
 }
 
@@ -292,35 +234,28 @@ data class MRZ(
 //},
 //"raw_mrz": "IDVNM0970011541035097001154<<5\n9709029M3709027VNM<<<<<<<<<<<8\nTA<<MINH<PHUC<<<<<<<<<<<<<<<<<"
 data class MRZData(
-    @Json(name = "fields", ignored = false)
-    val mrzDataFields: MRZDataField? = MRZDataField(),
-    @Json(name = "raw_mrz", ignored = false)
-    val rawMRZ: String? = ""
+    val fields: MRZDataField? = MRZDataField(),
+    val raw_mrz: String? = ""
 ) {
     fun toMap(): Map<String, Any?> {
         return mapOf(
-            "fields" to (mrzDataFields?.toMap() ?: ""),
-            "raw_mrz" to rawMRZ
+            "fields" to (fields?.toMap() ?: ""),
+            "raw_mrz" to raw_mrz
         )
     }
 
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this) // klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<MRZData>(json)
+        fun fromJson(json: String): MRZData = Gson().fromJson(json, MRZData::class.java)//  = klaxon.parse<MRZData>(json)
     }
 }
 
 data class MRZDataField(
-    @Json(name = "birthday", ignored = false)
     val birthday: String? = "",
-    @Json(name = "doe", ignored = false)
     val doe: String? = "",
-    @Json(name = "gender", ignored = false)
     val gender: String? = "",
-    @Json(name = "id_number", ignored = false)
     val id_number: String? = "",
-    @Json(name = "name", ignored = false)
     val name: String? = ""
 ) {
     fun toMap(): Map<String, Any?> {
@@ -333,10 +268,10 @@ data class MRZDataField(
         )
     }
 
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<MRZDataField>(json)
+        fun fromJson(json: String): MRZDataField = Gson().fromJson(json, MRZDataField::class.java)// klaxon.parse<MRZDataField>(json)
     }
 }
 
@@ -385,44 +320,38 @@ data class MRZDataField(
 
 data class CreateSessionResult(
     val token: String,
-    @Json(name = "client_id")
-    val username: String,
+    val client_id: String,
     val flow: String
 ) {
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<CreateSessionResult>(json)
+        fun fromJson(json: String): CreateSessionResult = Gson().fromJson(json, CreateSessionResult::class.java) // klaxon.parse<CreateSessionResult>(json)
     }
 }
 
 data class FrontResult(
-    @Json(name = "fields", ignored = false)
-    val myFields: KLPFields? = KLPFields(),
-    @Json(name = "qr_code", ignored = false)
-    val qrCode: QrCode? = QrCode(),
-    @Json(name = "mrz_data", ignored = false)
-    val mrzData: MRZ? = MRZ(),
-    @Json(name = "card_type", ignored = false)
-    val cardType: String
+    val fields: KLPFields? = KLPFields(),
+    val qr_code: QrCode? = QrCode(),
+    val mrz_data: MRZ? = MRZ(),
+    val card_type: String
 ) {
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<FrontResult>(json)
+        fun fromJson(json: String): FrontResult = Gson().fromJson(json, FrontResult::class.java)// klaxon.parse<FrontResult>(json)
     }
 }
 
 
 data class PassportResult(
-    @Json("fields")
     val fields: PassportFields
 
 ) {
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)//klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<PassportResult>(json)
+        fun fromJson(json: String): PassportResult = Gson().fromJson(json, PassportResult::class.java) //  klaxon.parse<PassportResult>(json)
     }
 }
 
@@ -433,16 +362,14 @@ data class PassportFields(
     val doi: String,
     val gender: String,
 
-    @Json(name = "id_number")
-    val idNumber: String,
+    val id_number: String,
 
     val name: String,
     val nationality: String,
     val pob: String,
     val poi: String,
 
-    @Json(name = "pp_number")
-    val ppNumber: String,
+    val pp_number: String,
 
     val type: String
 )
@@ -451,10 +378,10 @@ data class SelfieResult(
     var error: KalapaError? = null,
     var data: SelfieResultData? = SelfieResultData()
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this) //klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<SelfieResult>(json)
+        fun fromJson(json: String): SelfieResult = Gson().fromJson(json, SelfieResult::class.java)// klaxon.parse<SelfieResult>(json)
     }
 }
 
@@ -462,21 +389,20 @@ data class SelfieResultData(
     val is_matched: Boolean? = null,
     val matching_score: Int? = null
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<SelfieResultData>(json)
+        fun fromJson(json: String): SelfieResultData = Gson().fromJson(json, SelfieResultData::class.java)// //klaxon.parse<SelfieResultData>(json)
     }
 }
 
 data class BackResult(
-    @Json(name = "card_type")
-    val cardType: String?
+    val card_type: String?
 ) {
-    public fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)//klaxon.toJsonString(this)
 
     companion object {
-        public fun fromJson(json: String) = klaxon.parse<BackResult>(json)
+        fun fromJson(json: String): BackResult = Gson().fromJson(json, BackResult::class.java)//= klaxon.parse<BackResult>(json)
     }
 }
 
@@ -499,10 +425,10 @@ data class NFCRawData(
     val dg15: String,
     val dg16: String
 ) {
-    fun toJson() = klaxon.toJsonString(this)
+    fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String) = klaxon.parse<NFCRawData>(json)
+        fun fromJson(json: String): NFCRawData = Gson().fromJson(json, NFCRawData::class.java)// klaxon.parse<NFCRawData>(json)
     }
 
     fun toMap(): Map<String, Any> {

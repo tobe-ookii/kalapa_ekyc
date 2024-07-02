@@ -70,6 +70,7 @@
             android:background="@drawable/border_button_only"
             android:text="@string/klp_cancel_button"
             android:visibility="visible"
+            android:textSize="@dimen/klp_shinhan_title_17"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

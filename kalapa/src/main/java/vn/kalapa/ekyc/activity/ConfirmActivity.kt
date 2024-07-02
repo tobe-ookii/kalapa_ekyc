@@ -28,7 +28,6 @@ import vn.kalapa.ekyc.models.KalapaError
 import vn.kalapa.ekyc.models.KalapaResult
 import vn.kalapa.ekyc.networks.Client
 import vn.kalapa.ekyc.networks.KalapaAPI
-import vn.kalapa.ekyc.nfcsdk.models.NFCResultData
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
@@ -345,36 +344,36 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                         // KALAPA OUTPUT
                         Helpers.printLog("confirmResult")
 //                        Helpers.printLog(confirmResult.toJson())
-                        result.birthday = frontResult.myFields?.birthday!!
-                        if (frontResult.myFields != null && frontResult.myFields!!.birthday != null) {
-                            dob = Common.parseDate(frontResult.myFields?.birthday!!)
+                        result.birthday = frontResult.fields?.birthday!!
+                        if (frontResult.fields != null && frontResult.fields!!.birthday != null) {
+                            dob = Common.parseDate(frontResult.fields?.birthday!!)
                         }
-                        result.gender = frontResult.myFields?.gender!!
-                        result.home = frontResult.myFields?.home!!
-                        result.type = frontResult.myFields?.type!!
+                        result.gender = frontResult.fields?.gender!!
+                        result.home = frontResult.fields?.home!!
+                        result.type = frontResult.fields?.type!!
                         result.decision = confirmResult.decision_detail?.decision
-                        result.resident = frontResult.myFields?.resident!!
+                        result.resident = frontResult.fields?.resident!!
                         result.session = confirmResult.session
-                        result.idNumber = frontResult.myFields?.idNumber!!
-                        result.qr_code = frontResult.qrCode
+                        result.idNumber = frontResult.fields?.id_number!!
+                        result.qr_code = frontResult.qr_code
                         isFinishedConfirm = true
-                        result.mrz_data = frontResult.mrzData
-                        result.doe = frontResult.myFields?.doe!!
-                        result.doi = frontResult.myFields?.doi!!
-                        if (frontResult.myFields?.features != null) {
-                            result.features = frontResult.myFields?.features!!
+                        result.mrz_data = frontResult.mrz_data
+                        result.doe = frontResult.fields?.doe!!
+                        result.doi = frontResult.fields?.doi!!
+                        if (frontResult.fields?.features != null) {
+                            result.features = frontResult.fields?.features!!
                         }
-                        if (frontResult.myFields != null && frontResult.myFields!!.doi != null) {
-                            doi = Common.parseDate(frontResult.myFields?.doi!!)
+                        if (frontResult.fields != null && frontResult.fields!!.doi != null) {
+                            doi = Common.parseDate(frontResult.fields?.doi!!)
                         }
-                        if (frontResult.myFields != null && frontResult.myFields!!.doe != null) {
-                            doe = Common.parseDate(frontResult.myFields?.doe!!)
+                        if (frontResult.fields != null && frontResult.fields!!.doe != null) {
+                            doe = Common.parseDate(frontResult.fields?.doe!!)
                         }
-                        result.name = frontResult.myFields?.name!!
-                        result.poi = frontResult.myFields?.poi!!
-                        result.home_entities = frontResult.myFields?.homeEntities
-                        result.resident_entities = frontResult.myFields?.residentEntities
-                        result.decisionDetail = confirmResult.decision_detail?.details
+                        result.name = frontResult.fields?.name!!
+                        result.poi = frontResult.fields?.poi!!
+                        result.home_entities = frontResult.fields?.home_entities
+                        result.resident_entities = frontResult.fields?.resident_entities
+                        result.decision_detail = confirmResult.decision_detail?.details
                         result.nfc_data = confirmResult.nfc_data
                         if (confirmResult.selfie_data != null)
                             result.selfie_data = confirmResult.selfie_data.data
@@ -482,37 +481,37 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         if (frontResult != null) {
             KalapaSDK.frontResult = frontResult
             runOnUiThread {
-                this.edName.setText(frontResult.myFields?.name)
-                this.edDOBDay.setText(frontResult.myFields?.birthday)
-                if (KalapaSDK.frontResult!!.myFields != null && KalapaSDK.frontResult.myFields!!.birthday != null) {
-                    dob = Common.parseDate(KalapaSDK.frontResult.myFields?.birthday!!)
+                this.edName.setText(frontResult.fields?.name)
+                this.edDOBDay.setText(frontResult.fields?.birthday)
+                if (KalapaSDK.frontResult!!.fields != null && KalapaSDK.frontResult.fields!!.birthday != null) {
+                    dob = Common.parseDate(KalapaSDK.frontResult.fields?.birthday!!)
                 }
-                if (KalapaSDK.frontResult!!.myFields != null && KalapaSDK.frontResult.myFields!!.doi != null) {
-                    doi = Common.parseDate(KalapaSDK.frontResult.myFields?.doi!!)
+                if (KalapaSDK.frontResult!!.fields != null && KalapaSDK.frontResult.fields!!.doi != null) {
+                    doi = Common.parseDate(KalapaSDK.frontResult.fields?.doi!!)
                 }
 
-                if (KalapaSDK.frontResult.myFields != null && KalapaSDK.frontResult.myFields!!.doe != null) {
-                    doe = Common.parseDate(KalapaSDK.frontResult.myFields?.doe!!)
-                    this.edDOEDay.setText(frontResult.myFields?.doe)
+                if (KalapaSDK.frontResult.fields != null && KalapaSDK.frontResult.fields!!.doe != null) {
+                    doe = Common.parseDate(KalapaSDK.frontResult.fields?.doe!!)
+                    this.edDOEDay.setText(frontResult.fields?.doe)
                 } else {
                     edDOEDay.visibility = INVISIBLE
                 }
-                this.edDOIDay.setText(frontResult.myFields?.doi)
-                this.edIDNumber.setText(frontResult.myFields?.idNumber)
-                this.edPlaceOfIssue.setText(frontResult.myFields?.poi)
-                this.edAddress.setText(frontResult.myFields?.resident)
-                this.edHometown.setText(frontResult.myFields?.home)
+                this.edDOIDay.setText(frontResult.fields?.doi)
+                this.edIDNumber.setText(frontResult.fields?.id_number)
+                this.edPlaceOfIssue.setText(frontResult.fields?.poi)
+                this.edAddress.setText(frontResult.fields?.resident)
+                this.edHometown.setText(frontResult.fields?.home)
 
-                if (frontResult.qrCode?.data?.decoded_text != null)
-                    this.edQrCode.setText(frontResult.qrCode?.data?.decoded_text)
+                if (frontResult.qr_code?.data?.decoded_text != null)
+                    this.edQrCode.setText(frontResult.qr_code?.data?.decoded_text)
                 else
-                    this.edQrCode.setText(frontResult.qrCode?.error?.message)
+                    this.edQrCode.setText(frontResult.qr_code?.error?.message)
 
 
-                if (frontResult.myFields?.gender == "Nữ") {
+                if (frontResult.fields?.gender == "Nữ") {
                     this.radioGroupSex.check(R.id.radio_female)
                 }
-                if (frontResult.myFields?.gender == "Nam") {
+                if (frontResult.fields?.gender == "Nam") {
                     this.radioGroupSex.check(R.id.radio_male)
                 }
 

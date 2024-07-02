@@ -11,12 +11,11 @@
         android:layout_above="@id/holder_error"
         android:layout_below="@id/holder_guide">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="320dp"
-            android:layout_height="320dp"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/liveness_radius"
+            android:layout_height="@dimen/liveness_radius"
             android:layout_centerInParent="true"
-            app:cardCornerRadius="160dp">
-
+            app:shapeAppearanceOverlay="@style/oval_card">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -26,14 +25,14 @@
                     android:id="@+id/viewFinder"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_centerInParent="true"
                     android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="0dp"
                     app:layout_constraintDimensionRatio="H,1:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_centerInParent="true" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/iv_preview_image"
@@ -42,14 +41,14 @@
                     android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="0dp"
-                    app:layout_constraintDimensionRatio="H,1:1"
                     android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintDimensionRatio="H,1:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:scaleType="centerCrop" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
 
     </RelativeLayout>
@@ -117,28 +116,33 @@
     <LinearLayout
         android:id="@+id/holder_error"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_above="@id/btn_holder"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
         android:layout_marginTop="@dimen/margin_small"
         android:orientation="vertical">
 
-        <vn.kalapa.ekyc.views.KLPGifImageView
-            android:id="@+id/iv_error"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+        <LinearLayout
+            android:id="@+id/holder_iv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginVertical="@dimen/margin_xxsmall"
-            android:layout_marginBottom="@dimen/margin_xsmall"
-            android:src="@drawable/ic_checkmark"
-            android:visibility="invisible" />
+            >
+
+            <vn.kalapa.ekyc.views.KLPGifImageView
+                android:id="@+id/iv_error"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_checkmark"
+                android:visibility="invisible" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxLines="2"
+            android:gravity="center|top"
+            android:lines="2"
             android:text="SAMPLE_ERROR\nSAMPLE ERROR"
             android:textColor="@color/ekyc_red"
             android:textSize="@dimen/klp_txt_size_normal" />
@@ -148,7 +152,7 @@
     <LinearLayout
         android:id="@+id/holder_guide"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
         android:orientation="horizontal"
         android:paddingHorizontal="@dimen/margin_side">
@@ -200,23 +204,24 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:visibility="gone">
+            android:visibility="invisible">
 
             <ImageButton
                 android:id="@+id/btn_capture"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/camera_vector" />
+                android:background="@drawable/camera_vector"
+                android:clickable="false" />
         </LinearLayout>
     </LinearLayout>
 
-<!--    <ImageView-->
-<!--        android:id="@+id/iv_bitmap_preview"-->
-<!--        android:layout_width="200dp"-->
-<!--        android:layout_height="200dp"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/iv_bitmap_preview"-->
+    <!--        android:layout_width="200dp"-->
+    <!--        android:layout_height="200dp"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        android:layout_centerHorizontal="true" />-->
 
     <!--    <FrameLayout-->
     <!--        android:id="@+id/fragment_container"-->

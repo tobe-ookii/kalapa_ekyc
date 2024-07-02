@@ -174,7 +174,7 @@
         android:lines="2"
         android:text="@string/klp_passport_guide_2"
         android:textAlignment="center"
-        android:textSize="@dimen/klp_shinhan_text_normal_13" />
+        android:textSize="@dimen/klp_txt_size_normal" />
 
     <TextView
         android:id="@+id/tv_instruction"

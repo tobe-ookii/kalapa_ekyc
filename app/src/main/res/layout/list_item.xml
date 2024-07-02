@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_weight="4"
+            android:textSize="@dimen/klp_txt_size_normal"
             android:maxLines="4"
             android:text="1231232132132 123213213 wwd1 12 123 213213 123123 213 123 123123 123 123 12 "
             android:textAlignment="textStart"
@@ -29,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_weight="7"
+            android:textSize="@dimen/klp_txt_size_normal"
             android:maxLines="4"
             android:textAlignment="textEnd"
             android:text="1231232132132 123213213 wwd1 12 123 213213 123123 213 123 123123 123 123 12 " />
