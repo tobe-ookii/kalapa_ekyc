@@ -20,7 +20,7 @@ public class KLPCustomSwitch extends RadioGroup {
     public RadioButton rbOther;
     private String mainColor;
     private String textColor;
-    Boolean isPositiveCheck;
+    Boolean isPositiveCheck = false;
 
     public void setMainColor(String mainColor) {
         this.mainColor = mainColor;
@@ -34,7 +34,7 @@ public class KLPCustomSwitch extends RadioGroup {
 
     public KLPCustomSwitchChangeListener listener = null;
 
-    public boolean isPostitiveCheck() {
+    public boolean isPositiveCheck() {
         return isPositiveCheck;
     }
 

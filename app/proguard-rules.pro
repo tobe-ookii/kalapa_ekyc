@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+-keep class vn.kalapa.ekyc.**{*;}
+-keep class com.fis.ekyc.**{*;}
+-keep class com.fis.nfc.**{*;}
+
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}

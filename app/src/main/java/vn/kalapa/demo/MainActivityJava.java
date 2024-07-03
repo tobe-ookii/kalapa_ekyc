@@ -35,7 +35,6 @@ import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
-import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
@@ -76,7 +75,7 @@ public class MainActivityJava extends BaseActivity {
     KalapaCaptureHandler ocrHandler = new KalapaCaptureHandler() {
 
         @Override
-        public void process$kalapa_debug(@NonNull String base64, @NonNull KalapaSDKMediaType kalapaSDKMediaType, @NonNull KalapaSDKCallback kalapaSDKCallback) {
+        public void process(@NonNull String base64, @NonNull KalapaSDKMediaType kalapaSDKMediaType, @NonNull KalapaSDKCallback kalapaSDKCallback) {
             // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
             boolean assumeSuccessProcess = true;
             if (kalapaSDKMediaType == KalapaSDKMediaType.FRONT) {
@@ -117,7 +116,7 @@ public class MainActivityJava extends BaseActivity {
     private KalapaNFCHandler nfcHandler = new KalapaNFCHandler("<OPTIONAL_YOUR_MRZ_IF_YOU_HAVE_FROM_PREVIOUS_STEPS>") {
 
         @Override
-        public void process$kalapa_debug(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
+        public void process(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
             // SDK will return valid id card number that read from back-side card or your input mrz if it valid and raw nfc data.
             // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
             boolean assumeSuccessProcess = true;

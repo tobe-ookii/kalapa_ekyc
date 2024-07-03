@@ -233,7 +233,7 @@ internal class Helpers {
                     listener.onYes()
                 }
             } else {
-                yesBtn.text = KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_confirm))
+                yesBtn.text = KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_demo_confirm))
                 noBtn.visibility = View.GONE
                 yesBtn.setOnClickListener {
                     dialog.dismiss()

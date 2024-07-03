@@ -10,4 +10,4 @@ rootProject.name = "kalapa_ekyc"
 include ':app'
 include ':nfc'
 include ':kalapa'
-//include ':faceotpsdk'
+//include ':kalapasdk'

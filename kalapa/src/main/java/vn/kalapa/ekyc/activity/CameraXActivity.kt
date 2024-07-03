@@ -144,7 +144,7 @@ abstract class CameraXActivity(
         Helpers.showDialog(this@CameraXActivity,
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera_title)),
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_demo_confirm)),
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_cancel_button)),
             R.drawable.frowning_face,
             object : DialogListener {

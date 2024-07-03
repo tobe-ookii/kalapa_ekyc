@@ -11,17 +11,12 @@ import android.widget.TextView
 import android.widget.Toast
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
-import org.json.JSONObject
 import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.*
 import vn.kalapa.ekyc.capturesdk.CameraXMRZActivity
 import vn.kalapa.ekyc.activity.LivenessActivityForResult
 import vn.kalapa.ekyc.managers.KLPNFCUtils
-import vn.kalapa.ekyc.models.KalapaError
-import vn.kalapa.ekyc.models.MRZ
-import vn.kalapa.ekyc.networks.Client
-import vn.kalapa.ekyc.networks.KalapaAPI
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
@@ -288,7 +283,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                             tvError.text =
                                 if (isNFCNotEnabled) {
                                     btnScanNFC.visibility = View.VISIBLE
-                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm))
+                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_demo_confirm))
                                     btnScanNFC.setOnClickListener {
                                         KLPNFCUtils.openNFCSetting(this@NFCActivity)
                                     }
@@ -299,7 +294,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                                     )
                                 } else {
                                     btnScanNFC.visibility = View.VISIBLE
-                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm))
+                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_demo_confirm))
                                     btnScanNFC.setOnClickListener {
                                         KalapaSDK.handler.onError(KalapaSDKResultCode.DEVICE_NOT_SUPPORTED)
                                         finish()

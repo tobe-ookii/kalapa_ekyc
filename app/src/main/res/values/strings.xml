@@ -35,6 +35,7 @@
     <string name="klp_demo_language_en">Tiếng Anh</string>
     <string name="klp_demo_language_ko">Tiếng Hàn</string>
     <string name="klp_demo_alert_title">Notice</string>
+    <string name="klp_demo_confirm">Xác nhận</string>
     <string name="klp_demo_environment">Môi trường</string>
     <string name="klp_environment_production">Production</string>
     <string name="klp_environment_dev">Dev</string>
@@ -81,5 +82,6 @@
     <string name="klp_demo_error_happended">Error happened due to </string>
     <string name="klp_demo_loading">Loading…</string>
     <string name="klp_demo_decision_details_title">Decision details</string>
+    <string name="klp_demo_setting_you_must_enable_at_least_one_nfc_or_capture_image">Please enable at least one of the capture image or NFC features.</string>
 
 </resources>

@@ -152,7 +152,7 @@
         android:layout_marginVertical="@dimen/margin_mid"
         android:layout_marginBottom="@dimen/margin_xsmall"
         android:maxLines="2"
-        android:textSize="@dimen/klp_shinhan_text_normal_13"
+        android:textSize="@dimen/klp_txt_size_normal"
         android:text="@string/klp_scan_back_document"
         android:textAlignment="center" />
 

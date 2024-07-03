@@ -35,7 +35,7 @@
     <string name="klp_demo_language_en">영어</string>
     <string name="klp_demo_language_ko">한국어</string>
     <string name="klp_demo_alert_title">공지</string>
-    <string name="klp_confirm">확인</string>
+    <string name="klp_demo_confirm">확인</string>
     <string name="klp_demo_environment">환경</string>
     <string name="klp_environment_production">Production</string>
     <string name="klp_environment_dev">Dev</string>
@@ -80,5 +80,6 @@
     <string name="klp_demo_error_happended">다음으로 인한 오류 발생 </string>
     <string name="klp_demo_loading">로딩 중…</string>
     <string name="klp_demo_decision_details_title">Decision details</string>
+    <string name="klp_demo_setting_you_must_enable_at_least_one_nfc_or_capture_image">캡처 이미지 또는 NFC 기능 중 하나를 활성화하세요.</string>
 
 </resources>

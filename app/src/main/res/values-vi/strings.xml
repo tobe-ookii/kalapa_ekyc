@@ -35,7 +35,7 @@
     <string name="klp_demo_language_en">Tiếng Anh</string>
     <string name="klp_demo_language_ko">Tiếng Hàn</string>
     <string name="klp_demo_alert_title">Thông báo</string>
-    <string name="klp_confirm">Xác nhận</string>
+    <string name="klp_demo_confirm">Xác nhận</string>
     <string name="klp_demo_environment">Môi trường</string>
     <string name="klp_environment_production">Production</string>
     <string name="klp_environment_dev">Dev</string>
@@ -80,4 +80,5 @@
     <string name="klp_demo_error_happended">Quá trình xác thực kết thúc: </string>
     <string name="klp_demo_loading">Đang tải…</string>
     <string name="klp_demo_decision_details_title">Chi tiết xét duyệt</string>
+    <string name="klp_demo_setting_you_must_enable_at_least_one_nfc_or_capture_image">Chọn ít nhất một chức năng Thu thập ảnh giấy tờ hoặc Quét NFC để tiếp tục</string>
 </resources>

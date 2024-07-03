@@ -8,7 +8,7 @@
     <string name="klp_check_nfc_text" translatable="false">klp_check_nfc_text</string>
     <string name="klp_check_permission_camera" translatable="false">klp_check_permission_camera</string>
     <string name="klp_check_permission_camera_title" translatable="false">klp_check_permission_camera_title</string>
-    <string name="klp_confirm" translatable="false">klp_confirm</string>
+    <string name="klp_demo_confirm" translatable="false">klp_confirm</string>
     <string name="klp_create_camera_error" translatable="false">klp_create_camera_error</string>
     <string name="klp_done_title" translatable="false">klp_done_title</string>
     <string name="klp_error_happen" translatable="false">klp_error_happen</string>

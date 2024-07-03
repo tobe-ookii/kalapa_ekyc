@@ -776,7 +776,7 @@ class KalapaSDKConfig private constructor(
 
 
 abstract class KalapaCaptureHandler : KalapaHandler() {
-    internal abstract fun process(
+     abstract fun process(
         base64: String,
         mediaType: KalapaSDKMediaType,
         callback: KalapaSDKCallback
@@ -784,8 +784,11 @@ abstract class KalapaCaptureHandler : KalapaHandler() {
 }
 
 
-abstract class KalapaHandler {
-    abstract fun onError(resultCode: KalapaSDKResultCode)
+open class KalapaHandler {
+    open fun onError(resultCode: KalapaSDKResultCode){
+        Helpers.printLog("KalapaHandler onError $resultCode")
+    }
+
     open fun onProcessFinished() {
         Helpers.printLog("KalapaHandler onProcessFinished")
     }
@@ -796,7 +799,7 @@ abstract class KalapaHandler {
 }
 
 abstract class KalapaNFCHandler(val mrz: String?) : KalapaHandler() {
-    internal abstract fun process(
+    abstract fun process(
         idCardNumber: String,
         nfcData: String,
         callback: KalapaSDKCallback

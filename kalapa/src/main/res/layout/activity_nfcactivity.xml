@@ -122,7 +122,7 @@
                         android:layout_marginLeft="10dp"
                         android:gravity="left"
                         android:text="@string/klp_guide_nfc_1"
-                        android:textSize="@dimen/klp_shinhan_text_normal_13" />
+                        android:textSize="@dimen/klp_txt_size_normal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -152,7 +152,7 @@
                         android:layout_marginLeft="10dp"
                         android:gravity="left"
                         android:text="@string/klp_guide_nfc_2"
-                        android:textSize="@dimen/klp_shinhan_text_normal_13" />
+                        android:textSize="@dimen/klp_txt_size_normal" />
 
 
                 </LinearLayout>
@@ -184,7 +184,7 @@
                         android:layout_marginLeft="10dp"
                         android:gravity="left"
                         android:text="@string/klp_guide_nfc_3"
-                        android:textSize="@dimen/klp_shinhan_text_normal_13" />
+                        android:textSize="@dimen/klp_txt_size_normal" />
 
 
                 </LinearLayout>
@@ -217,7 +217,7 @@
                         android:layout_marginLeft="10dp"
                         android:gravity="left"
                         android:text="@string/klp_guide_nfc_4"
-                        android:textSize="@dimen/klp_shinhan_text_normal_13" />
+                        android:textSize="@dimen/klp_txt_size_normal" />
 
 
                 </LinearLayout>

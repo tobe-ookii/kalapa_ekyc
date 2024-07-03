@@ -59,7 +59,7 @@
             android:text="@string/klp_error_network"
             android:textAlignment="center"
             android:textColor="@color/black80"
-            android:textSize="@dimen/klp_shinhan_text_normal_13" />
+            android:textSize="@dimen/klp_txt_size_normal" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/border_button_solid"
                 android:backgroundTint="@color/mainColor"
-                android:text="@string/klp_confirm"
+                android:text="@string/klp_demo_confirm"
                 android:textSize="@dimen/klp_shinhan_title_17"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

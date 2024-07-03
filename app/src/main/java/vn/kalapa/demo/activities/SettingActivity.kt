@@ -155,9 +155,17 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         cbAcceptedEidWithChip = findViewById(R.id.cb_acceptance_document_4)
         rgScanNFC.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             if (it) cbAcceptedEidWithChip.isChecked = true
+            else {
+                if (this::rgCaptureImage.isInitialized) if (!rgCaptureImage.isPositiveCheck)
+                    this.rgCaptureImage.switchChangeListener(true)
+
+            }
         }
         rgCaptureImage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
-            if (!it) cbAcceptedEidWithChip.isChecked = true // Only work with eid
+            if (!it) {
+                cbAcceptedEidWithChip.isChecked = true // Only work with eid
+                if (this::rgScanNFC.isInitialized) if (!rgScanNFC.isPositiveCheck) rgScanNFC.switchChangeListener(true)
+            }
         }
         cbAcceptedEidWithChip.setOnCheckedChangeListener { _, b ->
             LogUtils.printLog("cbAcceptedEidWithChip onCheckedChanged $b")
@@ -389,7 +397,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(
                 MY_KEY_LANGUAGE,
 //                if (rgLanguage.selectedIndex == 0) "vi" else if (rgLanguage.selectedIndex == 1) "en" else "ko"
-                if (rgLanguage.isPostitiveCheck) "vi" else "en"
+                if (rgLanguage.isPositiveCheck) "vi" else "en"
             )
 //        Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPostitiveCheck) "vi" else "en")
             Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString())
@@ -399,14 +407,14 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 //                else if (rgScenario.selectedIndex == 1) FaceOTPFlowType.VERIFY.name else FaceOTPFlowType.PASSPORT.name
 //            )
 
-            Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPostitiveCheck) KLP_PROD else KLP_DEV)
+            Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
 
-            Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPostitiveCheck)
-            Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureImage.isPostitiveCheck)
-            Helpers.savePrefs(MY_KEY_VERIFY_CHECK, rgVerifyCheck.isPostitiveCheck)
-            Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPostitiveCheck)
-            Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPostitiveCheck)
-            Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPostitiveCheck)
+            Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPositiveCheck)
+            Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureImage.isPositiveCheck)
+            Helpers.savePrefs(MY_KEY_VERIFY_CHECK, rgVerifyCheck.isPositiveCheck)
+            Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPositiveCheck)
+            Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPositiveCheck)
+            Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPositiveCheck)
 
             if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(
                     MY_KEY_MAIN_COLOR

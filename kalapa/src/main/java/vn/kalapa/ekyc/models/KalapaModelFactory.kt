@@ -1,6 +1,8 @@
 package vn.kalapa.ekyc.models
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import vn.kalapa.ekyc.nfcsdk.models.NFCResultData
 
 data class KalapaResult(
@@ -319,8 +321,11 @@ data class MRZDataField(
 //}
 
 data class CreateSessionResult(
+    @SerializedName("token")
     val token: String,
-    val client_id: String,
+    @SerializedName("client_id")
+    val clientId: String,
+    @SerializedName("flow")
     val flow: String
 ) {
     fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
