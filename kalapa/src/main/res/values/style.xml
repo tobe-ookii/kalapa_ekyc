@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="KLPTheme" parent="MyMaterialTheme">
+    <style name="KLPTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:textColor">#65657B</item>
         <item name="android:fontFamily">@font/sf_pro_display</item>

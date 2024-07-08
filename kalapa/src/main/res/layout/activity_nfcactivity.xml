@@ -1,271 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_gravity="bottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/container_scan_nfc"
+        android:layout_marginBottom="@dimen/margin_small"
+        app:layout_constraintEnd_toEndOf="@id/container"
+        app:layout_constraintStart_toStartOf="@id/container"
+        app:layout_constraintTop_toTopOf="@id/container">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <include
-                android:id="@+id/toolbar"
-                layout="@layout/custom_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true" />
-
-        </LinearLayout>
-
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/nfc_image_height"
-            android:id="@+id/iv_guide_icon"
-            android:layout_marginTop="@dimen/margin_vertical"
-            android:src="@drawable/nfc_back_guide" />
-
-        <LinearLayout
-            android:id="@+id/ll_show_nfc_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border_button_solid"
-            android:backgroundTint="@color/ekyc_grey"
-            android:layout_marginTop="@dimen/margin_mid"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:paddingVertical="@dimen/margin_small"
-            android:paddingHorizontal="@dimen/margin_horizontal">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_nfc_point" />
-
-            <TextView
-                android:id="@+id/tv_show_nfc_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lines="2"
-                android:layout_marginStart="@dimen/margin_small"
-                android:gravity="center"
-                android:text="@string/klp_check_nfc_text"
-                android:textAllCaps="true"
-                android:textSize="@dimen/klp_shinhan_text_15"
-                android:visibility="visible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_please_make_sure"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_note_0"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/iv_guide_icon"
-                android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="@dimen/margin_horizontal"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_vertical"
-                android:gravity="left"
-                android:text="@string/klp_guide_title"
-                android:textSize="@dimen/klp_shinhan_title_17"
-                android:textStyle="normal|bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_horizontal_path"
-                android:paddingHorizontal="@dimen/margin_xsmall"
-                android:background="@drawable/popup_container"
-                android:backgroundTint="@color/ekyc_grey_40"
+                android:gravity="left"
                 android:orientation="vertical"
-                android:paddingVertical="@dimen/margin_mid">
+                android:visibility="visible">
 
-                <LinearLayout
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/custom_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_xxsmall"
-                    android:gravity="left"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:layout_alignParentTop="true" />
 
-                    <ImageView
-                        android:id="@+id/ib_note_1"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_check"
-                        android:cropToPadding="false"
-                        android:scaleType="fitXY" />
-
-                    <TextView
-                        android:id="@+id/tv_note_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/iv_guide_icon"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="left"
-                        android:text="@string/klp_guide_nfc_1"
-                        android:textSize="@dimen/klp_txt_size_normal" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_xxsmall"
-                    android:gravity="left"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/ib_note_2"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_check"
-                        android:cropToPadding="false"
-                        android:scaleType="fitXY" />
-
-                    <TextView
-                        android:id="@+id/tv_note_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/iv_guide_icon"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="left"
-                        android:text="@string/klp_guide_nfc_2"
-                        android:textSize="@dimen/klp_txt_size_normal" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_xxsmall"
-                    android:gravity="left"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/ib_note_3"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_check"
-                        android:cropToPadding="false"
-                        android:scaleType="fitXY" />
-
-                    <TextView
-                        android:id="@+id/tv_note_3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/iv_guide_icon"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="left"
-                        android:text="@string/klp_guide_nfc_3"
-                        android:textSize="@dimen/klp_txt_size_normal" />
-
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_xxsmall"
-                    android:gravity="left"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/ib_note_4"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_check"
-                        android:cropToPadding="false"
-                        android:scaleType="fitXY" />
-
-                    <TextView
-                        android:id="@+id/tv_note_4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/iv_guide_icon"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="left"
-                        android:text="@string/klp_guide_nfc_4"
-                        android:textSize="@dimen/klp_txt_size_normal" />
-
-
-                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
+            <ImageView
+                android:id="@+id/iv_guide_icon"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nfc_image_height"
+                android:src="@drawable/nfc_back_guide" />
 
-        <TextView
-            android:id="@+id/tv_compatibility_result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/iv_guide_icon"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_path"
-            android:layout_marginTop="@dimen/margin_vertical_large"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:gravity="center"
-            android:maxLines="2"
-            android:text="@string/klp_guide_nfc_1"
-            android:textSize="@dimen/klp_txt_size_normal" />
+            <LinearLayout
+                android:id="@+id/ll_show_nfc_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_mid"
+                android:background="@drawable/border_button_solid"
+                android:backgroundTint="@color/ekyc_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/margin_horizontal"
+                android:paddingVertical="@dimen/margin_small">
 
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_nfc_point" />
 
+                <TextView
+                    android:id="@+id/tv_show_nfc_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:text="@string/klp_check_nfc_text"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/klp_shinhan_text_15"
+                    android:visibility="visible" />
+            </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:gravity="center|bottom"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btn_scan_nfc"
+            <LinearLayout
+                android:id="@+id/ll_please_make_sure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/border_button_solid"
-                android:text="@string/klp_nfc_start_button"
-                android:textAllCaps="false"
-                android:textSize="@dimen/klp_shinhan_title_17"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_note_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_guide_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginHorizontal="@dimen/margin_horizontal"
+                    android:layout_marginTop="@dimen/margin_mid"
+                    android:gravity="left"
+                    android:text="@string/klp_guide_title"
+                    android:textSize="@dimen/klp_shinhan_title_17"
+                    android:textStyle="normal|bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_horizontal_path"
+                    android:background="@drawable/popup_container"
+                    android:backgroundTint="@color/ekyc_grey_40"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/margin_xsmall"
+                    android:paddingVertical="@dimen/margin_mid">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/margin_xxsmall"
+                        android:gravity="left"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/ib_note_1"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_check"
+                            android:cropToPadding="false"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:id="@+id/tv_note_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/iv_guide_icon"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center|left"
+                            android:text="@string/klp_guide_nfc_1"
+                            android:textSize="@dimen/klp_txt_size_normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/margin_xxsmall"
+                        android:gravity="left"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/ib_note_2"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_check"
+                            android:cropToPadding="false"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:id="@+id/tv_note_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/iv_guide_icon"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center|left"
+                            android:text="@string/klp_guide_nfc_2"
+                            android:textSize="@dimen/klp_txt_size_normal" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/margin_xxsmall"
+                        android:gravity="left"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/ib_note_3"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_check"
+                            android:cropToPadding="false"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:id="@+id/tv_note_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/iv_guide_icon"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center|left"
+                            android:text="@string/klp_guide_nfc_3"
+                            android:textSize="@dimen/klp_txt_size_normal" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/margin_xxsmall"
+                        android:gravity="left"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/ib_note_4"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_check"
+                            android:cropToPadding="false"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:id="@+id/tv_note_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/iv_guide_icon"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center|left"
+                            android:text="@string/klp_guide_nfc_4"
+                            android:textSize="@dimen/klp_txt_size_normal" />
+
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_compatibility_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_guide_icon"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_path"
+                android:layout_marginTop="@dimen/margin_vertical_large"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:gravity="center"
+                android:maxLines="2"
+                android:text="@string/klp_guide_nfc_1"
+                android:textSize="@dimen/klp_txt_size_normal" />
+
 
         </LinearLayout>
 
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/container_scan_nfc"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_marginBottom="@dimen/margin_mid"
+        android:gravity="center|bottom"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/container">
+
+        <Button
+            android:id="@+id/btn_scan_nfc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal"
+            android:background="@drawable/border_button_solid"
+            android:text="@string/klp_nfc_start_button"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/klp_shinhan_title_17"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

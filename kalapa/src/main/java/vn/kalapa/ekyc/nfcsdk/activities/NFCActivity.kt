@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import com.fis.ekyc.nfc.build_in.model.ResultCode
@@ -30,6 +31,8 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     private var transactionId: String? = null
     private lateinit var llPleaseMakeSure: LinearLayout
     private lateinit var tvTitle: TextView
+    private lateinit var scrollview: ScrollView
+
     private fun startLivenessForFaceData() {
         val intent = Intent(this@NFCActivity, LivenessActivityForResult::class.java)
         if (transactionId != null) {
@@ -112,6 +115,10 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         tvTitle = findViewById(R.id.tv_title)
         tvTitle.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_title))
         tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        scrollview = findViewById(R.id.scrollView)
+        scrollview.post {
+            scrollview.fullScroll(View.FOCUS_DOWN)
+        }
     }
 
     fun getMesageFromErrorCode(errorCode: ResultCode?): String {

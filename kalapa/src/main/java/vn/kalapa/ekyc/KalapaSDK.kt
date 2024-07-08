@@ -42,6 +42,8 @@ import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
     companion object {
+        private val VERSION = "2.8.3"
+
         lateinit var session: String
 
         @SuppressLint("StaticFieldLeak")
@@ -243,7 +245,7 @@ class KalapaSDK {
             }
 
             fun backgroundConfirm(callback: KalapaSDKCallback) {
-                val path = "${Companion.config.baseURL}/api/kyc/confirm"
+                val path = "${Companion.config.baseURL}/api/kyc/confirm?lang=${config.language}"
                 KalapaAPI.confirm(
                     path,
                     "",
@@ -282,7 +284,7 @@ class KalapaSDK {
             /*****-STEP 4-*****/
             val localStartLivenessForResult = {
                 startLivenessForResult(activity, config, object : KalapaCaptureHandler() {
-                    private val endpoint = "/api/kyc/app/check-selfie"
+                    private val endpoint = "/api/kyc/app/check-selfie?lang=${config.language}"
                     override fun process(
                         base64: String,
                         mediaType: KalapaSDKMediaType,
@@ -336,7 +338,7 @@ class KalapaSDK {
                         if (!isFrontAndBackResultInitialized()) "" else frontResult.fields?.id_number
                             ?: frontResult.mrz_data?.data?.raw_mrz ?: ""
                     ) {
-                        private val endpoint = "/api/nfc/verify"
+                        private val endpoint = "/api/nfc/verify?lang=${config.language}"
                         override fun process(
                             idCardNumber: String,
                             nfcData: String,
@@ -345,7 +347,7 @@ class KalapaSDK {
                             // Submit NFC.
                             KalapaAPI.nfcCheck(
                                 endPoint = endpoint,
-                                body = NFCRawData.fromJson(nfcData)!!,
+                                body = NFCRawData.fromJson(nfcData),
                                 object : Client.RequestListener {
                                     override fun success(jsonObject: JSONObject) {
                                         // Set NFC. Call liveness.
@@ -415,7 +417,7 @@ class KalapaSDK {
             /*****-STEP 2-*****/
             val localStartBackForResult = {
                 startCaptureBackForResult(activity, config, object : KalapaCaptureHandler() {
-                    private val endpoint = "/api/kyc/app/scan-back"
+                    private val endpoint = "/api/kyc/app/scan-back?lang=${config.language}"
                     override fun process(
                         base64: String,
                         mediaType: KalapaSDKMediaType,
@@ -463,7 +465,7 @@ class KalapaSDK {
             /*****-STEP 1-*****/
             val localStartFrontForResult = {
                 startCaptureForResult(activity, this.config, object : KalapaCaptureHandler() {
-                    private val endpoint = "/api/kyc/app/scan-front"
+                    private val endpoint = "/api/kyc/app/scan-front?lang=${config.language}"
                     override fun process(
                         base64: String,
                         mediaType: KalapaSDKMediaType,
@@ -554,6 +556,7 @@ class KalapaSDK {
                 } else {
                     localStartNFCForResult()
                 }
+//                localStartLivenessForResult()
             }
         }
 
@@ -614,7 +617,7 @@ class KalapaSDKConfig private constructor(
     var livenessVersion: Int = 0,
     var language: String,
     var minNFCRetry: Int = 3,
-    var baseURL: String = "api-ekyc.kalapa.vn/face-otp",
+    var baseURL: String = "https://api-ekyc.kalapa.vn",
     var faceData: String = "",
     var mrz: String = "",
     var leftoverSession: String = ""
@@ -776,7 +779,7 @@ class KalapaSDKConfig private constructor(
 
 
 abstract class KalapaCaptureHandler : KalapaHandler() {
-     abstract fun process(
+    abstract fun process(
         base64: String,
         mediaType: KalapaSDKMediaType,
         callback: KalapaSDKCallback
@@ -785,7 +788,7 @@ abstract class KalapaCaptureHandler : KalapaHandler() {
 
 
 open class KalapaHandler {
-    open fun onError(resultCode: KalapaSDKResultCode){
+    open fun onError(resultCode: KalapaSDKResultCode) {
         Helpers.printLog("KalapaHandler onError $resultCode")
     }
 
