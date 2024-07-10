@@ -17,11 +17,9 @@ data class NFCOnlyResult(
 
 data class NFCResultData(
     var mrz: String? = "",
-
     var id_number: String? = "",
     val old_id_number: String? = "",
     val name: String? = "",
-
     val date_of_birth: String? = "",
     val gender: String? = "",
     val nationality: String? = "",
@@ -41,6 +39,30 @@ data class NFCResultData(
 ) {
     fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "mrz" to mrz,
+            "id_number" to id_number,
+            "old_id_number" to old_id_number,
+            "name" to name,
+            "date_of_birth" to date_of_birth,
+            "gender" to gender,
+            "nationality" to nationality,
+            "nation" to nation,
+            "religion" to religion,
+            "hometown" to hometown,
+            "address" to address,
+            "personal_identification" to personal_identification,
+            "date_of_issuance" to date_of_issuance,
+            "date_of_expiry" to date_of_expiry,
+            "mother_name" to mother_name,
+            "father_name" to father_name,
+            "spouse_name" to spouse_name,
+            "serial" to serial,
+            "transID" to transID,
+            "face_image" to face_image
+        )
+    }
     companion object {
         fun fromJson(json: String): NFCResultData = Gson().fromJson(json, NFCResultData::class.java)// klaxon.parse<NFCResultData>(json)
     }

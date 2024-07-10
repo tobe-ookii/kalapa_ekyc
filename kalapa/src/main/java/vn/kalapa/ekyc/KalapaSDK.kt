@@ -260,6 +260,7 @@ class KalapaSDK {
                     object : Client.ConfirmListener {
                         override fun success(confirmResult: ConfirmResult) {
                             Helpers.printLog("confirmResult")
+                            kalapaResult.session = session
                             kalapaResult.decision = confirmResult.decision_detail?.decision
                             kalapaResult.decision_detail = confirmResult.decision_detail?.details
                             kalapaResult.nfc_data = confirmResult.nfc_data

@@ -184,7 +184,7 @@ public class MainActivityJava extends BaseActivity {
 
                                     @Override
                                     public void onComplete(@NonNull KalapaResult kalapaResult) {
-                                        LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult + " \n " + kalapaResult.component1());
+                                        LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult.toMap() + " \n " + kalapaResult.getSession());
                                         ExampleGlobalClass.kalapaResult = kalapaResult;
                                         if (KalapaSDK.Companion.isFaceBitmapInitialized())
                                             ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;

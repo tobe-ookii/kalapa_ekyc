@@ -62,7 +62,9 @@ data class KalapaResult(
             "home_entities" to (home_entities?.toMap() ?: ""),
             "resident_entities" to (resident_entities?.toMap() ?: ""),
             "qr_code" to (qr_code?.toMap() ?: ""),
-            "mrz_data" to (mrz_data?.toMap() ?: "")
+            "mrz_data" to (mrz_data?.toMap() ?: ""),
+            "selfie_data" to (selfie_data?.toMap() ?: ""),
+            "nfc_data" to (nfc_data?.toMap() ?: "")
         )
     }
 
@@ -395,6 +397,13 @@ data class SelfieResultData(
     val matching_score: Int? = null
 ) {
     fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
+
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "is_matched" to is_matched,
+            "matching_score" to matching_score
+        )
+    }
 
     companion object {
         fun fromJson(json: String): SelfieResultData = Gson().fromJson(json, SelfieResultData::class.java)// //klaxon.parse<SelfieResultData>(json)
