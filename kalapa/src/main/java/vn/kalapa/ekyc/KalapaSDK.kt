@@ -19,6 +19,7 @@ import vn.kalapa.R
 import vn.kalapa.ekyc.capturesdk.CameraXPassportActivity
 import vn.kalapa.ekyc.activity.CameraXSelfieActivity
 import vn.kalapa.ekyc.activity.ConfirmActivity
+import vn.kalapa.ekyc.capturesdk.CameraXAutoCaptureActivity
 import vn.kalapa.ekyc.capturesdk.CameraXCaptureActivity
 import vn.kalapa.ekyc.capturesdk.CameraXCaptureBackActivity
 import vn.kalapa.ekyc.handlers.GetDynamicLanguageHandler
@@ -129,8 +130,8 @@ class KalapaSDK {
             val metrics = activity.resources.displayMetrics
             configure(config)
             this.handler = handler
-            val intent = Intent(activity, CameraXCaptureActivity::class.java)
-//            val intent = Intent(activity, CameraXAutoCaptureActivity::class.java)
+//            val intent = Intent(activity, CameraXCaptureActivity::class.java)
+            val intent = Intent(activity, CameraXAutoCaptureActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("layout", R.layout.activity_camera_x_id_card)
             intent.putExtra("capture_type", KalapaSDKMediaType.FRONT)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
+import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.utils.Helpers
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -20,7 +21,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private var enterScreen = false
     override fun onResume() {
-        if (isRunningOnEmulator() == true) onEmulatorDetected()
+        if (isRunningOnEmulator() == true) {
+            Helpers.printLog("isRunningOnEmulator Emulator detected!")
+            if (KalapaSDK.isConfigInitialized() && KalapaSDK.config.baseURL.contains("dev") && KalapaSDK.config.baseURL.contains("kalapa")) {
+                Helpers.printLog("isRunningOnEmulator still accept when dev")
+            } else
+                onEmulatorDetected()
+        }
         if (isPathReallyExist(filesDir.absolutePath) < 0) {
             Helpers.printLog("onVirtualCameraDetected fake camera")
             onEmulatorDetected()

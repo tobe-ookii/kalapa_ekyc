@@ -93,6 +93,14 @@ abstract class CameraXActivity(
     lateinit var cameraExecutor: ExecutorService
     override fun onEmulatorDetected() {
         // Something
+        Helpers.showDialog(
+            this,
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_warning_title)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_emulator_warning_body)), R.drawable.frowning_face
+        ) {
+            KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)
+            finish()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

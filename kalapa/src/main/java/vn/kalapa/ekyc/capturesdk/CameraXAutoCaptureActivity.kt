@@ -3,24 +3,22 @@ package vn.kalapa.ekyc.capturesdk
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.media.Image
 import android.util.Size
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import vn.kalapa.R
 import vn.kalapa.ekyc.*
 import vn.kalapa.ekyc.activity.CameraXActivity
-import vn.kalapa.ekyc.capturesdk.tflite.CardClassifier
-import vn.kalapa.ekyc.capturesdk.tflite.DetectorFactory
-import vn.kalapa.ekyc.utils.BitmapUtil
+import vn.kalapa.ekyc.capturesdk.tflite.Classifier
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
 
 
-class CameraXAutoCaptureActivity(private val modelString: String = "klp_model.tflite") :
+class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_2_metadata.tflite") :
     CameraXActivity(activityLayoutId = R.layout.activity_camera_x_id_card, hideAutoCapture = false),
     KalapaSDKCallback {
     private lateinit var ivPreviewImage: ImageView
@@ -117,47 +115,20 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model.tf
     @SuppressLint("RestrictedApi")
     override fun setupAnalyzer(): ImageAnalysis? {
         return ImageAnalysis.Builder()
+            .setTargetResolution(Size(224, 224))
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .setMaxResolution(Size(320, 320))
+//            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+//            .setTargetRotation(getCameraRotationDegree())
+//            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
             .build()
             .also {
                 it.setAnalyzer(cameraExecutor, IDCardAnalyze { inputImage, planes, degree ->
                     processFrame(inputImage, planes, degree)
-//                    Helpers.printLog("InputImage is processing: ${inputImage.width} ${inputImage.height}")
                 })
             }
     }
 
     private fun processFrame(bitmap: Bitmap, planes: Array<ImageProxy.PlaneProxy>, degree: Int): String {
-        // When using Latin script library
-//        Helpers.printLog("Process frame: ${System.currentTimeMillis()}")
-        var rotatedBitmap = BitmapUtil.rotateBitmapToStraight(bitmap, degree)
-        rotatedBitmap = BitmapUtil.crop(
-            rotatedBitmap,
-            rotatedBitmap.width,
-            rotatedBitmap.width * 5 / 8,
-            0.5f,
-            0.5f
-        )
-        isProcessingFrame = true
-        runOnUiThread {
-            val detectionList = detector?.recognizeImage(rotatedBitmap)
-            if (detectionList?.isNotEmpty() == true) {
-                for (result in detectionList) {
-                    Helpers.printLog("Result: ${result.title} ${result.confidence} ${result.detectedClass}")
-                }
-            } else {
-                onCardOutOfMaskHandleUI()
-            }
-            ivBitmapReview.setImageBitmap(rotatedBitmap)
-            isProcessingFrame = false
-        }
-        // Set it to isProcessingFrame = false when done processing
-        while (true) {
-            if (!isProcessingFrame)
-                return ""
-            Thread.sleep(100)
-        }
     }
 
     override fun showEndEkyc() {
@@ -218,7 +189,32 @@ typealias InputImageListener = (inputImage: Bitmap, planes: Array<ImageProxy.Pla
 
 class IDCardAnalyze(private val listener: InputImageListener) : ImageAnalysis.Analyzer {
     override fun analyze(image: ImageProxy) {
-        image.toBitmap()?.let { listener(it, image.planes, image.imageInfo.rotationDegrees) }
-        image.close()
+
+        val items = mutableListOf<Classifier.Recognition>()
+
+        // TODO 2: Convert Image to Bitmap then to TensorImage
+        val tfImage = TensorImage.fromBitmap(toBitmap(imageProxy))
+        // TODO 3: Process the image using the trained model, sort and pick out the top results
+        val outputs = klpModel2.process(tfImage)
+            .outputAsCategoryList
+//                .probabilityAsCategoryList.apply {    sortByDescending { it.score } // Sort with highest confidence first
+//                }.take(MAX_RESULT_DISPLAY) // take the top results
+        // TODO 4: Converting the top probability items into a list of recognitions
+        for (output in outputs) {
+            print("Something: $output")
+            items.add(Classifier.Recognition(output.label, output.score))
+        }
+//            klpModel2.close()
+        // START - Placeholder code at the start of the codelab. Comment this block of code out.
+//            for (i in 0 until MAX_RESULT_DISPLAY) {
+//                items.add(Recognition("Fake label $i", Random.nextFloat()))
+//            }
+        // END - Placeholder code at the start of the codelab. Comment this block of code out.
+
+        // Return the result
+        listener(items.toList())
+
+        // Close the image,this tells CameraX to feed the next image to the analyzer
+        imageProxy.close()
     }
 }
