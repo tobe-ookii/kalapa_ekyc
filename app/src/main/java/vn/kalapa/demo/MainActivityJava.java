@@ -140,11 +140,11 @@ public class MainActivityJava extends BaseActivity {
     }
 
     private void startFrontCaptureStep() {
-        KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, ocrHandler);
+        KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, KalapaSDKMediaType.FRONT, ocrHandler);
     }
 
     private void startBackCaptureStep() {
-        KalapaSDK.Companion.startCaptureBackForResult(MainActivityJava.this, sdkConfig, ocrHandler);
+        KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, KalapaSDKMediaType.BACK, ocrHandler);
     }
 
     private void startNFCStep() {

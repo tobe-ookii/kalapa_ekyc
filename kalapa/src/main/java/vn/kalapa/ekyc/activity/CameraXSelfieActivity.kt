@@ -38,6 +38,7 @@ import vn.kalapa.ekyc.views.KLPGifImageView
 import vn.kalapa.ekyc.views.ProgressView
 import vn.kalapa.ekyc.liveness.InputFace
 import vn.kalapa.ekyc.liveness.LivenessSessionStatus
+import vn.kalapa.ekyc.utils.Common.Companion.vibratePhone
 
 typealias InputImageListener = (inputImage: Bitmap) -> Unit
 
@@ -224,7 +225,7 @@ class CameraXSelfieActivity : CameraXActivity(
 
     override fun onCaptureSuccess(cameraDegree: Int) {
         // No Capture in this
-        vibratePhone()
+        vibratePhone(this)
         val degreeDifferent = cameraDegree != getCameraRotationDegree()
         val rotation = if (degreeDifferent) {
             ((getCameraRotationDegree() - cameraDegree + 270) % 360)
@@ -411,7 +412,8 @@ class CameraXSelfieActivity : CameraXActivity(
         Helpers.printLog("Status: $status Message $input")
         if (status == LivenessSessionStatus.PROCESSING && input != null && currAction != input) {
             currAction = input
-            vibratePhone()
+            vibratePhone(this)
+
         }
         if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version || KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version) {
             return when (status) {
@@ -454,7 +456,7 @@ class CameraXSelfieActivity : CameraXActivity(
 
             LivenessSessionStatus.TOO_SMALL -> {
                 if (input == "ComeClose") {
-                    vibratePhone()
+                    vibratePhone(this)
                     setCircleViewAnimation(AnimStatus.ANIM_LOADING)
                     return R.drawable.gif_hold_steady
                 } else {
@@ -485,14 +487,7 @@ class CameraXSelfieActivity : CameraXActivity(
         }
     }
 
-    private fun vibratePhone() {
-        val vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(200)
-        }
-    }
+
 
     private fun setCircleViewAnimation(status: AnimStatus) {
 //        Helpers.printLog("Set Anim: ${status.name}")

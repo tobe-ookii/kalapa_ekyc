@@ -116,6 +116,7 @@
     <string name="klp_error_nfc_success_with_warning">Success</string>
     <string name="klp_message_nfc_reading">Reading…</string>
     <string name="klp_liveness_too_small">Move your face a bit closer to the camera</string>
+    <string name="klp_autocapture_too_small">Move your card a bit closer to the camera</string>
     <string name="klp_liveness_too_large">Move your face a bit away from the camera</string>
     <string name="klp_liveness_off_center">Your face is too close to the camera borders</string>
     <string name="klp_message_nfc_guide">Tap the chip to the NFC location on the back of your device, slowly move the card, stop and hold still when a vibration occurs or the scanner’s light shows up</string>

@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.nfc.NfcManager
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.util.Log
 import java.io.BufferedReader
@@ -63,6 +66,15 @@ class Common {
 
         fun byteToHex(bytes: ByteArray): String {
             return bytes.toHex2()
+        }
+
+        fun vibratePhone(context: Context) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(200)
+            }
         }
 
         fun isOnline(context: Context): Boolean {

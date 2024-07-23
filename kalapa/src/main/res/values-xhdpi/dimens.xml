@@ -25,7 +25,7 @@
     <dimen name="liveness_image">230dp</dimen>
     <dimen name="liveness_radius">260dp</dimen>
     <dimen name="camera_offset_y">-70dp</dimen>
-    <dimen name="camera_margin_vertical_from_top">70dp</dimen>
+    <dimen name="camera_margin_vertical_from_top">50dp</dimen>
 
 
     <dimen name="camera_offset_passport">-90dp</dimen>

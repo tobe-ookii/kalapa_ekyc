@@ -3,6 +3,9 @@ package vn.kalapa.ekyc.capturesdk
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
+import android.os.Handler
+import android.os.Looper
 import android.util.Size
 import android.view.View
 import android.widget.ImageView
@@ -13,55 +16,78 @@ import androidx.camera.core.ImageProxy
 import vn.kalapa.R
 import vn.kalapa.ekyc.*
 import vn.kalapa.ekyc.activity.CameraXActivity
-import vn.kalapa.ekyc.capturesdk.tflite.Classifier
+import vn.kalapa.ekyc.capturesdk.tflite.BoundingBox
+import vn.kalapa.ekyc.capturesdk.tflite.KLPDetector
+import vn.kalapa.ekyc.capturesdk.tflite.KLPDetectorListener
+import vn.kalapa.ekyc.capturesdk.tflite.OnImageDetectedListener
+import vn.kalapa.ekyc.capturesdk.tflite.OverlayView
+import vn.kalapa.ekyc.fragment.BottomGuideFragment
+import vn.kalapa.ekyc.fragment.GuideType
+import vn.kalapa.ekyc.utils.Common.Companion.vibratePhone
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
 
 
-class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_2_metadata.tflite") :
+class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16.tflite") :
     CameraXActivity(activityLayoutId = R.layout.activity_camera_x_id_card, hideAutoCapture = false),
-    KalapaSDKCallback {
+    KalapaSDKCallback, OnImageDetectedListener {
     private lateinit var ivPreviewImage: ImageView
     private lateinit var tvTitle: TextView
     private lateinit var tvGuide1: TextView
     private lateinit var ivGuide: ImageView
+    private var detector: KLPDetector? = null
+    private lateinit var overlay: OverlayView
+    private lateinit var ivCardInMask: ImageView
 
-    private var isProcessingFrame = false
-
-    // For Autocapture
-    private var detector: CardClassifier? = null
-    private lateinit var ivBitmapReview: ImageView
-    private var computingDetection = false
-
-
+    //    private lateinit var ivBitmapReview: ImageView
+    private lateinit var documentType: KalapaSDKMediaType
     private fun getIntentData() {
-        val layoutId = intent.getStringExtra("layout")
-        val captureType = intent.getStringExtra("capture_type")
-        Helpers.printLog("Layout: $layoutId, CaptureType: $captureType")
+        documentType = KalapaSDKMediaType.fromName(intent.getStringExtra("document_type") ?: KalapaSDKMediaType.BACK.name)
+        Helpers.printLog("DocumentType: $documentType")
+    }
+
+    override fun onAutoCaptureToggle(isAutoCapturing: Boolean) {
+        detector?.shouldCapture = isAutoCapturing
     }
 
     override fun setupCustomUI() {
         getIntentData()
 //        cardMaskView = findViewById(R.id.cardMaskView)
         ivGuide = findViewById(R.id.iv_action)
+        ivGuide.setImageResource(
+            when (documentType) {
+                KalapaSDKMediaType.FRONT -> R.drawable.ic_passport_black
+                KalapaSDKMediaType.BACK -> R.drawable.footer_mrz_black
+                else -> R.drawable.ic_passport_black
+            }
+        )
+        tvTitle = findViewById(R.id.tv_title)
+        tvTitle.text =
+            when (documentType) {
+                KalapaSDKMediaType.FRONT -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_front))
+                KalapaSDKMediaType.BACK -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_back))
+                else -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_ekyc))
+            }
         ivPreviewImage = findViewById(R.id.iv_preview_image)
         ivPreviewImage.isDrawingCacheEnabled = false
-        tvTitle = findViewById(R.id.tv_title)
         tvGuide1 = findViewById(R.id.tv_guide)
         ivGuide.setColorFilter(Color.parseColor(KalapaSDK.config.mainColor))
+        overlay = findViewById(R.id.overlay)
+//        ivBitmapReview = findViewById(R.id.iv_bitmap_preview)
+        ivCardInMask = findViewById(R.id.iv_card_in_mask)
 
-        ivBitmapReview = findViewById(R.id.iv_bitmap_preview)
-        tvTitle.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_front))
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
-//        tvGuide0.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
-        tvGuide1.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
-//        tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        tvGuide1.text = if (documentType == KalapaSDKMediaType.BACK) KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document)) else KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_front_document))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
 
     }
 
+
+    override fun postSetupCamera() {
+        cameraExecutor.execute {
+            detector = KLPDetector(this@CameraXAutoCaptureActivity, modelString, "klp_label.txt", isAutocapturing, this)
+        }
+    }
 
     override fun previewViewLayerMode(isCameraMode: Boolean) {
         super.previewViewLayerMode(isCameraMode)
@@ -78,32 +104,18 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_2_
         }
     }
 
-    private fun onCardOutOfMaskHandleUI() {
-        sendError(KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.please_place_card_into_mask)))
-    }
-
-    private fun cardInMaskHandleUI() {
-        sendError("")
-    }
-
     private var currError = ""
+
     override fun sendError(message: String?) {
-        if (currError.isNotEmpty() && currError == message) return
-        currError = message ?: KalapaSDK.config.languageUtils.getLanguageString(
-            resources.getString(
-                R.string.klp_liveness_processing_failed
-            )
-        )
-        Helpers.printLog("Failed! ")
+//        Helpers.printLog("Failed! $message")
+        if (message == null || currError == message) return
         ProgressView.hideProgress()
         this.runOnUiThread {
-            if (KalapaSDK.isFoldOpen(this@CameraXAutoCaptureActivity)) {
-                tvGuide1.visibility = View.INVISIBLE
-            }
+            currError = message
             tvError.visibility = View.VISIBLE
             tvError.setTextColor(resources.getColor(R.color.ekyc_red))
-            btnNext.visibility = View.INVISIBLE
             tvError.text = currError
+            btnNext.visibility = View.INVISIBLE
         }
         Helpers.printLog("onError message: $message")
     }
@@ -112,23 +124,48 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_2_
         TODO("Not yet implemented")
     }
 
+
+    override fun onRetryClicked() {
+        super.onRetryClicked()
+        renewSession()
+    }
+
     @SuppressLint("RestrictedApi")
     override fun setupAnalyzer(): ImageAnalysis? {
         return ImageAnalysis.Builder()
-            .setTargetResolution(Size(224, 224))
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-//            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-//            .setTargetRotation(getCameraRotationDegree())
-//            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+//            .setTargetRotation()
             .build()
             .also {
-                it.setAnalyzer(cameraExecutor, IDCardAnalyze { inputImage, planes, degree ->
-                    processFrame(inputImage, planes, degree)
-                })
-            }
-    }
+                it.setAnalyzer(cameraExecutor) { imageProxy ->
 
-    private fun processFrame(bitmap: Bitmap, planes: Array<ImageProxy.PlaneProxy>, degree: Int): String {
+                    val bitmapBuffer =
+                        Bitmap.createBitmap(
+                            imageProxy.width,
+                            imageProxy.height,
+                            Bitmap.Config.ARGB_8888
+                        )
+                    imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
+
+                    val matrix = Matrix().apply {
+                        postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
+                    }
+
+                    val rotatedBitmap = Bitmap.createBitmap(
+                        bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height,
+                        matrix, true
+                    )
+//                        runOnUiThread {
+//                            ivBitmapReview.setImageBitmap(rotatedBitmap)
+//                        }
+//                    Helpers.printLog("KLPDetector rotatedBitmap height: ${rotatedBitmap.height}  ${rotatedBitmap.width} viewFinder Height ${ivPreviewImage.height} Height ${ivPreviewImage.width}")
+                    detector?.detect(rotatedBitmap) {
+                        imageProxy.close()
+                    }
+                }
+            }
     }
 
     override fun showEndEkyc() {
@@ -149,8 +186,8 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_2_
     }
 
     private fun renewSession() {
-        detector = DetectorFactory.getDetector(assets, modelString)
-        detector?.setNumThreads(1)
+        currError = ""
+        detector?.restart(false)
     }
 
     override fun onResume() {
@@ -163,11 +200,37 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_2_
     }
 
     override fun onBackBtnClicked() {
-        showEndEkyc()
+        if (showingGuide) {
+            supportFragmentManager.popBackStack()
+            showingGuide = false
+        } else
+            showEndEkyc()
     }
 
-    override fun onInfoBtnClicked() {
+    private var showingGuide = false
 
+    override fun onInfoBtnClicked() {
+        showingGuide = true
+        Helpers.printLog("On Info Btn Clicked $documentType")
+        val bottomFragment = BottomGuideFragment(
+            when (documentType) {
+                KalapaSDKMediaType.FRONT -> GuideType.FRONT
+                KalapaSDKMediaType.BACK -> GuideType.BACK
+                KalapaSDKMediaType.PASSPORT -> GuideType.PASSPORT
+                KalapaSDKMediaType.PORTRAIT -> GuideType.SELFIE
+                else -> GuideType.FRONT
+            }
+        )
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_bottom,
+                R.anim.slide_in_bottom,
+                R.anim.slide_in_bottom,
+                R.anim.slide_out_bottom
+            )
+            .replace(R.id.fragment_container, bottomFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun fillBytes(planes: Array<ImageProxy.PlaneProxy>, yuvBytes: Array<ByteArray?>) {
@@ -183,38 +246,52 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_2_
         }
     }
 
-
-}
-typealias InputImageListener = (inputImage: Bitmap, planes: Array<ImageProxy.PlaneProxy>, degree: Int) -> Unit
-
-class IDCardAnalyze(private val listener: InputImageListener) : ImageAnalysis.Analyzer {
-    override fun analyze(image: ImageProxy) {
-
-        val items = mutableListOf<Classifier.Recognition>()
-
-        // TODO 2: Convert Image to Bitmap then to TensorImage
-        val tfImage = TensorImage.fromBitmap(toBitmap(imageProxy))
-        // TODO 3: Process the image using the trained model, sort and pick out the top results
-        val outputs = klpModel2.process(tfImage)
-            .outputAsCategoryList
-//                .probabilityAsCategoryList.apply {    sortByDescending { it.score } // Sort with highest confidence first
-//                }.take(MAX_RESULT_DISPLAY) // take the top results
-        // TODO 4: Converting the top probability items into a list of recognitions
-        for (output in outputs) {
-            print("Something: $output")
-            items.add(Classifier.Recognition(output.label, output.score))
-        }
-//            klpModel2.close()
-        // START - Placeholder code at the start of the codelab. Comment this block of code out.
-//            for (i in 0 until MAX_RESULT_DISPLAY) {
-//                items.add(Recognition("Fake label $i", Random.nextFloat()))
-//            }
-        // END - Placeholder code at the start of the codelab. Comment this block of code out.
-
-        // Return the result
-        listener(items.toList())
-
-        // Close the image,this tells CameraX to feed the next image to the analyzer
-        imageProxy.close()
+    override fun onImageDetected() {
+        takePhoto()
+        Handler(Looper.getMainLooper()).postDelayed({
+            vibratePhone(this)
+            runOnUiThread {
+                tvError.setTextColor(resources.getColor(R.color.ekyc_green))
+                tvError.visibility = View.VISIBLE
+                tvError.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_message_autocapture_succeed))
+            }
+        }, 200)
     }
+
+    @SuppressLint("ResourceType")
+    override fun onImageOutOfMask() {
+        runOnUiThread {
+            sendError(KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.please_place_card_into_mask)))
+            Helpers.setBackgroundColorTintList(ivCardInMask, resources.getString(R.color.ekyc_red))
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    override fun onImageInMask() {
+        runOnUiThread {
+            sendError("")
+            Helpers.setBackgroundColorTintList(ivCardInMask, resources.getString(R.color.ekyc_green))
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    override fun onImageNotDetected() {
+        runOnUiThread {
+            overlay.clear()
+            overlay.invalidate()
+            if (currError == "")
+                Helpers.setBackgroundColorTintList(ivCardInMask, resources.getString(R.color.white))
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    override fun onImageTooSmall() {
+        runOnUiThread {
+            sendError(KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_autocapture_too_small)))
+            Helpers.setBackgroundColorTintList(ivCardInMask, resources.getString(R.color.ekyc_red))
+        }
+    }
+
+
 }
+typealias InputImageListener = (inputImage: Bitmap) -> Unit

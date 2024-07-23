@@ -228,6 +228,7 @@
     <string name="klp_error_nfc_success_with_warning">Success</string>
     <string name="klp_message_nfc_reading">Reading…</string>
     <string name="klp_liveness_too_small">Move your face a bit closer to the camera</string>
+    <string name="klp_autocapture_too_small">Move your card a bit closer to the camera</string>
     <string name="klp_liveness_too_large">Move your face a bit away from the camera</string>
     <string name="klp_liveness_off_center">Your face is too close to the camera borders</string>
     <string name="klp_message_nfc_guide">Tap the chip to the NFC location on the back of your device, slowly move the card, stop and hold still when a vibration occurs or the scanner’s light shows up</string>
@@ -353,4 +354,8 @@
     <string name="klp_liveness_not_center" translatable="false">klp_liveness_not_center</string>
     <string name="klp_liveness_move_closer" translatable="false">klp_liveness_move_closer</string>
     <string name="klp_liveness_no_face" translatable="false">klp_liveness_no_face</string>
+    <string name="klp_please_place_card_into_mask">klp_please_place_card_into_mask</string>
+    <string name="klp_card_hold_still">klp_card_hold_still</string>
+    <string name="klp_guide_id_front">klp_guide_id_front</string>
+    <string name="klp_guide_id_back">klp_guide_id_back</string>
 </resources>

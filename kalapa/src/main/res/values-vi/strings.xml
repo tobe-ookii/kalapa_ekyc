@@ -131,6 +131,7 @@
     <string name="klp_error_nfc_success_with_warning">Thành công (Có cảnh báo)</string>
     <string name="klp_message_nfc_reading">Đang đọc NFC</string>
     <string name="klp_liveness_too_small">Tiến mặt lại gần camera hơn một chút</string>
+    <string name="klp_autocapture_too_small">Đưa thẻ lại gần camera hơn một chút</string>
     <string name="klp_liveness_too_large">Lùi mặt ra xa khỏi camera một chút</string>
     <string name="klp_liveness_off_center">Hãy căn cho khuôn mặt ở chính giữa camera</string>
     <string name="klp_message_nfc_guide">Áp phần chip vào vùng NFC phía sau điện thoại, từ từ di chuyển đến khi nhận được tín hiệu rung hoặc đèn tín hiệu bắt đầu chạy thì dừng lại và giữ nguyên</string>

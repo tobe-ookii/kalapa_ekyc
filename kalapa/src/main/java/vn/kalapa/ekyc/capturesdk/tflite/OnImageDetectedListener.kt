@@ -4,4 +4,6 @@ interface OnImageDetectedListener {
     fun onImageDetected()
     fun onImageOutOfMask()
     fun onImageInMask()
+    fun onImageNotDetected()
+    fun onImageTooSmall()
 }

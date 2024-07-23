@@ -170,17 +170,43 @@ class BottomGuideFragment(var layoutType: GuideType) : Fragment() {
                 KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_3))
             )
 
+            GuideType.FRONT -> return listOf(
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_front)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_title)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_1)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_2)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_title)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_1)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_2)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_3))
+            )
+
+            GuideType.BACK -> return listOf(
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_back)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_title)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_1)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_2)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_title)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_1)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_2)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_3))
+            )
+
             else -> return listOf(
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_front)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_title)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_1)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_2)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_title)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_1)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_2)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_3))
             )
         }
     }
@@ -209,10 +235,6 @@ class BottomGuideFragment(var layoutType: GuideType) : Fragment() {
             )
 
             GuideType.SELFIE -> return intArrayOf(
-//                R.drawable.guide_selfie,
-//                R.drawable.guide_selfie1,
-//                R.drawable.guide_selfie2,
-//                R.drawable.guide_selfie3
             )
         }
         return intArrayOf()

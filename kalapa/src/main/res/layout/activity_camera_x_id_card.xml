@@ -27,7 +27,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
-                app:layout_constraintDimensionRatio="H,8:5"
+                app:layout_constraintDimensionRatio="H,4:3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -39,16 +39,40 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:scaleType="centerCrop"
                 android:layout_marginEnd="0dp"
-                app:layout_constraintDimensionRatio="H,8:5"
+                android:scaleType="centerCrop"
+                android:src="@drawable/guide_id"
+                android:visibility="invisible"
+                app:layout_constraintDimensionRatio="H,4:3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <vn.kalapa.ekyc.capturesdk.tflite.OverlayView
+                android:id="@+id/overlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:scaleType="centerCrop"
                 android:visibility="invisible"
-                android:src="@drawable/guide_id"/>
+                app:layout_constraintDimensionRatio="H,4:3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/iv_card_in_mask"
+            android:background="@drawable/ic_image_detect"
+            android:backgroundTint="@color/white"
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center" />
 
     </androidx.cardview.widget.CardView>
 
@@ -75,7 +99,7 @@
             style="@style/BeTallSingleButtonStyle"
             android:layout_marginVertical="@dimen/margin_mid"
             android:background="@drawable/border_button_only"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/betall_inactive_button"
             android:text="@string/klp_retry_btn"
             android:textColor="@color/betall_inactive_button"
             android:visibility="invisible" />
@@ -120,7 +144,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:lines="2"
-            android:text="SAMPLE_ERROR\nSAMPLE ERROR"
             android:textColor="@color/ekyc_red"
             android:textSize="@dimen/klp_txt_size_normal"
             android:visibility="invisible" />
@@ -131,8 +154,8 @@
         android:id="@+id/holder_auto_capture"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:layout_marginTop="@dimen/margin_mid"
         android:layout_below="@id/container_preview"
+        android:layout_marginTop="@dimen/margin_mid"
         android:layout_marginBottom="@dimen/margin_xxsmall"
         android:gravity="center"
         android:orientation="horizontal"
@@ -180,15 +203,14 @@
         android:id="@+id/tv_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/holder_error"
+        android:layout_below="@id/tv_guide"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
         android:background="@drawable/border_button_solid"
         android:backgroundTint="@color/progress_unchecked"
         android:text="@string/klp_instruction"
         android:textColor="#1A94FF"
-        android:textSize="@dimen/klp_txt_size_normal"
-        android:visibility="invisible" />
+        android:textSize="@dimen/klp_txt_size_normal" />
 
     <LinearLayout
         android:id="@+id/holder_capture"
@@ -222,10 +244,11 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true" />
+    <FrameLayout
+        android:translationZ="1001dp"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

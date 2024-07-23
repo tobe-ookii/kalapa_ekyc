@@ -64,10 +64,11 @@ abstract class CameraXActivity(
 ) : BaseActivity(), View.OnClickListener {
     private val log = Logger()
     var tmpBitmap: Bitmap? = null
-    private var isAutocapturing = true
+    var isAutocapturing = !hideAutoCapture
 
     //    private var imageAnalyzer: ImageAnalysis? = null
     var cameraAnalyzer: ImageAnalysis? = null
+    private lateinit var tvInstruction: TextView
 
     //    private lateinit var cardMaskView: CardMaskView
     lateinit var ivCloseEkyc: ImageView
@@ -82,7 +83,7 @@ abstract class CameraXActivity(
     lateinit var rootContainer: View
 
     // camera X
-    private lateinit var viewFinder: PreviewView
+    lateinit var viewFinder: PreviewView
 
     var isCameraMode = false
     var mLastClickTime: Long = 0
@@ -103,6 +104,10 @@ abstract class CameraXActivity(
         }
     }
 
+    open fun onAutoCaptureToggle(isAutoCapturing: Boolean) {
+        Helpers.printLog("onAutoCaptureToggle $isAutoCapturing")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -116,6 +121,10 @@ abstract class CameraXActivity(
     }
 
     var declineCount = 0
+
+    open fun postSetupCamera() {
+        Helpers.printLog("onPostSetupCamera")
+    }
 
     private fun setupCamera() {
         // Request camera permissions
@@ -146,6 +155,7 @@ abstract class CameraXActivity(
         }
         // Set up the listeners for take photo and video capture buttons
         cameraExecutor = Executors.newSingleThreadExecutor()
+        postSetupCamera()
     }
 
     private fun askToGoToSetting() {
@@ -199,8 +209,12 @@ abstract class CameraXActivity(
         ivCloseEkyc.setOnClickListener {
             showEndEkyc()
         }
+        tvInstruction = findViewById(R.id.tv_instruction)
+        tvInstruction.setOnClickListener(this)
         tvError = findViewById(R.id.tv_error)
         btnCapture = findViewById(R.id.btn_capture)
+        Helpers.setBackgroundColorTintList(btnCapture, KalapaSDK.config.mainColor)
+        if (!hideAutoCapture) btnCapture.visibility = View.INVISIBLE
         holderCapture = findViewById(R.id.holder_capture)
         holderAutoCapture = findViewById(R.id.holder_auto_capture)
         tvGuide = findViewById(R.id.tv_guide)
@@ -210,14 +224,19 @@ abstract class CameraXActivity(
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_next_btn))
         btnRetry.text =
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_retry_btn))
+        Helpers.setBackgroundColorTintList(btnNext, KalapaSDK.config.mainColor)
+        Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
         ivAutoCapture = findViewById(R.id.toggle_auto_capture)
         if (hideAutoCapture) ivAutoCapture.visibility = View.INVISIBLE
         Helpers.setColorTintList(ivAutoCapture, KalapaSDK.config.mainColor)
         ivAutoCapture.setOnClickListener {
             this.isAutocapturing = !isAutocapturing
+            onAutoCaptureToggle(isAutocapturing)
             if (isAutocapturing) {
+                btnCapture.visibility = View.INVISIBLE
                 ivAutoCapture.setImageResource(R.drawable.ic_toggle_on)
             } else {
+                btnCapture.visibility = View.VISIBLE
                 ivAutoCapture.setImageResource(R.drawable.ic_toggle_off)
             }
         }
@@ -228,16 +247,9 @@ abstract class CameraXActivity(
 
     protected open fun setupUI() {
 //        cardMaskView.strokeWidth = 5F
-        ViewCompat.setBackgroundTintList(
-            btnRetry,
-            ColorStateList.valueOf(resources.getColor(R.color.white))
-        )
+        Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
         btnRetry.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
-
-        ViewCompat.setBackgroundTintList(
-            btnNext,
-            ColorStateList.valueOf(Color.parseColor(KalapaSDK.config.mainColor))
-        )
+        Helpers.setBackgroundColorTintList(btnNext, KalapaSDK.config.mainColor)
         btnNext.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
         setupCustomUI()
     }
@@ -454,10 +466,9 @@ abstract class CameraXActivity(
     open fun previewViewLayerMode(isCameraMode: Boolean) = if (isCameraMode) { // start camera
         this.isCameraMode = true
         tvError.text = ""
-        tvError.visibility = View.INVISIBLE
         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
         holderCapture.visibility = View.VISIBLE
-        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.INVISIBLE
+//        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.INVISIBLE
         tvGuide.visibility = View.VISIBLE
         btnNext.visibility = View.INVISIBLE
         btnRetry.visibility = View.INVISIBLE
@@ -467,7 +478,7 @@ abstract class CameraXActivity(
         btnNext.visibility = View.VISIBLE
         btnRetry.visibility = View.VISIBLE
         holderCapture.visibility = View.INVISIBLE
-        holderAutoCapture.visibility = if (!hideAutoCapture) View.INVISIBLE else View.INVISIBLE
+//        holderAutoCapture.visibility = if (!hideAutoCapture) View.INVISIBLE else View.INVISIBLE
         this.isCameraMode = false
 //        viewFinder.visibility = View.INVISIBLE
 //        cardMaskView.setBackgroundColor(Color.parseColor(KalapaSDK.config.backgroundColor))
@@ -496,8 +507,9 @@ abstract class CameraXActivity(
             }
 
             R.id.btn_capture -> {
-                takePhoto()
                 log.d("Btn btn_capture Clicked")
+                if (!isAutocapturing)
+                    takePhoto()
             }
 
             R.id.tv_instruction -> {

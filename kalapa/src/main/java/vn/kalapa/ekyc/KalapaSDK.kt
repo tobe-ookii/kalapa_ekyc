@@ -105,7 +105,7 @@ class KalapaSDK {
         fun isFoldOpen(activity: Context): Boolean {
             val metrics = activity.resources.displayMetrics
             var isFoldOpen = metrics.heightPixels * 1f / metrics.widthPixels < 1.2f
-            Helpers.printLog("isFoldOpen: $isFoldOpen isFoldDevice ${metrics.heightPixels} ${metrics.widthPixels}")
+//            Helpers.printLog("isFoldOpen: $isFoldOpen isFoldDevice ${metrics.heightPixels} ${metrics.widthPixels}")
             return isFoldOpen
         }
 
@@ -125,6 +125,7 @@ class KalapaSDK {
         fun startCaptureForResult(
             activity: Activity,
             config: KalapaSDKConfig,
+            documentType: KalapaSDKMediaType = KalapaSDKMediaType.FRONT,
             handler: KalapaCaptureHandler
         ) {
             val metrics = activity.resources.displayMetrics
@@ -133,23 +134,10 @@ class KalapaSDK {
 //            val intent = Intent(activity, CameraXCaptureActivity::class.java)
             val intent = Intent(activity, CameraXAutoCaptureActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            intent.putExtra("layout", R.layout.activity_camera_x_id_card)
-            intent.putExtra("capture_type", KalapaSDKMediaType.FRONT)
+            intent.putExtra("document_type", documentType.name)
             activity.startActivity(intent)
         }
 
-        fun startCaptureBackForResult(
-            activity: Activity,
-            config: KalapaSDKConfig,
-            handler: KalapaCaptureHandler
-        ) {
-            val metrics = activity.resources.displayMetrics
-            configure(config)
-            this.handler = handler
-            val intent = Intent(activity, CameraXCaptureBackActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            activity.startActivity(intent)
-        }
 
         fun startConfirmForResult(
             activity: Activity,
@@ -418,7 +406,7 @@ class KalapaSDK {
 
             /*****-STEP 2-*****/
             val localStartBackForResult = {
-                startCaptureBackForResult(activity, config, object : KalapaCaptureHandler() {
+                startCaptureForResult(activity, config, KalapaSDKMediaType.BACK, object : KalapaCaptureHandler() {
                     private val endpoint = "/api/kyc/app/scan-back?lang=${config.language}"
                     override fun process(
                         base64: String,
@@ -466,7 +454,7 @@ class KalapaSDK {
 
             /*****-STEP 1-*****/
             val localStartFrontForResult = {
-                startCaptureForResult(activity, this.config, object : KalapaCaptureHandler() {
+                startCaptureForResult(activity, this.config, KalapaSDKMediaType.FRONT, object : KalapaCaptureHandler() {
                     private val endpoint = "/api/kyc/app/scan-front?lang=${config.language}"
                     override fun process(
                         base64: String,
@@ -555,6 +543,7 @@ class KalapaSDK {
                 Helpers.printLog("leftoverSession: End of request")
                 if (KalapaSDK.config.getCaptureImage()) {
                     localStartFrontForResult()
+//                    localStartBackForResult()
                 } else {
                     localStartNFCForResult()
                 }
@@ -761,12 +750,15 @@ class KalapaSDKConfig private constructor(
     }
 
     private fun pullLanguage() {
-        Helpers.printLog("| $language")
+        val start = System.currentTimeMillis()
+        Helpers.printLog("pullLanguage $start | $language")
         languageUtils = LanguageUtils(context)
         val languageJsonBody: String? =
             GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
+        Helpers.printLog("pullLanguage Done ${System.currentTimeMillis() - start} | $language")
+
         if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
-            Helpers.printLog("pullLanguage $languageJsonBody")
+//            Helpers.printLog("pullLanguage $languageJsonBody")
             val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
             if ((klpLanguageModel?.error != null) && (klpLanguageModel.error.code == 0) && klpLanguageModel.data != null) {
                 // Thành công
@@ -841,7 +833,19 @@ enum class KalapaSDKResultCode(val vi: String, val en: String) {
 
 
 enum class KalapaSDKMediaType {
-    FRONT, BACK, PORTRAIT, PASSPORT
+    FRONT, BACK, PORTRAIT, PASSPORT, NA;
+
+    companion object {
+        fun fromName(mediaType: String): KalapaSDKMediaType {
+            return when (mediaType) {
+                FRONT.name -> FRONT
+                BACK.name -> BACK
+                PORTRAIT.name -> PORTRAIT
+                PASSPORT.name -> PASSPORT
+                else -> NA
+            }
+        }
+    }
 }
 
 interface KalapaSDKCallback {

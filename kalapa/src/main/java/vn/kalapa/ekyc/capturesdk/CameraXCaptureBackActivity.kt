@@ -15,7 +15,7 @@ import vn.kalapa.ekyc.views.ProgressView
 
 
 class CameraXCaptureBackActivity : CameraXActivity(
-    activityLayoutId = R.layout.activity_camera_x_back_card,
+    activityLayoutId = R.layout.activity_camera_x_id_card,
     hideAutoCapture = true
 ), KalapaSDKCallback {
     private lateinit var ivPreviewImage: ImageView
