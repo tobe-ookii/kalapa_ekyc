@@ -116,20 +116,6 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_sub_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/tv_guide"
-        android:layout_centerInParent="true"
-        android:background="@drawable/border_button_solid"
-        android:backgroundTint="@color/ekyc_red_60"
-        android:text="@string/klp_error_happen"
-        android:textColor="@color/white"
-        android:translationZ="1000dp"
-        android:visibility="invisible" />
-
-
     <LinearLayout
         android:id="@+id/holder_error"
         android:layout_width="match_parent"
@@ -153,7 +139,7 @@
     <LinearLayout
         android:id="@+id/holder_auto_capture"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/container_preview"
         android:layout_marginTop="@dimen/margin_mid"
         android:layout_marginBottom="@dimen/margin_xxsmall"
@@ -167,12 +153,6 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_toggle_on" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/margin_xxsmall"
-            android:gravity="center"
-            android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>
 
 
@@ -182,7 +162,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/holder_auto_capture"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_mid"
+        android:layout_marginTop="@dimen/margin_xsmall"
         android:src="@drawable/ic_passport_black" />
 
 

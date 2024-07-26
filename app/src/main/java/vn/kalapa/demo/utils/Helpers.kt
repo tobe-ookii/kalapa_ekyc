@@ -29,6 +29,7 @@ import com.google.android.material.slider.Slider
 import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.R
+import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.models.PreferencesConfig
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
@@ -207,7 +208,8 @@ internal class Helpers {
 
             val yesBtn = dialog.findViewById(R.id.custom_dialog_btn_yes) as Button
             val tvTitle = dialog.findViewById(R.id.custom_dialog_title) as TextView
-            if (!myTitle.isNullOrEmpty()) dialog.findViewById<TextView>(R.id.tv_alert_title).text = myTitle
+//            if (!myTitle.isNullOrEmpty()) dialog.findViewById<TextView>(R.id.tv_alert_title).text =
+                //myTitle
 //                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_face_otp_alert_title))
             tvTitle.text = myTitle
 

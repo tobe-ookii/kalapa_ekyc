@@ -13,11 +13,13 @@ import org.tensorflow.lite.support.common.ops.NormalizeOp
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
+import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import kotlin.math.min
 
 class KLPDetector(private val context: Context, private val modelPath: String, labelPath: String, var shouldCapture: Boolean = true, private val onImageListener: OnImageDetectedListener) : KLPDetectorListener {
     private var interpreter: Interpreter
@@ -26,7 +28,8 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
     private var tensorHeight = 0
     private var numChannel = 0
     private var numElements = 0
-
+    private val CARD_CONF = 0.75f
+    private val CORNER_CONF = 0.4f
     private val imageProcessor = ImageProcessor.Builder()
         .add(NormalizeOp(INPUT_MEAN, INPUT_STANDARD_DEVIATION))
         .add(CastOp(INPUT_IMAGE_TYPE))
@@ -43,6 +46,7 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
 
     init {
         val compatList = CompatibilityList()
+        Helpers.printLog("getCpuInfo ${Common.getCpuInfo()}")
         val options = Interpreter.Options().apply {
             if (compatList.isDelegateSupportedOnThisDevice) {
                 val delegateOptions = compatList.bestOptionsForThisDevice
@@ -52,7 +56,11 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
             }
         }
         val model = FileUtil.loadMappedFile(context, modelPath)
-        interpreter = Interpreter(model, options)
+        interpreter = try {
+            Interpreter(model, options)
+        } catch (exception: Throwable) {
+            Interpreter(model)
+        }
 
         val inputShape = interpreter.getInputTensor(0)?.shape()
         val outputShape = interpreter.getOutputTensor(0)?.shape()
@@ -233,11 +241,11 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
     private var detectCount = 0
     private var detected = false
     override fun onDetect(frameWidth: Int, frameHeight: Int, boundingBoxes: List<BoundingBox>, inferenceTime: Long, doneProcessed: () -> Unit) {
-//        Helpers.printLog("KLPDetector onDetect $frameWidth $frameHeight")
         if (detected && shouldCapture) return
         val actualHeight = frameWidth * 0.75f
         val offsetRatio = ((frameHeight - actualHeight) / 2) / frameHeight
         val offsetBottom = 1 - offsetRatio
+        Helpers.printLog("KLPDetector onDetect frameWidth $frameWidth frameHeight $frameHeight actualHeight $actualHeight offsetRatio $offsetRatio offsetBottom $offsetBottom")
         var corners = ArrayList<BoundingBox>()
         var cards = ArrayList<BoundingBox>()
         var buffer = StringBuffer()
@@ -246,21 +254,27 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
         var left = -1f
         var right = -1f
         for (boundBox in boundingBoxes) {
+            if (boundBox.cnf < min(CARD_CONF, CORNER_CONF))
+                continue
+            if (boundBox.clsName == "card") {
+                cards.add(boundBox)
+            } else if (boundBox.clsName == "corner") {
+                corners.add(boundBox)
+            }
             if (top == -1f || boundBox.y1 < top) top = boundBox.y1
             if (bottom == -1f || boundBox.y2 > bottom) bottom = boundBox.y2
             if (left == -1f || boundBox.x1 < left) left = boundBox.x1
             if (right == -1f || boundBox.x2 > right) right = boundBox.x2
             buffer.append("${boundBox.clsName} ${boundBox.cnf} \t")
-            if (boundBox.clsName == "card") cards.add(boundBox)
-            else if (boundBox.clsName == "corner") corners.add(boundBox)
+
         }
         if (cards.size == 1) {
             if ((bottom - top) < 0.5f && (right - left) < 0.5f) {
-//                Helpers.printLog("KLPDetector too small $top $bottom $left $right")
+                Helpers.printLog("KLPDetector too small $top $bottom $left $right")
                 onImageListener.onImageTooSmall()
             } else {
                 if (cards.size == 1 && corners.size in (4..5) && top > offsetRatio && bottom < offsetBottom) {
-//                    Helpers.printLog("KLPDetector onImageInMask $top $bottom $offsetRatio $offsetBottom")
+                    Helpers.printLog("KLPDetector onImageInMask $top $bottom $offsetRatio $offsetBottom")
                     onImageListener.onImageInMask()
                     if (shouldCapture) {
                         detectCount++
@@ -271,7 +285,7 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
                         }
                     }
                 } else {
-//                    Helpers.printLog("KLPDetector out of the box - cards ${cards.size} corners ${corners.size} $top $bottom $offsetRatio $offsetBottom ")
+                    Helpers.printLog("KLPDetector out of the box - cards ${cards.size} corners ${corners.size} $top $bottom $offsetRatio $offsetBottom ")
                     detectCount--
                     if (detectCount < 0) detectCount = 0
                     if (cards.size > 0)

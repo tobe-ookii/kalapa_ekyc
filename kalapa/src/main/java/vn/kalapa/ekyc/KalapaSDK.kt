@@ -810,24 +810,24 @@ enum class KalapaSDKNFCStatus(status: Int) {
 }
 
 enum class KalapaSDKResultCode(val vi: String, val en: String) {
-    UNKNOWN("Lỗi không xác định", "Unknown error"),
-    SUCCESS("Thành công", "Success"),
-    PERMISSION_DENIED("Không cung cấp quyền truy cập", "User permission not granted"),
-    USER_CONSENT_DECLINED("Không đồng ý điều khoản", "User declines consent"),
-    SUCCESS_WITH_WARNING("Thành công", "Success with warning"),
-    CANNOT_OPEN_DEVICE("Lỗi phần cứng", "Device issues"),
+    UNKNOWN("lỗi không xác định", "unknown error"),
+    SUCCESS("thành công", "success"),
+    PERMISSION_DENIED("không cung cấp quyền truy cập", "user permission not granted"),
+    USER_CONSENT_DECLINED("lhông đồng ý điều khoản", "user declines consent"),
+    SUCCESS_WITH_WARNING("thành công", "success with warning"),
+    CANNOT_OPEN_DEVICE("lỗi phần cứng", "device issues"),
     CARD_NOT_FOUND(
-        "Không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ",
-        "Document not found or invalid"
+        "không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ",
+        "document not found or invalid"
     ),
-    WRONG_CCCDID("Giấy tờ không hợp lệ", "Document invalid"),
-    CARD_LOST_CONNECTION("Mất kết nối tới thẻ", "Card lost connection"),
-    USER_LEAVE("Người dùng hủy bỏ xác thực", "User leave ekyc process"),
-    EMULATOR_DETECTED("Phát hiện máy ảo", "Emulator detection"),
-    DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "Device does not support"),
+    WRONG_CCCDID("giấy tờ không hợp lệ", "document invalid"),
+    CARD_LOST_CONNECTION("mất kết nối tới thẻ", "card lost connection"),
+    USER_LEAVE("người dùng hủy bỏ xác thực", "user leave ekyc process"),
+    EMULATOR_DETECTED("Phát hiện máy ảo", "emulator detection"),
+    DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "device does not support"),
     CONFIGURATION_NOT_ACCEPTABLE(
-        "Cấu hình chưa đúng, vui lòng kiểm tra lại",
-        "Configuration not acceptable, please try again"
+        "cấu hình chưa đúng, vui lòng kiểm tra lại",
+        "configuration not acceptable, please try again"
     )
 }
 

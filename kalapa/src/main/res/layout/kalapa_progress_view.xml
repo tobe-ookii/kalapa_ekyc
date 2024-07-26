@@ -8,8 +8,9 @@
 
     <LinearLayout
         android:id="@+id/progress_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
+        android:paddingHorizontal="@dimen/margin_horizontal_path"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/border_button_solid"
@@ -37,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vertical_large"
+            android:visibility="gone"
             android:text="@string/klp_alert_title"
             android:textColor="@color/main_color"
             android:textSize="@dimen/klp_txt_size_header"

@@ -91,9 +91,8 @@ data class KalapaError(val code: Int, var message: String = "") {
     fun getMessageError(): String {
         when (code) {
             -1 -> {
-                if (message == "SSL handshake timed out" || message.contains("SSL handshake aborted") || message.contains(
-                        "Unable to resolve host"
-                    )
+                if (message == "SSL handshake timed out" || message.contains("SSL handshake aborted")
+                    || message.contains("Unable to resolve host") || message.contains("Software caused connection abort")
                 )
                     return KalapaSDK.config.context.getString(R.string.klp_error_network) //"Kết nối mạng của bạn đang không ổn định, vui lòng thử lại sau"
                 if (message == "Wrong Token")

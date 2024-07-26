@@ -210,6 +210,7 @@ abstract class CameraXActivity(
             showEndEkyc()
         }
         tvInstruction = findViewById(R.id.tv_instruction)
+        tvInstruction.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_instruction))
         tvInstruction.setOnClickListener(this)
         tvError = findViewById(R.id.tv_error)
         btnCapture = findViewById(R.id.btn_capture)
@@ -525,10 +526,7 @@ abstract class CameraXActivity(
 //    }
 
     override fun onBackPressed() {
-        if (!isCameraMode)
-            onRetryClicked()
-        else
-            onBackBtnClicked()
+        onBackBtnClicked()
     }
 
     var focusRequestTime = 0

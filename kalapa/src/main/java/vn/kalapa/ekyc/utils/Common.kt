@@ -10,6 +10,8 @@ import android.os.Vibrator
 import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.util.Log
 import java.io.BufferedReader
+import java.io.FileReader
+import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.math.BigInteger
@@ -17,9 +19,10 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 
 @ExperimentalUnsignedTypes
 fun ByteArray.toHex2(): String = asUByteArray().joinToString("") { it.toString(radix = 16).padStart(2, '0') }
@@ -75,6 +78,21 @@ class Common {
             } else {
                 vibrator.vibrate(200)
             }
+        }
+
+        fun getCpuInfo(): String {
+            val cpuInfo = StringBuilder()
+            try {
+                BufferedReader(FileReader("/proc/cpuinfo")).use { br ->
+                    var line: String?
+                    while ((br.readLine().also { line = it }) != null) {
+                        cpuInfo.append(line).append("\n")
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            return cpuInfo.toString()
         }
 
         fun isOnline(context: Context): Boolean {

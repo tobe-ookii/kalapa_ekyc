@@ -358,4 +358,5 @@
     <string name="klp_card_hold_still">klp_card_hold_still</string>
     <string name="klp_guide_id_front">klp_guide_id_front</string>
     <string name="klp_guide_id_back">klp_guide_id_back</string>
+    <string name="klp_auto_capture_success">klp_auto_capture_success</string>
 </resources>

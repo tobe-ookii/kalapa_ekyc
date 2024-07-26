@@ -21,8 +21,10 @@ import vn.kalapa.ekyc.capturesdk.tflite.KLPDetector
 import vn.kalapa.ekyc.capturesdk.tflite.KLPDetectorListener
 import vn.kalapa.ekyc.capturesdk.tflite.OnImageDetectedListener
 import vn.kalapa.ekyc.capturesdk.tflite.OverlayView
+import vn.kalapa.ekyc.capturesdk.utils.YuvToRgbConverter
 import vn.kalapa.ekyc.fragment.BottomGuideFragment
 import vn.kalapa.ekyc.fragment.GuideType
+import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common.Companion.vibratePhone
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
@@ -39,7 +41,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     private lateinit var overlay: OverlayView
     private lateinit var ivCardInMask: ImageView
 
-    //    private lateinit var ivBitmapReview: ImageView
+//    private lateinit var ivBitmapReview: ImageView
     private lateinit var documentType: KalapaSDKMediaType
     private fun getIntentData() {
         documentType = KalapaSDKMediaType.fromName(intent.getStringExtra("document_type") ?: KalapaSDKMediaType.BACK.name)
@@ -77,7 +79,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
         ivCardInMask = findViewById(R.id.iv_card_in_mask)
 
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
-        tvGuide1.text = if (documentType == KalapaSDKMediaType.BACK) KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document)) else KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_front_document))
+        tvGuide1.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_capture_note))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
 
     }
@@ -121,7 +123,11 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     }
 
     override fun sendDone(nextAction: () -> Unit) {
-        TODO("Not yet implemented")
+        nextAction()
+        runOnUiThread {
+            ProgressView.hideProgress()
+        }
+        finish()
     }
 
 
@@ -131,41 +137,39 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     }
 
     @SuppressLint("RestrictedApi")
+    @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
     override fun setupAnalyzer(): ImageAnalysis? {
-        return ImageAnalysis.Builder()
+        val imageAnalysis = ImageAnalysis.Builder()
             .setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
-//            .setTargetRotation()
             .build()
-            .also {
-                it.setAnalyzer(cameraExecutor) { imageProxy ->
 
-                    val bitmapBuffer =
-                        Bitmap.createBitmap(
-                            imageProxy.width,
-                            imageProxy.height,
-                            Bitmap.Config.ARGB_8888
-                        )
-                    imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
+        imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
 
-                    val matrix = Matrix().apply {
-                        postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
-                    }
+            val bitmapBuffer =
+                Bitmap.createBitmap(
+                    imageProxy.width,
+                    imageProxy.height,
+                    Bitmap.Config.ARGB_8888
+                )
+            imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
 
-                    val rotatedBitmap = Bitmap.createBitmap(
-                        bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height,
-                        matrix, true
-                    )
-//                        runOnUiThread {
-//                            ivBitmapReview.setImageBitmap(rotatedBitmap)
-//                        }
-//                    Helpers.printLog("KLPDetector rotatedBitmap height: ${rotatedBitmap.height}  ${rotatedBitmap.width} viewFinder Height ${ivPreviewImage.height} Height ${ivPreviewImage.width}")
-                    detector?.detect(rotatedBitmap) {
-                        imageProxy.close()
-                    }
-                }
+            val matrix = Matrix().apply {
+                postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
             }
+
+            val rotatedBitmap = Bitmap.createBitmap(
+                bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height,
+                matrix, true
+            )
+//            runOnUiThread { ivBitmapReview.setImageBitmap(rotatedBitmap) }
+//                    Helpers.printLog("KLPDetector rotatedBitmap width: ${imageProxy.width} height: ${imageProxy.height} height ${rotatedBitmap.height}  ${rotatedBitmap.width} viewFinder Height ${viewFinder.height} Height ${viewFinder.width}")
+            detector?.detect(rotatedBitmap) {
+                imageProxy.close()
+            }
+        }
+        return imageAnalysis
     }
 
     override fun showEndEkyc() {
@@ -181,13 +185,22 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
         })
     }
 
-    override fun onCaptureSuccess(rotationDegree: Int) {
-        // We dont use it
+    override fun onCaptureSuccess(cameraDegree: Int) {
+        val rotation =
+            if (cameraDegree != getCameraRotationDegree()) ((getCameraRotationDegree() - cameraDegree + 270) % 360) else cameraDegree
+        Helpers.printLog("onCaptureSuccess $cameraDegree ${getCameraRotationDegree()} $rotation")
+        tmpBitmap = BitmapUtil.rotateBitmapToStraight(tmpBitmap!!, rotation, false) // tmpBitmap!! //
+//        tmpBitmap =
+//            BitmapUtil.crop(tmpBitmap!!, tmpBitmap!!.width, tmpBitmap!!.width * 5 / 8, 0.5f, 0.5f)
+        ivPreviewImage.visibility = View.VISIBLE
+        ivPreviewImage.setImageBitmap(tmpBitmap)
     }
 
     private fun renewSession() {
         currError = ""
         detector?.restart(false)
+        ivPreviewImage.visibility = View.INVISIBLE
+        tmpBitmap = null
     }
 
     override fun onResume() {
@@ -196,7 +209,12 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     }
 
     override fun verifyImage() {
-
+        ProgressView.showProgress(this@CameraXAutoCaptureActivity)
+        (KalapaSDK.handler as KalapaCaptureHandler).process(
+            BitmapUtil.convertBitmapToBase64(tmpBitmap!!),
+            documentType,
+            this@CameraXAutoCaptureActivity
+        )
     }
 
     override fun onBackBtnClicked() {
@@ -253,7 +271,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
             runOnUiThread {
                 tvError.setTextColor(resources.getColor(R.color.ekyc_green))
                 tvError.visibility = View.VISIBLE
-                tvError.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_message_autocapture_succeed))
+                tvError.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_auto_capture_success))
             }
         }, 200)
     }
