@@ -74,14 +74,14 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
         when (livenessSessionType) {
             Common.LIVENESS_VERSION.PASSIVE -> {
                 index2Action = mapOf(
-                    1 to HoldSteady2Seconds(2),
+                    1 to HoldSteady2Seconds(1500),
                     2 to Processing()
                 )
             }
 
             Common.LIVENESS_VERSION.ACTIVE -> {
                 index2Action = mapOf(
-                    1 to HoldSteady2Seconds(2),
+                    1 to HoldSteady2Seconds(1500),
                     2 to if (Random.nextInt(2) % 2 == 0) TurnLeft() else TurnRight(),
                     3 to if (Random.nextInt(2) % 2 == 0) TurnUp() else TurnDown(),
                     4 to if (Random.nextInt(2) % 2 == 0) TiltLeft() else TiltRight(),
@@ -92,7 +92,7 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
 
             Common.LIVENESS_VERSION.SEMI_ACTIVE -> {
                 index2Action = mapOf(
-                    1 to HoldSteady2Seconds(2),
+                    1 to HoldSteady2Seconds(1500),
                     2 to GoFar(),
                     3 to ComeClose(),
 //                    4 to HoldSteady2Seconds(2),
@@ -114,8 +114,6 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
         frame: Bitmap,
         cropImage: Bitmap,
         rotationAngle: Int,
-        offset: Float,
-        translationY: Float,
         faceDetectorListener: KLPFaceDetectorListener
     ) {
         // Processing. Tối đa 60s 1 session.
@@ -143,7 +141,7 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
                                     sessionStatus = LivenessSessionStatus.TOO_SMALL
                                 } else if (LivenessAction.isFaceTooBig(face)) {
                                     sessionStatus = LivenessSessionStatus.TOO_LARGE
-                                } else if (!LivenessAction.isFaceMarginRight(face.face, cropImage.width, cropImage.height, offset, translationY)) {
+                                } else if (!LivenessAction.isFaceMarginRight(face.face, cropImage.width, cropImage.height)) {
                                     sessionStatus = LivenessSessionStatus.OFF_CENTER
                                     refreshFaceList()
                                 } else if (KalapaSDK.config.livenessVersion != Common.LIVENESS_VERSION.ACTIVE.version && !LivenessAction.isFaceLookStraight(face.face)) {
@@ -254,4 +252,3 @@ enum class LivenessSessionStatus(val status: Int) {
 //val TOO_SMALL = 4
 //val TOO_LARGE = 5
 //val OFF_CENTER = 6
-//val TOO_MANY_FACES = 7

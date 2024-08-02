@@ -39,9 +39,11 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_SCENARIO
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_TOKEN
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
+import vn.kalapa.ekyc.utils.Common.Companion.nfcAvailable
 import vn.kalapa.ekyc.utils.LocaleHelper
 import vn.kalapa.ekyc.views.KLPCustomMultipleChoices
 import vn.kalapa.ekyc.views.KLPCustomSwitch
+import java.util.Locale
 
 // prod: api-ekyc.kalapa.vn/face-otp
 // dev: faceotp-dev.kalapa.vn/api
@@ -148,17 +150,24 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
                 this@SettingActivity,
                 if (it) "vi" else "en"
             )
+            val locale = Locale(if (it) LocaleHelper.VIETNAMESE else LocaleHelper.ENGLISH)
+            Locale.setDefault(locale)
             refreshUI()
         }
         rgScanNFC = findViewById(R.id.sw_enable_nfc)
         rgCaptureImage = findViewById(R.id.sw_capture_image)
         cbAcceptedEidWithChip = findViewById(R.id.cb_acceptance_document_4)
         rgScanNFC.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
-            if (it) cbAcceptedEidWithChip.isChecked = true
-            else {
-                if (this::rgCaptureImage.isInitialized) if (!rgCaptureImage.isPositiveCheck)
-                    this.rgCaptureImage.switchChangeListener(true)
+            if (it && !nfcAvailable(this@SettingActivity)) {
+                Toast.makeText(this@SettingActivity, resources.getString(R.string.klp_error_nfc_unsupported), Toast.LENGTH_SHORT).show()
+                this.rgScanNFC.switchChangeListener(false)
+            } else {
+                if (it) cbAcceptedEidWithChip.isChecked = true
+                else {
+                    if (this::rgCaptureImage.isInitialized) if (!rgCaptureImage.isPositiveCheck)
+                        this.rgCaptureImage.switchChangeListener(true)
 
+                }
             }
         }
         rgCaptureImage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
@@ -476,7 +485,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
         val secnario = Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: KalapaFlowType.EKYC.name
         val lang = Helpers.getValuePreferences(MY_KEY_LANGUAGE)
-        val livenessVersion = Helpers.getIntPreferences(MY_KEY_LIVENESS_VERSION, 2)
+        val livenessVersion = Helpers.getIntPreferences(MY_KEY_LIVENESS_VERSION, 0)
 
         val mainTextColor =
             Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) ?: defaultConfig.mainTextColor
@@ -494,9 +503,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         val acceptEidWithoutChip = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_3, true)
         val acceptEidWithChip = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_4, true)
 
-        val enableNFC = Helpers.getBooleanPreferences(MY_KEY_ENABLE_NFC, true)
+        val enableNFC = Helpers.getBooleanPreferences(MY_KEY_ENABLE_NFC, nfcAvailable(this))
         val captureImage =
-            Helpers.getBooleanPreferences(MY_KEY_CAPTURE_IMAGE, false)
+            Helpers.getBooleanPreferences(MY_KEY_CAPTURE_IMAGE, true)
         val verifyCheck =
             Helpers.getBooleanPreferences(MY_KEY_VERIFY_CHECK, false)
         val fraudCheck =

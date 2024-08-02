@@ -109,7 +109,7 @@ class CameraXSelfieActivity : CameraXActivity(
 //                        ivBitmapReview.setImageBitmap(croppedImage)
 //                    }
                     if (this::klpLivenessHandler.isInitialized)
-                        klpLivenessHandler.processSession(croppedImage, croppedImage, 1f, 0f)
+                        klpLivenessHandler.processSession(croppedImage, croppedImage)
                     computingDetection = true
                     while (true) {
 //                        Helpers.printLog("Still Processing")
@@ -269,7 +269,7 @@ class CameraXSelfieActivity : CameraXActivity(
                         errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_many_faces))
                         btnNext.visibility = View.INVISIBLE
                     } else {
-                        if (LivenessAction.isFaceMarginRight(it[0], faceBitmap.width, faceBitmap.height, 0f, 0f)) {
+                        if (LivenessAction.isFaceMarginRight(it[0], faceBitmap.width, faceBitmap.height)) {
                             Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: OK!")
                             ivError.setGifImageResource(R.drawable.gif_success_small)
                             tvError.setTextColor(resources.getColor(R.color.ekyc_green))

@@ -30,6 +30,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -354,8 +355,8 @@ abstract class CameraXActivity(
                 if (lensFacing == LENS_FACING.FRONT) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA
             val opticalResolution = getOpticalResolution(cameraSelector, lensFacing == LENS_FACING.FRONT)
             val preview = Preview.Builder()
-//                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                .setTargetResolution(opticalResolution)
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+//                .setTargetResolution(opticalResolution)
                 .build()
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
@@ -366,7 +367,8 @@ abstract class CameraXActivity(
             imageCapture = ImageCapture.Builder()
                 .setJpegQuality(85)
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetResolution(opticalResolution)
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+//                .setTargetResolution(opticalResolution)
                 .setTargetRotation(Surface.ROTATION_0)
                 .build()
             cameraAnalyzer = setupAnalyzer()

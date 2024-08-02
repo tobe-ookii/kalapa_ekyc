@@ -190,8 +190,8 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
             if (cameraDegree != getCameraRotationDegree()) ((getCameraRotationDegree() - cameraDegree + 270) % 360) else cameraDegree
         Helpers.printLog("onCaptureSuccess $cameraDegree ${getCameraRotationDegree()} $rotation")
         tmpBitmap = BitmapUtil.rotateBitmapToStraight(tmpBitmap!!, rotation, false) // tmpBitmap!! //
-//        tmpBitmap =
-//            BitmapUtil.crop(tmpBitmap!!, tmpBitmap!!.width, tmpBitmap!!.width * 5 / 8, 0.5f, 0.5f)
+        tmpBitmap =
+            BitmapUtil.crop(tmpBitmap!!, tmpBitmap!!.width, (tmpBitmap!!.width * 0.7f).toInt(), 0.5f, 0.5f)
         ivPreviewImage.visibility = View.VISIBLE
         ivPreviewImage.setImageBitmap(tmpBitmap)
     }

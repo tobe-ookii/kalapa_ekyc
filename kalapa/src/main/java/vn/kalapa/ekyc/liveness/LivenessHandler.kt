@@ -25,11 +25,11 @@ class LivenessHandler(val context: Context, private val livenessSessionType: Com
         startTime = System.currentTimeMillis()
     }
 
-    fun processSession(frame: Bitmap, image: Bitmap, offset: Float, translationY: Float) {
+    fun processSession(frame: Bitmap, image: Bitmap) {
 //        Helpers.printLog("isStop? : $isStop - livenessSession.isFinished() ${livenessSession.isFinished()} - Valid time ${System.currentTimeMillis() - startTime < LIVENESS_MAX_TIME} ")
         val isExpired = System.currentTimeMillis() - startTime > LIVENESS_MAX_TIME
         if (!isStop && !livenessSession.isFinished() && !isExpired) {
-            livenessSession.process(frame, image, rotationAngle, offset, translationY, faceDetectorListener)
+            livenessSession.process(frame, image, rotationAngle,faceDetectorListener)
             sessionStatus = livenessSession.sessionStatus
             sessionAction = livenessSession.getCurrentAction()
 //            faceDetectorListener.onMessage(sessionStatus, sessionAction)

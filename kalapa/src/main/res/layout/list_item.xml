@@ -41,6 +41,7 @@
         android:id="@+id/view_split"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:visibility="gone"
         android:layout_marginHorizontal="@dimen/margin_mid"
         android:background="@color/white40" />
 </LinearLayout>

@@ -25,7 +25,7 @@ abstract class LivenessAction {
     lateinit var frame: Bitmap
     lateinit var cropFrame: Bitmap
     var isBreakAction = false
-    var nSeconds = 2 // Time to success this challenge
+    var nMillis = 1500 // Time to success this challenge
     var currentActionStatus: LivenessActionStatus = LivenessActionStatus.FAILED
     var timeout = 30
 
@@ -44,16 +44,16 @@ abstract class LivenessAction {
 
 
         val TOO_SMALL_RATIO = 0.3f
-        val TOO_BIG_RATIO = 0.75f
-        val SMALL_ENOUGH_RATIO = 0.4f
-        val BIG_ENOUGH_RATIO = 0.6f
+        val TOO_BIG_RATIO = 0.85f
+        val SMALL_ENOUGH_RATIO = 0.45f
+        val BIG_ENOUGH_RATIO = 0.65f
 
         val TOO_SMALL_WIDTH_AND_HEIGHT = 300
         fun isFaceTooSmall(face: InputFace): Boolean { // Khuôn mặt nằm trọn trong khung hình
             val trueWidth = min(face.frameWidth, face.frameHeight)
             val trueHeight = max(face.frameWidth, face.frameHeight)
             val bounds = face.face.boundingBox
-            val isFaceTooSmall = bounds.width() < trueWidth * TOO_SMALL_RATIO || bounds.height() < trueHeight * TOO_SMALL_RATIO || bounds.width() < TOO_SMALL_WIDTH_AND_HEIGHT || bounds.height() < TOO_SMALL_WIDTH_AND_HEIGHT
+            val isFaceTooSmall = bounds.width() < trueWidth * TOO_SMALL_RATIO || bounds.height() < trueHeight * TOO_SMALL_RATIO // || bounds.width() < TOO_SMALL_WIDTH_AND_HEIGHT || bounds.height() < TOO_SMALL_WIDTH_AND_HEIGHT
             if (!isFaceTooSmall) Helpers.printLog("isFaceTooSmall ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceTooSmall
         }
@@ -89,7 +89,7 @@ abstract class LivenessAction {
             val trueWidth = min(face.frameWidth, face.frameHeight)
             val trueHeight = max(face.frameWidth, face.frameHeight)
             val bounds = face.face.boundingBox
-            val isFaceSizeInGoodCondition = bounds.width() > trueWidth * TOO_SMALL_RATIO || bounds.height() > trueHeight * TOO_SMALL_RATIO || bounds.width() > TOO_SMALL_WIDTH_AND_HEIGHT || bounds.height() > TOO_SMALL_WIDTH_AND_HEIGHT
+            val isFaceSizeInGoodCondition = bounds.width() > trueWidth * TOO_SMALL_RATIO || bounds.height() > trueHeight * TOO_SMALL_RATIO // || bounds.width() > TOO_SMALL_WIDTH_AND_HEIGHT || bounds.height() > TOO_SMALL_WIDTH_AND_HEIGHT
 //            if (!isFaceSizeInGoodCondition) Helpers.printLog("isFaceSizeInGoodCondition ${bounds.width()} < $trueWidth ${bounds.height()} < $trueHeight")
             return isFaceSizeInGoodCondition
         }
@@ -108,12 +108,10 @@ abstract class LivenessAction {
             face: Face,
             frameWidth: Int,
             frameHeight: Int,
-            offset: Float,
-            translationY: Float
         ): Boolean {
             val bounds = face.boundingBox
-            val isTooCloseToVertical = bounds.top <= frameHeight * 0.02f || bounds.bottom >= frameHeight * 0.95f || bounds.bottom >= frameHeight - offset * 2
-            val isTooCloseToHorizontal = bounds.left <= frameWidth * 0.02f || bounds.right >= frameWidth * 0.95f || bounds.right >= frameWidth - offset * 2
+            val isTooCloseToVertical = bounds.top <= frameHeight * 0.15f || bounds.top <= 50 || bounds.bottom >= frameHeight * 0.95f || bounds.bottom >= frameHeight - 25
+            val isTooCloseToHorizontal = bounds.left <= frameWidth * 0.05f || bounds.left <= 25 || bounds.right >= frameWidth * 0.95f || bounds.right >= frameWidth - 25
             val isFaceMarginRight = !isTooCloseToHorizontal && !isTooCloseToVertical
 //            if (!isFaceMarginRight)
 //                Helpers.printLog(
@@ -169,8 +167,9 @@ abstract class LivenessAction {
     }
 
 
-    private fun isEyesClosed(face: Face): Boolean {
-        return face.rightEyeOpenProbability == null || face.rightEyeOpenProbability!! < 0.3f || face.leftEyeOpenProbability == null || face.leftEyeOpenProbability!! < 0.3f
+    fun isEyesClosed(face: Face): Boolean {
+        return face.rightEyeOpenProbability == null || face.rightEyeOpenProbability!! < 0.1f || face.leftEyeOpenProbability == null || face.leftEyeOpenProbability!! < 0.1f
+//        return false
     }
 
 
@@ -193,9 +192,9 @@ abstract class LivenessAction {
             currentActionStatus = LivenessActionStatus.TIMEOUT
             return currentActionStatus
         }
-        val faces: List<InputFace> = getFacesByTime(session, nSeconds)
+        val faces: List<InputFace> = getFacesByTime(session, nMillis)
         if (faces.size < 2) {
-            return if (nSeconds == 0 && faces.size == 1) {
+            return if (nMillis == 0 && faces.size == 1) {
                 currentActionStatus = individualProcess(session, faces)
                 currentActionStatus
             } else {
@@ -204,14 +203,14 @@ abstract class LivenessAction {
                 currentActionStatus
             }
         } else {
-            if (this.TAG == "HoldSteady2Seconds" && (isEyesClosed(faces[faces.size - 1].face) || isEyesClosed(faces[0].face))) { // Nếu đang ở HoldSteady và 1 trong 2 mắt nhắm th return false.
-                currentActionStatus = LivenessActionStatus.FAILED
-                return currentActionStatus
-            } else {
-                Helpers.printLog("${this.javaClass.kotlin.simpleName} is processing... nSeconds $nSeconds face.size ${faces.size}")
-                currentActionStatus = individualProcess(session, faces)
-                return currentActionStatus
-            }
+//            if (this.TAG == "HoldSteady2Seconds" && (isEyesClosed(faces[faces.size - 1].face) || isEyesClosed(faces[0].face))) { // Nếu đang ở HoldSteady và 1 trong 2 mắt nhắm th return false.
+//                currentActionStatus = LivenessActionStatus.FAILED
+//                return currentActionStatus
+//            } else {
+            Helpers.printLog("${this.javaClass.kotlin.simpleName} is processing... nSeconds $nMillis face.size ${faces.size}")
+            currentActionStatus = individualProcess(session, faces)
+            return currentActionStatus
+//            }
 
         }
 
@@ -219,17 +218,15 @@ abstract class LivenessAction {
 
     private fun isNotEnoughFrame(): Boolean {
 //        Helpers.printLog("LivenessSession ${this.javaClass.simpleName} $startTime - $nSeconds isNotEnoughFrame $isNotEnoughFrame")
-        return nSeconds != 0 && (System.currentTimeMillis() - startTime < nSeconds * 1000)
+        return nMillis != 0 && (System.currentTimeMillis() - startTime < nMillis)
     }
 
-    private fun getFacesByTime(session: LivenessSession, seconds: Int): List<InputFace> {
-        val timeInMillis = seconds * 1000
-        var from = 0
-        if (seconds == 0)
+    private fun getFacesByTime(session: LivenessSession, millis: Int): List<InputFace> {
+        if (millis == 0)
             return listOf(session.faceList[session.faceList.size - 1])
         else {
-            if (session.faceList[session.faceList.size - 1].inputTime - session.faceList[0].inputTime > timeInMillis) {
-                session.faceList.removeAll { session.faceList[session.faceList.size - 1].inputTime - it.inputTime >= timeInMillis }
+            if (session.faceList[session.faceList.size - 1].inputTime - session.faceList[0].inputTime > millis) {
+                session.faceList.removeAll { session.faceList[session.faceList.size - 1].inputTime - it.inputTime >= millis }
                 return session.faceList
             } else return listOf()
         }
@@ -237,10 +234,11 @@ abstract class LivenessAction {
 }
 
 class HoldSteady2Seconds(seconds: Int?) : LivenessAction() {
+    private var skipEyeClosedTimes = 0
 
     init {
         TAG = "HoldSteady2Seconds"
-        if (seconds != null) nSeconds = seconds
+        if (seconds != null) nMillis = seconds
     }
 
     override fun individualProcess(
@@ -251,7 +249,11 @@ class HoldSteady2Seconds(seconds: Int?) : LivenessAction() {
         val face1 = faces[0]
         val face2 = faces[faces.size - 1]
         if (isFaceLookStraight(face1.face) && isFaceLookStraight(face2.face)) {
-            return LivenessActionStatus.SUCCESS
+            if (isEyesClosed(face2.face) && skipEyeClosedTimes < 3) {
+                skipEyeClosedTimes++
+                Helpers.printLog("HoldSteady2Seconds skip eye closed $skipEyeClosedTimes time(s)")
+            } else
+                return LivenessActionStatus.SUCCESS
         }
 //        else Helpers.printLog("LivenessSession HoldSteady2Seconds not straight!")
         return LivenessActionStatus.FAILED
@@ -275,7 +277,7 @@ class ShakeHead : LivenessAction() {
 class TurnLeft : LivenessAction() {
 
     init {
-        nSeconds = 0
+        nMillis = 0
         TAG = "TurnLeft"
     }
 
@@ -295,7 +297,7 @@ class TurnLeft : LivenessAction() {
 class TurnRight : LivenessAction() {
 
     init {
-        nSeconds = 0
+        nMillis = 0
         TAG = "TurnRight"
 
     }
@@ -317,7 +319,7 @@ class TurnRight : LivenessAction() {
 class TurnDown : LivenessAction() {
 
     init {
-        nSeconds = 0
+        nMillis = 0
         TAG = "TurnDown"
     }
 
@@ -340,7 +342,7 @@ class TurnDown : LivenessAction() {
 
 class TurnUp : LivenessAction() {
     init {
-        nSeconds = 0
+        nMillis = 0
         TAG = "TurnUp"
     }
 
@@ -364,7 +366,7 @@ class TurnUp : LivenessAction() {
 class TiltRight : LivenessAction() {
 
     init {
-        nSeconds = 0
+        nMillis = 0
         TAG = "TiltRight"
     }
 
@@ -388,7 +390,7 @@ class TiltRight : LivenessAction() {
 class TiltLeft : LivenessAction() {
 
     init {
-        nSeconds = 0
+        nMillis = 0
         TAG = "TiltLeft"
     }
 
@@ -412,7 +414,7 @@ class TiltLeft : LivenessAction() {
 class ComeClose : LivenessAction() {
     init {
         TAG = "ComeClose"
-        nSeconds = 1
+        nMillis = 1000
     }
 
     override fun individualProcess(
@@ -431,7 +433,7 @@ class ComeClose : LivenessAction() {
 class GoFar : LivenessAction() {
     init {
         TAG = "GoFar"
-        nSeconds = 1
+        nMillis = 1000
     }
 
     override fun individualProcess(

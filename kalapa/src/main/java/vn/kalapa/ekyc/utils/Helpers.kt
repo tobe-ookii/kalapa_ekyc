@@ -264,9 +264,7 @@ internal class Helpers {
             )
         }
 
-        fun printLog(
-            vararg messages: Any
-        ) {
+        fun printLog(vararg messages: Any) {
             if (isDebug) {
                 Log.d(
                     TAG, messages.joinToString(

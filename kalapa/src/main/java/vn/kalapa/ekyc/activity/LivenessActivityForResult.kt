@@ -291,7 +291,7 @@ class LivenessActivityForResult : CameraActivity(R.layout.activity_camera_livene
 //                runOnUiThread {
 //                    ivTestImage.setImageBitmap(tmpBitmap)
 //                }
-                klpLivenessHandler.processSession(rgbFrameBitmap!!, tmpBitmap, cardMaskView.transOff, cardMaskView.translationY)
+                klpLivenessHandler.processSession(rgbFrameBitmap!!, tmpBitmap)
 
             }, 50)
         }

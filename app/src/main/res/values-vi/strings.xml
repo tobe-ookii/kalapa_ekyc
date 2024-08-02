@@ -54,8 +54,8 @@
     <string name="klp_field_nationality">Quốc tịch</string>
     <string name="klp_field_religion">Tôn giáo</string>
     <string name="klp_field_personal_identification">ĐĐND</string>
-    <string name="klp_field_mother_name">Họ &amp; tên bố</string>
-    <string name="klp_field_father_name">Họ &amp; tên mẹ</string>
+    <string name="klp_field_mother_name">Họ &amp; tên mẹ</string>
+    <string name="klp_field_father_name">Họ &amp; tên bố</string>
     <string name="klp_field_spouse_name">Họ &amp; tên phối ngẫu</string>
     <string name="klp_nfc_information">Thông tin NFC</string>
     <string name="klp_card_type">Loại giấy tờ</string>

@@ -18,6 +18,7 @@ import vn.kalapa.demo.R
 import vn.kalapa.demo.models.NFCVerificationData
 import vn.kalapa.demo.utils.Helpers.Companion.getValuePreferences
 import vn.kalapa.demo.utils.LogUtils
+import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.views.KLPDecisionRow
@@ -213,7 +214,7 @@ class ResultActivity : AppCompatActivity() {
             ) else row_nfc_mother_name.visibility = View.GONE
             if (nfcResult.father_name != null && nfcResult.father_name!!.isNotEmpty()) {
                 row_nfc_father_name.setRecordValue(nfcResult.father_name)
-                if (nfcResult.spouse_name.isNullOrEmpty()) row_nfc_father_name.hideLastRow()
+                if (nfcResult.father_name.isNullOrEmpty()) row_nfc_father_name.hideLastRow()
             } else row_nfc_father_name.visibility = View.GONE
             if (nfcResult.spouse_name != null && nfcResult.spouse_name!!.isNotEmpty()) {
                 row_nfc_spouse_name.setRecordValue(nfcResult.spouse_name)

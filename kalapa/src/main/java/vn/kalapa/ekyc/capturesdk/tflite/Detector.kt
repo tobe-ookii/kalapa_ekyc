@@ -245,7 +245,7 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
         val actualHeight = frameWidth * 0.75f
         val offsetRatio = ((frameHeight - actualHeight) / 2) / frameHeight
         val offsetBottom = 1 - offsetRatio
-        Helpers.printLog("KLPDetector onDetect frameWidth $frameWidth frameHeight $frameHeight actualHeight $actualHeight offsetRatio $offsetRatio offsetBottom $offsetBottom")
+//        Helpers.printLog("KLPDetector onDetect frameWidth $frameWidth frameHeight $frameHeight actualHeight $actualHeight offsetRatio $offsetRatio offsetBottom $offsetBottom")
         var corners = ArrayList<BoundingBox>()
         var cards = ArrayList<BoundingBox>()
         var buffer = StringBuffer()
@@ -270,11 +270,11 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
         }
         if (cards.size == 1) {
             if ((bottom - top) < 0.5f && (right - left) < 0.5f) {
-                Helpers.printLog("KLPDetector too small $top $bottom $left $right")
+//                Helpers.printLog("KLPDetector too small $top $bottom $left $right")
                 onImageListener.onImageTooSmall()
             } else {
                 if (cards.size == 1 && corners.size in (4..5) && top > offsetRatio && bottom < offsetBottom) {
-                    Helpers.printLog("KLPDetector onImageInMask $top $bottom $offsetRatio $offsetBottom")
+//                    Helpers.printLog("KLPDetector onImageInMask $top $bottom $offsetRatio $offsetBottom")
                     onImageListener.onImageInMask()
                     if (shouldCapture) {
                         detectCount++
@@ -285,7 +285,7 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
                         }
                     }
                 } else {
-                    Helpers.printLog("KLPDetector out of the box - cards ${cards.size} corners ${corners.size} $top $bottom $offsetRatio $offsetBottom ")
+//                    Helpers.printLog("KLPDetector out of the box - cards ${cards.size} corners ${corners.size} $top $bottom $offsetRatio $offsetBottom ")
                     detectCount--
                     if (detectCount < 0) detectCount = 0
                     if (cards.size > 0)

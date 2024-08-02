@@ -29,6 +29,8 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
     }
 
     private val EN_DEFAULT = mapOf(
+        "klp_error_unknown_short" to "Something went wrong, please retry.",
+        "klp_auto_capture_success" to "Auto capture successful",
         "klp_alert_title" to "Notice",
         "klp_done_title" to "Done",
         "klp_angle_not_correct" to "The angle of your face is not correct, please look straight",
@@ -104,6 +106,8 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
         "klp_accept_btn" to "Accept"
     )
     private val VI_DEFAULT = mapOf(
+        "klp_error_unknown_short" to "Đã có lỗi xảy ra, vui lòng thử lại",
+        "klp_auto_capture_success" to "Chụp ảnh tự động thành công",
         "klp_alert_title" to "Thông báo",
         "klp_angle_not_correct" to "Góc mặt chưa đúng, vui lòng nhìn thẳng",
         "klp_cancel" to "Huỷ",
@@ -180,6 +184,8 @@ class LanguageUtils(val activity: Context, private var mapLanguage: Map<String, 
     )
 
     private val KO_DEFAULT = mapOf(
+        "klp_error_unknown_short" to "Something went wrong, please retry.",
+        "klp_auto_capture_success" to "자동 캡처 성공",
         "klp_alert_title" to "공지",
         "klp_angle_not_correct" to "얼굴 각도가 올바르지 않습니다, 정면을 바라봐 주세요",
         "klp_cancel" to "취소",
