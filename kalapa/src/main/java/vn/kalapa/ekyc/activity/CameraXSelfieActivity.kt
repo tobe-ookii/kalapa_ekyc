@@ -1,5 +1,6 @@
 package vn.kalapa.ekyc.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -15,6 +16,7 @@ import android.widget.TextView
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.google.android.material.card.MaterialCardView
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
@@ -52,6 +54,7 @@ class CameraXSelfieActivity : CameraXActivity(
     private var faceDetected = false
     private lateinit var ivError: KLPGifImageView
     private lateinit var klpLivenessHandler: LivenessHandler
+    private var faceMaskColor = "#FFFFFF"
 
     //    private lateinit var ivBitmapReview: ImageView
     private var computingDetection = false
@@ -65,6 +68,8 @@ class CameraXSelfieActivity : CameraXActivity(
     private var currentMessage: String? = ""
     private val TAG = "CameraXSelfieActivity"
     private var NO_FACE_COUNT = 0
+    private lateinit var ivFaceMask: ImageView
+    private lateinit var cardviewBorder: MaterialCardView
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
@@ -166,6 +171,7 @@ class CameraXSelfieActivity : CameraXActivity(
                         runOnUiThread {
                             tvError.visibility = View.VISIBLE
                             tvError.text = getLivenessMessage(status, message, null)
+                            Helpers.setColorTintList(ivFaceMask, faceMaskColor)
                             ivError.visibility = View.VISIBLE
                             if (livenessIcon != null) ivError.setGifImageResource(livenessIcon)
                             else {
@@ -194,6 +200,9 @@ class CameraXSelfieActivity : CameraXActivity(
                             faceBitmap = BitmapUtil.rotateBitmapToStraight(typicalFrame, getCameraRotationDegree(), true)
 //                            faceBitmap = BitmapUtil.crop(faceBitmap, faceBitmap.width, faceBitmap.width, 0.5f, 0.5f)
 //                            faceBitmap = Bitmap.createBitmap(typicalFrame, 0, 0, typicalFrame.width, typicalFrame.height, matrix, false)
+                            Helpers.fadeOut(this@CameraXSelfieActivity, ivFaceMask) {
+                                ivFaceMask.visibility = View.INVISIBLE
+                            }
                             faceBitmap = BitmapUtil.resizeImageFromGallery(faceBitmap)
 //                            ivBitmapReview.setImageBitmap(faceBitmap)
                             Helpers.printLog("opticalResolution Frame: ${faceBitmap.width} ${faceBitmap.height}")
@@ -204,10 +213,12 @@ class CameraXSelfieActivity : CameraXActivity(
                     }
                 }
 
+                @SuppressLint("ResourceType")
                 override fun onExpired() {
                     computingDetection = false
                     cameraAnalyzer?.clearAnalyzer()
                     runOnUiThread {
+                        Helpers.transitionFromColorToColor(cardviewBorder, "#CECECE", resources.getString(R.color.ekyc_red))
                         previewViewLayerMode(false)
                         stopCamera()
                         btnNext.visibility = View.INVISIBLE
@@ -286,6 +297,7 @@ class CameraXSelfieActivity : CameraXActivity(
                 ivPreviewImage.visibility = View.VISIBLE
                 ivPreviewImage.setImageBitmap(faceBitmap)
                 tvError.text = errorMessage
+                Helpers.transitionFromColorToColor(cardviewBorder, "#CECECE", faceMaskColor)
             }
     }
 
@@ -293,6 +305,9 @@ class CameraXSelfieActivity : CameraXActivity(
     override fun setupCustomUI() {
 //        ivBitmapReview = findViewById(R.id.iv_bitmap_preview)
         this.ivError = findViewById(R.id.iv_error)
+        ivFaceMask = findViewById(R.id.iv_face_mask)
+        cardviewBorder = findViewById(R.id.cardview_border)
+
         ivError.setGifImageResource(if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.ACTIVE.version) R.drawable.gif_hold_steady else R.drawable.gif_success_small)
         this.tvTitle = findViewById(R.id.tv_title)
         this.ivPreviewImage = findViewById(R.id.iv_preview_image)
@@ -340,7 +355,7 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun renewSession() {
-        if(!this::klpLivenessHandler.isInitialized)
+        if (!this::klpLivenessHandler.isInitialized)
             setupLivenessProcess()
         clearSession()
         startCamera()
@@ -348,6 +363,12 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     private fun clearSession() {
+        Helpers.fadeIn(this@CameraXSelfieActivity, ivFaceMask) {
+            runOnUiThread {
+                ivFaceMask.visibility = View.VISIBLE
+                Helpers.transitionFromColorToColor(cardviewBorder, "#FFFFFF", "#CECECE")
+            }
+        }
         if (this::klpLivenessHandler.isInitialized) {
             faceDetected = false
             klpLivenessHandler.renewSession()
@@ -488,7 +509,6 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
 
-
     private fun setCircleViewAnimation(status: AnimStatus) {
 //        Helpers.printLog("Set Anim: ${status.name}")
 //        runOnUiThread {
@@ -503,12 +523,15 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
 
+    @SuppressLint("ResourceType")
     private fun getLivenessMessage(
         status: LivenessSessionStatus?,
         input: String?,
         errCode: Int?
     ): String? {
         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
+        faceMaskColor = resources.getString(R.color.ekyc_red)
+
         if (status == LivenessSessionStatus.NO_FACE)
             NO_FACE_COUNT++
         else
@@ -523,6 +546,7 @@ class CameraXSelfieActivity : CameraXActivity(
         } else return if (status == LivenessSessionStatus.TOO_SMALL) {
             if (input == "ComeClose") {
                 tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+                faceMaskColor = resources.getString(R.color.white)
                 KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_move_closer))
             } else
                 return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_too_far))
@@ -538,6 +562,8 @@ class CameraXSelfieActivity : CameraXActivity(
             setCircleViewAnimation(AnimStatus.ANIM_LOADING)
             tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
             Helpers.printLog("PROCESSING input $input")
+            faceMaskColor = if (input.isNullOrEmpty()) resources.getString(R.color.white) else KalapaSDK.config.mainColor
+
             val s = when (input) { // PROCESSING.
                 "" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_look_straight)) // "Giữ đầu ngay ngắn, nhìn thẳng trong 3 giây")
                 "HoldSteady3Seconds" -> KalapaSDK.config.languageUtils.getLanguageString(
@@ -596,17 +622,21 @@ class CameraXSelfieActivity : CameraXActivity(
 //                    return resources.getString(R.string.klp_liveness_success)
 //                }
                     tvError.setTextColor(resources.getColor(R.color.ekyc_green))
+                    faceMaskColor = KalapaSDK.config.mainColor//resources.getString(R.color.ekyc_green)
+
                     setCircleViewAnimation(AnimStatus.ANIM_PROCESSING)
                     return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_done_title))
                 }
                 //"Thành công!"
                 "Connecting" -> {
                     tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+                    faceMaskColor = resources.getString(R.color.white)
                     KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_please_wait)) //"Đang kết nối...")
                 }
 
                 "Initializing" -> {
                     tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+                    faceMaskColor = resources.getString(R.color.white)
                     KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_please_wait))
                 } //"Đang khởi tạo..."
                 "Processing" -> {
@@ -614,6 +644,8 @@ class CameraXSelfieActivity : CameraXActivity(
                         // REMOVE VERIFIED ICON
                         ivError.setGifImageResource(R.drawable.gif_success_small)
                         tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+                        faceMaskColor = KalapaSDK.config.mainColor // resources.getString(R.color.ekyc_green)
+
                         return if (errCode != null) input else KalapaSDK.config.languageUtils.getLanguageString(
                             resources.getString(R.string.klp_liveness_look_straight)
                         )
@@ -630,7 +662,7 @@ class CameraXSelfieActivity : CameraXActivity(
 
                 "ConnectionFailed" -> {
                     tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-
+                    faceMaskColor = resources.getString(R.color.white)
                     ivError.setGifImageResource(R.drawable.gif_error_small)
                     return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_network)) //"Kết nối thất bại")
                 }
@@ -638,6 +670,7 @@ class CameraXSelfieActivity : CameraXActivity(
                 "Finished" -> {
                     tvError.setTextColor(resources.getColor(R.color.ekyc_green))
                     ivError.setGifImageResource(R.drawable.gif_success_small)
+                    faceMaskColor = KalapaSDK.config.mainColor //resources.getString(R.color.ekyc_green)
                     return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_processing_failed)) //"Hoàn thành!")
                 }
 

@@ -43,7 +43,7 @@ import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
     companion object {
-        private val VERSION = "2.8.3"
+        private val VERSION = "2.8.4"
 
         lateinit var session: String
 
@@ -59,6 +59,10 @@ class KalapaSDK {
         lateinit var backBitmap: Bitmap
         fun isHandlerInitialized(): Boolean {
             return this::handler.isInitialized
+        }
+
+        fun getSDKVersion(): String {
+            return VERSION
         }
 
         fun isConfigInitialized(): Boolean {

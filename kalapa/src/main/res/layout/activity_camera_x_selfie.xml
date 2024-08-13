@@ -14,17 +14,32 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginVertical="@dimen/margin_xxsmall"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/margin_vertical_xlarge"
+            android:layout_marginVertical="@dimen/margin_xxsmall">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardview_border"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/margin_xxsmall"
+                android:backgroundTint="@color/klp_border_grey"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/oval_card" />
+
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_centerInParent="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="0dp"
+                android:layout_margin="@dimen/margin_mid"
+                android:backgroundTint="@color/ekyc_red"
                 android:theme="@style/Theme.MaterialComponents.Light"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
@@ -42,7 +57,16 @@
                     android:id="@+id/iv_preview_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/iv_face_mask"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_vertical_xlarge"
+                    android:src="@drawable/klp_face_mask"
+                    app:tint="@color/white" />
             </com.google.android.material.card.MaterialCardView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

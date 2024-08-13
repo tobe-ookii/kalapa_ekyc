@@ -158,7 +158,6 @@ public class MainActivityJava extends BaseActivity {
     private void startEKYC() {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
-
             KalapaFlowType flowType = !preferencesConfig.getCaptureImage() && !preferencesConfig.getUseNFC() ? KalapaFlowType.NA :
                     preferencesConfig.getCaptureImage() ? preferencesConfig.getUseNFC() ? KalapaFlowType.NFC_EKYC : KalapaFlowType.EKYC : KalapaFlowType.NFC_ONLY;
             KalapaAPI.Companion.doRequestGetSession(

@@ -124,7 +124,7 @@ dependencies {
     implementation 'com.google.mlkit:text-recognition:16.0.0'
 
     // for nfc
-    implementation project(':nfc')
+    embed project(':nfc') // implementation
     implementation 'commons-io:commons-io:20030203.000550'
     // gif
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'

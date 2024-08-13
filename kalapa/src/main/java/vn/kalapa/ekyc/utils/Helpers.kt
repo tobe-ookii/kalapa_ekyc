@@ -1,6 +1,8 @@
 package vn.kalapa.ekyc.utils
 
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
@@ -14,6 +16,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.location.Location
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.Log
@@ -129,6 +133,11 @@ internal class Helpers {
 
         fun setBackgroundColorTintList(it: View, color: String) {
             ViewCompat.setBackgroundTintList(it, ColorStateList.valueOf(Color.parseColor(color)))
+        }
+
+
+        fun setBackgroundColorTintList(it: View, color: Int) {
+            ViewCompat.setBackgroundTintList(it, ColorStateList.valueOf(color))
         }
 
         fun setColorTintList(it: ImageView, color: String) {
@@ -342,6 +351,47 @@ internal class Helpers {
             )
             radio.buttonTintList = colorStateList // set the color tint list
             radio.invalidate() // Could not be necessary
+        }
+
+        fun fadeIn(context: Context, view: View, completion: (() -> Unit)? = null) {
+            val fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in)
+            // Apply the animation to a view (e.g., an ImageView)
+            view.startAnimation(fadeIn) // Replace with your view ID
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (completion != null) {
+                    completion()
+                }
+            }, 1000)
+        }
+
+        fun transitionFromColorToColor(myView: View, fromColor: String, toColor: String) {
+            // Define the start and end colors
+            val colorFrom = Color.parseColor(fromColor) // Replace with color X (Red)
+            val colorTo = Color.parseColor(toColor) // Replace with color Y (Blue)
+
+            // Create a ValueAnimator that will animate between the two colors
+            val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+            colorAnimation.duration = 1000 // Duration in milliseconds (1 second)
+
+            // Apply the animated color to the background of a view
+            colorAnimation.addUpdateListener { animator ->
+//                myView.setBackgroundColor(animator.animatedValue as Int) // Replace with your view ID
+                setBackgroundColorTintList(myView, animator.animatedValue as Int)
+            }
+
+            // Start the animation
+            colorAnimation.start()
+        }
+
+        fun fadeOut(context: Context, view: View, completion: (() -> Unit)? = null) {
+            val fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out)
+            // Apply the animation to a view (e.g., an ImageView)
+            view.startAnimation(fadeOut) // Replace with your view ID
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (completion != null) {
+                    completion()
+                }
+            }, 1000)
         }
     }
 }

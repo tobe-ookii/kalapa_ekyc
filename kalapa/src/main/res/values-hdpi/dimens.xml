@@ -40,4 +40,5 @@
     <dimen name="margin_bottom_button">50dp</dimen>
     <dimen name="klp_txt_size_banner">32dp</dimen>
     <dimen name="klp_txt_size_sub_banner">28dp</dimen>
+    <dimen name="margin_vertical_xlarge">36dp</dimen>
 </resources>

@@ -38,4 +38,5 @@
     <dimen name="banner_height">320dp</dimen>
     <dimen name="klp_holder_card_height">120dp</dimen>
     <dimen name="margin_bottom_button">50dp</dimen>
+    <dimen name="margin_vertical_xlarge">36dp</dimen>
 </resources>

@@ -60,7 +60,7 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_margin="16dp"
-            android:background="@color/transparent"
+            android:background="@color/klp_transparent"
             android:cropToPadding="false"
             android:paddingStart="16dp"
             android:scaleType="centerInside" />
@@ -255,7 +255,7 @@
                     android:id="@+id/iv_guide_1"
                     android:layout_width="100dp"
                     android:layout_height="70dp"
-                    android:background="@color/transparent"
+                    android:background="@color/klp_transparent"
                     android:scaleType="centerInside" />
 
                 <TextView
@@ -281,7 +281,7 @@
                     android:id="@+id/iv_guide_2"
                     android:layout_width="100dp"
                     android:layout_height="70dp"
-                    android:background="@color/transparent"
+                    android:background="@color/klp_transparent"
                     android:scaleType="centerInside" />
 
                 <TextView
@@ -306,7 +306,7 @@
                     android:id="@+id/iv_guide_3"
                     android:layout_width="100dp"
                     android:layout_height="70dp"
-                    android:background="@color/transparent"
+                    android:background="@color/klp_transparent"
                     android:scaleType="centerInside" />
 
                 <TextView

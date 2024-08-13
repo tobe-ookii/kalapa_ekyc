@@ -152,7 +152,6 @@ abstract class CameraXActivity(
                 Helpers.printLog("allPermissionsGranted - startCamera")
                 startCamera()
             }
-
         }
         // Set up the listeners for take photo and video capture buttons
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -472,7 +471,7 @@ abstract class CameraXActivity(
         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
         holderCapture.visibility = View.VISIBLE
 //        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.INVISIBLE
-        tvGuide.visibility = View.VISIBLE
+//        tvGuide.visibility = View.VISIBLE
         btnNext.visibility = View.INVISIBLE
         btnRetry.visibility = View.INVISIBLE
 //        cardMaskView.setBackgroundColor(resources.getColor(R.color.black20))
@@ -559,9 +558,7 @@ abstract class CameraXActivity(
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it
-        ) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     private val activityResultLauncher =

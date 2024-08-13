@@ -52,4 +52,6 @@
     <color name ="ekyc_demo_color">#E0E4E8</color>
     <color name="ekyc_otp_background">#EBEBEB</color>
     <color name="blackShinhan">#222428</color>
+    <color name="klp_border_grey">#ECECEC</color>
+    <color name="klp_transparent">#00000000</color>
 </resources>

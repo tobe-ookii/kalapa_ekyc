@@ -18,6 +18,7 @@ import java.math.BigInteger
 import java.net.HttpURLConnection
 import java.net.URL
 import java.security.MessageDigest
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.regex.Matcher
@@ -168,9 +169,15 @@ class Common {
             }
         }
 
+        private fun isNumeric(toCheck: String): Boolean {
+            return toCheck.toDoubleOrNull() != null
+        }
+
         fun getIdCardNumberFromMRZ(input: String?): String? {
             if (!input.isNullOrEmpty()) {
-                if (input.length == 12) return input
+                if (input.length == 12 && isNumeric(input)) {
+                    return input
+                }
                 if (input.contains("IDVNM")) {
                     val lines = if (input.contains("\\n")) input.split("\\n") else input.split("\n")
                     for (line in lines) {
