@@ -27,7 +27,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/nfc_success"
+            android:src="@drawable/gif_error"
             app:layout_constraintBottom_toTopOf="@id/text_status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -42,7 +42,7 @@
             android:text="@string/klp_nfc_start_button"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="@dimen/klp_txt_size_header"
+            android:textSize="@dimen/klp_shinhan_title_17"
             app:layout_constraintBottom_toTopOf="@id/text_des"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -57,7 +57,7 @@
             android:maxLines="4"
             android:text="@string/klp_nfc_request_present"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_20"
+            android:textSize="@dimen/klp_shinhan_text_15"
             app:layout_constraintBottom_toTopOf="@id/btn_cancel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
