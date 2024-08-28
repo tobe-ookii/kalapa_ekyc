@@ -341,7 +341,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:stepSize="1"
-                    android:theme="@style/MyMaterialTheme"
+                    android:theme="@style/KLPMaterialTheme"
                     android:value="50"
                     android:valueFrom="1"
                     android:valueTo="99" />

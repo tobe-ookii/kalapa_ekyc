@@ -7,7 +7,7 @@
         <item name="android:fontFamily">@font/sf_pro_display</item>
 <!--        <item name="android:statusBarColor">@color/colorWhite</item>-->
     </style>
-    <style name="MyMaterialTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="KLPMaterialTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Add attributes here -->
         <item name="colorPrimary">@color/mainColor</item>
     </style>

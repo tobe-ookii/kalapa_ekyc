@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('nfc.aar'))
+artifacts.add("default", file('nfc_repackthemed.aar'))
