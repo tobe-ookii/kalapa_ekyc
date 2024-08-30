@@ -14,24 +14,24 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Kalapa eKYC Solution"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:replace="android:theme">
+        android:supportsRtl="true">
         <activity
+            android:theme="@style/AppTheme"
             android:name=".MainActivityJava"
             android:exported="true"
             android:resizeableActivity="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
         </activity>
 
         <activity
+            android:theme="@style/AppTheme"
             android:name=".activities.SettingActivity"
             android:exported="false" />
         <activity
+            android:theme="@style/AppTheme"
             android:name=".activities.ResultActivity"
             android:exported="false" />
 

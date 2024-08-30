@@ -213,7 +213,6 @@ class KalapaSDK {
                 return
             }
             config.withFlow(sessionFlow)
-            configure(config)
             this.kalapaResult = KalapaResult()
             val onGeneralError: (resultCode: KalapaSDKResultCode) -> Unit = {
                 kalapaCustomHandler.onError(it)
