@@ -8,6 +8,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "kalapa_ekyc"
 include ':app'
-//include ':nfc'
-//include ':kalapa'
-include ':kalapasdk'
+include ':nfc'
+include ':kalapa'
+//include ':kalapasdk'

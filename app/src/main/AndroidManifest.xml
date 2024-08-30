@@ -17,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:theme">
-        <!--            android:name=".PaymeDemoJava"-->
         <activity
             android:name=".MainActivityJava"
             android:exported="true"
