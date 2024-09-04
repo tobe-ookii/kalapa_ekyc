@@ -71,9 +71,8 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
     }
 
     private fun processFrame(bitmap: Bitmap, degree: Int): String {
-
         // When using Latin script library
-        Helpers.printLog("Process frame: ${System.currentTimeMillis()}")
+//        Helpers.printLog("Process frame: ${System.currentTimeMillis()}")
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         var rotatedBitmap = BitmapUtil.rotateBitmapToStraight(bitmap, degree)
         rotatedBitmap = BitmapUtil.crop(

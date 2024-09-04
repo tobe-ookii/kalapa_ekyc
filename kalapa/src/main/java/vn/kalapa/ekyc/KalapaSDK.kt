@@ -43,7 +43,7 @@ import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
     companion object {
-        private val VERSION = "2.8.4"
+        private val VERSION = "2.8.5.4"
 
         lateinit var session: String
 
@@ -457,7 +457,7 @@ class KalapaSDK {
 
             /*****-STEP 1-*****/
             val localStartFrontForResult = {
-                startCaptureForResult(activity, this.config, KalapaSDKMediaType.FRONT, object : KalapaCaptureHandler() {
+                startCaptureForResult(activity, config, KalapaSDKMediaType.FRONT, object : KalapaCaptureHandler() {
                     private val endpoint = "/api/kyc/app/scan-front?lang=${config.language}"
                     override fun process(
                         base64: String,
@@ -504,7 +504,6 @@ class KalapaSDK {
                 })
             }
 
-
             /** STEP 0: Get previous session information if needed
              **/
             if (config.leftoverSession.isNotEmpty()) {
@@ -543,13 +542,11 @@ class KalapaSDK {
                     }
                 }
             } else {
-                Helpers.printLog("leftoverSession: End of request")
-                if (KalapaSDK.config.getCaptureImage()) {
+                Helpers.printLog("leftoverSession: End of request $flow")
+                if (config.getCaptureImage())
                     localStartFrontForResult()
-//                    localStartBackForResult()
-                } else {
+                else
                     localStartNFCForResult()
-                }
 //                localStartLivenessForResult()
             }
         }
