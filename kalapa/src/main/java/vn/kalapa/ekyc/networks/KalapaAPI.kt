@@ -26,11 +26,12 @@ class KalapaAPI {
         fun nfcCheck(
             endPoint: String,
             body: NFCRawData,
+            leftOverSession: String,
             listener: Client.RequestListener
         ) {
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             val encryptedBody = mapOf("data" to AESCryptor.encryptText(body.toJson()))
             client.post(endPoint + "?lang=${KalapaSDK.config.language}", header, encryptedBody, listener)
@@ -187,11 +188,12 @@ class KalapaAPI {
             poi: String,
             home: String,
             doe: String,
+            leftOverSession: String,
             listener: Client.ConfirmListener
         ) {
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             val body = mapOf<String, String>(
                 "birthday" to birthday,
@@ -236,11 +238,12 @@ class KalapaAPI {
             pob: String,
             doe: String,
             poi: String,
+            leftOverSession: String,
             listener: Client.ConfirmListener
         ) {
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             val body = mapOf<String, String>(
                 "dob" to birthday,
@@ -274,11 +277,11 @@ class KalapaAPI {
         }
 
 
-        fun confirm(endPoint: String, listener: Client.ConfirmListener) {
+        fun confirm(endPoint: String, leftOverSession: String, listener: Client.ConfirmListener) {
             // Use when wanna ignore confirm step
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             val body = mapOf<String, String>(
             )
@@ -303,9 +306,9 @@ class KalapaAPI {
         }
 
 
-        fun imageCheck(endPoint: String, image: Bitmap, listener: Client.RequestListener) {
+        fun imageCheck(endPoint: String, image: Bitmap, leftOverSession:String, listener: Client.RequestListener) {
             val header = mapOf(
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
 
             client.postFormData(endPoint, header, image, object : Client.RequestListener {
@@ -378,9 +381,9 @@ class KalapaAPI {
             })
         }
 
-        fun selfieCheck(endPoint: String, image: Bitmap, listener: Client.RequestListener) {
+        fun selfieCheck(endPoint: String, image: Bitmap, leftOverSession:String, listener: Client.RequestListener) {
             val header = mapOf(
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             client.postFormData(endPoint, header, image, object : Client.RequestListener {
                 override fun success(jsonObject: JSONObject) {
@@ -453,10 +456,10 @@ class KalapaAPI {
             })
         }
 
-        fun passportCheck(endPoint: String, image: String, listener: Client.RequestListener) {
+        fun passportCheck(endPoint: String, image: String, leftOverSession:String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             Helpers.printLog("Call passportCheck")
             val body = mapOf<String, String>(
@@ -465,36 +468,37 @@ class KalapaAPI {
             client.post(endPoint, header, body, handleDataResultListener(listener))
         }
 
-        fun getData(endPoint: String, listener: Client.RequestListener, postRequest: (() -> Unit)? = null) {
+        fun getData(endPoint: String, leftOverSession:String, listener: Client.RequestListener, postRequest: (() -> Unit)? = null) {
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             Helpers.printLog("Call getData $endPoint")
             client.get(endPoint, header, handleDataResultListener(listener), postRequest)
         }
-        fun getImage(endPoint: String, listener: Client.RequestImageListener, postRequest: (() -> Unit)? = null) {
+
+        fun getImage(endPoint: String, leftOverSession:String, listener: Client.RequestImageListener, postRequest: (() -> Unit)? = null) {
             val header = mapOf(
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             Helpers.printLog("Call getData $endPoint")
             client.getImage(endPoint, header, listener, postRequest)
         }
 
-        fun getNFCLocation(endPoint: String, listener: Client.RequestListener) {
+        fun getNFCLocation(endPoint: String, leftOverSession:String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             Helpers.printLog("Call getNFCLocation")
 
             client.get(endPoint + "?device=${Helpers.getDeviceModel()}", header, handleDataResultListener(listener))
         }
 
-        fun backCheck(endPoint: String, image: String, listener: Client.RequestListener) {
+        fun backCheck(endPoint: String, image: String, leftOverSession:String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Content-Type" to "application/json",
-                "Authorization" to KalapaSDK.config.leftoverSession.ifEmpty { KalapaSDK.session }
+                "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
             Helpers.printLog("Call backCheck")
             val body = mapOf<String, String>(

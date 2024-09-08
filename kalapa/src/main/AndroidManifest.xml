@@ -22,12 +22,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:theme="@style/KLPTheme"
-            android:name=".ekyc.activity.MRZScannerActivity"
-            android:exported="false"
-            android:resizeableActivity="true"
-            android:screenOrientation="portrait" />
-        <activity
-            android:theme="@style/KLPTheme"
             android:name=".ekyc.activity.PassportActivity"
             android:exported="false"
             android:resizeableActivity="true"

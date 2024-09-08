@@ -341,7 +341,7 @@ data class FrontResult(
     val fields: KLPFields? = KLPFields(),
     val qr_code: QrCode? = QrCode(),
     val mrz_data: MRZ? = MRZ(),
-    val card_type: String
+    val card_type: String? = null
 ) {
     fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
@@ -411,7 +411,7 @@ data class SelfieResultData(
 }
 
 data class BackResult(
-    val card_type: String?
+    val card_type: String? = null
 ) {
     fun toJson() = Gson().toJson(this)//klaxon.toJsonString(this)
 

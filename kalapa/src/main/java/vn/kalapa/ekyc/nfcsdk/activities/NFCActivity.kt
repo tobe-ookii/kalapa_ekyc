@@ -44,11 +44,11 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     }
 
     private fun validateMRZOrOpenMRZScanner() {
-        if (mrz == null || mrz?.isEmpty() == true)
-            mrz = KalapaSDK.config.mrz
-        Helpers.printLog("KalapaSDK.config.mrz : ${KalapaSDK.config.mrz}")
-        idCardNumber = Common.getIdCardNumberFromMRZ(mrz!!)
-        Helpers.printLog("idCardNumber: $idCardNumber")
+        if (intent.getStringExtra("mrz") != null) {
+            mrz = intent.getStringExtra("mrz")
+        }
+        idCardNumber = Common.getIdCardNumberFromMRZ(mrz ?: "")
+        Helpers.printLog("idCardNumber: $idCardNumber from mrz $mrz")
         if (idCardNumber == null)
             openMRZScanner()
         else
@@ -66,7 +66,6 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
 
     private fun openMRZScanner() {
         val intent = Intent(this@NFCActivity, CameraXMRZActivity::class.java)
-//        val intent = Intent(this@NFCActivity, MRZScannerActivity::class.java)
         startActivity(intent)
         finish()
     }

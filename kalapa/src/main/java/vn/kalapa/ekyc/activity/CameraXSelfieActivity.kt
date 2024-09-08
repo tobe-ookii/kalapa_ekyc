@@ -86,14 +86,14 @@ class CameraXSelfieActivity : CameraXActivity(
 
     private fun getIntentData() {
         try {
-            if (KalapaSDK.config.faceData.isNotEmpty()) {
-                // Đã qua bước mrz.
-                // Call verify and loading
-                faceBitmap = BitmapUtil.base64ToBitmap(KalapaSDK.config.faceData)
+            var faceData: String? = intent.getStringExtra("face_data")
+            if (!faceData.isNullOrEmpty()) {
+                faceBitmap = BitmapUtil.base64ToBitmap(faceData)
                 stopCamera()
                 isCapturedFaceOK()
                 verifyImage()
-            }
+            } else
+                setupLivenessProcess()
         } catch (e: Exception) {
             setupLivenessProcess()
         }
@@ -141,10 +141,7 @@ class CameraXSelfieActivity : CameraXActivity(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (KalapaSDK.config.faceData.isNotEmpty())
-            getIntentData()
-        else
-            setupLivenessProcess()
+        getIntentData()
     }
 
     private fun setupLivenessProcess() {

@@ -64,7 +64,6 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
             enteredNFCActivity = true
             val intent = Intent(this@CameraXMRZActivity, NFCActivity::class.java)
             intent.putExtra("mrz", ocrMRZ)
-            KalapaSDK.config.mrz = ocrMRZ
             startActivity(intent)
             finish()
         }

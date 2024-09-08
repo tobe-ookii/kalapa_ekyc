@@ -20,8 +20,6 @@ import vn.kalapa.ekyc.capturesdk.CameraXPassportActivity
 import vn.kalapa.ekyc.activity.CameraXSelfieActivity
 import vn.kalapa.ekyc.activity.ConfirmActivity
 import vn.kalapa.ekyc.capturesdk.CameraXAutoCaptureActivity
-import vn.kalapa.ekyc.capturesdk.CameraXCaptureActivity
-import vn.kalapa.ekyc.capturesdk.CameraXCaptureBackActivity
 import vn.kalapa.ekyc.handlers.GetDynamicLanguageHandler
 import vn.kalapa.ekyc.models.BackResult
 import vn.kalapa.ekyc.models.ConfirmResult
@@ -44,7 +42,6 @@ import java.io.ByteArrayOutputStream
 class KalapaSDK {
     companion object {
         private val VERSION = "2.8.5.4"
-
         lateinit var session: String
 
         @SuppressLint("StaticFieldLeak")
@@ -54,9 +51,10 @@ class KalapaSDK {
         lateinit var frontResult: FrontResult
         private lateinit var passportResult: PassportResult
         private lateinit var backResult: BackResult
-        lateinit var faceBitmap: Bitmap
-        lateinit var frontBitmap: Bitmap
-        lateinit var backBitmap: Bitmap
+        var faceBitmap: Bitmap? = null
+        var frontBitmap: Bitmap? = null
+        var backBitmap: Bitmap? = null
+
         fun isHandlerInitialized(): Boolean {
             return this::handler.isInitialized
         }
@@ -74,35 +72,23 @@ class KalapaSDK {
             return this::frontResult.isInitialized
         }
 
-        fun isFaceBitmapInitialized(): Boolean {
-            return this::faceBitmap.isInitialized
-        }
-
-        fun isFrontBitmapInitialized(): Boolean {
-            return this::frontBitmap.isInitialized
-        }
-
-        fun isBackBitmapInitialized(): Boolean {
-            return this::backBitmap.isInitialized
-        }
-
         private fun configure(sdkConfig: KalapaSDKConfig) {
             this.config = sdkConfig
             KalapaAPI.configure(config.baseURL)
         }
 
-        var flowType: KalapaFlowType = KalapaFlowType.EKYC
-        fun startLivenessForResult(
+        private fun startLivenessForResult(
             activity: Activity,
             config: KalapaSDKConfig,
+            faceData: String = "",
             handler: KalapaCaptureHandler
         ) {
             configure(config)
             isFoldOpen(activity)
             this.handler = handler
-//            val intent = Intent(activity, LivenessActivityForResult::class.java)
             val intent = Intent(activity, CameraXSelfieActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.putExtra("face_data", faceData)
             activity.startActivity(intent)
         }
 
@@ -126,7 +112,7 @@ class KalapaSDK {
         }
 
 
-        fun startCaptureForResult(
+        private fun startCaptureForResult(
             activity: Activity,
             config: KalapaSDKConfig,
             documentType: KalapaSDKMediaType = KalapaSDKMediaType.FRONT,
@@ -135,7 +121,6 @@ class KalapaSDK {
             val metrics = activity.resources.displayMetrics
             configure(config)
             this.handler = handler
-//            val intent = Intent(activity, CameraXCaptureActivity::class.java)
             val intent = Intent(activity, CameraXAutoCaptureActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("document_type", documentType.name)
@@ -143,10 +128,11 @@ class KalapaSDK {
         }
 
 
-        fun startConfirmForResult(
+        private fun startConfirmForResult(
             activity: Activity,
             session: String,
             config: KalapaSDKConfig,
+            leftoverSession: String,
             handler: KalapaHandler
         ) {
             this.session = session
@@ -154,6 +140,7 @@ class KalapaSDK {
             this.handler = handler
             val intent = Intent(activity, ConfirmActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.putExtra("leftover_session", leftoverSession)
             activity.startActivity(intent)
         }
 
@@ -170,32 +157,18 @@ class KalapaSDK {
             activity.startActivity(intent)
         }
 
-        fun startNFCForResult(
+        private fun startNFCForResult(
             activity: Activity,
             config: KalapaSDKConfig,
-            nfcHandler: KalapaNFCHandler
+            mrz: String = "",
+            nfcHandler: KalapaNFCHandler,
         ) {
+            Helpers.printLog("mrzzz: $mrz")
             configure(config)
             this.handler = nfcHandler
             val intent = Intent(activity, NFCActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            intent.putExtra("mrz", nfcHandler.mrz)
-            if (nfcHandler.mrz != null) config.mrz = nfcHandler.mrz
-            activity.startActivity(intent)
-        }
-
-        fun startNFCOnly(
-            activity: Activity,
-            session: String,
-            config: KalapaSDKConfig,
-            nfcHandler: KalapaNFCHandler
-        ) {
-            this.session = session
-            configure(config)
-            this.handler = nfcHandler
-            val intent = Intent(activity, NFCActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            intent.putExtra("mrz", nfcHandler.mrz)
+            intent.putExtra("mrz", mrz)
             activity.startActivity(intent)
         }
 
@@ -204,24 +177,33 @@ class KalapaSDK {
             session: String,
             flow: String,
             config: KalapaSDKConfig,
+            leftoverSession: String = "",
+            mrz: String = "",
+            faceData: String = "",
             kalapaCustomHandler: KalapaHandler
         ) {
             this.session = session
+            this.kalapaResult = KalapaResult()
+            this.frontResult = FrontResult()
+            this.backResult = BackResult()
+            this.faceBitmap = null
+            this.backBitmap = null
+            this.frontBitmap = null
+
+            var leftoverSessionMRZ: String? = null
             val sessionFlow = KalapaFlowType.ofFlow(flow)
             if (config.baseURL.isEmpty() || !config.baseURL.contains("http") || sessionFlow == KalapaFlowType.NA) {
                 kalapaCustomHandler.onError(KalapaSDKResultCode.CONFIGURATION_NOT_ACCEPTABLE)
                 return
             }
             config.withFlow(sessionFlow)
-            this.kalapaResult = KalapaResult()
             val onGeneralError: (resultCode: KalapaSDKResultCode) -> Unit = {
                 kalapaCustomHandler.onError(it)
             }
-
-
+            configure(config)
             /*****-STEP 5-*****/
             val localStartConfirmForResult = {
-                startConfirmForResult(activity, session, config, object : KalapaHandler() {
+                startConfirmForResult(activity, session, config, leftoverSession, object : KalapaHandler() {
                     override fun onError(resultCode: KalapaSDKResultCode) {
                         onGeneralError(resultCode)
                     }
@@ -249,6 +231,7 @@ class KalapaSDK {
                     "",
                     "",
                     "",
+                    leftoverSession,
                     object : Client.ConfirmListener {
                         override fun success(confirmResult: ConfirmResult) {
                             Helpers.printLog("confirmResult")
@@ -276,7 +259,7 @@ class KalapaSDK {
 
             /*****-STEP 4-*****/
             val localStartLivenessForResult = {
-                startLivenessForResult(activity, config, object : KalapaCaptureHandler() {
+                startLivenessForResult(activity, config, faceData, object : KalapaCaptureHandler() {
                     private val endpoint = "/api/kyc/app/check-selfie?lang=${config.language}"
                     override fun process(
                         base64: String,
@@ -286,7 +269,8 @@ class KalapaSDK {
                         faceBitmap = BitmapUtil.base64ToBitmap(base64)
                         KalapaAPI.selfieCheck(
                             endpoint,
-                            faceBitmap,
+                            faceBitmap!!,
+                            leftoverSession,
                             object : Client.RequestListener {
                                 override fun success(jsonObject: JSONObject) {
                                     // Set Liveness. Call Confirm
@@ -327,10 +311,11 @@ class KalapaSDK {
                 startNFCForResult(
                     activity,
                     config,
-                    object : KalapaNFCHandler(
-                        if (!isFrontAndBackResultInitialized()) "" else frontResult.fields?.id_number
-                            ?: frontResult.mrz_data?.data?.raw_mrz ?: ""
-                    ) {
+                    if (mrz.isNotEmpty()) mrz else
+                        if (!leftoverSessionMRZ.isNullOrEmpty()) leftoverSessionMRZ!! else
+                            if (!isFrontAndBackResultInitialized()) "" else frontResult.fields?.id_number
+                                ?: frontResult.mrz_data?.data?.raw_mrz ?: "",
+                    object : KalapaNFCHandler() {
                         private val endpoint = "/api/nfc/verify?lang=${config.language}"
                         override fun process(
                             idCardNumber: String,
@@ -341,6 +326,7 @@ class KalapaSDK {
                             KalapaAPI.nfcCheck(
                                 endPoint = endpoint,
                                 body = NFCRawData.fromJson(nfcData),
+                                leftoverSession,
                                 object : Client.RequestListener {
                                     override fun success(jsonObject: JSONObject) {
                                         // Set NFC. Call liveness.
@@ -350,16 +336,11 @@ class KalapaSDK {
                                         ) {
                                             // First we need to get SELFIE
                                             val PATH_GET_SELFIE = "/api/data/image?type=SELFIE"
-                                            KalapaAPI.getImage(PATH_GET_SELFIE,
+                                            KalapaAPI.getImage(PATH_GET_SELFIE, leftoverSession,
                                                 object : Client.RequestImageListener {
                                                     override fun success(byteArray: ByteArray) {
                                                         try {
-                                                            faceBitmap =
-                                                                BitmapFactory.decodeByteArray(
-                                                                    byteArray,
-                                                                    0,
-                                                                    byteArray.size
-                                                                )
+                                                            faceBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
                                                         } catch (e: java.lang.Exception) {
                                                             e.printStackTrace()
                                                         }
@@ -417,7 +398,7 @@ class KalapaSDK {
                         callback: KalapaSDKCallback
                     ) {
                         backBitmap = BitmapUtil.base64ToBitmap(base64)
-                        KalapaAPI.imageCheck(endpoint, backBitmap, object : Client.RequestListener {
+                        KalapaAPI.imageCheck(endpoint, backBitmap!!, leftoverSession, object : Client.RequestListener {
                             override fun success(jsonObject: JSONObject) {
                                 backResult = BackResult.fromJson(jsonObject.toString())!!
                                 Helpers.printLog("imageCheck $endpoint $jsonObject")
@@ -468,7 +449,8 @@ class KalapaSDK {
                         frontBitmap = BitmapUtil.base64ToBitmap(base64)
                         KalapaAPI.imageCheck(
                             endpoint,
-                            frontBitmap,
+                            frontBitmap!!,
+                            leftoverSession,
                             object : Client.RequestListener {
                                 override fun success(jsonObject: JSONObject) {
                                     // Call Back!
@@ -506,32 +488,26 @@ class KalapaSDK {
 
             /** STEP 0: Get previous session information if needed
              **/
-            if (config.leftoverSession.isNotEmpty()) {
+            if (leftoverSession.isNotEmpty()) {
                 ProgressView.showProgress(activity)
-                Helpers.printLog("leftoverSession: ${KalapaSDK.config.leftoverSession}")
+                Helpers.printLog("leftoverSession: ${leftoverSession}")
                 val PATH_GET_MRZ = "/api/data/get?type=MRZ"
-                KalapaAPI.getData(PATH_GET_MRZ, object : Client.RequestListener {
+                KalapaAPI.getData(PATH_GET_MRZ, leftoverSession, object : Client.RequestListener {
                     override fun success(jsonObject: JSONObject) {
                         ProgressView.hideProgress()
                         val mrzJSON = MRZData.fromJson(jsonObject.toString())
                         if (mrzJSON != null && mrzJSON.raw_mrz?.isNotEmpty() == true) {
                             Helpers.printLog("leftoverSession MRZ: ${mrzJSON.raw_mrz}")
-                            config.mrz = mrzJSON.raw_mrz
-                        } else {
-                            KalapaSDK.config.leftoverSession = ""
+                            leftoverSessionMRZ = mrzJSON.raw_mrz
                         }
                     }
 
-                    override fun fail(error: KalapaError) {
-                        // Don't care
+                    override fun fail(error: KalapaError) { // Don't care
                         ProgressView.hideProgress()
-                        KalapaSDK.config.leftoverSession = ""
                     }
 
-                    override fun timeout() {
-                        // Don't care
+                    override fun timeout() { // Don't care
                         ProgressView.hideProgress()
-                        KalapaSDK.config.leftoverSession = ""
                     }
                 }) {
                     Helpers.printLog("leftoverSession: End of request")
@@ -547,7 +523,6 @@ class KalapaSDK {
                     localStartFrontForResult()
                 else
                     localStartNFCForResult()
-//                localStartLivenessForResult()
             }
         }
 
@@ -609,9 +584,6 @@ class KalapaSDKConfig private constructor(
     var language: String,
     var minNFCRetry: Int = 3,
     var baseURL: String = "https://api-ekyc.kalapa.vn",
-    var faceData: String = "",
-    var mrz: String = "",
-    var leftoverSession: String = ""
 ) {
     private var useNFC: Boolean = true
     private var captureImage: Boolean = true
@@ -640,9 +612,6 @@ class KalapaSDKConfig private constructor(
         var language: String = "vi"
         private val minNFCRetry: Int = 3
         var baseURL: String = "https://ekyc-api.kalapa.vn"
-        private var faceData: String = ""
-        private var mrz: String = ""
-        private var leftoverSession: String = ""
 
         fun build(): KalapaSDKConfig {
             return KalapaSDKConfig(
@@ -655,9 +624,6 @@ class KalapaSDKConfig private constructor(
                 language,
                 minNFCRetry,
                 baseURL,
-                faceData,
-                mrz,
-                leftoverSession
             )
         }
 
@@ -666,27 +632,16 @@ class KalapaSDKConfig private constructor(
             return this
         }
 
-        fun withFaceData(face: String): KalapaSDKConfigBuilder {
-            try {
-                val imageBytes = android.util.Base64.decode(face, android.util.Base64.DEFAULT)
-                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                this.faceData = face
-            } catch (e: Exception) {
-                throw IllegalArgumentException("Invalid base64 string")
-            }
-            return this
-        }
-
-        fun withMRZ(mrz: String): KalapaSDKConfigBuilder {
-            this.mrz = mrz
-            return this
-        }
-
-        fun withSessionID(leftoverSession: String): KalapaSDKConfigBuilder {
-            this.leftoverSession = leftoverSession
-            return this
-        }
-
+//        fun withFaceData(face: String): KalapaSDKConfigBuilder {
+//            try {
+//                val imageBytes = android.util.Base64.decode(face, android.util.Base64.DEFAULT)
+//                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+//                KalapaSDK.faceData = face
+//            } catch (e: Exception) {
+//                throw IllegalArgumentException("Invalid base64 string")
+//            }
+//            return this
+//        }
 
         fun withMainColor(color: String): KalapaSDKConfigBuilder {
             this.mainColor = color
@@ -795,7 +750,7 @@ open class KalapaHandler {
     }
 }
 
-abstract class KalapaNFCHandler(val mrz: String?) : KalapaHandler() {
+abstract class KalapaNFCHandler() : KalapaHandler() {
     abstract fun process(
         idCardNumber: String,
         nfcData: String,

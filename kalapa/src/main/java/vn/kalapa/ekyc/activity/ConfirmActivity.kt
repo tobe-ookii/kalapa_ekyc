@@ -83,6 +83,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         ProgressView.showProgress(this@ConfirmActivity)
         KalapaAPI.getData(
             "/api/kyc/get-result",
+            intent.getStringExtra("leftover_session") ?: "",
             this@ConfirmActivity
         )
 
@@ -297,21 +298,10 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 missingField(tvConfirm7.text as String)
                 return
             }
-
-//            edDOBDay = findViewById(R.id.edDOBDay)
-//            edIDNumber = findViewById(R.id.edIDNumber)
-//            edDOIDay = findViewById(R.id.edDOIDay)
-//            edPlaceOfIssue = findViewById(R.id.edPlaceOfIssue)
-//            edAddress = findViewById(R.id.edAddress)
-//            edQrCode = findViewById(R.id.edQrCode)
-
-
             val sex = radioGroupSex.checkedRadioButtonId
-            val gd =
-                if (sex == R.id.radio_male) resources.getString(R.string.klp_field_male) else resources.getString(
-                    R.string.klp_field_female
-                )
-
+            val gd = if (sex == R.id.radio_male) resources.getString(R.string.klp_field_male) else resources.getString(
+                R.string.klp_field_female
+            )
             ProgressView.showProgress(this@ConfirmActivity)
             KalapaAPI.confirm(
                 "/api/kyc/confirm",
@@ -324,6 +314,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 edPlaceOfIssue.text.toString().trim(),
                 edHometown.text.toString().trim(),
                 edDOEDay.text.toString().trim(),
+                intent.getStringExtra("leftover_session") ?: "",
                 object : Client.ConfirmListener {
                     override fun fail(error: KalapaError) {
                         ProgressView.hideProgress()

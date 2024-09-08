@@ -232,14 +232,14 @@ class Client {
                     // Handle unsuccessful response
                     listener.fail(KalapaError.UnknownError)
                 }
+                if (postRequest != null) postRequest()
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 listener.fail(KalapaError.UnknownError)
+                if (postRequest != null) postRequest()
             }
 
-        }.apply {
-            if (postRequest != null) postRequest()
         })
     }
 
@@ -261,14 +261,14 @@ class Client {
         api.get(fullURL, headers).enqueue(object : Callback<JSONObject> {
             override fun onResponse(call: Call<JSONObject>, response: Response<JSONObject>) {
                 handleOnResponse(response, listener)
+                if (postRequest != null) postRequest()
             }
 
             override fun onFailure(call: Call<JSONObject>, t: Throwable) {
                 handleOnFailure(t, listener)
+                if (postRequest != null) postRequest()
             }
-        }).apply {
-            if (postRequest != null) postRequest()
-        }
+        })
     }
 
     fun postFormData(

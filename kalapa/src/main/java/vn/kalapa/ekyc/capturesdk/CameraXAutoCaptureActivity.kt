@@ -16,12 +16,9 @@ import androidx.camera.core.ImageProxy
 import vn.kalapa.R
 import vn.kalapa.ekyc.*
 import vn.kalapa.ekyc.activity.CameraXActivity
-import vn.kalapa.ekyc.capturesdk.tflite.BoundingBox
 import vn.kalapa.ekyc.capturesdk.tflite.KLPDetector
-import vn.kalapa.ekyc.capturesdk.tflite.KLPDetectorListener
 import vn.kalapa.ekyc.capturesdk.tflite.OnImageDetectedListener
 import vn.kalapa.ekyc.capturesdk.tflite.OverlayView
-import vn.kalapa.ekyc.capturesdk.utils.YuvToRgbConverter
 import vn.kalapa.ekyc.fragment.BottomGuideFragment
 import vn.kalapa.ekyc.fragment.GuideType
 import vn.kalapa.ekyc.utils.BitmapUtil

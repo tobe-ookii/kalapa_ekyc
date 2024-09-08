@@ -35,6 +35,7 @@ import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
+import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
@@ -67,7 +68,6 @@ public class MainActivityJava extends BaseActivity {
                     return;
                 }
                 startEKYC();
-//                startCustomEKYC();
             }
         });
     }
@@ -113,8 +113,7 @@ public class MainActivityJava extends BaseActivity {
 
         }
     };
-    private KalapaNFCHandler nfcHandler = new KalapaNFCHandler("<OPTIONAL_YOUR_MRZ_IF_YOU_HAVE_FROM_PREVIOUS_STEPS>") {
-
+    private KalapaNFCHandler nfcHandler = new KalapaNFCHandler() {
         @Override
         public void process(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
             // SDK will return valid id card number that read from back-side card or your input mrz if it valid and raw nfc data.
@@ -135,26 +134,9 @@ public class MainActivityJava extends BaseActivity {
         }
     };
 
-    private void startCustomEKYC() {
-        startFrontCaptureStep();
-    }
-
-    private void startFrontCaptureStep() {
-        KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, KalapaSDKMediaType.FRONT, ocrHandler);
-    }
-
-    private void startBackCaptureStep() {
-        KalapaSDK.Companion.startCaptureForResult(MainActivityJava.this, sdkConfig, KalapaSDKMediaType.BACK, ocrHandler);
-    }
-
-    private void startNFCStep() {
-        KalapaSDK.Companion.startNFCForResult(MainActivityJava.this, sdkConfig, nfcHandler);
-    }
-
-    private void startLivenessStep() {
-        KalapaSDK.Companion.startLivenessForResult(MainActivityJava.this, sdkConfig, ocrHandler);
-    }
-
+    //                .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
+    //                .withFaceData(BitmapUtil.Companion.getTU_BASE64())
+    //                .withMRZ()
     private void startEKYC() {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
@@ -175,7 +157,14 @@ public class MainActivityJava extends BaseActivity {
                         LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.getFlow(), createSessionResult.getToken());
                         KalapaSDK.Companion.startFullEKYC(MainActivityJava.this,
                                 createSessionResult.getToken(),
-                                createSessionResult.component3(), sdkConfig, new KalapaHandler() {
+                                createSessionResult.component3(), sdkConfig,
+//                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ",
+                                "",
+//                                "IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<",
+                                "",
+//                                BitmapUtil.Companion.getTU_BASE64(),
+                                "",
+                                new KalapaHandler() {
                                     @Override
                                     public void onError(@NonNull KalapaSDKResultCode resultCode) {
                                         Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
@@ -185,12 +174,12 @@ public class MainActivityJava extends BaseActivity {
                                     public void onComplete(@NonNull KalapaResult kalapaResult) {
                                         LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult.toMap() + " \n " + kalapaResult.getSession());
                                         ExampleGlobalClass.kalapaResult = kalapaResult;
-                                        if (KalapaSDK.Companion.isFaceBitmapInitialized())
-                                            ExampleGlobalClass.faceImage = KalapaSDK.faceBitmap;
-                                        if (KalapaSDK.Companion.isFrontBitmapInitialized())
-                                            ExampleGlobalClass.frontImage = KalapaSDK.frontBitmap;
-                                        if (KalapaSDK.Companion.isBackBitmapInitialized())
-                                            ExampleGlobalClass.backImage = KalapaSDK.backBitmap;
+                                        if (KalapaSDK.Companion.getFaceBitmap() != null)
+                                            ExampleGlobalClass.faceImage = KalapaSDK.Companion.getFaceBitmap();
+                                        if (KalapaSDK.Companion.getFrontBitmap() != null)
+                                            ExampleGlobalClass.frontImage = KalapaSDK.Companion.getFrontBitmap();
+                                        if (KalapaSDK.Companion.getBackBitmap() != null)
+                                            ExampleGlobalClass.backImage = KalapaSDK.Companion.getBackBitmap();
                                         ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
                                         startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
                                     }
@@ -241,10 +230,8 @@ public class MainActivityJava extends BaseActivity {
             String btnTxtColor = preferencesConfig.getBtnTextColor();
             String lang = preferencesConfig.getLanguage();
             livenessVersion = preferencesConfig.getLivenessVersion();
-//            scenario = preferencesConfig.getScenario();
             refreshText(lang);
             refreshColor(btnColor, btnTxtColor);
-            boolean shouldUpdateLanguage = sdkConfig == null || !sdkConfig.getLanguage().equals(lang);
             sdkConfig = new KalapaSDKConfig.KalapaSDKConfigBuilder(MainActivityJava.this)
                     .withBackgroundColor(backgroundColor)
                     .withMainColor(btnColor)
@@ -253,9 +240,6 @@ public class MainActivityJava extends BaseActivity {
                     .withLivenessVersion(livenessVersion)
                     .withBaseURL(preferencesConfig.getEnv())
                     .withLanguage(preferencesConfig.getLanguage())
-//                    .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
-//                    .withFaceData(BitmapUtil.Companion.getTU_BASE64())
-//                    .withMRZ("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
                     .build();
             LogUtils.Companion.printLog("Pulling language: " + sdkConfig.getLanguage() + " - " + lang);
         }
