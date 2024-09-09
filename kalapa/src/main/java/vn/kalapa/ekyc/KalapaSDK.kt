@@ -41,7 +41,7 @@ import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
     companion object {
-        private val VERSION = "2.8.5.4"
+        private val VERSION = "2.9.0"
         lateinit var session: String
 
         @SuppressLint("StaticFieldLeak")
@@ -678,22 +678,6 @@ class KalapaSDKConfig private constructor(
                 this.baseURL = baseURL
             return this
         }
-
-
-//        fun useNFC(useNFC: Boolean): KalapaSDKConfigBuilder {
-//            this.useNFC = useNFC
-//            return this
-//        }
-//
-//        fun withMinNFCTimes(nfcRetryTimes: Int): KalapaSDKConfigBuilder {
-//            this.minNFCRetry = nfcRetryTimes
-//            return this
-//        }
-
-//        fun captureImage(captureImage: Boolean): KalapaSDKConfigBuilder {
-//            this.captureImage = captureImage
-//            return this
-//        }
     }
 
     lateinit var languageUtils: LanguageUtils

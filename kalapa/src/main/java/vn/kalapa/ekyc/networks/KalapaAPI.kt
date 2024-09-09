@@ -306,7 +306,7 @@ class KalapaAPI {
         }
 
 
-        fun imageCheck(endPoint: String, image: Bitmap, leftOverSession:String, listener: Client.RequestListener) {
+        fun imageCheck(endPoint: String, image: Bitmap, leftOverSession: String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
@@ -316,11 +316,14 @@ class KalapaAPI {
                     Helpers.printLog("response:", jsonObject)
                     val Eobject = jsonObject["error"] as JSONObject
                     val code = Eobject["code"] as Int
-                    Helpers.printLog("code:", code)
+                    val message = Eobject["message"] as String
+                    Helpers.printLog("code:", code, "message: ", message)
                     if (code == 0) {
                         listener.success(jsonObject["data"] as JSONObject)
                     } else {
-                        if (arrayOf(
+                        if (message.isNotEmpty())
+                            listener.fail(KalapaError(code, message))
+                        else if (arrayOf(
                                 1,
                                 2,
                                 3,
@@ -359,11 +362,7 @@ class KalapaAPI {
                         ) {
                             listener.fail(KalapaError(code))
                         } else {
-                            Helpers.printLog(
-                                "code:",
-                                KalapaError(code, Eobject["message"] as String)
-                            )
-//                            listener.fail(KalapaError(code, Eobject["message"] as String))
+                            Helpers.printLog("code:", KalapaError(code, Eobject["message"] as String))
                             listener.fail(KalapaError.UnknownError)
                         }
                     }
@@ -381,7 +380,7 @@ class KalapaAPI {
             })
         }
 
-        fun selfieCheck(endPoint: String, image: Bitmap, leftOverSession:String, listener: Client.RequestListener) {
+        fun selfieCheck(endPoint: String, image: Bitmap, leftOverSession: String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
@@ -390,11 +389,14 @@ class KalapaAPI {
                     Helpers.printLog("response:", jsonObject)
                     val Eobject = jsonObject["error"] as JSONObject
                     val code = Eobject["code"] as Int
-                    Helpers.printLog("code:", code)
+                    val message = Eobject["message"] as String
+                    Helpers.printLog("code:", code, "message:", message)
                     if (code == 0) {
                         listener.success(jsonObject["data"] as JSONObject)
                     } else {
-                        if (arrayOf(
+                        if (message.isNotEmpty())
+                            listener.fail(KalapaError(code, message))
+                        else if (arrayOf(
                                 1,
                                 2,
                                 3,
@@ -437,7 +439,6 @@ class KalapaAPI {
                                 "code:",
                                 KalapaError(code, Eobject["message"] as String)
                             )
-//                            listener.fail(KalapaError(code, Eobject["message"] as String))
                             listener.fail(KalapaError.UnknownError)
                         }
                     }
@@ -456,7 +457,7 @@ class KalapaAPI {
             })
         }
 
-        fun passportCheck(endPoint: String, image: String, leftOverSession:String, listener: Client.RequestListener) {
+        fun passportCheck(endPoint: String, image: String, leftOverSession: String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Content-Type" to "application/json",
                 "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
@@ -468,7 +469,7 @@ class KalapaAPI {
             client.post(endPoint, header, body, handleDataResultListener(listener))
         }
 
-        fun getData(endPoint: String, leftOverSession:String, listener: Client.RequestListener, postRequest: (() -> Unit)? = null) {
+        fun getData(endPoint: String, leftOverSession: String, listener: Client.RequestListener, postRequest: (() -> Unit)? = null) {
             val header = mapOf(
                 "Content-Type" to "application/json",
                 "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
@@ -477,7 +478,7 @@ class KalapaAPI {
             client.get(endPoint, header, handleDataResultListener(listener), postRequest)
         }
 
-        fun getImage(endPoint: String, leftOverSession:String, listener: Client.RequestImageListener, postRequest: (() -> Unit)? = null) {
+        fun getImage(endPoint: String, leftOverSession: String, listener: Client.RequestImageListener, postRequest: (() -> Unit)? = null) {
             val header = mapOf(
                 "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
             )
@@ -485,7 +486,7 @@ class KalapaAPI {
             client.getImage(endPoint, header, listener, postRequest)
         }
 
-        fun getNFCLocation(endPoint: String, leftOverSession:String, listener: Client.RequestListener) {
+        fun getNFCLocation(endPoint: String, leftOverSession: String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Content-Type" to "application/json",
                 "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
@@ -495,7 +496,7 @@ class KalapaAPI {
             client.get(endPoint + "?device=${Helpers.getDeviceModel()}", header, handleDataResultListener(listener))
         }
 
-        fun backCheck(endPoint: String, image: String, leftOverSession:String, listener: Client.RequestListener) {
+        fun backCheck(endPoint: String, image: String, leftOverSession: String, listener: Client.RequestListener) {
             val header = mapOf(
                 "Content-Type" to "application/json",
                 "Authorization" to leftOverSession.ifEmpty { KalapaSDK.session }
