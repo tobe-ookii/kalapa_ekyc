@@ -2,6 +2,7 @@ package vn.kalapa.ekyc.networks
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -16,10 +17,10 @@ import retrofit2.Response
 import retrofit2.http.*
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.managers.AESCryptor
+import vn.kalapa.ekyc.models.KLPBaseResponse
 import vn.kalapa.ekyc.models.ConfirmResult
 import vn.kalapa.ekyc.models.CreateSessionResult
 import vn.kalapa.ekyc.models.KalapaError
-import vn.kalapa.ekyc.models.MyError
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.FileUtil
 import vn.kalapa.ekyc.utils.Helpers
@@ -184,19 +185,14 @@ class Client {
     ) {
         val api = retrofit.create(API::class.java)
         Helpers.printLog("Start POST")
-        val fullURL = if (endPoint.startsWith("http", true)) {
-            endPoint
-        } else {
-            KalapaSDK.config.baseURL + endPoint
-        }
+        val fullURL = if (endPoint.startsWith("http", true)) endPoint else "${KalapaSDK.config.baseURL}$endPoint"
         val jsonParams = JSONObject(params)
-        Helpers.printLog(" PATH: $fullURL \n Authorization ${headers.get("Authorization")}\n ${jsonParams.toString()}")
+        Helpers.printLog(" PATH: $fullURL \n Authorization ${headers["Authorization"]}\n $jsonParams")
         var body = RequestBody.create("application/json".toMediaTypeOrNull(), jsonParams.toString())
         Helpers.printLog("Start REQUEST")
         api.post(fullURL, headers, body).enqueue(object : Callback<JSONObject> {
             override fun onResponse(call: Call<JSONObject>, response: Response<JSONObject>) {
                 handleOnResponse(response, listener)
-                Helpers.printLog(call.toString())
             }
 
             override fun onFailure(call: Call<JSONObject>, t: Throwable) {
@@ -316,54 +312,46 @@ class Client {
     }
 
     private fun handleOnResponse(response: Response<JSONObject>, listener: RequestListener?) {
-        if (listener != null) {
-            val url = response.raw().request.url
-            if (response.code() == 200) {
+        val url = response.raw().request.url
+        if (response.isSuccessful) { // Handle success (2xx status code)
+            try {
+                val errorJson = (response.body() as JSONObject).get("error")
+                val errorCode = (errorJson as JSONObject).getInt("code")
+                Helpers.printLog("request success ${response.body()} - $errorJson")
+                if (errorCode == 401 || errorCode == 403) {
+                    listener?.fail(KalapaError.ExpiredError)
+                } else {
+                    listener?.success(response.body() as JSONObject)
+                }
+            } catch (exception: Exception) {
+                listener?.success(response.body() as JSONObject)
+            }
+        } else { // Handle errors (e.g., 400)
+            val statusCode = response.code() // Get the status code (e.g., 400)
+            var kalapaError: KLPBaseResponse? = null
+            var responseBody: String? = null
+            if (response.errorBody() != null) {
                 try {
-                    val errorJson = (response.body() as JSONObject).get("error")
-                    val errorCode = (errorJson as JSONObject).getInt("code")
-                    Helpers.printLog("request success ${response.body()} - $errorJson")
-                    if (errorCode == 401 || errorCode == 403) {
-                        listener.fail(KalapaError(-1, "Wrong Token"))
-                    } else {
-                        listener.success(response.body() as JSONObject)
-                    }
-                } catch (exception: Exception) {
-                    listener.success(response.body() as JSONObject)
+                    responseBody = response.errorBody()!!.string() // Get the response body as a string
+                    Helpers.printLog("ResponseBody errorBody: $responseBody")
+                    kalapaError = Gson().fromJson(responseBody, KLPBaseResponse::class.java)
+                    Helpers.printLog("ResponseBody: kalapaError $statusCode ${kalapaError.error?.code} ${Gson().toJson(kalapaError)}")
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            } else if (response.code() == 401) {
-                Helpers.printLog("Session is expired ... $url")
-                listener.timeout()
-            } else if (url.toString().contains("/api/auth/get-token")) {
-                if (response.code() == 403 || response.code() == 401) {
-                    listener.fail(KalapaError(-1, "Wrong Token"))
-                }
-            } else if (response.code() == 400) {
-                if (response.errorBody()?.string() != null && response.errorBody()!!.string()
-                        .isNotEmpty()
-                ) {
-                    Helpers.printLog(
-                        "request fail: response.errorBody() ${response.code()} - ${
-                            response.errorBody()?.string()
-                        }"
-                    )
-                    val myError = MyError.fromJson(response.errorBody()?.string()!!)
-                    if (myError?.message != null && myError.code != null) {
-                        listener.fail(KalapaError(myError.code, myError.message))
-                    } else
-                        listener.fail(KalapaError.NetworkError)
-                } else
-                    listener.fail(KalapaError.NetworkError)
-            } else {
-                Helpers.printLog("request fail ${response.code()} - ${response.body()}")
-                listener.fail(KalapaError.NetworkError)
+            }
+
+            when (statusCode) {
+                401 -> if (url.toString().contains("/api/auth/get-token")) listener?.fail(KalapaError.ExpiredError) else listener?.timeout()
+                403 -> listener?.fail(KalapaError.ExpiredError)
+                else -> listener?.fail(kalapaError?.error ?: if (responseBody.isNullOrEmpty()) KalapaError.UnknownError else KalapaError(statusCode, responseBody))
             }
         }
     }
 
     private fun handleOnFailure(t: Throwable, listener: RequestListener?) {
         t.printStackTrace()
-
+        Helpers.printLog("handleOnFailure ${t.message}")
         if (listener != null) {
             val message = t.message as String
             listener.fail(KalapaError(-1, message))

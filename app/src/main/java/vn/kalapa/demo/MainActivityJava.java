@@ -13,10 +13,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 import java.util.Locale;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import vn.kalapa.demo.activities.BaseActivity;
 import vn.kalapa.demo.activities.ResultActivity;
 import vn.kalapa.demo.models.NFCCardData;
@@ -68,6 +71,17 @@ public class MainActivityJava extends BaseActivity {
                     return;
                 }
                 startEKYC();
+//                KalapaSDK.Companion.test(MainActivityJava.this, sdkConfig, "", new KalapaSDKCallback() {
+//                    @Override
+//                    public void sendError(@Nullable String message) {
+//                        LogUtils.Companion.printLog("sendError: ", message);
+//                    }
+//
+//                    @Override
+//                    public void sendDone(@NonNull Function0<Unit> nextAction) {
+//                        LogUtils.Companion.printLog("sendDone");
+//                    }
+//                });
             }
         });
     }

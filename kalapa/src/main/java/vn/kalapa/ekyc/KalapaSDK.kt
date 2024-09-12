@@ -41,7 +41,7 @@ import java.io.ByteArrayOutputStream
 
 class KalapaSDK {
     companion object {
-        private val VERSION = "2.9.0"
+        private val VERSION = "2.9.1.2"
         lateinit var session: String
 
         @SuppressLint("StaticFieldLeak")
@@ -91,6 +91,65 @@ class KalapaSDK {
             intent.putExtra("face_data", faceData)
             activity.startActivity(intent)
         }
+
+
+//        fun test(activity: Activity, config: KalapaSDKConfig, session: String, callback: KalapaSDKCallback) {
+//            configure(config)
+//            this.session = session
+//            val endpoint = "/api/nfc/verify?lang=${config.language}"
+//            KalapaAPI.nfcCheck(
+//                endPoint = endpoint,
+//                body = NFCRawData("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+//                "",
+//                object : Client.RequestListener {
+//                    override fun success(jsonObject: JSONObject) {
+//                        // Set NFC. Call liveness.
+//                        Helpers.printLog("nfcCheck $jsonObject")
+//                        if (jsonObject.has("data") && jsonObject.getJSONObject("data")
+//                                .has("is_nfc_face_match_selfie")
+//                        ) {
+//                            // First we need to get SELFIE
+//                            val PATH_GET_SELFIE = "/api/data/image?type=SELFIE"
+//                            KalapaAPI.getImage(PATH_GET_SELFIE, "",
+//                                object : Client.RequestImageListener {
+//                                    override fun success(byteArray: ByteArray) {
+//                                        try {
+//                                            faceBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+//                                        } catch (e: java.lang.Exception) {
+//                                            e.printStackTrace()
+//                                        }
+//                                    }
+//
+//                                    override fun fail(error: KalapaError) {
+//                                        // Do nothing
+//                                        Helpers.printLog("getData onError $error")
+//                                    }
+//
+//                                    override fun timeout() {
+//                                        Helpers.printLog("getData onTimeout")
+//                                    }
+//
+//                                }) {
+//                                callback.sendDone {
+////                                    backgroundConfirm(callback)
+//                                }
+//                            }
+//                        } else
+//                            callback.sendDone {
+////                                localStartLivenessForResult()
+//                            }
+//                    }
+//
+//                    override fun fail(error: KalapaError) {
+//                        callback.sendError(error.getMessageError())
+//                    }
+//
+//                    override fun timeout() {
+//                        callback.sendError(config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body)))
+//                    }
+//
+//                })
+//        }
 
         fun isFoldOpen(activity: Context): Boolean {
             val metrics = activity.resources.displayMetrics
@@ -316,7 +375,7 @@ class KalapaSDK {
                             if (!isFrontAndBackResultInitialized()) "" else frontResult.fields?.id_number
                                 ?: frontResult.mrz_data?.data?.raw_mrz ?: "",
                     object : KalapaNFCHandler() {
-                        private val endpoint = "/api/nfc/verify?lang=${config.language}"
+                        private val endpoint = "/api/nfc/verify"
                         override fun process(
                             idCardNumber: String,
                             nfcData: String,

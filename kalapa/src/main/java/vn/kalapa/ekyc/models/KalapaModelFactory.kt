@@ -1,6 +1,5 @@
 package vn.kalapa.ekyc.models
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import vn.kalapa.ekyc.nfcsdk.models.NFCResultData
@@ -362,6 +361,7 @@ data class PassportResult(
     }
 }
 
+data class KLPBaseResponse(val error: KalapaError?, val data: Any?)
 data class PassportFields(
     val code: String,
     val dob: String,

@@ -525,6 +525,7 @@ class KalapaAPI {
                         }
                     } catch (ex: Exception) {
                         ex.printStackTrace()
+                        Helpers.printLog("handleDataResultListener ${ex.message}")
                         listener.fail(KalapaError(-3, ex.message as String))
                     }
                 }

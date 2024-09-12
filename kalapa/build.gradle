@@ -90,7 +90,6 @@ dependencies {
 
     // for nfc
     embed project(':nfc') // implementation
-    // implementation 'commons-io:commons-io:20030203.000550'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
     // Camera X
     def camerax_version = "1.2.2"

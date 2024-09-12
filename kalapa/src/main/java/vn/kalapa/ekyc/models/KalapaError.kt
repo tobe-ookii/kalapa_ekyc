@@ -14,6 +14,10 @@ data class KalapaError(val code: Int, var message: String = "") {
             -1,
             KalapaSDK.config.context.getString(R.string.klp_error_unknown_short)
         )
+        val ExpiredError = KalapaError(
+            -1,
+            KalapaSDK.config.context.getString(R.string.klp_timeout_body)
+        )
     }
 
 
