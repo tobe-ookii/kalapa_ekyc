@@ -318,11 +318,12 @@ class Client {
                 val errorJson = (response.body() as JSONObject).get("error")
                 val errorCode = (errorJson as JSONObject).getInt("code")
                 Helpers.printLog("request success ${response.body()} - $errorJson")
-                if (errorCode == 401 || errorCode == 403) {
+                if (errorCode == 401) listener?.timeout()
+                if (errorCode == 403)
                     listener?.fail(KalapaError.ExpiredError)
-                } else {
+                else
                     listener?.success(response.body() as JSONObject)
-                }
+
             } catch (exception: Exception) {
                 listener?.success(response.body() as JSONObject)
             }

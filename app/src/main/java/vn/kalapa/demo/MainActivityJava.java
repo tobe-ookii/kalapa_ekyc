@@ -13,13 +13,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 import java.util.Locale;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import vn.kalapa.demo.activities.BaseActivity;
 import vn.kalapa.demo.activities.ResultActivity;
 import vn.kalapa.demo.models.NFCCardData;
@@ -27,18 +24,13 @@ import vn.kalapa.demo.models.NFCVerificationData;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.KalapaFlowType;
-import vn.kalapa.ekyc.KalapaCaptureHandler;
 import vn.kalapa.ekyc.KalapaHandler;
-import vn.kalapa.ekyc.KalapaNFCHandler;
-import vn.kalapa.ekyc.KalapaSDKCallback;
 import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
-import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
-import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
@@ -71,86 +63,37 @@ public class MainActivityJava extends BaseActivity {
                     return;
                 }
                 startEKYC();
-//                KalapaSDK.Companion.test(MainActivityJava.this, sdkConfig, "", new KalapaSDKCallback() {
-//                    @Override
-//                    public void sendError(@Nullable String message) {
-//                        LogUtils.Companion.printLog("sendError: ", message);
-//                    }
-//
-//                    @Override
-//                    public void sendDone(@NonNull Function0<Unit> nextAction) {
-//                        LogUtils.Companion.printLog("sendDone");
-//                    }
-//                });
             }
         });
     }
 
-    KalapaCaptureHandler ocrHandler = new KalapaCaptureHandler() {
-
+    private KalapaHandler klpHandler = new KalapaHandler() {
         @Override
-        public void process(@NonNull String base64, @NonNull KalapaSDKMediaType kalapaSDKMediaType, @NonNull KalapaSDKCallback kalapaSDKCallback) {
-            // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
-            boolean assumeSuccessProcess = true;
-            if (kalapaSDKMediaType == KalapaSDKMediaType.FRONT) {
-                // Process your FRONT side Document image
-                if (assumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(() -> {
-                        return null;
-                    });
-                else
-                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
-            } else if (kalapaSDKMediaType == KalapaSDKMediaType.BACK) { // BACK
-                // Process your BACK side Document image
-                if (assumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(() -> {
-                        return null;
-                    });
-                else
-                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
-            } else if (kalapaSDKMediaType == KalapaSDKMediaType.PORTRAIT) { // PORTRAIT
-                // Process your PORTRAIT image
-                if (assumeSuccessProcess)
-                    kalapaSDKCallback.sendDone(() -> {
-                        return null;
-                    });
-                else
-                    kalapaSDKCallback.sendError("Tell SDK what goes wrong");
-            } else {
-                LogUtils.Companion.printLog("Should not go here");
-            }
-        }
-
-
-        @Override
-        public void onError(@NonNull KalapaSDKResultCode kalapaSDKResultCode) {
-
-        }
-    };
-    private KalapaNFCHandler nfcHandler = new KalapaNFCHandler() {
-        @Override
-        public void process(@NonNull String idCardNumber, @NonNull String nfcData, @NonNull KalapaSDKCallback callback) {
-            // SDK will return valid id card number that read from back-side card or your input mrz if it valid and raw nfc data.
-            // If your process is finish as success, you have to use callback.sendDone, otherwise, use callback.sendError to show the error
-            boolean assumeSuccessProcess = true;
-            if (assumeSuccessProcess)
-                callback.sendDone(() -> {
-                    return null;
-                });
-            else
-                callback.sendError("Tell SDK what goes wrong");
+        public void onExpired() {
+            startEKYC();
         }
 
         @Override
         public void onError(@NonNull KalapaSDKResultCode resultCode) {
-            // SDK throw error if user can not finish the nfc step.
-            // Usual error code is: USER_LEAVE and DEVICE_NOT_SUPPORTED
+            Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
         }
+
+        @Override
+        public void onComplete(@NonNull KalapaResult kalapaResult) {
+            LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult.toMap() + " \n " + kalapaResult.getSession());
+            ExampleGlobalClass.kalapaResult = kalapaResult;
+            if (KalapaSDK.Companion.getFaceBitmap() != null)
+                ExampleGlobalClass.faceImage = KalapaSDK.Companion.getFaceBitmap();
+            if (KalapaSDK.Companion.getFrontBitmap() != null)
+                ExampleGlobalClass.frontImage = KalapaSDK.Companion.getFrontBitmap();
+            if (KalapaSDK.Companion.getBackBitmap() != null)
+                ExampleGlobalClass.backImage = KalapaSDK.Companion.getBackBitmap();
+            ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
+            startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+        }
+
     };
 
-    //                .withSessionID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ")
-    //                .withFaceData(BitmapUtil.Companion.getTU_BASE64())
-    //                .withMRZ()
     private void startEKYC() {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
@@ -170,35 +113,14 @@ public class MainActivityJava extends BaseActivity {
                         ProgressView.Companion.hideProgress(true);
                         LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.getFlow(), createSessionResult.getToken());
                         KalapaSDK.Companion.startFullEKYC(MainActivityJava.this,
-                                createSessionResult.getToken(),
-                                createSessionResult.component3(), sdkConfig,
+                                createSessionResult.getToken()+"Something",
+                                createSessionResult.getFlow(), sdkConfig,
 //                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ",
                                 "",
 //                                "IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<",
                                 "",
 //                                BitmapUtil.Companion.getTU_BASE64(),
-                                "",
-                                new KalapaHandler() {
-                                    @Override
-                                    public void onError(@NonNull KalapaSDKResultCode resultCode) {
-                                        Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), R.drawable.frowning_face);
-                                    }
-
-                                    @Override
-                                    public void onComplete(@NonNull KalapaResult kalapaResult) {
-                                        LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult.toMap() + " \n " + kalapaResult.getSession());
-                                        ExampleGlobalClass.kalapaResult = kalapaResult;
-                                        if (KalapaSDK.Companion.getFaceBitmap() != null)
-                                            ExampleGlobalClass.faceImage = KalapaSDK.Companion.getFaceBitmap();
-                                        if (KalapaSDK.Companion.getFrontBitmap() != null)
-                                            ExampleGlobalClass.frontImage = KalapaSDK.Companion.getFrontBitmap();
-                                        if (KalapaSDK.Companion.getBackBitmap() != null)
-                                            ExampleGlobalClass.backImage = KalapaSDK.Companion.getBackBitmap();
-                                        ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
-                                        startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-                                    }
-
-                                });
+                                "", klpHandler);
                         return null;
                     }, kalapaError -> {
                         ProgressView.Companion.hideProgress(true);

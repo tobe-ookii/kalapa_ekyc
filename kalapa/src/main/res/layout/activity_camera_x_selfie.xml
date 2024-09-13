@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_centerInParent="true"
-                android:layout_margin="@dimen/margin_mid"
+                android:layout_margin="@dimen/klp_margin_mid"
                 android:backgroundTint="@color/ekyc_red"
                 android:theme="@style/Theme.MaterialComponents.Light"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -93,7 +93,7 @@
             android:id="@+id/toggle_auto_capture"
             android:layout_width="38dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_toggle_on" />
+            android:src="@drawable/klp_ic_toggle_on" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
         <Button
             android:id="@+id/btn_retry"
             style="@style/BeTallSingleButtonStyle"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_only"
             android:backgroundTint="@color/betall_inactive_button"
             android:text="@string/klp_retry_btn"
@@ -138,7 +138,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_holder"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/klp_margin_small"
         android:orientation="vertical">
 
         <LinearLayout

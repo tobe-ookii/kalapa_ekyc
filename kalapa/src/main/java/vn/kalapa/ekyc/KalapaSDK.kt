@@ -68,7 +68,7 @@ class KalapaSDK {
         }
 
 
-        fun isFrontAndBackResultInitialized(): Boolean {
+        private fun isFrontAndBackResultInitialized(): Boolean {
             return this::frontResult.isInitialized
         }
 
@@ -91,65 +91,6 @@ class KalapaSDK {
             intent.putExtra("face_data", faceData)
             activity.startActivity(intent)
         }
-
-
-//        fun test(activity: Activity, config: KalapaSDKConfig, session: String, callback: KalapaSDKCallback) {
-//            configure(config)
-//            this.session = session
-//            val endpoint = "/api/nfc/verify?lang=${config.language}"
-//            KalapaAPI.nfcCheck(
-//                endPoint = endpoint,
-//                body = NFCRawData("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
-//                "",
-//                object : Client.RequestListener {
-//                    override fun success(jsonObject: JSONObject) {
-//                        // Set NFC. Call liveness.
-//                        Helpers.printLog("nfcCheck $jsonObject")
-//                        if (jsonObject.has("data") && jsonObject.getJSONObject("data")
-//                                .has("is_nfc_face_match_selfie")
-//                        ) {
-//                            // First we need to get SELFIE
-//                            val PATH_GET_SELFIE = "/api/data/image?type=SELFIE"
-//                            KalapaAPI.getImage(PATH_GET_SELFIE, "",
-//                                object : Client.RequestImageListener {
-//                                    override fun success(byteArray: ByteArray) {
-//                                        try {
-//                                            faceBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-//                                        } catch (e: java.lang.Exception) {
-//                                            e.printStackTrace()
-//                                        }
-//                                    }
-//
-//                                    override fun fail(error: KalapaError) {
-//                                        // Do nothing
-//                                        Helpers.printLog("getData onError $error")
-//                                    }
-//
-//                                    override fun timeout() {
-//                                        Helpers.printLog("getData onTimeout")
-//                                    }
-//
-//                                }) {
-//                                callback.sendDone {
-////                                    backgroundConfirm(callback)
-//                                }
-//                            }
-//                        } else
-//                            callback.sendDone {
-////                                localStartLivenessForResult()
-//                            }
-//                    }
-//
-//                    override fun fail(error: KalapaError) {
-//                        callback.sendError(error.getMessageError())
-//                    }
-//
-//                    override fun timeout() {
-//                        callback.sendError(config.languageUtils.getLanguageString(activity.getString(R.string.klp_timeout_body)))
-//                    }
-//
-//                })
-//        }
 
         fun isFoldOpen(activity: Context): Boolean {
             val metrics = activity.resources.displayMetrics
@@ -263,6 +204,10 @@ class KalapaSDK {
             /*****-STEP 5-*****/
             val localStartConfirmForResult = {
                 startConfirmForResult(activity, session, config, leftoverSession, object : KalapaHandler() {
+                    override fun onExpired() {
+                        handler.onExpired()
+                    }
+
                     override fun onError(resultCode: KalapaSDKResultCode) {
                         onGeneralError(resultCode)
                     }
@@ -319,6 +264,10 @@ class KalapaSDK {
             /*****-STEP 4-*****/
             val localStartLivenessForResult = {
                 startLivenessForResult(activity, config, faceData, object : KalapaCaptureHandler() {
+                    override fun onExpired() {
+                        handler.onExpired()
+                    }
+
                     private val endpoint = "/api/kyc/app/check-selfie?lang=${config.language}"
                     override fun process(
                         base64: String,
@@ -375,6 +324,10 @@ class KalapaSDK {
                             if (!isFrontAndBackResultInitialized()) "" else frontResult.fields?.id_number
                                 ?: frontResult.mrz_data?.data?.raw_mrz ?: "",
                     object : KalapaNFCHandler() {
+                        override fun onExpired() {
+                            handler.onExpired()
+                        }
+
                         private val endpoint = "/api/nfc/verify"
                         override fun process(
                             idCardNumber: String,
@@ -450,6 +403,10 @@ class KalapaSDK {
             /*****-STEP 2-*****/
             val localStartBackForResult = {
                 startCaptureForResult(activity, config, KalapaSDKMediaType.BACK, object : KalapaCaptureHandler() {
+                    override fun onExpired() {
+                        handler.onExpired()
+                    }
+
                     private val endpoint = "/api/kyc/app/scan-back?lang=${config.language}"
                     override fun process(
                         base64: String,
@@ -498,6 +455,10 @@ class KalapaSDK {
             /*****-STEP 1-*****/
             val localStartFrontForResult = {
                 startCaptureForResult(activity, config, KalapaSDKMediaType.FRONT, object : KalapaCaptureHandler() {
+                    override fun onExpired() {
+                        handler.onExpired()
+                    }
+
                     private val endpoint = "/api/kyc/app/scan-front?lang=${config.language}"
                     override fun process(
                         base64: String,
@@ -779,7 +740,7 @@ abstract class KalapaCaptureHandler : KalapaHandler() {
 }
 
 
-open class KalapaHandler {
+abstract class KalapaHandler {
     open fun onError(resultCode: KalapaSDKResultCode) {
         Helpers.printLog("KalapaHandler onError $resultCode")
     }
@@ -791,9 +752,15 @@ open class KalapaHandler {
     open fun onComplete(kalapaResult: KalapaResult) {
         Helpers.printLog("KalapaHandler onComplete $kalapaResult")
     }
+
+    open fun onEndSession() {
+        Helpers.printLog("KalapaHandler onEndSession")
+    }
+
+    abstract fun onExpired()
 }
 
-abstract class KalapaNFCHandler() : KalapaHandler() {
+internal abstract class KalapaNFCHandler : KalapaHandler() {
     abstract fun process(
         idCardNumber: String,
         nfcData: String,

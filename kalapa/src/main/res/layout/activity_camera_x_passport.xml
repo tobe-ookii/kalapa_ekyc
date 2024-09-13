@@ -52,7 +52,7 @@
         <Button
             android:id="@+id/btn_retry"
             style="@style/BeTallSingleButtonStyle"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_solid"
             android:backgroundTint="@color/white"
             android:text="@string/klp_retry_btn"
@@ -124,7 +124,7 @@
             android:id="@+id/toggle_auto_capture"
             android:layout_width="38dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_toggle_on" />
+            android:src="@drawable/klp_ic_toggle_on" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -149,7 +149,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/tv_guide"
         android:layout_marginHorizontal="@dimen/margin_side"
-        android:layout_marginTop="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/klp_margin_xsmall"
         android:lines="1"
         android:text="@string/klp_passport_guide_1"
         android:textStyle="bold"

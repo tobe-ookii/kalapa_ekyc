@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/klp_margin_small"
         android:background="@drawable/frame_exclude_png"
         app:cardCornerRadius="@dimen/button_corner_radius">
 
@@ -82,7 +82,7 @@
         <Button
             android:id="@+id/btn_retry"
             style="@style/BeTallSingleButtonStyle"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_only"
             android:backgroundTint="@color/betall_inactive_button"
             android:text="@string/klp_retry_btn"
@@ -120,24 +120,31 @@
             android:visibility="invisible" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/holder_auto_capture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/container_preview"
-        android:layout_marginTop="@dimen/margin_xsmall"
-        android:layout_marginBottom="@dimen/margin_xxsmall"
+        android:layout_marginTop="@dimen/klp_margin_mid"
+        android:layout_marginBottom="@dimen/klp_margin_small"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="visible">
 
         <ImageView
             android:id="@+id/toggle_auto_capture"
-            android:layout_width="38dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_toggle_on" />
+            android:layout_width="45dp"
+            android:layout_height="@dimen/klp_toggle_height"
+            android:src="@drawable/klp_ic_toggle_on" />
 
+        <TextView
+            android:id="@+id/klp_auto_capture"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/klp_margin_xsmall"
+            android:gravity="center"
+            android:text="@string/klp_auto_capture"
+            android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>
 
 
@@ -147,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/holder_auto_capture"
         android:layout_centerHorizontal="true"
-        android:layout_marginVertical="@dimen/margin_xsmall"
+        android:layout_marginVertical="@dimen/klp_margin_xsmall"
         android:visibility="gone"
         android:src="@drawable/ic_passport_black" />
 

@@ -6,7 +6,7 @@
     android:background="@drawable/border_button_only"
     android:backgroundTint="@color/textColor"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/margin_xsmall"
+    android:paddingHorizontal="@dimen/klp_margin_xsmall"
     android:paddingVertical="@dimen/margin_xxsmall">
 
     <RadioButton
@@ -21,7 +21,7 @@
         android:textSize="@dimen/klp_txt_size_normal"
         android:button="@null"
         android:gravity="center"
-        android:paddingHorizontal="@dimen/margin_mid"
+        android:paddingHorizontal="@dimen/klp_margin_mid"
         android:text="Search"
         android:textColor="@color/progress_text_unchecked" />
 
@@ -37,7 +37,7 @@
         android:textSize="@dimen/klp_txt_size_normal"
         android:button="@null"
         android:gravity="center"
-        android:paddingHorizontal="@dimen/margin_mid"
+        android:paddingHorizontal="@dimen/klp_margin_mid"
         android:text="Offers"
         android:textColor="@color/white" />
 
@@ -53,7 +53,7 @@
         android:textSize="@dimen/klp_txt_size_normal"
         android:button="@null"
         android:gravity="center"
-        android:paddingHorizontal="@dimen/margin_mid"
+        android:paddingHorizontal="@dimen/klp_margin_mid"
         android:text="Offers"
         android:textColor="@color/white" />
 </RadioGroup>

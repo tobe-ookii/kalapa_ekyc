@@ -62,7 +62,7 @@
         android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/klp_margin_small"
         android:layout_marginBottom="@dimen/margin_from_button_holder"
         android:gravity="center"
         android:orientation="vertical">
@@ -70,7 +70,7 @@
         <Button
             android:id="@+id/btn_retry"
             style="@style/BeTallSingleButtonStyle"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_only"
             android:backgroundTint="@color/betall_inactive_button"
             android:text="@string/klp_retry_btn"
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_holder"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/klp_margin_small"
         android:layout_marginBottom="@dimen/margin_vertical_large"
         android:orientation="vertical">
 
@@ -102,7 +102,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/margin_xsmall"
+            android:layout_marginBottom="@dimen/klp_margin_xsmall"
             android:src="@drawable/ic_checkmark" />
 
         <TextView
@@ -129,7 +129,7 @@
             android:id="@+id/toggle_auto_capture"
             android:layout_width="38dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_toggle_on" />
+            android:src="@drawable/klp_ic_toggle_on" />
 
     </LinearLayout>
 
@@ -149,8 +149,8 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/footer_mrz"
         android:layout_marginHorizontal="@dimen/margin_side"
-        android:layout_marginVertical="@dimen/margin_mid"
-        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:layout_marginVertical="@dimen/klp_margin_mid"
+        android:layout_marginBottom="@dimen/klp_margin_xsmall"
         android:maxLines="2"
         android:textSize="@dimen/klp_txt_size_normal"
         android:text="@string/klp_scan_back_document"

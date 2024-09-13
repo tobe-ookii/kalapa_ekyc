@@ -52,7 +52,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         if (idCardNumber == null)
             openMRZScanner()
         else
-            nfcUtils.setIdCardNumber("038099021571")
+            nfcUtils.setIdCardNumber(idCardNumber)
 
     }
 

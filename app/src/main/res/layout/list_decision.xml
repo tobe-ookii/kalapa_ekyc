@@ -8,14 +8,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/margin_xsmall"
+        android:paddingVertical="@dimen/klp_margin_xsmall"
         android:gravity="center">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_mid"
+            android:layout_marginEnd="@dimen/klp_margin_mid"
             android:layout_weight="2"
             android:maxLines="4"
             android:textSize="@dimen/klp_txt_size_normal"

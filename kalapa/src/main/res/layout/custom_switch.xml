@@ -6,7 +6,7 @@
     android:background="@drawable/border_button_only"
     android:backgroundTint="@color/textColor"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/margin_xsmall"
+    android:paddingHorizontal="@dimen/klp_margin_xsmall"
     android:paddingVertical="@dimen/margin_xxsmall">
 
     <RadioButton

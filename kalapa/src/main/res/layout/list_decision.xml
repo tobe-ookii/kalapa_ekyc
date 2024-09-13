@@ -8,14 +8,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/margin_xsmall"
+        android:paddingVertical="@dimen/klp_margin_xsmall"
         android:gravity="center">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_mid"
+            android:layout_marginEnd="@dimen/klp_margin_mid"
             android:layout_weight="2"
             android:maxLines="4"
             android:text="1231232132132 123213213 wwd1 12 123 213213 123123 213 123 123123 123 123 12 "

@@ -55,8 +55,8 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
         ivGuide = findViewById(R.id.iv_action)
         ivGuide.setImageResource(
             when (documentType) {
-                KalapaSDKMediaType.FRONT -> R.drawable.ic_passport_black
-                KalapaSDKMediaType.BACK -> R.drawable.footer_mrz_black
+                KalapaSDKMediaType.FRONT -> R.drawable.klp_ic_footer_front
+                KalapaSDKMediaType.BACK -> R.drawable.klp_ic_footer_back
                 else -> R.drawable.ic_passport_black
             }
         )

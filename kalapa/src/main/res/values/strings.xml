@@ -363,4 +363,5 @@
     <string name="klp_guide_id_front">klp_guide_id_front</string>
     <string name="klp_guide_id_back">klp_guide_id_back</string>
     <string name="klp_auto_capture_success">klp_auto_capture_success</string>
+    <string name="klp_auto_capture">klp_auto_capture</string>
 </resources>

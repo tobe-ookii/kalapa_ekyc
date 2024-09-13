@@ -2,9 +2,9 @@
 <resources>
     <dimen name="button_corner_radius">15dp</dimen>
     <dimen name="margin_xxsmall">4dp</dimen>
-    <dimen name="margin_xsmall">6dp</dimen>
-    <dimen name="margin_small">10dp</dimen>
-    <dimen name="margin_mid">14dp</dimen>
+    <dimen name="klp_margin_xsmall">6dp</dimen>
+    <dimen name="klp_margin_small">10dp</dimen>
+    <dimen name="klp_margin_mid">14dp</dimen>
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_side">26dp</dimen>
     <dimen name="margin_xlarge">32dp</dimen>

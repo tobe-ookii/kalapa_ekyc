@@ -66,12 +66,12 @@
 
         <ImageView
             android:id="@+id/iv_card_in_mask"
-            android:background="@drawable/ic_image_detect"
-            android:backgroundTint="@color/white"
             android:layout_width="60dp"
             android:layout_height="45dp"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:background="@drawable/ic_image_detect"
+            android:backgroundTint="@color/white"
+            android:scaleType="centerCrop" />
 
     </androidx.cardview.widget.CardView>
 
@@ -96,7 +96,7 @@
         <Button
             android:id="@+id/btn_retry"
             style="@style/BeTallSingleButtonStyle"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_only"
             android:backgroundTint="@color/betall_inactive_button"
             android:text="@string/klp_retry_btn"
@@ -140,18 +140,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/container_preview"
-        android:layout_marginTop="@dimen/margin_mid"
-        android:layout_marginBottom="@dimen/margin_xxsmall"
+        android:layout_marginTop="@dimen/klp_margin_mid"
+        android:layout_marginBottom="@dimen/klp_margin_small"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="visible">
 
         <ImageView
             android:id="@+id/toggle_auto_capture"
-            android:layout_width="38dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_toggle_on" />
+            android:layout_width="45dp"
+            android:layout_height="@dimen/klp_toggle_height"
+            android:src="@drawable/klp_ic_toggle_on" />
 
+        <TextView
+            android:id="@+id/klp_auto_capture"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/klp_margin_xsmall"
+            android:gravity="center"
+            android:text="@string/klp_auto_capture"
+            android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>
 
 
@@ -161,8 +169,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/holder_auto_capture"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_xsmall"
-        android:src="@drawable/ic_passport_black" />
+        android:layout_marginTop="@dimen/klp_margin_xsmall"
+        android:src="@drawable/klp_ic_footer_front" />
 
 
     <TextView
@@ -172,7 +180,7 @@
         android:layout_below="@id/iv_action"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="@dimen/margin_side"
-        android:layout_marginTop="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/klp_margin_xsmall"
         android:lines="2"
         android:text="@string/klp_passport_guide_2"
         android:textAlignment="center"
@@ -224,10 +232,10 @@
         android:layout_centerHorizontal="true" />
 
     <FrameLayout
-        android:translationZ="1001dp"
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:translationZ="1001dp" />
 
 </RelativeLayout>

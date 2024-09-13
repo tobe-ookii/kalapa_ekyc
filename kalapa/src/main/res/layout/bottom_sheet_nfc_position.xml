@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/margin_mid"
+            android:layout_marginTop="@dimen/klp_margin_mid"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/tv_title">
 
@@ -80,7 +80,7 @@
             android:id="@+id/iv_nfc_position"
             android:layout_width="match_parent"
             android:layout_height="@dimen/wv_height"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:src="@drawable/sample_position"
             app:layout_constraintBottom_toTopOf="@id/btn_understand"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +93,7 @@
             android:id="@+id/text_des"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_mid"
+            android:layout_marginHorizontal="@dimen/klp_margin_mid"
             android:gravity="center"
             android:maxLines="1"
             android:text=""

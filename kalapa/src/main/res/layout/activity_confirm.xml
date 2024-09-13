@@ -143,7 +143,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:layout_marginStart="@dimen/margin_side"
-                    android:paddingEnd="@dimen/margin_small">
+                    android:paddingEnd="@dimen/klp_margin_small">
 
                     <TextView
                         android:id="@+id/tv_confirm_3"
@@ -179,7 +179,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
-                    android:paddingStart="@dimen/margin_xsmall"
+                    android:paddingStart="@dimen/klp_margin_xsmall"
                     android:layout_marginEnd="@dimen/margin_side"
                     android:layout_marginBottom="8dp"
                     android:layout_weight="1"
@@ -218,7 +218,7 @@
                             android:id="@+id/radio_female"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_xsmall"
+                            android:layout_marginLeft="@dimen/klp_margin_xsmall"
                             android:button="@drawable/radio_background"
                             android:paddingLeft="5dp"
                             android:text="@string/klp_field_female"
@@ -318,7 +318,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:layout_marginStart="@dimen/margin_side"
-                    android:paddingEnd="@dimen/margin_small">
+                    android:paddingEnd="@dimen/klp_margin_small">
 
                     <TextView
                         android:id="@+id/tv_confirm_5"
@@ -356,7 +356,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="@dimen/margin_side"
-                    android:paddingStart="@dimen/margin_xsmall"
+                    android:paddingStart="@dimen/klp_margin_xsmall"
                     android:orientation="vertical">
 
                     <TextView

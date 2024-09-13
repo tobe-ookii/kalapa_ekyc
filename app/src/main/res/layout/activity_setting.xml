@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:text="@string/klp_demo_token"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -43,7 +43,7 @@
             android:id="@+id/tv_enviroment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:text="@string/klp_demo_environment"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -60,7 +60,7 @@
             android:id="@+id/tv_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:text="@string/klp_index_language"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -84,8 +84,8 @@
             android:id="@+id/tv_liveness_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_mid"
-            android:layout_marginBottom="@dimen/margin_mid"
+            android:layout_marginTop="@dimen/klp_margin_mid"
+            android:layout_marginBottom="@dimen/klp_margin_mid"
             android:text="@string/klp_demo_liveness"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold"
@@ -110,7 +110,7 @@
                 android:id="@+id/tv_enable_nfc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
+                android:layout_marginVertical="@dimen/klp_margin_mid"
                 android:text="@string/klp_setting_nfc"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -126,7 +126,7 @@
                 android:id="@+id/tv_capture_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
+                android:layout_marginVertical="@dimen/klp_margin_mid"
                 android:text="@string/klp_setting_capture_image"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -142,8 +142,8 @@
                 android:id="@+id/tv_acceptance_document"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_mid"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:layout_marginBottom="@dimen/klp_margin_small"
                 android:text="@string/klp_setting_acceptance_document"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -166,7 +166,7 @@
                     android:id="@+id/tv_acceptance_document_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_mid"
+                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:textSize="@dimen/klp_txt_size_normal"
                     android:text="@string/klp_old_id_card" />
 
@@ -189,7 +189,7 @@
                     android:id="@+id/tv_acceptance_document_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_mid"
+                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:textSize="@dimen/klp_txt_size_normal"
                     android:text="@string/klp_12_digits_id_card" />
 
@@ -213,7 +213,7 @@
                     android:layout_width="wrap_content"
                     android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_mid"
+                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:text="@string/klp_eid_no_chip" />
 
             </LinearLayout>
@@ -236,7 +236,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/klp_txt_size_normal"
-                    android:layout_marginVertical="@dimen/margin_mid"
+                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:text="@string/klp_eid_with_chip" />
 
             </LinearLayout>
@@ -245,7 +245,7 @@
                 android:id="@+id/tv_verify_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
+                android:layout_marginVertical="@dimen/klp_margin_mid"
                 android:text="@string/klp_setting_verify_check"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -261,7 +261,7 @@
                 android:id="@+id/tv_fraud_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
+                android:layout_marginVertical="@dimen/klp_margin_mid"
                 android:text="@string/klp_setting_fraud_check"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -277,7 +277,7 @@
                 android:id="@+id/tv_strict_quality_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
+                android:layout_marginVertical="@dimen/klp_margin_mid"
                 android:text="@string/klp_strict_quality_check"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -293,7 +293,7 @@
                 android:id="@+id/tv_card_sides_match_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
+                android:layout_marginVertical="@dimen/klp_margin_mid"
                 android:text="@string/klp_check_if_card_sides_match"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -327,7 +327,7 @@
                 android:id="@+id/tv_acceptance_face_matching_threshold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_mid"
+                android:layout_marginVertical="@dimen/klp_margin_mid"
                 android:text="@string/klp_setting_acceptance_face_matching_threshold"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
@@ -351,7 +351,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/slider_face_matching_threshold"
                     android:layout_alignStart="@id/slider_face_matching_threshold"
-                    android:layout_marginStart="@dimen/margin_mid"
+                    android:layout_marginStart="@dimen/klp_margin_mid"
                     android:text="0"
                     android:textSize="@dimen/klp_txt_size_normal"
                     android:translationY="-10dp" />
@@ -371,7 +371,7 @@
                     android:layout_below="@id/slider_face_matching_threshold"
                     android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_alignEnd="@id/slider_face_matching_threshold"
-                    android:layout_marginEnd="@dimen/margin_mid"
+                    android:layout_marginEnd="@dimen/klp_margin_mid"
                     android:text="100"
                     android:translationY="-10dp" />
 
@@ -389,7 +389,7 @@
             android:id="@+id/tv_main_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:text="@string/klp_index_main_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -402,7 +402,7 @@
                 android:id="@+id/btn_main_color"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/margin_mid"
+                android:layout_marginRight="@dimen/klp_margin_mid"
                 android:background="@drawable/border_button_solid"
                 android:contentDescription="Enter your main color (also your button color)"
                 android:textAllCaps="true" />
@@ -423,7 +423,7 @@
             android:id="@+id/tv_button_text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:text="@string/klp_index_main_text_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -436,7 +436,7 @@
                 android:id="@+id/btn_button_text_color"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/margin_mid"
+                android:layout_marginRight="@dimen/klp_margin_mid"
                 android:textSize="@dimen/klp_txt_size_normal"
                 android:background="@drawable/border_button_solid"
                 android:contentDescription="Enter your button text color"
@@ -459,7 +459,7 @@
             android:id="@+id/tv_background_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:text="@string/klp_index_background_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -472,7 +472,7 @@
                 android:id="@+id/btn_background_color"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/margin_mid"
+                android:layout_marginRight="@dimen/klp_margin_mid"
                 android:background="@drawable/border_button_solid"
                 android:textAllCaps="true" />
 
@@ -491,7 +491,7 @@
             android:id="@+id/tv_main_text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:text="@string/klp_index_main_text_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -505,7 +505,7 @@
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/klp_txt_size_normal"
-                android:layout_marginRight="@dimen/margin_mid"
+                android:layout_marginRight="@dimen/klp_margin_mid"
                 android:background="@drawable/border_button_solid"
                 android:textAllCaps="true" />
 

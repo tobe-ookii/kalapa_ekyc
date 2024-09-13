@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/container_scan_nfc"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/klp_margin_small"
         app:layout_constraintEnd_toEndOf="@id/container"
         app:layout_constraintStart_toStartOf="@id/container"
         app:layout_constraintTop_toTopOf="@id/container">
@@ -49,13 +49,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_mid"
+                android:layout_marginTop="@dimen/klp_margin_mid"
                 android:background="@drawable/border_button_solid"
                 android:backgroundTint="@color/ekyc_grey"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingHorizontal="@dimen/margin_horizontal"
-                android:paddingVertical="@dimen/margin_small">
+                android:paddingVertical="@dimen/klp_margin_small">
 
                 <ImageView
                     android:layout_width="32dp"
@@ -66,7 +66,7 @@
                     android:id="@+id/tv_show_nfc_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/klp_margin_small"
                     android:gravity="center"
                     android:lines="2"
                     android:text="@string/klp_check_nfc_text"
@@ -88,7 +88,7 @@
                     android:layout_below="@id/iv_guide_icon"
                     android:layout_centerHorizontal="true"
                     android:layout_marginHorizontal="@dimen/margin_horizontal"
-                    android:layout_marginTop="@dimen/margin_mid"
+                    android:layout_marginTop="@dimen/klp_margin_mid"
                     android:gravity="left"
                     android:text="@string/klp_guide_title"
                     android:textSize="@dimen/klp_shinhan_title_17"
@@ -101,8 +101,8 @@
                     android:background="@drawable/popup_container"
                     android:backgroundTint="@color/ekyc_grey_40"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/margin_xsmall"
-                    android:paddingVertical="@dimen/margin_mid">
+                    android:paddingHorizontal="@dimen/klp_margin_xsmall"
+                    android:paddingVertical="@dimen/klp_margin_mid">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -243,7 +243,7 @@
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_path"
                 android:layout_marginTop="@dimen/margin_vertical_large"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/klp_margin_small"
                 android:gravity="center"
                 android:maxLines="2"
                 android:text="@string/klp_guide_nfc_1"
@@ -258,7 +258,7 @@
         android:id="@+id/container_scan_nfc"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_marginBottom="@dimen/margin_mid"
+        android:layout_marginBottom="@dimen/klp_margin_mid"
         android:gravity="center|bottom"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/container">

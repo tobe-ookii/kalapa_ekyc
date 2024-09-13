@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingVertical="@dimen/margin_xsmall">
+        android:paddingVertical="@dimen/klp_margin_xsmall">
 
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/klp_margin_small"
             android:layout_weight="4"
             android:textSize="@dimen/klp_txt_size_normal"
             android:maxLines="4"
@@ -29,7 +29,7 @@
             android:id="@+id/tv_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginStart="@dimen/klp_margin_small"
             android:layout_weight="7"
             android:maxLines="4"
             android:textAlignment="textEnd"
@@ -42,6 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:visibility="gone"
-        android:layout_marginHorizontal="@dimen/margin_mid"
+        android:layout_marginHorizontal="@dimen/klp_margin_mid"
         android:background="@color/white40" />
 </LinearLayout>

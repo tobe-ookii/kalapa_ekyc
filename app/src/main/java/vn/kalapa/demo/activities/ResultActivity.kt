@@ -384,17 +384,6 @@ class ResultActivity : AppCompatActivity() {
 //        } else
         finish()
     }
-//
-//    override fun finish() {
-//        if (Kalapa.result != null) {
-//            if (Kalapa.kalapaListener != null) {
-//                Kalapa.kalapaListener!!.completion(Kalapa.result!!)
-//            }
-//            Kalapa.klpHandler.onPreComplete()
-//            Kalapa.klpHandler.onComplete(Kalapa.result!!)
-//        }
-//        super.finish()
-//    }
 
     fun setDumpValue(decision: String) {
         rowId.setRecordValue("001094018640")

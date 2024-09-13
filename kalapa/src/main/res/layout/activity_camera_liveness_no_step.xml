@@ -58,7 +58,7 @@
         <Button
             android:id="@+id/btn_retry"
             style="@style/BeTallSingleButtonStyle"
-            android:layout_marginVertical="@dimen/margin_mid"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_only"
             android:backgroundTint="@color/betall_inactive_button"
             android:text="@string/klp_retry_btn"
@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_holder"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/klp_margin_small"
         android:orientation="vertical">
 
         <vn.kalapa.ekyc.views.KLPGifImageView
@@ -98,7 +98,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/margin_xsmall"
+            android:layout_marginBottom="@dimen/klp_margin_xsmall"
             android:visibility="invisible" />
 
         <TextView
@@ -125,7 +125,7 @@
             android:id="@+id/toggle_auto_capture"
             android:layout_width="38dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_toggle_on" />
+            android:src="@drawable/klp_ic_toggle_on" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -142,7 +142,7 @@
         android:layout_below="@id/toolbar"
         android:layout_marginHorizontal="@dimen/margin_horizontal_path"
         android:layout_marginTop="@dimen/margin_xxsmall"
-        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:layout_marginBottom="@dimen/klp_margin_xsmall"
         android:maxLines="3"
         android:text="@string/klp_liveness_guide_title"
         android:textAlignment="center"

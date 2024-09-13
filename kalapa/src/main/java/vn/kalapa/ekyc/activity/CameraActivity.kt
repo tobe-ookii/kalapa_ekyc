@@ -144,9 +144,9 @@ abstract class CameraActivity(
         ivAutoCapture.setOnClickListener {
             this.isAutocapturing = !isAutocapturing
             if (isAutocapturing) {
-                ivAutoCapture.setImageResource(R.drawable.ic_toggle_on)
+                ivAutoCapture.setImageResource(R.drawable.klp_ic_toggle_on)
             } else {
-                ivAutoCapture.setImageResource(R.drawable.ic_toggle_off)
+                ivAutoCapture.setImageResource(R.drawable.klp_ic_toggle_off)
             }
 
 //            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_subtitle_front))

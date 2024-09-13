@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.SurfaceTexture
@@ -234,10 +233,10 @@ abstract class CameraXActivity(
             onAutoCaptureToggle(isAutocapturing)
             if (isAutocapturing) {
                 btnCapture.visibility = View.INVISIBLE
-                ivAutoCapture.setImageResource(R.drawable.ic_toggle_on)
+                ivAutoCapture.setImageResource(R.drawable.klp_ic_toggle_on)
             } else {
                 btnCapture.visibility = View.VISIBLE
-                ivAutoCapture.setImageResource(R.drawable.ic_toggle_off)
+                ivAutoCapture.setImageResource(R.drawable.klp_ic_toggle_off)
             }
         }
         btnCapture.setOnClickListener(this)
