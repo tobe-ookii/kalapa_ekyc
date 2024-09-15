@@ -16,18 +16,6 @@
         android:supportsRtl="true">
         <activity
             android:theme="@style/KLPTheme"
-            android:name=".ekyc.activity.LivenessActivityForResult"
-            android:exported="false"
-            android:resizeableActivity="true"
-            android:screenOrientation="portrait" />
-        <activity
-            android:theme="@style/KLPTheme"
-            android:name=".ekyc.activity.PassportActivity"
-            android:exported="false"
-            android:resizeableActivity="true"
-            android:screenOrientation="portrait" />
-        <activity
-            android:theme="@style/KLPTheme"
             android:name="vn.kalapa.ekyc.nfcsdk.activities.NFCActivity"
             android:exported="false"
             android:resizeableActivity="true"
@@ -47,18 +35,6 @@
         <activity
             android:theme="@style/KLPTheme"
             android:name=".ekyc.capturesdk.CameraXMRZActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:theme="@style/KLPTheme"
-            android:name=".ekyc.capturesdk.CameraXCaptureActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:theme="@style/KLPTheme"
-            android:name=".ekyc.capturesdk.CameraXCaptureBackActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />

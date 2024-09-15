@@ -233,9 +233,7 @@ class Common {
 
         fun getDynamicLanguage(baseUrl: String, language: String): String? {
             if (language.isEmpty()) return null
-            //prod:  api-ekyc.kalapa.vn/face-otp
-            //dev: faceotp-dev.kalapa.vn/api
-            val url = URL("$baseUrl/lang/get?language=$language")
+            val url = URL("$baseUrl/api/language?language=$language")
             var body = ""
             Helpers.printLog("\nSent 'GET' request to URL : $url")
             with(url.openConnection() as HttpURLConnection) {

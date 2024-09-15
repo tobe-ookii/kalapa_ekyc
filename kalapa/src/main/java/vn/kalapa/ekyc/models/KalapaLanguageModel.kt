@@ -19,7 +19,10 @@ data class KalapaLanguageModel(
 }
 
 data class LanguageModelData(
-    val data: LanguageModelDataData? = null,
+    val code: String,
+    val content: LanguageModelContent? = null,
+    val created_time: String,
+    val version: String
 ) {
     fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
@@ -28,13 +31,13 @@ data class LanguageModelData(
     }
 }
 
-data class LanguageModelDataData(
+data class LanguageModelContent(
     val APP_DEMO: Map<String, String>,
     val SDK: Map<String, String>
 ) {
     fun toJson() = Gson().toJson(this)// klaxon.toJsonString(this)
 
     companion object {
-        fun fromJson(json: String): LanguageModelDataData = Gson().fromJson(json, LanguageModelDataData::class.java)//klaxon.parse<LanguageModelDataData>(json)
+        fun fromJson(json: String): LanguageModelContent = Gson().fromJson(json, LanguageModelContent::class.java)//klaxon.parse<LanguageModelDataData>(json)
     }
 }

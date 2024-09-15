@@ -16,11 +16,11 @@ import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.activity.CameraXActivity
-import vn.kalapa.ekyc.toBitmap
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
+import vn.kalapa.ekyc.utils.toBitmap
 
 typealias OCROnlyImageInput = (inputImage: Bitmap, degree: Int) -> Unit
 
@@ -48,11 +48,11 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
 
 //        ivBitmapReview = findViewById(R.id.iv_bitmap_preview)
         tvTitle.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_mrz))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_mrz_scan_title))
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
 //        tvGuide0.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
         tvGuide1.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_scan_back_document))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_mrz_scan_note))
 //        tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvGuide0.visibility = View.GONE

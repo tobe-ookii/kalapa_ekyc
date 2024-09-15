@@ -1,6 +1,4 @@
-
 package com.fis.ekyc.nfc.build_in.eidparser;
-// com.fis.ekyc.nfc.build_in.eidparser
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.RequiresApi;

@@ -15,12 +15,14 @@
         android:paddingVertical="@dimen/margin_vertical"
         tools:context=".activity.SettingActivity">
 
+
         <ImageView
             android:id="@+id/iv_setting"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:contentDescription="iv_setting"
             android:src="@drawable/ic_setting" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,9 +37,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edt_default_background"
-            android:textSize="@dimen/klp_txt_size_normal"
-            android:contentDescription="Enter your background color"
-            android:maxLines="3" />
+            android:contentDescription="Enter your token"
+            android:maxLines="3"
+            android:textSize="@dimen/klp_txt_size_normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
+            android:text="@string/klp_demo_leftover_session"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edt_leftover_session"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edt_default_background"
+            android:contentDescription="Enter your leftover session"
+            android:maxLines="3"
+            android:textSize="@dimen/klp_txt_size_normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
+            android:text="@string/klp_demo_mrz"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edt_mrz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edt_default_background"
+            android:contentDescription="Enter your MRZ"
+            android:maxLines="3"
+            android:textSize="@dimen/klp_txt_size_normal" />
+
 
         <TextView
             android:id="@+id/tv_enviroment"
@@ -167,8 +204,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:textSize="@dimen/klp_txt_size_normal"
-                    android:text="@string/klp_old_id_card" />
+                    android:text="@string/klp_old_id_card"
+                    android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
 
@@ -190,8 +227,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:textSize="@dimen/klp_txt_size_normal"
-                    android:text="@string/klp_12_digits_id_card" />
+                    android:text="@string/klp_12_digits_id_card"
+                    android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
 
@@ -211,10 +248,10 @@
                 <TextView
                     android:id="@+id/tv_acceptance_document_3"
                     android:layout_width="wrap_content"
-                    android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:text="@string/klp_eid_no_chip" />
+                    android:text="@string/klp_eid_no_chip"
+                    android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
 
@@ -235,12 +272,33 @@
                     android:id="@+id/tv_acceptance_document_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:text="@string/klp_eid_with_chip" />
+                    android:text="@string/klp_eid_with_chip"
+                    android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <CheckBox
+                    android:id="@+id/cb_acceptance_document_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/mainColor"
+                    android:checked="true" />
+
+                <TextView
+                    android:id="@+id/tv_acceptance_document_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/klp_margin_mid"
+                    android:text="@string/klp_eid_2024"
+                    android:textSize="@dimen/klp_txt_size_normal" />
+
+            </LinearLayout>
             <TextView
                 android:id="@+id/tv_verify_check"
                 android:layout_width="wrap_content"
@@ -305,23 +363,6 @@
                 app:rb_first_label="@string/klp_yes"
                 app:rb_second_label="@string/klp_no" />
 
-            <!--        <TextView-->
-            <!--            android:id="@+id/tv_scenario"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_marginTop="@dimen/margin_mid"-->
-            <!--            android:text="@string/klp_index_scenario"-->
-            <!--            android:textSize="@dimen/klp_txt_size_header"-->
-            <!--            android:textStyle="bold" />-->
-
-
-            <!--        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices-->
-            <!--            android:id="@+id/sw_scenario"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            app:kmc_first_label="nfc_ekyc"-->
-            <!--            app:kmc_second_label="verify"-->
-            <!--            app:kmc_third_label="passport" />-->
 
             <TextView
                 android:id="@+id/tv_acceptance_face_matching_threshold"
@@ -369,21 +410,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/slider_face_matching_threshold"
-                    android:textSize="@dimen/klp_txt_size_normal"
                     android:layout_alignEnd="@id/slider_face_matching_threshold"
                     android:layout_marginEnd="@dimen/klp_margin_mid"
                     android:text="100"
+                    android:textSize="@dimen/klp_txt_size_normal"
                     android:translationY="-10dp" />
 
             </RelativeLayout>
         </LinearLayout>
-
-        <!--        <vn.kalapa.faceotp.views.KLPCustomSwitch-->
-        <!--            android:id="@+id/sw_liveness_version"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            app:rb_first_label="@string/klp_liveness_version_2"-->
-        <!--            app:rb_second_label="@string/klp_liveness_version_3" />-->
 
         <TextView
             android:id="@+id/tv_main_color"
@@ -413,10 +447,10 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
-                android:textSize="@dimen/klp_txt_size_normal"
                 android:background="@drawable/edt_default_background"
                 android:contentDescription="Enter your main color (also your button color)"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textSize="@dimen/klp_txt_size_normal" />
         </LinearLayout>
 
         <TextView
@@ -437,21 +471,21 @@
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/klp_margin_mid"
-                android:textSize="@dimen/klp_txt_size_normal"
                 android:background="@drawable/border_button_solid"
                 android:contentDescription="Enter your button text color"
-                android:textAllCaps="true" />
+                android:textAllCaps="true"
+                android:textSize="@dimen/klp_txt_size_normal" />
 
 
             <EditText
                 android:id="@+id/edt_button_text_color"
                 android:layout_width="130dp"
-                android:textSize="@dimen/klp_txt_size_normal"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
                 android:background="@drawable/edt_default_background"
                 android:contentDescription="Enter your text on button color"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textSize="@dimen/klp_txt_size_normal" />
         </LinearLayout>
 
 
@@ -482,9 +516,9 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
-                android:textSize="@dimen/klp_txt_size_normal"
                 android:background="@drawable/edt_default_background"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textSize="@dimen/klp_txt_size_normal" />
         </LinearLayout>
 
         <TextView
@@ -504,19 +538,19 @@
                 android:id="@+id/btn_main_text_color"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/klp_txt_size_normal"
                 android:layout_marginRight="@dimen/klp_margin_mid"
                 android:background="@drawable/border_button_solid"
-                android:textAllCaps="true" />
+                android:textAllCaps="true"
+                android:textSize="@dimen/klp_txt_size_normal" />
 
             <EditText
                 android:id="@+id/edt_main_text_color"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/klp_txt_size_normal"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
                 android:background="@drawable/edt_default_background"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textSize="@dimen/klp_txt_size_normal" />
         </LinearLayout>
 
         <View
@@ -529,9 +563,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_vertical"
-            android:textSize="@dimen/klp_txt_size_normal"
             android:background="@drawable/border_button_solid"
             android:text="@string/klp_save_setting_title"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>
 </ScrollView>

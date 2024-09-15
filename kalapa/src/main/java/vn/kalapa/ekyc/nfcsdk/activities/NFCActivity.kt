@@ -16,7 +16,6 @@ import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.*
 import vn.kalapa.ekyc.capturesdk.CameraXMRZActivity
-import vn.kalapa.ekyc.activity.LivenessActivityForResult
 import vn.kalapa.ekyc.managers.KLPNFCUtils
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
@@ -32,16 +31,6 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     private lateinit var llPleaseMakeSure: LinearLayout
     private lateinit var tvTitle: TextView
     private lateinit var scrollview: ScrollView
-
-    private fun startLivenessForFaceData() {
-        val intent = Intent(this@NFCActivity, LivenessActivityForResult::class.java)
-        if (transactionId != null) {
-            Helpers.printLog("Transaction ID: $transactionId")
-            intent.putExtra("transaction_id", transactionId)
-        }
-        startActivity(intent)
-        finish()
-    }
 
     private fun validateMRZOrOpenMRZScanner() {
         if (intent.getStringExtra("mrz") != null) {
@@ -123,16 +112,16 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     fun getMesageFromErrorCode(errorCode: ResultCode?): String {
         return when (errorCode) {
             ResultCode.CANNOT_OPEN_DEVICE -> KalapaSDK.config.languageUtils.getLanguageString(
-                resources.getString(R.string.klp_not_support_nfc)
+                resources.getString(R.string.klp_nfc_not_support)
             )
 
             ResultCode.CARD_LOST_CONNECTION -> KalapaSDK.config.languageUtils.getLanguageString(
-                resources.getString(R.string.klp_error_nfc_card_lost_connection)
+                resources.getString(R.string.klp_nfc_error_card_lost_connection)
             )
 
             ResultCode.CARD_NOT_FOUND -> KalapaSDK.config.languageUtils.getLanguageString(
                 resources.getString(
-                    R.string.klp_error_nfc_card_not_found
+                    R.string.klp_nfc_error_wrong_id_card
                 )
             )
 
@@ -142,13 +131,13 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
 
             ResultCode.UNKNOWN -> KalapaSDK.config.languageUtils.getLanguageString(
                 resources.getString(
-                    R.string.klp_error_unknown_short
+                    R.string.klp_error_unknown
                 )
             )
 
             ResultCode.WRONG_CCCDID -> KalapaSDK.config.languageUtils.getLanguageString(
                 resources.getString(
-                    R.string.klp_nfc_tag_not_valid
+                    R.string.klp_nfc_error_invalid_chip
                 )
             )
 
@@ -196,7 +185,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                         gifError
                     )
                     (bottomSheetDialog.findViewById<TextView>(R.id.tv_title)!!).text =
-                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_alert_title))
+                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown))
                 }
 
                 override fun OnError(p0: ResultCode?) {
@@ -244,11 +233,11 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                     (bottomSheetDialog.findViewById(R.id.text_status) as TextView).visibility =
                         View.VISIBLE
                     (bottomSheetDialog.findViewById(R.id.text_status) as TextView).text =
-                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_authentication))
+                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_reading_title_reading))
                     (bottomSheetDialog.findViewById(R.id.text_des) as TextView).text =
-                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_hold_still))
+                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_reading_message_2))
                     (bottomSheetDialog.findViewById(R.id.tv_title) as TextView).text =
-                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_authentication))
+                        KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_reading_title_reading))
                     (bottomSheetDialog.findViewById(R.id.text_des) as TextView).setTextColor(
                         Color.parseColor(KalapaSDK.config.mainTextColor)
                     )
@@ -277,7 +266,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                             btnScanNFC.visibility = View.VISIBLE
                             llPleaseMakeSure.visibility = View.VISIBLE
                             llShowPosition.visibility = View.VISIBLE
-                            btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_start_button))
+                            btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_button_start))
                             btnScanNFC.setOnClickListener {
                                 onButtonScanClicked()
                             }
@@ -289,23 +278,23 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                             tvError.text =
                                 if (isNFCNotEnabled) {
                                     btnScanNFC.visibility = View.VISIBLE
-                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_demo_confirm))
+                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_confirm))
                                     btnScanNFC.setOnClickListener {
                                         KLPNFCUtils.openNFCSetting(this@NFCActivity)
                                     }
                                     KalapaSDK.config.languageUtils.getLanguageString(
                                         resources.getString(
-                                            R.string.klp_error_nfc_not_enabled
+                                            R.string.klp_nfc_error_not_enabled
                                         )
                                     )
                                 } else {
                                     btnScanNFC.visibility = View.VISIBLE
-                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_demo_confirm))
+                                    btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_confirm))
                                     btnScanNFC.setOnClickListener {
                                         KalapaSDK.handler.onError(KalapaSDKResultCode.DEVICE_NOT_SUPPORTED)
                                         finish()
                                     }
-                                    KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_not_support_nfc))
+                                    KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_not_support))
                                 }
 
                             tvError.setTextColor(resources!!.getColor(R.color.ekyc_red))
@@ -324,10 +313,10 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         Helpers.printLog("callback onError $errorMess")
         this.runOnUiThread {
             val message = errorMess
-                ?: KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_processing_failed))
+                ?: KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_result_fail))
             Helpers.showDialog(
                 this@NFCActivity,
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_warning_title)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
                 message,
                 R.drawable.ic_warning
             ) {
@@ -382,8 +371,8 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     override fun onEmulatorDetected() {
         Helpers.showDialog(
             this@NFCActivity,
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_alert_title)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_emulator_warning_body)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_emulator)),
             R.drawable.frowning_face
         ) {
             KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)

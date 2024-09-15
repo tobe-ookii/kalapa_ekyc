@@ -91,7 +91,7 @@ class CameraXPassportActivity :
         btnPickImage = findViewById(R.id.btn_pick_image)
         tvPickImage = findViewById(R.id.tv_pick_image)
         tvPickImage.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-        tvPickImage.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_upload_passport))
+        tvPickImage.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_passport_upload))
         Helpers.setBackgroundColorTintList(btnPickImage, KalapaSDK.config.mainTextColor)
         btnPickImage.setOnClickListener {
             pickImageFromGallery()
@@ -99,9 +99,9 @@ class CameraXPassportActivity :
         tvTitle.text =
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_passport_title))
         tvGuide0.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_passport_guide_1))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_passport_capture_note))
         tvGuide1.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_passport_guide_2))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_passport_capture_subtitle))
 
         tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvGuide0.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
@@ -210,7 +210,7 @@ class CameraXPassportActivity :
             tvError.setTextColor(resources.getColor(R.color.ekyc_red))
             btnNext.visibility = View.INVISIBLE
             tvError.text = message
-                ?: KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_processing_failed))
+                ?: KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_result_fail))
         }
         Helpers.printLog("onError message: $message")
     }

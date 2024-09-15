@@ -55,7 +55,7 @@
             android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_solid"
             android:backgroundTint="@color/white"
-            android:text="@string/klp_retry_btn"
+            android:text="@string/klp_button_retry"
             android:visibility="invisible"
             android:textStyle="bold"
             android:textColor="@color/betall_inactive_button" />
@@ -65,7 +65,7 @@
             style="@style/BeTallSingleButtonStyle"
             android:background="@drawable/border_button_solid"
             android:backgroundTint="@color/main_color"
-            android:text="@string/klp_next_btn"
+            android:text="@string/klp_button_continue"
             android:textStyle="bold"
             android:visibility="invisible"
             android:textColor="@color/white" />
@@ -80,7 +80,7 @@
         android:layout_centerInParent="true"
         android:background="@drawable/border_button_solid"
         android:backgroundTint="@color/ekyc_red_60"
-        android:text="@string/klp_error_happen"
+        android:text="@string/klp_error_unknown"
         android:textColor="@color/white"
         android:translationZ="1000dp"
         android:visibility="invisible" />
@@ -151,7 +151,7 @@
         android:layout_marginHorizontal="@dimen/margin_side"
         android:layout_marginTop="@dimen/klp_margin_xsmall"
         android:lines="1"
-        android:text="@string/klp_passport_guide_1"
+        android:text="@string/klp_passport_capture_note"
         android:textStyle="bold"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -164,7 +164,7 @@
         android:layout_above="@id/holder_error"
         android:layout_marginHorizontal="@dimen/margin_side"
         android:lines="2"
-        android:text="@string/klp_passport_guide_2"
+        android:text="@string/klp_passport_capture_subtitle"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="@dimen/klp_txt_size_normal" />
@@ -178,7 +178,7 @@
         android:layout_marginHorizontal="@dimen/margin_horizontal"
         android:background="@drawable/border_button_solid"
         android:backgroundTint="@color/progress_unchecked"
-        android:text="@string/klp_instruction"
+        android:text="@string/klp_guide_button_open"
         android:textColor="#1A94FF"
         android:textSize="@dimen/klp_txt_size_normal"
         android:visibility="gone" />

@@ -37,8 +37,6 @@
     <string name="klp_demo_alert_title">Thông báo</string>
     <string name="klp_demo_confirm">Xác nhận</string>
     <string name="klp_demo_environment">Môi trường</string>
-    <string name="klp_environment_production">Production</string>
-    <string name="klp_environment_dev">Dev</string>
     <string name="klp_demo_error_network">Kết nối thất bại, vui lòng kiểm tra mạng và thử lại.</string>
     <string name="klp_demo_notice_title">Thông báo</string>
     <string name="klp_demo_token">Token</string>
@@ -81,4 +79,26 @@
     <string name="klp_demo_loading">Đang tải…</string>
     <string name="klp_demo_decision_details_title">Chi tiết xét duyệt</string>
     <string name="klp_demo_setting_you_must_enable_at_least_one_nfc_or_capture_image">Chọn ít nhất một chức năng Thu thập ảnh giấy tờ hoặc Quét NFC để tiếp tục</string>
+    <string name="klp_demo_leftover_session">Leftover Session</string>
+    <string name="klp_setting_nfc">Scan NFC</string>
+    <string name="klp_yes">Yes</string>
+    <string name="klp_no">No</string>
+    <string name="klp_setting_acceptance_document">Face match acceptance threshold</string>
+    <string name="klp_old_id_card">Old identity card (9-digit)</string>
+    <string name="klp_12_digits_id_card">Identity card with bar code (12-digit)</string>
+    <string name="klp_eid_no_chip">Identity card (12-digit)</string>
+    <string name="klp_eid_with_chip">Identity card with chip (12-digit)</string>
+    <string name="klp_eid_2024">Identity card with chip since 2024 (12-digit)</string>
+    <string name="klp_setting_verify_check">ID-Name verification</string>
+    <string name="klp_setting_fraud_check">Forgery and fraud check</string>
+    <string name="klp_strict_quality_check">Document quality check level</string>
+    <string name="sw_strict_quality_advance">Basic</string>
+    <string name="sw_strict_quality_basic">Basic</string>
+    <string name="klp_check_if_card_sides_match">Check if two sides match</string>
+    <string name="klp_setting_acceptance_face_matching_threshold">Face match acceptance threshold</string>
+    <string name="klp_your_application_is">Status</string>
+    <string name="klp_error_nfc_unsupported">This device does not support NFC</string>
+    <string name="klp_off">Off</string>
+    <string name="klp_on">On</string>
+    <string name="klp_environment">Environment</string>
 </resources>

@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.util.List;
 
 import vn.kalapa.R;
-import vn.kalapa.ekyc.activity.CameraActivity;
 import vn.kalapa.ekyc.utils.ImageUtils;
 import vn.kalapa.ekyc.views.AutoFitTextureView;
 
@@ -59,7 +58,6 @@ public class LegacyCameraConnectionFragment extends CaptureableFragment {
 
     private Camera camera;
     private Camera.PreviewCallback imageListener;
-    private CameraActivity.LENS_FACING lensFacing;
     private Size desiredSize;
     /**
      * The layout identifier to inflate for this Fragment.
@@ -132,12 +130,10 @@ public class LegacyCameraConnectionFragment extends CaptureableFragment {
 
     }
 
-    public LegacyCameraConnectionFragment(
-            final Camera.PreviewCallback imageListener, final CameraActivity.LENS_FACING lensFacing, final int layout, final Size desiredSize) {
+    public LegacyCameraConnectionFragment(final Camera.PreviewCallback imageListener, final int layout, final Size desiredSize) {
         this.imageListener = imageListener;
         this.layout = layout;
         this.desiredSize = desiredSize;
-        this.lensFacing = lensFacing;
     }
 
     @Override

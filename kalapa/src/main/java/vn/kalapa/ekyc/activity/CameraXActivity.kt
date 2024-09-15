@@ -95,8 +95,8 @@ abstract class CameraXActivity(
         // Something
         Helpers.showDialog(
             this,
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_warning_title)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_emulator_warning_body)), R.drawable.frowning_face
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_emulator)), R.drawable.frowning_face
         ) {
             KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)
             finish()
@@ -160,8 +160,8 @@ abstract class CameraXActivity(
         Helpers.showDialog(this@CameraXActivity,
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera_title)),
             KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_demo_confirm)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_cancel_button)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_confirm)),
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_cancel)),
             R.drawable.frowning_face,
             object : DialogListener {
                 override fun onYes() {
@@ -208,7 +208,7 @@ abstract class CameraXActivity(
             showEndEkyc()
         }
         tvInstruction = findViewById(R.id.tv_instruction)
-        tvInstruction.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_instruction))
+        tvInstruction.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_button_open))
         tvInstruction.setOnClickListener(this)
         tvError = findViewById(R.id.tv_error)
         btnCapture = findViewById(R.id.btn_capture)
@@ -220,9 +220,9 @@ abstract class CameraXActivity(
         btnRetry = findViewById(R.id.btn_retry)
         btnNext = findViewById(R.id.btn_next)
         btnNext.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_next_btn))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_continue))
         btnRetry.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_retry_btn))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_retry))
         Helpers.setBackgroundColorTintList(btnNext, KalapaSDK.config.mainColor)
         Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
         ivAutoCapture = findViewById(R.id.toggle_auto_capture)

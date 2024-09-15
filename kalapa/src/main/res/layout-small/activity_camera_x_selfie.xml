@@ -39,7 +39,7 @@
                 android:layout_height="0dp"
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/klp_margin_mid"
-                android:backgroundTint="@color/red"
+                android:backgroundTint="@color/ekyc_red"
                 android:theme="@style/Theme.MaterialComponents.Light"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
@@ -117,7 +117,7 @@
             android:layout_marginVertical="@dimen/klp_margin_mid"
             android:background="@drawable/border_button_only"
             android:backgroundTint="@color/betall_inactive_button"
-            android:text="@string/klp_retry_btn"
+            android:text="@string/klp_button_retry"
             android:textColor="@color/betall_inactive_button" />
 
         <Button
@@ -125,7 +125,7 @@
             style="@style/BeTallSingleButtonStyle"
             android:background="@drawable/border_button_solid"
             android:backgroundTint="@color/main_color"
-            android:text="@string/klp_next_btn"
+            android:text="@string/klp_button_continue"
             android:textColor="@color/white" />
 
     </LinearLayout>
@@ -188,7 +188,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:lines="2"
-            android:text="@string/klp_liveness_guide_title"
+            android:text="@string/klp_liveness_message_default"
             android:textAlignment="center"
             android:textSize="@dimen/klp_shinhan_title_17" />
     </LinearLayout>
@@ -203,7 +203,7 @@
         android:layout_marginHorizontal="@dimen/margin_horizontal"
         android:background="@drawable/border_button_solid"
         android:backgroundTint="@color/progress_unchecked"
-        android:text="@string/klp_instruction"
+        android:text="@string/klp_guide_button_open"
         android:textColor="#1A94FF"
         android:textSize="@dimen/klp_txt_size_normal"
         android:visibility="gone" />

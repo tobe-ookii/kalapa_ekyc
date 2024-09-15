@@ -430,9 +430,9 @@ public class CameraConnectionFragment extends CaptureableFragment {
         } catch (final NullPointerException e) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
-            ErrorDialog.newInstance(getString(R.string.klp_create_camera_error))
+            ErrorDialog.newInstance(getString(R.string.klp_error_create_camera))
                     .show(getChildFragmentManager(), FRAGMENT_DIALOG);
-            throw new IllegalStateException(getString(R.string.klp_create_camera_error));
+            throw new IllegalStateException(getString(R.string.klp_error_create_camera));
         }
 
         cameraConnectionCallback.onPreviewSizeChosen(previewSize, sensorOrientation);

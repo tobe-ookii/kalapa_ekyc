@@ -48,7 +48,7 @@
                 android:layout_gravity="center"
                 android:layout_marginEnd="30dp"
                 android:gravity="center"
-                android:text="@string/klp_title_front"
+                android:text="/klp_title_front"
                 android:textSize="@dimen/klp_txt_size_title"
                 android:textStyle="normal|bold" />
 
@@ -87,7 +87,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:gravity="left"
-            android:text="@string/klp_guide_title"
+            android:text="klp_guide_title"
             android:textSize="@dimen/klp_txt_size_normal"
             android:textStyle="normal|bold" />
 
@@ -117,7 +117,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
-                android:text="@string/klp_guide_passport_1"
+                android:text="klp_guide_passport_1"
                 android:textSize="@dimen/klp_txt_size_normal" />
 
 
@@ -149,7 +149,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
-                android:text="@string/klp_guide_passport_2"
+                android:text="klp_guide_passport_2"
                 android:textSize="@dimen/klp_txt_size_normal" />
 
 
@@ -181,7 +181,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
-                android:text="@string/klp_guide_passport_3"
+                android:text="klp_guide_passport_3"
                 android:textSize="@dimen/klp_txt_size_normal" />
 
 
@@ -213,7 +213,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
-                android:text="@string/klp_guide_passport_4"
+                android:text="klp_guide_passport_4"
                 android:textSize="@dimen/klp_txt_size_normal" />
 
 
@@ -264,7 +264,7 @@
                     android:layout_height="30dp"
                     android:layout_below="@id/iv_guide_icon"
                     android:gravity="center"
-                    android:text="@string/klp_guide_reject_1"
+                    android:text="klp_guide_reject_1"
                     android:textSize="@dimen/klp_txt_size_description" />
             </LinearLayout>
 
@@ -290,7 +290,7 @@
                     android:layout_height="30dp"
                     android:layout_below="@id/iv_guide_icon"
                     android:gravity="center"
-                    android:text="@string/klp_guide_reject_2"
+                    android:text="klp_guide_reject_2"
                     android:textSize="@dimen/klp_txt_size_description" />
             </LinearLayout>
 
@@ -315,7 +315,7 @@
                     android:layout_height="30dp"
                     android:layout_below="@id/iv_guide_icon"
                     android:gravity="center"
-                    android:text="@string/klp_guide_reject_3"
+                    android:text="klp_guide_reject_3"
                     android:textSize="@dimen/klp_txt_size_description" />
             </LinearLayout>
 
@@ -332,7 +332,7 @@
                 android:id="@+id/nextButton"
                 style="@style/BeTallSingleButtonStyle"
                 android:layout_marginBottom="24dp"
-                android:text="@string/klp_next_btn" />
+                android:text="@string/klp_button_continue" />
         </LinearLayout>
 
 

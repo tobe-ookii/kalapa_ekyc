@@ -69,7 +69,7 @@
                     android:layout_marginStart="@dimen/klp_margin_small"
                     android:gravity="center"
                     android:lines="2"
-                    android:text="@string/klp_check_nfc_text"
+                    android:text="@string/klp_nfc_location_title"
                     android:textAllCaps="true"
                     android:textSize="@dimen/klp_shinhan_text_15"
                     android:visibility="visible" />
@@ -90,7 +90,7 @@
                     android:layout_marginHorizontal="@dimen/margin_horizontal"
                     android:layout_marginTop="@dimen/klp_margin_mid"
                     android:gravity="left"
-                    android:text="@string/klp_guide_title"
+                    android:text="@string/klp_guide_note"
                     android:textSize="@dimen/klp_shinhan_title_17"
                     android:textStyle="normal|bold" />
 
@@ -269,7 +269,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
             android:background="@drawable/border_button_solid"
-            android:text="@string/klp_nfc_start_button"
+            android:text="@string/klp_nfc_button_start"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/klp_shinhan_title_17"

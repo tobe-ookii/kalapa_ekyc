@@ -111,7 +111,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         tvTitle = findViewById(R.id.tv_title)
         tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvTitle.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_confirm))
+            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm_title))
         edName = findViewById(R.id.edName)
         edName.setOnEditorActionListener(this)
 //        edName.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
@@ -182,28 +182,37 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 }
             })
         }
-//        noteLabel = findViewById(R.id.noteLabel)
+        tvConfirm0.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        tvConfirm1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        // klp_results_info_name
+        tvConfirm1.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_name))
+        tvConfirm2.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // klp_results_info_gender
+        tvConfirm2.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_gender))
+        tvConfirm3.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // klp_results_info_dob
+        tvConfirm3.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_dob))
+        tvConfirm4.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // klp_results_info_id
+        tvConfirm4.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_id))
+        tvConfirm5.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_doi
+        tvConfirm5.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_doi))
+        tvConfirm6.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_poi
+        tvConfirm6.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_poi))
 
-//        var sdk = Build.VERSION.SDK_INT
-//        val imageBytes = BitmapUtil.convert(KalapaSDK.config.background)
-//        val background = BitmapDrawable(imageBytes)
-//
-//        if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
-//            containerView.setBackgroundDrawable(background)
-//        } else {
-//            containerView.background = background
-//        }
+        tvConfirm7.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_res
+        tvConfirm7.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_res))
+        tvConfirm8.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        tvConfirm8.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_res))
+        tvConfirm9.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_home
+        tvConfirm9.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_home))
+        tvConfirm10.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        tvConfirm10.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_doe)) //results_info_doe
+        radioMale.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm_gender_m))
+        radioFemale.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm_gender_f))
         this.btnPersonalConfirm.let {
-            ViewCompat.setBackgroundTintList(
-                it,
-                ColorStateList.valueOf(Color.parseColor(KalapaSDK.config.mainColor))
-            )
+            ViewCompat.setBackgroundTintList(it, ColorStateList.valueOf(Color.parseColor(KalapaSDK.config.mainColor)))
         }
+        btnPersonalConfirm.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_confirm))
         Helpers.setRadioButtonTintList(this.radioMale, Color.parseColor(KalapaSDK.config.mainColor))
-        Helpers.setRadioButtonTintList(
-            this.radioFemale,
-            Color.parseColor(KalapaSDK.config.mainColor)
-        )
+        Helpers.setRadioButtonTintList(this.radioFemale, Color.parseColor(KalapaSDK.config.mainColor))
     }
 
     override fun onEmulatorDetected() {
@@ -247,7 +256,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
     fun missingField(field: String) {
         Toast.makeText(
             this,
-            getString(R.string.klp_error_cannot_leave_empty) + " '${field}'",
+            getString(R.string.klp_confirm_warning) + " '${field}'",
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -299,8 +308,12 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 return
             }
             val sex = radioGroupSex.checkedRadioButtonId
-            val gd = if (sex == R.id.radio_male) resources.getString(R.string.klp_field_male) else resources.getString(
-                R.string.klp_field_female
+            val gd = KalapaSDK.config.languageUtils.getLanguageString(
+                if (sex == R.id.radio_male)
+                    resources.getString(R.string.klp_confirm_gender_m)
+                else resources.getString(
+                    R.string.klp_confirm_gender_f
+                )
             )
             ProgressView.showProgress(this@ConfirmActivity)
             KalapaAPI.confirm(
@@ -320,7 +333,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                         ProgressView.hideProgress()
                         Helpers.showDialog(
                             this@ConfirmActivity,
-                            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_error)),
+                            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
                             error.getMessageError(),
                             R.drawable.sad_face
                         )
@@ -518,15 +531,15 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         if (error.code == 12) {
             Helpers.showDialog(
                 this@ConfirmActivity,
-                resources.getString(R.string.klp_title_error),
-                error.getMessageError() + ", " + resources.getString(R.string.klp_message_confirm_please_retry),
+                resources.getString(R.string.klp_error_unknown),
+                error.getMessageError() + ", " + resources.getString(R.string.klp_button_retry),
                 R.drawable.sad_face,
                 this
             )
         } else {
             Helpers.showDialog(
                 this@ConfirmActivity,
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_error)),
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
                 error.getMessageError(),
                 R.drawable.sad_face
             )
@@ -545,22 +558,6 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         Handler(Looper.getMainLooper()).postDelayed({
             finish()
         }, 1000)
-//        Kalapa.klpHandler.onExpired()
-    }
-
-    override fun finish() {
-//        if (Kalapa.showResult && Kalapa.isConfirmResultInitialized() && isFinishedConfirm) {
-//            intent = Intent(this@ConfirmActivity, ResultActivity::class.java)
-//            startActivity(intent)
-//        } else {
-//            if (KalapaSDK.result?.idNumber != null) {
-//                Kalapa.klpHandler.onPreComplete()
-//                Kalapa.klpHandler.onComplete(Kalapa.result!!)
-//                if (Kalapa.kalapaListener != null)
-//                    Kalapa.kalapaListener!!.completion(Kalapa.result!!)
-//            }
-//        }
-        super.finish()
     }
 
     override fun onNo() {

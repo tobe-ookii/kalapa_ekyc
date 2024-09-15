@@ -84,7 +84,7 @@ abstract class BaseNFCActivity : BaseActivity {
         ibNote3 = findViewById(R.id.ib_note_3)
         ibNote4 = findViewById(R.id.ib_note_4)
         tvNote0 = findViewById(R.id.tv_note_0)
-        tvNote0.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_title))
+        tvNote0.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_note))
         findViewById<TextView>(R.id.tv_note_1).text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_nfc_1))
         findViewById<TextView>(R.id.tv_note_2).text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_nfc_2))
         findViewById<TextView>(R.id.tv_note_3).text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_nfc_3))
@@ -103,8 +103,8 @@ abstract class BaseNFCActivity : BaseActivity {
             onButtonScanClicked()
         }
         tvShowPosition = findViewById(R.id.tv_show_nfc_location)
-        btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_start_button))
-        tvShowPosition.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_nfc_text))
+        btnScanNFC.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_button_start))
+        tvShowPosition.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_button_nfc_location))
         llShowPosition = findViewById(R.id.ll_show_nfc_location)
         tvShowPosition.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
         llShowPosition.setOnClickListener {
@@ -192,10 +192,10 @@ abstract class BaseNFCActivity : BaseActivity {
             bottomSheetDialog.window?.setGravity(80)
             val tvTitle = this.bottomSheetDialog.findViewById<TextView>(R.id.tv_title)
             this.bottomSheetDialog.findViewById<TextView>(R.id.tv_klp_guide_nfc_position_1).text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_nfc_position_1))
-            this.bottomSheetDialog.findViewById<TextView>(R.id.tv_klp_guide_nfc_position_2).text =  KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_nfc_position_2))
-            tvTitle.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_antenna_title))
+            this.bottomSheetDialog.findViewById<TextView>(R.id.tv_klp_guide_nfc_position_2).text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_nfc_position_2))
+            tvTitle.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_location_title)) // nfc_location_title
             val btnUnderstand = bottomSheetDialog.findViewById<Button>(R.id.btn_understand)
-            btnUnderstand.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_cancel_button))
+            btnUnderstand.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_button_close))
             btnUnderstand.setOnClickListener {
                 hideBottomSheet()
                 isBottomSheetGuide = false
@@ -221,19 +221,19 @@ abstract class BaseNFCActivity : BaseActivity {
     fun showBottomSheet() {
         initBottomSheetDialog()
         try {
-            (this.bottomSheetDialog.findViewById(R.id.text_des) as TextView).text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_request_present))
+            (this.bottomSheetDialog.findViewById(R.id.text_des) as TextView).text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_reading_message_1))
             val btnCancel = this.bottomSheetDialog.findViewById<Button>(R.id.btn_cancel)
             val tvStatus = this.bottomSheetDialog.findViewById<TextView>(R.id.text_status)
             val tvDescription = this.bottomSheetDialog.findViewById<TextView>(R.id.text_des)
             val tvTitle = this.bottomSheetDialog.findViewById<TextView>(R.id.tv_title)
-            btnCancel.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_cancel_button))
+            btnCancel.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_cancel))
             btnCancel.setOnClickListener { hideBottomSheet() }
             Helpers.setBackgroundColorTintList(btnCancel, KalapaSDK.config.mainColor)
             btnCancel.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
             tvDescription.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
             tvStatus.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
             tvStatus.visibility = View.VISIBLE
-            tvStatus.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_message_nfc_ready))
+            tvStatus.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_reading_title_ready))
             tvTitle.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_nfc_title))
             tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
 //            (this.bottomSheetDialog.findViewById(id.btnCancel) as TextView).setText(CustomSdk.Companion.getTextCancel())

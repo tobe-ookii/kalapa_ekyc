@@ -48,8 +48,9 @@ import java.util.Locale
 // prod: api-ekyc.kalapa.vn/face-otp
 // dev: faceotp-dev.kalapa.vn/api
 class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
-    //    private val KLP_PROD = "https://api-ekyc.kalapa.vn/face-otp"
+//    private val KLP_PROD = "https://api-ekyc.kalapa.vn/face-otp"
 //    private val KLP_DEV = "https://faceotp-dev.kalapa.vn/api"
+
     private val KLP_PROD = "https://ekyc-api.kalapa.vn"
     private val KLP_DEV = "https://ekyc-dev-internal.kalapa.vn"
     private val defaultConfig = KalapaSDKConfig.KalapaSDKConfigBuilder(this@SettingActivity).build()

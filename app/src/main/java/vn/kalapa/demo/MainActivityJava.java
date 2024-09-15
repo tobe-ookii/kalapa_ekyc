@@ -112,15 +112,11 @@ public class MainActivityJava extends BaseActivity {
                     createSessionResult -> {
                         ProgressView.Companion.hideProgress(true);
                         LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.getFlow(), createSessionResult.getToken());
-                        KalapaSDK.Companion.startFullEKYC(MainActivityJava.this,
-                                createSessionResult.getToken()+"Something",
-                                createSessionResult.getFlow(), sdkConfig,
-//                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ",
-                                "",
-//                                "IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<",
-                                "",
-//                                BitmapUtil.Companion.getTU_BASE64(),
-                                "", klpHandler);
+                        new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig)
+//                                .withFaceData(BitmapUtil.Companion.getTU_BASE64())
+//                                .withMrz("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
+//                                .withLeftoverSession("\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ\"")
+                                .build().start(createSessionResult.getToken(), createSessionResult.getFlow(), klpHandler);
                         return null;
                     }, kalapaError -> {
                         ProgressView.Companion.hideProgress(true);

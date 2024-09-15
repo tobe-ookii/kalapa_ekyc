@@ -37,8 +37,9 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     private var detector: KLPDetector? = null
     private lateinit var overlay: OverlayView
     private lateinit var ivCardInMask: ImageView
+    private lateinit var tvAutoCapture: TextView
 
-//    private lateinit var ivBitmapReview: ImageView
+    //    private lateinit var ivBitmapReview: ImageView
     private lateinit var documentType: KalapaSDKMediaType
     private fun getIntentData() {
         documentType = KalapaSDKMediaType.fromName(intent.getStringExtra("document_type") ?: KalapaSDKMediaType.BACK.name)
@@ -61,11 +62,12 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
             }
         )
         tvTitle = findViewById(R.id.tv_title)
+        var titleStr = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_title))
         tvTitle.text =
             when (documentType) {
-                KalapaSDKMediaType.FRONT -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_front))
-                KalapaSDKMediaType.BACK -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_title_back))
-                else -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_ekyc))
+                KalapaSDKMediaType.FRONT -> "$titleStr ${KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_subtitle_front))}"
+                KalapaSDKMediaType.BACK -> "$titleStr ${KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_subtitle_back))}"
+                else -> titleStr
             }
         ivPreviewImage = findViewById(R.id.iv_preview_image)
         ivPreviewImage.isDrawingCacheEnabled = false
@@ -74,9 +76,11 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
         overlay = findViewById(R.id.overlay)
 //        ivBitmapReview = findViewById(R.id.iv_bitmap_preview)
         ivCardInMask = findViewById(R.id.iv_card_in_mask)
-
+        tvAutoCapture = findViewById(R.id.klp_auto_capture)
+        tvAutoCapture.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        tvAutoCapture.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_ac))
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
-        tvGuide1.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_capture_note))
+        tvGuide1.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_note))
         tvGuide1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
 
     }
@@ -268,7 +272,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
             runOnUiThread {
                 tvError.setTextColor(resources.getColor(R.color.ekyc_green))
                 tvError.visibility = View.VISIBLE
-                tvError.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_auto_capture_success))
+                tvError.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_ac_success))
             }
         }, 200)
     }
@@ -276,7 +280,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     @SuppressLint("ResourceType")
     override fun onImageOutOfMask() {
         runOnUiThread {
-            sendError(KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.please_place_card_into_mask)))
+            sendError(KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_ac_corners)))
             Helpers.setBackgroundColorTintList(ivCardInMask, resources.getString(R.color.ekyc_red))
         }
     }
@@ -302,7 +306,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     @SuppressLint("ResourceType")
     override fun onImageTooSmall() {
         runOnUiThread {
-            sendError(KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_autocapture_too_small)))
+            sendError(KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_ac_too_small)))
             Helpers.setBackgroundColorTintList(ivCardInMask, resources.getString(R.color.ekyc_red))
         }
     }

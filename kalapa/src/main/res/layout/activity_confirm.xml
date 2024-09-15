@@ -45,7 +45,6 @@
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:lines="2"
-                android:text="@string/klp_subtitle_confirm"
                 android:textColor="@color/textColor"
                 android:textSize="@dimen/klp_txt_size_normal" />
 
@@ -56,7 +55,6 @@
                 android:background="@color/ekyc_grey"
                 android:paddingHorizontal="@dimen/margin_horizontal"
                 android:paddingVertical="@dimen/klp_txt_size_normal"
-                android:text="@string/klp_personal_info"
                 android:textSize="@dimen/klp_txt_size_normal"
                 android:visibility="gone" />
 
@@ -75,7 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="@string/klp_field_id_number"
+                    android:text="klp_field_id_number"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/klp_txt_size_description" />
 
@@ -108,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
-                    android:text="@string/klp_field_name"
+                    android:text="klp_field_name"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/klp_txt_size_description" />
 
@@ -150,7 +148,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
-                        android:text="@string/klp_field_dob"
+                        android:text="klp_field_dob"
                         android:textColor="@color/textColor"
                         android:textSize="@dimen/klp_txt_size_description" />
 
@@ -190,7 +188,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
-                        android:text="@string/klp_field_gender"
+                        android:text="klp_field_gender"
                         android:textColor="@color/textColor"
                         android:textSize="@dimen/klp_txt_size_description" />
 
@@ -208,7 +206,7 @@
                             android:layout_height="wrap_content"
                             android:button="@drawable/radio_background"
                             android:paddingLeft="5dp"
-                            android:text="@string/klp_field_male"
+                            android:text="@string/klp_confirm_gender_m"
                             android:checked="true"
                             android:textSize="@dimen/klp_txt_size_normal"
                             android:buttonTint="@color/ekyc_red"
@@ -221,7 +219,7 @@
                             android:layout_marginLeft="@dimen/klp_margin_xsmall"
                             android:button="@drawable/radio_background"
                             android:paddingLeft="5dp"
-                            android:text="@string/klp_field_female"
+                            android:text="@string/klp_confirm_gender_f"
                             android:textSize="@dimen/klp_txt_size_normal"
                             android:textStyle="bold" />
 
@@ -247,7 +245,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="@string/klp_field_hometown"
+                    android:text="klp_field_hometown"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/klp_txt_size_description" />
 
@@ -283,7 +281,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="@string/klp_field_address"
+                    android:text="klp_field_address"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/klp_txt_size_description" />
 
@@ -325,7 +323,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
-                        android:text="@string/klp_field_doi"
+                        android:text="klp_field_doi"
                         android:textColor="@color/textColor"
                         android:textSize="@dimen/klp_txt_size_description" />
 
@@ -364,7 +362,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
-                        android:text="@string/klp_field_doe"
+                        android:text="klp_field_doe"
                         android:textColor="@color/textColor"
                         android:textSize="@dimen/klp_txt_size_description" />
 
@@ -403,7 +401,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="@string/klp_field_poi"
+                    android:text="klp_field_poi"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/klp_txt_size_description" />
 
@@ -439,7 +437,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:text="@string/klp_field_qr"
+                    android:text="klp_field_qr"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/klp_txt_size_description" />
 
@@ -468,7 +466,7 @@
         style="@style/BeTallSingleButtonStyle"
         android:layout_marginBottom="30dp"
         android:background="@drawable/border_button_solid"
-        android:text="@string/klp_btn_confirm"
+        android:text="klp_btn_confirm"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 </LinearLayout>
