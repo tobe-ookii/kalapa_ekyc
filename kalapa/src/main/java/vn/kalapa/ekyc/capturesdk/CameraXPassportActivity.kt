@@ -54,24 +54,10 @@ class CameraXPassportActivity :
 
     private fun processFromActivityResult(imgUri: Uri?) {
         if (imgUri != null) {
-            val inputStream = contentResolver.openInputStream(imgUri)
-            if (inputStream != null) {
-                Helpers.printLog("Picked image from inputStream $imgUri")
-                val exif = ExifInterface(inputStream)
-                val rotation = when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
-                    6 -> 90
-                    3 -> 180
-                    8 -> 270
-                    else -> 0
-                }
-                tmpBitmap = BitmapUtil.rotateBitmapToStraight(MediaStore.Images.Media.getBitmap(contentResolver, imgUri), rotation)
-                Helpers.printLog("Picked image: $imgUri with Rotation $rotation ${tmpBitmap!!.width} ${tmpBitmap!!.height} ${tmpBitmap!!.byteCount}")
-                tmpBitmap = BitmapUtil.resizeImageFromGallery(tmpBitmap!!)
-                Helpers.printLog("Picked image: Compress ${tmpBitmap!!.byteCount} ${tmpBitmap!!.width} ${tmpBitmap!!.height}")
-                Handler(Looper.getMainLooper()).postDelayed({
-                    stopCamera()
-                }, 100)
-            }
+            tmpBitmap = BitmapUtil.getBitmapFromUri(contentResolver, imgUri)
+            Handler(Looper.getMainLooper()).postDelayed({
+                stopCamera()
+            }, 100)
         }
     }
 

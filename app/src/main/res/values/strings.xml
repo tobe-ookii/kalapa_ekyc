@@ -7,36 +7,27 @@
     <string name="klp_liveness_passive">Passive</string>
     <string name="user_id_cannot_leave_blank">User ID can not leave blank</string>
     <string name="klp_user_onboard">Onboard</string>
-    <string name="klp_active">Chủ động</string>
+    <string name="klp_active">Active</string>
     <string name="klp_dev_desc">Development</string>
-    <string name="klp_enter_amount">Nhập số tiền</string>
-    <string name="klp_enter_content">Nhập nội dung</string>
-    <string name="klp_enter_destination">Nhập số tài khoản</string>
-    <string name="klp_demo_account">Tài khoản</string>
-    <string name="klp_demo_amount">Số tiền</string>
-    <string name="klp_demo_back_main_screen">Quay lại màn hình chính</string>
-    <string name="klp_index_background_color">Màu nền</string>
-    <string name="klp_index_button_text_color">Màu chữ trong phím</string>
-    <string name="klp_index_environment">Môi trường</string>
-    <string name="klp_demo_liveness">Phiên bản xác thực sự sống</string>
-    <string name="klp_index_language">Ngôn ngữ</string>
-    <string name="klp_index_main_color">Màu chủ đạo</string>
-    <string name="klp_index_main_text_color">Màu chữ chính</string>
-    <string name="klp_index_scenario">Kịch bản</string>
-    <string name="klp_miss_account_destination">Tài khoản đích không được bỏ trống.</string>
-    <string name="klp_miss_transfer">Số tiền phải lớn hơn 0đ.</string>
-    <string name="klp_next">Tiếp</string>
-    <string name="klp_passive">Tự động</string>
+    <string name="klp_index_background_color">Background color</string>
+    <string name="klp_index_button_text_color">Button text color</string>
+    <string name="klp_index_environment">Environment</string>
+    <string name="klp_demo_liveness">Liveness version</string>
+    <string name="klp_index_language">Language</string>
+    <string name="klp_index_main_color">Main color</string>
+    <string name="klp_index_main_text_color">Main text color</string>
+    <string name="klp_next">Continue</string>
+    <string name="klp_passive">Passive</string>
     <string name="klp_prod_desc">Production</string>
-    <string name="klp_save_setting_title">Lưu cài đặt</string>
-    <string name="klp_semi_active">Bán tự động</string>
-    <string name="klp_start">Bắt đầu</string>
-    <string name="klp_demo_language_vi">Tiếng Việt</string>
-    <string name="klp_demo_language_en">Tiếng Anh</string>
-    <string name="klp_demo_language_ko">Tiếng Hàn</string>
+    <string name="klp_save_setting_title">Save</string>
+    <string name="klp_semi_active">Semi Active</string>
+    <string name="klp_start">Start</string>
+    <string name="klp_demo_language_vi">Vietnamese</string>
+    <string name="klp_demo_language_en">English</string>
+    <string name="klp_demo_language_ko">Korean</string>
     <string name="klp_demo_alert_title">Notice</string>
-    <string name="klp_demo_confirm">Xác nhận</string>
-    <string name="klp_demo_environment">Môi trường</string>
+    <string name="klp_demo_confirm">Confirm</string>
+    <string name="klp_demo_environment">Environment</string>
     <string name="klp_environment_production" translatable="false">Prod</string>
     <string name="klp_environment_dev" translatable="false">Dev</string>
     <string name="klp_demo_error_network">Connection lost, please inspect your network and try again.</string>
@@ -83,8 +74,8 @@
     <string name="klp_demo_loading">Loading…</string>
     <string name="klp_demo_decision_details_title">Decision details</string>
     <string name="klp_demo_setting_you_must_enable_at_least_one_nfc_or_capture_image">Please enable at least one of the capture image or NFC features.</string>
-    <string name="klp_demo_leftover_session">Leftover Session</string>
-    <string name="klp_demo_mrz">MRZ</string>
+    <string name="klp_demo_leftover_session" translatable="false">Session ID</string>
+    <string name="klp_demo_mrz" translatable="false">MRZ</string>
     <string name="klp_setting_nfc">Scan NFC</string>
     <string name="klp_yes">Yes</string>
     <string name="klp_no">No</string>
@@ -106,5 +97,20 @@
     <string name="klp_off">Off</string>
     <string name="klp_on">On</string>
     <string name="klp_environment">Environment</string>
+    <string name="klp_demo_scenario">Scenario</string>
+    <string name="klp_demo_scenario_register">Register</string>
+    <string name="klp_demo_scenario_upgrade">Upgrade</string>
+    <string name="klp_demo_scenario_custom">Custom</string>
+    <string name="klp_demo_face_data">Face Data</string>
+    <string name="klp_demo_pick_image">Choose from library</string>
+    <string name="klp_demo_liveness_version_description">- Passive: No action is required.\n- Semi-Active: Performs far-near liveness detection.\n- Active: Performs three different actions.</string>
+    <string name="klp_demo_scenario_description">- Register: Authenticate and register a new account.\n- Upgrade: Verify using NFC chip information.\n- Custom: Choose your own eKYC flow.</string>
+    <string name="klp_demo_setting_screen">Screen</string>
+    <string name="klp_demo_setting_screen_capture">Capture ID Screen</string>
+    <string name="klp_demo_setting_screen_liveness">Liveness Screen</string>
+    <string name="klp_demo_screen_nfc">NFC Verification Screen</string>
+    <string name="klp_demo_from_session_id">From Session ID</string>
+    <string name="klp_demo_from_provided_data">From provided data</string>
+
 
 </resources>

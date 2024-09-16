@@ -3,6 +3,7 @@ package vn.kalapa.demo.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.slider.Slider
 import vn.kalapa.demo.R
@@ -23,18 +26,22 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_2
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_3
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_4
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_5
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BACKGROUND_COLOR
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BTN_TEXT_COLOR
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENV
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_DATA_URI
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LANGUAGE
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LEFTOVER_SESSION
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LIVENESS_VERSION
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MAIN_COLOR
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MAIN_TEXT_COLOR
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MRZ
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_SCENARIO
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_TOKEN
@@ -43,6 +50,7 @@ import vn.kalapa.ekyc.utils.Common.Companion.nfcAvailable
 import vn.kalapa.ekyc.utils.LocaleHelper
 import vn.kalapa.ekyc.views.KLPCustomMultipleChoices
 import vn.kalapa.ekyc.views.KLPCustomSwitch
+import java.io.File
 import java.util.Locale
 
 // prod: api-ekyc.kalapa.vn/face-otp
@@ -55,9 +63,29 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private val KLP_DEV = "https://ekyc-dev-internal.kalapa.vn"
     private val defaultConfig = KalapaSDKConfig.KalapaSDKConfigBuilder(this@SettingActivity).build()
 
+
+    private lateinit var tvMRZ: TextView
+    private lateinit var edtMRZ: EditText
+    private lateinit var tvLeftoverSession: TextView
+    private lateinit var edtLeftoverSession: EditText
+    private lateinit var tvFaceData: TextView
+    private lateinit var tvScenario: TextView
+    private lateinit var rgScenario: KLPCustomMultipleChoices
+    private lateinit var containerMrz: LinearLayout
+    private lateinit var containerFaceData: LinearLayout
+    private lateinit var containerUpgrade: LinearLayout
+    private lateinit var containerLeftoverSession: LinearLayout
+    private lateinit var containerRegister: LinearLayout
+    private lateinit var containerCustom: LinearLayout
+    private lateinit var tvFaceDataUri: TextView
+    private lateinit var btnFaceData: Button
+    private lateinit var rgUpgradePlan: KLPCustomSwitch
+
+    private lateinit var tvLivenessDescription: TextView
+    private lateinit var tvScenarioDescription: TextView
+
     //    private lateinit var rgLanguage: KLPCustomMultipleChoices
     private lateinit var rgLanguage: KLPCustomSwitch
-
     private lateinit var tvEnvironment: TextView
     private lateinit var rgEnvironment: KLPCustomSwitch
     private lateinit var rgLivenessVersion: KLPCustomMultipleChoices
@@ -80,6 +108,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvBackgroundColor: TextView
     private lateinit var tvScanNFC: TextView
     private lateinit var tvCaptureImage: TextView
+
 
     private lateinit var tvVerifyCheck: TextView
     private lateinit var tvFraudCheck: TextView
@@ -105,9 +134,23 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var cbAcceptedOld12DigitsIdCard: CheckBox
     private lateinit var cbAcceptedEidWithoutChip: CheckBox
     private lateinit var cbAcceptedEidWithChip: CheckBox
+    private lateinit var cbAcceptedEid2024: CheckBox
 
+    private lateinit var cbCaptureIdScreen: CheckBox
+    private lateinit var cbLivenessScreen: CheckBox
+    private lateinit var cbNFCScreen: CheckBox
+
+    private lateinit var tvScreenCapture: TextView
+    private lateinit var tvScreenLiveness: TextView
+    private lateinit var tvScreenNFC: TextView
+    private lateinit var tvScreen: TextView
     private lateinit var sliderFaceMatchingThreshold: Slider
 
+    private var tvList = ArrayList<TextView>()
+    private var rgList = ArrayList<RadioGroup>()
+    private var edtList = ArrayList<EditText>()
+    private var cbList = ArrayList<CheckBox>()
+    private var btnList = ArrayList<Button>()
 
     //    private lateinit var tvScenario: TextView
 //    private lateinit var rgScenario: KLPCustomMultipleChoices
@@ -120,9 +163,67 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         refreshUI()
     }
 
+    private fun pickImageFromGallery() {
+        changeImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private val changeImage = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        // Callback is invoked after the user selects a media item or closes the
+        // photo picker.
+        if (uri != null) {
+            LogUtils.printLog("PhotoPicker", "Selected URI: $uri")
+            processFromActivityResult(uri)
+        } else {
+            LogUtils.printLog("PhotoPicker", "No media selected")
+        }
+    }
+
+    private fun processFromActivityResult(imgUri: Uri?) {
+        if (imgUri != null) {
+            val inputStream = contentResolver.openInputStream(imgUri)
+            if (inputStream != null) {
+                LogUtils.printLog("Picked image from inputStream $imgUri")
+                tvFaceDataUri.text = imgUri.toString()
+            }
+        }
+    }
+
     private fun findViewById() {
         rootContainer = findViewById(R.id.root_container)
+        containerUpgrade = findViewById(R.id.container_upgrade)
+        tvScreenNFC = findViewById(R.id.tv_screen_nfc)
+        tvScreen = findViewById(R.id.tv_screen)
+        tvScreenCapture = findViewById(R.id.tv_screen_capture)
+        tvScreenLiveness = findViewById(R.id.tv_screen_liveness)
         container = findViewById(R.id.ln_container)
+        containerCustom = findViewById(R.id.container_custom)
+        tvMRZ = findViewById(R.id.tv_mrz)
+        edtMRZ = findViewById(R.id.edt_mrz)
+        tvLeftoverSession = findViewById(R.id.tv_leftover_session)
+        tvList.add(tvLeftoverSession)
+        edtLeftoverSession = findViewById(R.id.edt_leftover_session)
+        edtList.add(edtLeftoverSession)
+        tvFaceData = findViewById(R.id.tv_face_data)
+        tvList.add(tvFaceData)
+        tvScenario = findViewById(R.id.tv_scenario)
+        tvList.add(tvScenario)
+        rgScenario = findViewById(R.id.sw_scenario)
+        rgScenario.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
+            containerRegister.visibility = if (it == 0) View.VISIBLE else View.GONE
+            containerUpgrade.visibility = if (it == 1) View.VISIBLE else View.GONE
+            containerCustom.visibility = if (it == 2) View.VISIBLE else View.GONE
+        }
+        rgList.add(rgScenario)
+        containerMrz = findViewById(R.id.container_mrz)
+        containerFaceData = findViewById(R.id.container_face_data)
+        containerLeftoverSession = findViewById(R.id.container_leftover_session)
+        containerRegister = findViewById(R.id.container_register)
+        btnFaceData = findViewById(R.id.btn_choose_face_data)
+        btnFaceData.setOnClickListener {
+            pickImageFromGallery()
+        }
+        tvFaceDataUri = findViewById(R.id.tv_face_data_uri)
+
         rootContainer.setBackgroundColor(resources.getColor(R.color.ekyc_demo_color))
         rootContainer.setOnClickListener {
             hideKeyboard()
@@ -130,18 +231,24 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         container.setOnClickListener {
             hideKeyboard()
         }
+
         edtToken = findViewById(R.id.edt_token)
+        edtList.add(edtToken)
         rgLanguage = findViewById(R.id.sw_language)
+        rgList.add(rgLanguage)
         rgLivenessVersion = findViewById(R.id.sw_liveness_version)
-//        tvScenario = findViewById(R.id.tv_scenario)
+        rgUpgradePlan = findViewById(R.id.sw_upgrade_plan)
+        rgList.add(rgLivenessVersion)
         rgEnvironment = findViewById(R.id.sw_enviroment)
-//        rgScenario = findViewById(R.id.sw_scenario)
+        rgList.add(rgEnvironment)
         tvEnvironment = findViewById(R.id.tv_enviroment)
+        tvList.add(tvEnvironment)
         btnSaveConfig = findViewById(R.id.btn_next)
 
         tvLanguage = findViewById(R.id.tv_language)
         tvLivenessVersion = findViewById(R.id.tv_liveness_version)
-
+        tvLivenessDescription = findViewById(R.id.tv_liveness_version_description)
+        tvScenarioDescription = findViewById(R.id.tv_scenario_description)
         btnSaveConfig.setOnClickListener {
             setConfigBeforeExit()
         }
@@ -158,13 +265,20 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgScanNFC = findViewById(R.id.sw_enable_nfc)
         rgCaptureImage = findViewById(R.id.sw_capture_image)
         cbAcceptedEidWithChip = findViewById(R.id.cb_acceptance_document_4)
+        cbAcceptedEid2024 = findViewById(R.id.cb_acceptance_document_5)
+        cbCaptureIdScreen = findViewById(R.id.cb_screen_capture)
+        cbLivenessScreen = findViewById(R.id.cb_screen_liveness)
+        cbNFCScreen = findViewById(R.id.cb_screen_nfc)
+
         rgScanNFC.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             if (it && !nfcAvailable(this@SettingActivity)) {
                 Toast.makeText(this@SettingActivity, resources.getString(R.string.klp_error_nfc_unsupported), Toast.LENGTH_SHORT).show()
                 this.rgScanNFC.switchChangeListener(false)
             } else {
-                if (it) cbAcceptedEidWithChip.isChecked = true
-                else {
+                if (it) {
+                    cbAcceptedEidWithChip.isChecked = true
+                    cbAcceptedEid2024.isChecked = true
+                } else {
                     if (this::rgCaptureImage.isInitialized) if (!rgCaptureImage.isPositiveCheck)
                         this.rgCaptureImage.switchChangeListener(true)
 
@@ -174,16 +288,25 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgCaptureImage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             if (!it) {
                 cbAcceptedEidWithChip.isChecked = true // Only work with eid
+                cbAcceptedEid2024.isChecked = true
                 if (this::rgScanNFC.isInitialized) if (!rgScanNFC.isPositiveCheck) rgScanNFC.switchChangeListener(true)
             }
         }
         cbAcceptedEidWithChip.setOnCheckedChangeListener { _, b ->
             LogUtils.printLog("cbAcceptedEidWithChip onCheckedChanged $b")
-            if (!b) {
+            if (!b && !cbAcceptedEid2024.isChecked) {
                 rgScanNFC.switchChangeListener(false)
                 rgCaptureImage.switchChangeListener(true)
             }
         }
+        cbAcceptedEid2024.setOnCheckedChangeListener { _, b ->
+            LogUtils.printLog("cbAcceptedEid2024 onCheckedChanged $b")
+            if (!b && !cbAcceptedEidWithChip.isChecked) {
+                rgScanNFC.switchChangeListener(false)
+                rgCaptureImage.switchChangeListener(true)
+            }
+        }
+
 //        rgLanguage.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
 //            LogUtils.printLog("Current language is $it")
 //            LocaleHelper.setLocale(
@@ -284,8 +407,10 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         Helpers.setBackgroundColorTintList(btnMainColor, mainColor)
         Helpers.setBackgroundColorTintList(btnButtonTextColor, mainColor)
         Helpers.setBackgroundColorTintList(btnSaveConfig, mainColor)
+        Helpers.setBackgroundColorTintList(btnFaceData, mainColor)
         rgLanguage.setMainColor(mainColor)
         rgLivenessVersion.setMainColor(mainColor)
+        rgUpgradePlan.setMainColor(mainColor)
 //        rgScenario.setMainColor(mainColor)
         rgEnvironment.setMainColor(mainColor)
         rgVerifyCheck.setMainColor(mainColor)
@@ -294,12 +419,14 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgCardSidesMatchCheck.setMainColor(mainColor)
         rgCaptureImage.setMainColor(mainColor)
         rgScanNFC.setMainColor(mainColor)
-
+        
+        btnFaceData.setTextColor(Color.parseColor(mainColor))
+        Helpers.setBackgroundColorTintList(btnFaceData, mainColor)
         Helpers.setCheckboxTintList(cbAcceptedOldIdCard, Color.parseColor(mainColor))
         Helpers.setCheckboxTintList(cbAcceptedEidWithoutChip, Color.parseColor(mainColor))
         Helpers.setCheckboxTintList(cbAcceptedOld12DigitsIdCard, Color.parseColor(mainColor))
         Helpers.setCheckboxTintList(cbAcceptedEidWithChip, Color.parseColor(mainColor))
-
+        Helpers.setCheckboxTintList(cbAcceptedEid2024, Color.parseColor(mainColor))
         Helpers.setSliderTintList(sliderFaceMatchingThreshold, Color.parseColor(mainColor))
     }
 
@@ -308,8 +435,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         btnButtonTextColor.setTextColor(Color.parseColor(txtColor))
         btnSaveConfig.setTextColor(Color.parseColor(txtColor))
         rgLanguage.setTextColor(txtColor)
+        rgUpgradePlan.setTextColor(txtColor)
         rgLivenessVersion.setTextColor(txtColor)
-//        rgScenario.setTextColor(txtColor)
+        rgScenario.setTextColor(txtColor)
         rgEnvironment.setTextColor(txtColor)
         rgVerifyCheck.setTextColor(txtColor)
         rgFraudCheck.setTextColor(txtColor)
@@ -334,17 +462,32 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvLanguage.text = resources.getString(R.string.klp_index_language)
         rgLanguage.rbOne.text = resources.getString(R.string.klp_demo_language_vi)
         rgLanguage.rbOther.text = resources.getString(R.string.klp_demo_language_en)
+        tvScreenNFC.text = resources.getString(R.string.klp_demo_screen_nfc)
+        tvScreen.text = resources.getString(R.string.klp_demo_setting_screen)
+        tvScreenLiveness.text = resources.getString(R.string.klp_demo_setting_screen_liveness)
+        tvScreenCapture.text = resources.getString(R.string.klp_demo_setting_screen_capture)
+
 //        rgLanguage.rbSecond.text = resources.getString(R.string.klp_faceOTP_language_en)
 //        rgLanguage.rbThird.text = resources.getString(R.string.klp_faceOTP_language_ko)
-
+        tvLeftoverSession.text = resources.getString(R.string.klp_demo_leftover_session)
         rgEnvironment.rbOne.text = resources.getString(R.string.klp_environment_production)
         rgEnvironment.rbOther.text = resources.getString(
             R.string.klp_environment_dev
         )
+        tvLivenessDescription.text = resources.getString(R.string.klp_demo_liveness_version_description)
+        tvScenarioDescription.text = resources.getString(R.string.klp_demo_scenario_description)
+
         tvLivenessVersion.text = resources.getString(R.string.klp_demo_liveness)
         rgLivenessVersion.rbOne.text = resources.getString(R.string.klp_liveness_passive)
         rgLivenessVersion.rbSecond.text = resources.getString(R.string.klp_liveness_semi_activate)
         rgLivenessVersion.rbThird.text = resources.getString(R.string.klp_liveness_activate)
+
+        rgUpgradePlan.rbOne.text = resources.getString(R.string.klp_demo_from_session_id)
+        rgUpgradePlan.rbOther.text = resources.getString(R.string.klp_demo_from_provided_data)
+        tvScenario.text = resources.getString(R.string.klp_demo_scenario)
+        rgScenario.rbOne.text = resources.getString(R.string.klp_demo_scenario_register)
+        rgScenario.rbSecond.text = resources.getString(R.string.klp_demo_scenario_upgrade)
+        rgScenario.rbThird.text = resources.getString(R.string.klp_demo_scenario_custom)
 
         rgScanNFC.rbOne.text = resources.getString(R.string.klp_on)
         rgScanNFC.rbOther.text = resources.getString(R.string.klp_off)
@@ -363,10 +506,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
         rgStrictQualityCheck.rbOne.text = resources.getString(R.string.sw_strict_quality_basic)
         rgStrictQualityCheck.rbOther.text = resources.getString(R.string.sw_strict_quality_advance)
-
-//        rgScenario.rbOne.text = "nfc_ekyc"
-//        rgScenario.rbSecond.text = "verify"
-//        rgScenario.rbThird.text = "passport"
 
         btnSaveConfig.text = resources.getString(R.string.klp_save_setting_title)
         tvMainColor.text = resources.getString(R.string.klp_index_main_color)
@@ -393,32 +532,24 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun setConfigBeforeExit() {
-        if (edtToken.text.toString().isNotEmpty() &&
-            (cbAcceptedEidWithChip.isChecked
-                    || cbAcceptedEidWithoutChip.isChecked
-                    || cbAcceptedEidWithChip.isChecked
-                    || cbAcceptedOld12DigitsIdCard.isChecked)
-        ) {
+        if (edtToken.text.toString().isNotEmpty() && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
             Helpers.savePrefs(
                 MY_KEY_LIVENESS_VERSION,
-                if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version
-                else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
+                if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
             )
+
             Helpers.savePrefs(
-                MY_KEY_LANGUAGE,
-//                if (rgLanguage.selectedIndex == 0) "vi" else if (rgLanguage.selectedIndex == 1) "en" else "ko"
-                if (rgLanguage.isPositiveCheck) "vi" else "en"
+                MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) Common.SCENARIO.REGISTER.name else if (rgScenario.selectedIndex == 1) Common.SCENARIO.UPGRADE.name else Common.SCENARIO.CUSTOM.name
             )
-//        Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPostitiveCheck) "vi" else "en")
+
+            Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPositiveCheck) "vi" else "en")
             Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString())
 
-//            Helpers.savePrefs(
-//                MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) FaceOTPFlowType.ONBOARD.name
-//                else if (rgScenario.selectedIndex == 1) FaceOTPFlowType.VERIFY.name else FaceOTPFlowType.PASSPORT.name
-//            )
 
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
-
+            Helpers.savePrefs(MY_KEY_FACE_DATA_URI, tvFaceDataUri.text)
+            Helpers.savePrefs(MY_KEY_MRZ, edtMRZ.text.toString())
+            Helpers.savePrefs(MY_KEY_LEFTOVER_SESSION, edtLeftoverSession.text.toString())
             Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureImage.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_VERIFY_CHECK, rgVerifyCheck.isPositiveCheck)
@@ -452,6 +583,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_2, cbAcceptedOld12DigitsIdCard.isChecked)
             Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_3, cbAcceptedEidWithoutChip.isChecked)
             Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_4, cbAcceptedEidWithChip.isChecked)
+
+            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_5, cbAcceptedEid2024.isChecked)
             Helpers.savePrefs(
                 MY_KEY_FACE_MATCHING_THRESHOLD,
                 sliderFaceMatchingThreshold.value.toInt().toString()
@@ -484,9 +617,20 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         val token = Helpers.getValuePreferences(MY_KEY_TOKEN) ?: ""
         val env = Helpers.getValuePreferences(MY_KEY_ENV) ?: defaultConfig.baseURL
 
-        val secnario = Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: KalapaFlowType.EKYC.name
+        val scenario = Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: KalapaFlowType.EKYC.name
         val lang = Helpers.getValuePreferences(MY_KEY_LANGUAGE)
         val livenessVersion = Helpers.getIntPreferences(MY_KEY_LIVENESS_VERSION, 0)
+
+        var faceDataUri = Helpers.getValuePreferences(MY_KEY_FACE_DATA_URI) ?: ""
+        LogUtils.printLog("faceDataUri $faceDataUri")
+        if (!File(faceDataUri).exists()) {
+            faceDataUri = ""
+        }
+        tvFaceDataUri.text = faceDataUri
+        var leftoverSession = Helpers.getValuePreferences(MY_KEY_LEFTOVER_SESSION) ?: ""
+        var mrz = Helpers.getValuePreferences(MY_KEY_MRZ) ?: ""
+        edtMRZ.setText(mrz)
+        edtLeftoverSession.setText(leftoverSession)
 
         val mainTextColor =
             Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) ?: defaultConfig.mainTextColor
@@ -503,6 +647,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         val accept12DigitIdCard = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_2, true)
         val acceptEidWithoutChip = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_3, true)
         val acceptEidWithChip = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_4, true)
+        val acceptEid2024 = Helpers.getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_5, true)
 
         val enableNFC = Helpers.getBooleanPreferences(MY_KEY_ENABLE_NFC, nfcAvailable(this))
         val captureImage =
@@ -525,7 +670,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         cbAcceptedOld12DigitsIdCard.isChecked = accept12DigitIdCard
         cbAcceptedEidWithoutChip.isChecked = acceptEidWithoutChip
         cbAcceptedEidWithChip.isChecked = acceptEidWithChip
-
+        cbAcceptedEid2024.isChecked = acceptEid2024
         edtButtonTextColor.setText(btnTextColor)
         edtMainTextColor.setText(mainTextColor)
         edtMainColor.setText(mainColor)
@@ -533,10 +678,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         edtToken.setText(token)
         LogUtils.printLog("lang $lang liveness $livenessVersion")
 
-//        rgScenario.switchChangeListener(secnario == FaceOTPFlowType.ONBOARD.name)
         rgLivenessVersion.switchChangeListener(if (livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version) 0 else if (livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version) 1 else 2)
-//        rgScenario.switchChangeListener(if (secnario == FaceOTPFlowType.ONBOARD.name) 0 else if (secnario == FaceOTPFlowType.VERIFY.name) 1 else 2)
-
+        rgScenario.switchChangeListener(if (scenario == Common.SCENARIO.REGISTER.name) 0 else if (scenario == Common.SCENARIO.UPGRADE.name) 1 else 2)
         rgLanguage.switchChangeListener(lang == "vi")
         rgEnvironment.switchChangeListener(env == KLP_PROD)
 

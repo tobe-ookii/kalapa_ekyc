@@ -36,6 +36,7 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_2
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_3
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_4
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_5
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
@@ -63,13 +64,17 @@ internal class Helpers {
             val mainTextColor = getValuePreferences(Common.MY_KEY_MAIN_TEXT_COLOR)
             val btnTextColor = getValuePreferences(Common.MY_KEY_BTN_TEXT_COLOR)
             val env = getValuePreferences(Common.MY_KEY_ENV)
+            val faceDataUri = getValuePreferences(Common.MY_KEY_FACE_DATA_URI) ?: ""
+            val leftoverSession = getValuePreferences(Common.MY_KEY_LEFTOVER_SESSION) ?: ""
+            val mrz = getValuePreferences(Common.MY_KEY_MRZ) ?: ""
             val faceMatchingThreshold: Int =
                 getIntPreferences(MY_KEY_FACE_MATCHING_THRESHOLD, 50)
-
+            val scenarioPlan = getValuePreferences(Common.MY_KEY_SCENARIO_PLAN) ?: ""
             val accept9DigitsIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_1, true)
             val accept12DigitIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_2, true)
             val acceptEidWithoutChip = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_3, true)
             val acceptEidWithChip = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_4, true)
+            val acceptEid2024 = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_5, true)
 
             val enableNFC = getBooleanPreferences(MY_KEY_ENABLE_NFC, true)
             val captureImage =
@@ -86,10 +91,10 @@ internal class Helpers {
                 MY_KEY_CARD_SIDE_CHECK,
                 true
             )
-            LogUtils.printLog("Preferences: ",token.isEmpty(),lang == null,backgroundColor == null,mainColor == null,mainTextColor == null,btnTextColor == null,env == null)
+            LogUtils.printLog("Preferences: ", token.isEmpty(), lang == null, backgroundColor == null, mainColor == null, mainTextColor == null, btnTextColor == null, env == null)
             return if (token.isEmpty() || lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz, faceDataUri, scenarioPlan)
             }
         }
 
@@ -209,7 +214,7 @@ internal class Helpers {
             val yesBtn = dialog.findViewById(R.id.custom_dialog_btn_yes) as Button
             val tvTitle = dialog.findViewById(R.id.custom_dialog_title) as TextView
 //            if (!myTitle.isNullOrEmpty()) dialog.findViewById<TextView>(R.id.tv_alert_title).text =
-                //myTitle
+            //myTitle
 //                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_face_otp_alert_title))
             tvTitle.text = myTitle
 

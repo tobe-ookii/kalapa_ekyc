@@ -27,7 +27,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/klp_margin_mid"
+            android:layout_marginTop="@dimen/klp_margin_mid"
+            android:layout_marginBottom="@dimen/klp_margin_small"
             android:text="@string/klp_demo_token"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -41,46 +42,13 @@
             android:maxLines="3"
             android:textSize="@dimen/klp_txt_size_normal" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/klp_margin_mid"
-            android:text="@string/klp_demo_leftover_session"
-            android:textSize="@dimen/klp_txt_size_header"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/edt_leftover_session"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edt_default_background"
-            android:contentDescription="Enter your leftover session"
-            android:maxLines="3"
-            android:textSize="@dimen/klp_txt_size_normal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/klp_margin_mid"
-            android:text="@string/klp_demo_mrz"
-            android:textSize="@dimen/klp_txt_size_header"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/edt_mrz"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edt_default_background"
-            android:contentDescription="Enter your MRZ"
-            android:maxLines="3"
-            android:textSize="@dimen/klp_txt_size_normal" />
-
 
         <TextView
             android:id="@+id/tv_enviroment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/klp_margin_mid"
+            android:layout_marginTop="@dimen/klp_margin_mid"
+            android:layout_marginBottom="@dimen/klp_margin_small"
             android:text="@string/klp_demo_environment"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
@@ -97,18 +65,11 @@
             android:id="@+id/tv_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/klp_margin_mid"
+            android:layout_marginTop="@dimen/klp_margin_mid"
+            android:layout_marginBottom="@dimen/klp_margin_small"
             android:text="@string/klp_index_language"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
-
-        <!--        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices-->
-        <!--            android:id="@+id/sw_language"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            app:kmc_first_label="@string/klp_faceOTP_language_vi"-->
-        <!--            app:kmc_second_label="@string/klp_faceOTP_language_en"-->
-        <!--            app:kmc_third_label="@string/klp_faceOTP_language_ko" />-->
 
         <vn.kalapa.ekyc.views.KLPCustomSwitch
             android:id="@+id/sw_language"
@@ -122,11 +83,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/klp_margin_mid"
-            android:layout_marginBottom="@dimen/klp_margin_mid"
             android:text="@string/klp_demo_liveness"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold"
             android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_liveness_version_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/klp_margin_small"
+            android:text="@string/klp_demo_liveness_version_description"
+            android:textSize="@dimen/klp_txt_size_description" />
 
         <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
             android:id="@+id/sw_liveness_version"
@@ -137,11 +105,245 @@
             app:kmc_second_label="@string/klp_liveness_semi_activate"
             app:kmc_third_label="@string/klp_liveness_passive" />
 
+        <TextView
+            android:id="@+id/tv_scenario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/klp_margin_mid"
+            android:text="@string/klp_demo_scenario"
+            android:textSize="@dimen/klp_txt_size_header"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_scenario_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/klp_margin_small"
+            android:text="@string/klp_demo_scenario_description"
+            android:textSize="@dimen/klp_txt_size_description" />
+
+        <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
+            android:id="@+id/sw_scenario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:kmc_first_label="@string/klp_demo_scenario_register"
+            app:kmc_second_label="@string/klp_demo_scenario_upgrade"
+            app:kmc_third_label="@string/klp_demo_scenario_custom" />
+
+
         <LinearLayout
-            android:id="@+id/invisible_container"
+            android:id="@+id/container_custom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_screen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:text="@string/klp_demo_setting_screen"
+                android:textSize="@dimen/klp_txt_size_header"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_screen_capture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/mainColor"
+                    android:checked="true" />
+
+                <TextView
+                    android:id="@+id/tv_screen_capture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/klp_margin_small"
+                    android:text="@string/klp_demo_setting_screen_capture"
+                    android:textSize="@dimen/klp_txt_size_normal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_screen_liveness"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/mainColor"
+                    android:checked="true" />
+
+                <TextView
+                    android:id="@+id/tv_screen_liveness"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/klp_margin_small"
+                    android:text="@string/klp_demo_setting_screen_liveness"
+                    android:textSize="@dimen/klp_txt_size_normal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_screen_nfc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/mainColor"
+                    android:checked="true" />
+
+                <TextView
+                    android:id="@+id/tv_screen_nfc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/klp_margin_small"
+                    android:text="@string/klp_demo_screen_nfc"
+                    android:textSize="@dimen/klp_txt_size_normal" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_upgrade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <vn.kalapa.ekyc.views.KLPCustomSwitch
+                android:id="@+id/sw_upgrade_plan"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:layout_height="wrap_content"
+                app:rb_first_label="@string/klp_demo_from_session_id"
+                app:rb_second_label="@string/klp_demo_from_provided_data" />
+
+            <LinearLayout
+                android:id="@+id/container_leftover_session"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:layout_marginBottom="@dimen/klp_margin_small"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_leftover_session"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/klp_demo_leftover_session"
+                    android:textSize="@dimen/klp_txt_size_header"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edt_leftover_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edt_default_background"
+                    android:contentDescription="Enter your leftover session"
+                    android:maxLines="3"
+                    android:textSize="@dimen/klp_txt_size_normal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_mrz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:layout_marginBottom="@dimen/klp_margin_small"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_mrz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/klp_demo_mrz"
+                    android:textSize="@dimen/klp_txt_size_header"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edt_mrz"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edt_default_background"
+                    android:contentDescription="Enter your MRZ"
+                    android:maxLines="3"
+                    android:textSize="@dimen/klp_txt_size_normal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_face_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:layout_marginBottom="@dimen/klp_margin_small"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_face_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/klp_demo_face_data"
+                    android:textSize="@dimen/klp_txt_size_header"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_choose_face_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/border_button_only"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:maxLines="1"
+                        android:text="@string/klp_demo_pick_image"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/klp_txt_size_normal" />
+
+
+                    <TextView
+                        android:id="@+id/tv_face_data_uri"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/klp_margin_small"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="Some path is verryyyy long Some path is verryyyy long Some path is verryyyy long"
+                        android:textSize="@dimen/klp_txt_size_normal" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_enable_nfc"
@@ -277,6 +479,7 @@
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -299,6 +502,7 @@
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
+
             <TextView
                 android:id="@+id/tv_verify_check"
                 android:layout_width="wrap_content"

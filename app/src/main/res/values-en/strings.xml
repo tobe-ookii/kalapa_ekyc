@@ -9,12 +9,6 @@
     <string name="klp_user_onboard">Onboard</string>
     <string name="klp_active">Active</string>
     <string name="klp_dev_desc">Development</string>
-    <string name="klp_enter_amount">Enter amount</string>
-    <string name="klp_enter_content">Enter content</string>
-    <string name="klp_enter_destination">Enter account number</string>
-    <string name="klp_demo_account">Account</string>
-    <string name="klp_demo_amount">Amount</string>
-    <string name="klp_demo_back_main_screen">Back to main screen</string>
     <string name="klp_index_background_color">Background color</string>
     <string name="klp_index_button_text_color">Button text color</string>
     <string name="klp_index_environment">Environment</string>
@@ -22,14 +16,11 @@
     <string name="klp_index_language">Language</string>
     <string name="klp_index_main_color">Main color</string>
     <string name="klp_index_main_text_color">Main text color</string>
-    <string name="klp_index_scenario">Scenario</string>
-    <string name="klp_miss_account_destination">Destination account cannot be empty.</string>
-    <string name="klp_miss_transfer">Amount must be greater than 0.</string>
-    <string name="klp_next">Next</string>
-    <string name="klp_passive">Automatic</string>
+    <string name="klp_next">Continue</string>
+    <string name="klp_passive">Passive</string>
     <string name="klp_prod_desc">Production</string>
-    <string name="klp_save_setting_title">Save settings</string>
-    <string name="klp_semi_active">Semi-automatic</string>
+    <string name="klp_save_setting_title">Save</string>
+    <string name="klp_semi_active">Semi Active</string>
     <string name="klp_start">Start</string>
     <string name="klp_demo_language_vi">Vietnamese</string>
     <string name="klp_demo_language_en">English</string>
@@ -42,6 +33,8 @@
     <string name="klp_demo_token">Token</string>
     <string name="klp_demo_can_not_leave_empty">can not leave empty</string>
     <string name="klp_demo_result">Result</string>
+    <string name="klp_demo_approved">Approved</string>
+    <string name="klp_demo_ocr">Demo OCR</string>
     <string name="klp_field_id_number">ID Number</string>
     <string name="klp_field_name">Fullname</string>
     <string name="klp_field_dob">DOB</string>
@@ -62,9 +55,9 @@
     <string name="klp_face_matching">Face Matching</string>
     <string name="klp_demo_match">Match</string>
     <string name="klp_demo_not_match">Not match</string>
-    <string name="klp_demo_done">Done</string>
     <string name="klp_demo_yes">Yes</string>
     <string name="klp_demo_no">No</string>
+    <string name="klp_demo_done">Done</string>
     <string name="klp_demo_rejected">REJECTED</string>
     <string name="klp_demo_manual">MANUAL</string>
     <string name="klp_demo_field_nfc_is_valid">Is Valid</string>
@@ -79,7 +72,6 @@
     <string name="klp_demo_loading">Loading…</string>
     <string name="klp_demo_decision_details_title">Decision details</string>
     <string name="klp_demo_setting_you_must_enable_at_least_one_nfc_or_capture_image">Please enable at least one of the capture image or NFC features.</string>
-    <string name="klp_demo_leftover_session">Leftover Session</string>
     <string name="klp_setting_nfc">Scan NFC</string>
     <string name="klp_yes">Yes</string>
     <string name="klp_no">No</string>
@@ -92,7 +84,7 @@
     <string name="klp_setting_verify_check">ID-Name verification</string>
     <string name="klp_setting_fraud_check">Forgery and fraud check</string>
     <string name="klp_strict_quality_check">Document quality check level</string>
-    <string name="sw_strict_quality_advance">Basic</string>
+    <string name="sw_strict_quality_advance">Advance</string>
     <string name="sw_strict_quality_basic">Basic</string>
     <string name="klp_check_if_card_sides_match">Check if two sides match</string>
     <string name="klp_setting_acceptance_face_matching_threshold">Face match acceptance threshold</string>
@@ -101,4 +93,18 @@
     <string name="klp_off">Off</string>
     <string name="klp_on">On</string>
     <string name="klp_environment">Environment</string>
+    <string name="klp_demo_scenario">Scenario</string>
+    <string name="klp_demo_scenario_register">Register</string>
+    <string name="klp_demo_scenario_upgrade">Upgrade</string>
+    <string name="klp_demo_scenario_custom">Custom</string>
+    <string name="klp_demo_face_data">Face Data</string>
+    <string name="klp_demo_pick_image">Choose from library</string>
+    <string name="klp_demo_liveness_version_description">- Passive: No action is required.\n- Semi-Active: Performs far-near liveness detection.\n- Active: Performs three different actions.</string>
+    <string name="klp_demo_scenario_description">- Register: Authenticate and register a new account.\n- Upgrade: Verify using NFC chip information.\n- Custom: Choose your own eKYC flow.</string>
+    <string name="klp_demo_setting_screen">Screen</string>
+    <string name="klp_demo_setting_screen_capture">Capture ID Screen</string>
+    <string name="klp_demo_setting_screen_liveness">Liveness Screen</string>
+    <string name="klp_demo_screen_nfc">NFC Verification Screen</string>
+    <string name="klp_demo_from_session_id">From Session ID</string>
+    <string name="klp_demo_from_provided_data">From provided data</string>
 </resources>

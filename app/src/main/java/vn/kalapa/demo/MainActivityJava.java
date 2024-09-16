@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -31,6 +32,7 @@ import vn.kalapa.ekyc.KalapaSDKConfig;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
+import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
@@ -112,11 +114,27 @@ public class MainActivityJava extends BaseActivity {
                     createSessionResult -> {
                         ProgressView.Companion.hideProgress(true);
                         LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.getFlow(), createSessionResult.getToken());
-                        new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig)
+                        KalapaSDK.KalapaSDKBuilder builder = new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig);
+                        if (flowType == KalapaFlowType.NFC_ONLY) {
+                            if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
+                                builder.withLeftoverSession(preferencesConfig.getLeftoverSession());
+                            } else if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_PROVIDED_DATA) {
+                                builder.withMrz(preferencesConfig.getMrz());
+                                if (!preferencesConfig.getFacedataURI().isEmpty()) {
+                                    try {
+                                        String base64 = BitmapUtil.Companion.convertBitmapToBase64(BitmapUtil.Companion.getBitmapFromUri(getContentResolver(), Uri.parse(preferencesConfig.getFacedataURI())));
+                                        builder.withFaceData(base64);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            }
+                        }
 //                                .withFaceData(BitmapUtil.Companion.getTU_BASE64())
 //                                .withMrz("IDVNM0940186406001094018640<<7\\n9408182M3408180VNM<<<<<<<<<<<8\\nNGUYEN<<GIA<TU<<<<<<<<<<<<<<<<")
 //                                .withLeftoverSession("\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjNmZTMxOTQwMDRiYzY4YWFkMDgxY2QwZGRmN2ZlIiwidWlkIjoiM2FkODRkMGUxYTIwNGZkYWEyZGUwYWM5NTNmNzA2YTUiLCJjaWQiOiJpbnRlcm5hbF9la3ljIiwiaWF0IjoxNzE5MjIzODE2fQ.mj4vB1V3wv5Bf2d-1zgAlZ1VcfgH17mRoi_VP9FneCQ\"")
-                                .build().start(createSessionResult.getToken(), createSessionResult.getFlow(), klpHandler);
+                        builder.build().start(createSessionResult.getToken(), createSessionResult.getFlow(), klpHandler);
                         return null;
                     }, kalapaError -> {
                         ProgressView.Companion.hideProgress(true);

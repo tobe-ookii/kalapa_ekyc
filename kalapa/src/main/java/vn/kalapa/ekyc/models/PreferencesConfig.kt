@@ -1,10 +1,13 @@
 package vn.kalapa.ekyc.models
 
+import vn.kalapa.ekyc.utils.Common
+
 
 val OLD_ID_CARD = "CMND9"
 val OLD_12DIGITS_ID_CARD = "CMND12"
 val EID_WITHOUT_CHIP = "CCCD"
 val EID_WITH_CHIP = "EID"
+val EID_24 = "EID24"
 
 class PreferencesConfig(
     val token: String,
@@ -25,48 +28,14 @@ class PreferencesConfig(
     val acceptOldId: Boolean,
     val accept12DigisterOldId: Boolean,
     val acceptEidWithoutChip: Boolean,
-    val acceptEidWithChip: Boolean
-    ) {
-    fun parserObj(root: PreferencesConfig): PreferencesConfig {
-        return PreferencesConfig(
-            token = root.token,
-            livenessVersion = root.livenessVersion,
-            backgroundColor = root.backgroundColor,
-            mainColor = root.mainColor,
-            mainTextColor = root.mainTextColor,
-            btnTextColor = root.btnTextColor,
-            language = root.language,
-            env = root.env,
-            useNFC = root.useNFC,
-            captureImage = root.captureImage,
-            verifyCheck = root.verifyCheck,
-            fraudCheck = root.fraudCheck,
-            normalCheckOnly = root.normalCheckOnly,
-            cardSidesCheck = root.cardSidesCheck,
-            faceMatchThreshold = root.faceMatchThreshold,
-            acceptOldId = root.acceptOldId,
-            accept12DigisterOldId = root.accept12DigisterOldId,
-            acceptEidWithoutChip = root.acceptEidWithoutChip,
-            acceptEidWithChip = root.acceptEidWithChip
-        )
-    }
-
-    fun toMap(): Map<String, Any?> {
-        return mapOf(
-            "env" to env,
-            "token" to token,
-            "liveness_version" to livenessVersion,
-            "background" to backgroundColor,
-            "main_color" to mainColor,
-            "main_text_color" to mainTextColor,
-            "btn_text_color" to btnTextColor,
-            "language" to language,
-            "liveness_version" to livenessVersion,
-            "env" to env,
-            "use_nfc" to useNFC,
-            "capture_image" to captureImage
-        )
-    }
+    val acceptEidWithChip: Boolean,
+    val acceptEid2024: Boolean,
+    val leftoverSession: String,
+    val mrz: String,
+    val facedataURI: String,
+    scenarioPlan: String,
+) {
+    val scenarioPlan = Common.SCENARIO_PLAN.getScenarioPlanFromName(scenarioPlan)
 
     fun getAcceptedDocument(): Array<String> {
         var acceptedDocuments: ArrayList<String> = ArrayList()
@@ -74,6 +43,7 @@ class PreferencesConfig(
         if (accept12DigisterOldId) acceptedDocuments.add(OLD_12DIGITS_ID_CARD)
         if (acceptEidWithoutChip) acceptedDocuments.add(EID_WITHOUT_CHIP)
         if (acceptEidWithChip) acceptedDocuments.add(EID_WITH_CHIP)
+        if (acceptEid2024) acceptedDocuments.add(EID_24)
         return acceptedDocuments.toTypedArray()
     }
 

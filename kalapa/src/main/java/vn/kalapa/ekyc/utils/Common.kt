@@ -18,7 +18,6 @@ import java.math.BigInteger
 import java.net.HttpURLConnection
 import java.net.URL
 import java.security.MessageDigest
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.regex.Matcher
@@ -33,6 +32,22 @@ class Common {
         PASSIVE(1),
         SEMI_ACTIVE(2),
         ACTIVE(3)
+    }
+
+    enum class SCENARIO { REGISTER, UPGRADE, CUSTOM }
+
+    enum class SCENARIO_PLAN {
+        FROM_SESSION_ID, FROM_PROVIDED_DATA, NA;
+
+        companion object {
+            fun getScenarioPlanFromName(scenario: String): SCENARIO_PLAN {
+                return when (scenario) {
+                    FROM_SESSION_ID.name -> FROM_SESSION_ID
+                    FROM_PROVIDED_DATA.name -> FROM_PROVIDED_DATA
+                    else -> NA
+                }
+            }
+        }
     }
 
 //    enum class COMPARE_TYPE(val compareType: Int) {
@@ -50,9 +65,17 @@ class Common {
         val MY_KEY_BTN_TEXT_COLOR = "KLP_EKYC_KEY_BTN_TEXT_COLOR"
         val MY_KEY_MAIN_TEXT_COLOR = "KLP_EKYC_KEY_MAIN_TEXT_COLOR"
         val MY_KEY_BACKGROUND_COLOR = "KLP_EKYC_KEY_BACKGROUND_COLOR"
-        val MY_KEY_SCENARIO = "KLP_EKYC_KEY_SCENARIO"
         val MY_KEY_ENV = "KLP_EKYC_KEY_ENVIRONMENT"
 
+        val MY_KEY_CUSTOM_CAPTURE = "KLP_EKYC_KEY_CUSTOM_CAPTURE"
+        val MY_KEY_CUSTOM_LIVENESS = "KLP_EKYC_KEY_CUSTOM_LIVENESS"
+        val MY_KEY_CUSTOM_NFC = "KLP_EKYC_KEY_CUSTOM_NFC"
+
+        val MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID = "KLP_EKYC_UPGRADE_PLAN_FROM_SESSION_ID" // boolean
+
+        val MY_KEY_SCENARIO_PLAN = "KLP_EKYC_KEY_SCENARIO_PLAN"
+
+        val MY_KEY_SCENARIO = "KLP_EKYC_KEY_SCENARIO"
         val MY_KEY_MRZ = "KLP_EKYC_MRZ"
         val MY_KEY_LEFTOVER_SESSION = "KLP_EKYC_LEFTOVER_SESSION"
         val MY_KEY_FACE_DATA_URI = "KLP_EKYC_FACE_DATA_URI"
@@ -61,13 +84,13 @@ class Common {
         val MY_KEY_ACCEPTED_DOCUMENT_2 = "KLP_EKYC_KEY_ACCEPTED_DOCUMENT_2"
         val MY_KEY_ACCEPTED_DOCUMENT_3 = "KLP_EKYC_KEY_ACCEPTED_DOCUMENT_3"
         val MY_KEY_ACCEPTED_DOCUMENT_4 = "KLP_EKYC_KEY_ACCEPTED_DOCUMENT_4"
+        val MY_KEY_ACCEPTED_DOCUMENT_5 = "KLP_EKYC_KEY_ACCEPTED_DOCUMENT_5"
 
         val MY_KEY_ENABLE_NFC = "KLP_EKYC_KEY_ENABLE_NFC"
         val MY_KEY_CAPTURE_IMAGE = "KLP_EKYC_KEY_CAPTURE_IMAGE"
         val MY_KEY_VERIFY_CHECK = "KLP_EKYC_KEY_VERIFY_CHECK"
         val MY_KEY_FRAUD_CHECK = "KLP_EKYC_KEY_FRAUD_CHECK"
         val MY_KEY_NORMAL_CHECK_ONLY = "KLP_EKYC_KEY_NORMAL_CHECK_ONLY"
-        val MY_KEY_SHOW_RESULT_SCREEN = "KLP_EKYC_KEY_SHOW_RESULT_SCREEN"
         val MY_KEY_CARD_SIDE_CHECK = "KLP_EKYC_KEY_CARD_SIDE_CHECK"
 
         val MY_KEY_FACE_MATCHING_THRESHOLD = "KLP_EKYC_KEY_FACE_MATCHING_THRESHOLD" // int
@@ -78,11 +101,7 @@ class Common {
 
         fun vibratePhone(context: Context) {
             val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            if (Build.VERSION.SDK_INT >= 26) {
-                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                vibrator.vibrate(200)
-            }
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
         }
 
         fun getCpuInfo(): String {
