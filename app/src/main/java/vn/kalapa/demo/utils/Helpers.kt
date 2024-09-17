@@ -67,12 +67,11 @@ internal class Helpers {
             val mainTextColor = getValuePreferences(Common.MY_KEY_MAIN_TEXT_COLOR)
             val btnTextColor = getValuePreferences(Common.MY_KEY_BTN_TEXT_COLOR)
             val env = getValuePreferences(Common.MY_KEY_ENV)
-            val faceDataUri = getValuePreferences(Common.MY_KEY_FACE_DATA_URI) ?: ""
             val leftoverSession = getValuePreferences(Common.MY_KEY_LEFTOVER_SESSION) ?: ""
             val mrz = getValuePreferences(Common.MY_KEY_MRZ) ?: ""
             val faceMatchingThreshold: Int =
                 getIntPreferences(MY_KEY_FACE_MATCHING_THRESHOLD, 50)
-            val scenarioPlan = getValuePreferences(Common.MY_KEY_SCENARIO_PLAN) ?: ""
+            val scenarioPlan = getBooleanPreferences(Common.MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID, false)
             val scenario = getValuePreferences(Common.MY_KEY_SCENARIO) ?: ""
             val accept9DigitsIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_1, true)
             val accept12DigitIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_2, true)
@@ -98,7 +97,7 @@ internal class Helpers {
             LogUtils.printLog("Preferences: ", token.isEmpty(), lang == null, backgroundColor == null, mainColor == null, mainTextColor == null, btnTextColor == null, env == null)
             return if (token.isEmpty() || lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz, faceDataUri, scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz,scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
             }
         }
 

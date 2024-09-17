@@ -6,10 +6,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageFormat
-import android.graphics.Rect
-import android.graphics.YuvImage
-import androidx.camera.core.ImageProxy
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
@@ -54,16 +50,18 @@ class KalapaSDK private constructor(
         private var leftoverSession = ""
 
         fun build(): KalapaSDK {
-            return KalapaSDK(activity, config)
+            return KalapaSDK(activity, config, mrz, faceData, leftoverSession)
         }
 
         fun withMrz(mrz: String): KalapaSDKBuilder {
+            Helpers.printLog("KalapaSDKBuilder - withMrz $mrz")
             this.mrz = mrz
             this.leftoverSession = ""
             return this
         }
 
         fun withLeftoverSession(leftoverSession: String): KalapaSDKBuilder {
+            Helpers.printLog("KalapaSDKBuilder - withLeftoverSession")
             this.mrz = ""
             this.faceData = ""
             this.leftoverSession = leftoverSession
@@ -215,6 +213,7 @@ class KalapaSDK private constructor(
     }
 
     private fun startNFCForResult(mrz: String = "", nfcHandler: KalapaNFCHandler) {
+        Helpers.printLog("startNFCForResult $mrz")
         Companion.handler = nfcHandler
         val intent = Intent(activity, NFCActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -222,7 +221,7 @@ class KalapaSDK private constructor(
         activity.startActivity(intent)
     }
 
-    fun startCustomFlow(withCaptureScreen: Boolean, withLivenessScreen: Boolean, withNFCScreen: Boolean, withMRZData: String, withFaceData: String, kalapaCustomHandler: KalapaHandler) {
+    fun startCustomFlow(withCaptureScreen: Boolean, withLivenessScreen: Boolean, withNFCScreen: Boolean, kalapaCustomHandler: KalapaHandler) {
         val complete = { kalapaCustomHandler.onComplete(KalapaResult()) }
 
         val nfcScreen = {
@@ -241,7 +240,7 @@ class KalapaSDK private constructor(
             startLivenessForResult(faceData, object : KalapaCaptureHandler() {
                 override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
                     if (withNFCScreen)
-                        nfcScreen()
+                        callback.sendDone(nfcScreen)
                     else
                         callback.sendDone(complete)
                 }
@@ -412,6 +411,7 @@ class KalapaSDK private constructor(
 
         /*****-STEP 3-*****/
         val localStartNFCForResult = {
+            Helpers.printLog("localStartNFCForResult $mrz")
             startNFCForResult(
                 if (mrz.isNotEmpty()) mrz else
                     if (!leftoverSessionMRZ.isNullOrEmpty()) leftoverSessionMRZ!! else
@@ -436,6 +436,7 @@ class KalapaSDK private constructor(
                                 override fun success(jsonObject: JSONObject) {
                                     // Set NFC. Call liveness.
                                     Helpers.printLog("nfcCheck $jsonObject")
+
                                     if (jsonObject.has("data") && jsonObject.getJSONObject("data")
                                             .has("is_nfc_face_match_selfie")
                                     ) {
@@ -466,9 +467,7 @@ class KalapaSDK private constructor(
                                             }
                                         }
                                     } else
-                                        callback.sendDone {
-                                            localStartLivenessForResult()
-                                        }
+                                        callback.sendDone { localStartLivenessForResult() }
                                 }
 
                                 override fun fail(error: KalapaError) {

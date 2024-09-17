@@ -32,14 +32,13 @@ class PreferencesConfig(
     val acceptEid2024: Boolean,
     val leftoverSession: String,
     val mrz: String,
-    val facedataURI: String,
     scenario: String,
-    scenarioPlan: String,
+    scenarioPlan: Boolean,
     val hasCustomCaptureScreen: Boolean,
     val hasCustomLivenessScreen: Boolean,
     val hasCustomNFCScreen: Boolean
 ) {
-    val scenarioPlan = Common.SCENARIO_PLAN.getScenarioPlanFromName(scenarioPlan)
+    val scenarioPlan = if (scenarioPlan) Common.SCENARIO_PLAN.FROM_SESSION_ID else Common.SCENARIO_PLAN.FROM_PROVIDED_DATA
     val scenario = Common.SCENARIO.getScenarioFromName(scenario)
     fun getAcceptedDocument(): Array<String> {
         var acceptedDocuments: ArrayList<String> = ArrayList()

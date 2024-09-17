@@ -50,17 +50,7 @@ class Common {
     }
 
     enum class SCENARIO_PLAN {
-        FROM_SESSION_ID, FROM_PROVIDED_DATA, NA;
-
-        companion object {
-            fun getScenarioPlanFromName(scenario: String): SCENARIO_PLAN {
-                return when (scenario) {
-                    FROM_SESSION_ID.name -> FROM_SESSION_ID
-                    FROM_PROVIDED_DATA.name -> FROM_PROVIDED_DATA
-                    else -> NA
-                }
-            }
-        }
+        FROM_SESSION_ID, FROM_PROVIDED_DATA
     }
 
 //    enum class COMPARE_TYPE(val compareType: Int) {
@@ -85,8 +75,6 @@ class Common {
         val MY_KEY_CUSTOM_NFC = "KLP_EKYC_KEY_CUSTOM_NFC" // boolean
 
         val MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID = "KLP_EKYC_UPGRADE_PLAN_FROM_SESSION_ID" // boolean
-
-        val MY_KEY_SCENARIO_PLAN = "KLP_EKYC_KEY_SCENARIO_PLAN"
 
         val MY_KEY_SCENARIO = "KLP_EKYC_KEY_SCENARIO"
         val MY_KEY_MRZ = "KLP_EKYC_MRZ"

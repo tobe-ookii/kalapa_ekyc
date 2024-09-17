@@ -114,7 +114,8 @@ public class MainActivityJava extends BaseActivity {
     }
 
     private void startCustomFlow(boolean hasCaptureScreen, boolean hasLivenessScreen, boolean hasNFCScreen, String withMrzData, String faceData) {
-        new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig).build().startCustomFlow(hasCaptureScreen, hasLivenessScreen, hasNFCScreen, withMrzData, faceData, klpHandler);
+        LogUtils.Companion.printLog("hasCaptureScreen", hasCaptureScreen, "hasLivenessScreen", hasLivenessScreen, "hasNFCScreen", hasNFCScreen, "withMrzData", withMrzData);
+        new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig).withMrz(withMrzData).withFaceData(faceData).build().startCustomFlow(hasCaptureScreen, hasLivenessScreen, hasNFCScreen, klpHandler);
     }
 
     private void startEKYC() {
@@ -122,16 +123,10 @@ public class MainActivityJava extends BaseActivity {
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
             Common.SCENARIO scenario = preferencesConfig.getScenario();
             String faceDataBase64 = "";
-            if (!preferencesConfig.getFacedataURI().isEmpty()) {
-                try {
-                    faceDataBase64 = BitmapUtil.Companion.convertBitmapToBase64(BitmapUtil.Companion.getBitmapFromUri(getContentResolver(), Uri.parse(preferencesConfig.getFacedataURI())));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (scenario == Common.SCENARIO.CUSTOM)
-                startCustomFlow(preferencesConfig.getCaptureImage(), preferencesConfig.getHasCustomLivenessScreen(), preferencesConfig.getHasCustomNFCScreen(), preferencesConfig.getMrz(), faceDataBase64);
-            else if (scenario == Common.SCENARIO.UPGRADE && preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
+            if (scenario == Common.SCENARIO.CUSTOM) {
+                startCustomFlow(preferencesConfig.getHasCustomCaptureScreen(), preferencesConfig.getHasCustomLivenessScreen(), preferencesConfig.getHasCustomNFCScreen(), preferencesConfig.getMrz(), faceDataBase64);
+                ProgressView.Companion.hideProgress(false);
+            } else if (scenario == Common.SCENARIO.UPGRADE && preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
                 startUpgradeFlow(preferencesConfig.getLeftoverSession());
             } else {
                 // UPGRADE from Session ID
@@ -168,14 +163,15 @@ public class MainActivityJava extends BaseActivity {
     }
 
     @NonNull
-    private KalapaSDK.KalapaSDKBuilder getKalapaSDKBuilder(KalapaFlowType flowType, String finalFaceDataBase6) {
+    private KalapaSDK.KalapaSDKBuilder getKalapaSDKBuilder(KalapaFlowType flowType, String finalFaceDataBase64) {
         KalapaSDK.KalapaSDKBuilder builder = new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig);
+        LogUtils.Companion.printLog("Builder: ", flowType, preferencesConfig.getMrz(), preferencesConfig.getScenarioPlan());
         if (flowType == KalapaFlowType.NFC_ONLY) {
             if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
                 builder.withLeftoverSession(preferencesConfig.getLeftoverSession());
             } else if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_PROVIDED_DATA) {
                 builder.withMrz(preferencesConfig.getMrz());
-                builder.withFaceData(finalFaceDataBase6);
+                builder.withFaceData(finalFaceDataBase64);
             }
         }
         return builder;

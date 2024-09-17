@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.util.Base64
 import androidx.camera.core.ImageProxy
@@ -19,6 +17,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.io.OutputStream
 import java.nio.ByteBuffer
 import java.util.*
@@ -56,13 +55,16 @@ class BitmapUtil {
             )
         }
 
-        fun isValidUri(context: Context, uriString: String): Boolean {
+        fun isImageUri(context: Context, uriString: String): Boolean {
             return try {
                 val uri = Uri.parse(uriString)
-                val inputStream = context.contentResolver.openInputStream(uri)
-                inputStream?.close()
-                true
+                val contentResolver = context.contentResolver
+                val type = contentResolver.getType(uri)
+
+                // Check if the MIME type starts with "image/"
+                type?.startsWith("image/") == true
             } catch (e: Exception) {
+                e.printStackTrace()
                 false
             }
         }
@@ -227,27 +229,6 @@ class BitmapUtil {
                 false
             )
         }
-//        fun resizeBitmap(source: Bitmap, maxLength: Int): Bitmap? {
-//            return try {
-//                if (source.height >= source.width) {
-//                    if (source.height <= maxLength) {
-//                        return source
-//                    }
-//                    val aspectRatio = source.width.toDouble() / source.height.toDouble()
-//                    val targetWidth = (maxLength * aspectRatio).toInt()
-//                    Bitmap.createScaledBitmap(source, targetWidth, maxLength, true)
-//                } else {
-//                    if (source.width <= maxLength) {
-//                        return source
-//                    }
-//                    val aspectRatio = source.height.toDouble() / source.width.toDouble()
-//                    val targetHeight = (maxLength * aspectRatio).toInt()
-//                    Bitmap.createScaledBitmap(source, maxLength, targetHeight, true)
-//                }
-//            } catch (e: Exception) {
-//                source
-//            }
-//        }
 
         fun getBitmapFromUri(contentResolver: ContentResolver, imgUri: Uri?): Bitmap? {
             if (imgUri != null) {

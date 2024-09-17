@@ -360,7 +360,6 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="Some path is verryyyy long Some path is verryyyy long Some path is verryyyy long"
                         android:textSize="@dimen/klp_txt_size_normal" />
                 </LinearLayout>
 

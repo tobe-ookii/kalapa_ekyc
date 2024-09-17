@@ -15,8 +15,6 @@ import android.widget.*
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.ThemedSpinnerAdapter.Helper
-import androidx.transition.Visibility
 import com.google.android.material.slider.Slider
 import vn.kalapa.demo.R
 import vn.kalapa.demo.utils.Helpers
@@ -51,6 +49,7 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MRZ
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_SCENARIO
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_TOKEN
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.nfcAvailable
 import vn.kalapa.ekyc.utils.LocaleHelper
@@ -279,10 +278,12 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
                 containerMrz.visibility = View.GONE
                 containerFaceData.visibility = View.GONE
                 containerLeftoverSession.visibility = View.VISIBLE
+                containerToken.visibility = View.GONE
             } else { // Provided Data
                 containerMrz.visibility = View.VISIBLE
                 containerFaceData.visibility = View.VISIBLE
                 containerLeftoverSession.visibility = View.GONE
+                containerToken.visibility = View.VISIBLE
             }
         }
         rgLanguage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
@@ -568,7 +569,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun setConfigBeforeExit() {
-        if (containerToken.visibility == View.GONE && !cbNFCScreen.isChecked && !cbNFCScreen.isChecked && !cbNFCScreen.isChecked && !cbNFCScreen.isChecked)
+        if (containerToken.visibility == View.GONE && !cbNFCScreen.isChecked && !cbLivenessScreen.isChecked && !cbCaptureIdScreen.isChecked)
             Helpers.showDialog(
                 this@SettingActivity,
                 resources.getString(R.string.klp_demo_alert_title),
@@ -587,9 +588,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
             Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPositiveCheck) "vi" else "en")
             edtToken.text.toString().isNotEmpty().let { Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString()) }
-
-
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
+            LogUtils.printLog(tvFaceDataUri.text)
             Helpers.savePrefs(MY_KEY_FACE_DATA_URI, tvFaceDataUri.text)
             Helpers.savePrefs(MY_KEY_MRZ, edtMRZ.text.toString())
             Helpers.savePrefs(MY_KEY_LEFTOVER_SESSION, edtLeftoverSession.text.toString())
@@ -603,7 +603,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(MY_KEY_CUSTOM_NFC, cbNFCScreen.isChecked)
             Helpers.savePrefs(MY_KEY_CUSTOM_LIVENESS, cbLivenessScreen.isChecked)
             Helpers.savePrefs(MY_KEY_CUSTOM_CAPTURE, cbCaptureIdScreen.isChecked)
-
+            Helpers.savePrefs(MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID, rgUpgradePlan.isPositiveCheck)
             if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(
                     MY_KEY_MAIN_COLOR
                 )!!
@@ -670,7 +670,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
         var faceDataUri = Helpers.getValuePreferences(MY_KEY_FACE_DATA_URI) ?: ""
         LogUtils.printLog("faceDataUri $faceDataUri")
-        if (!BitmapUtil.isValidUri(this@SettingActivity, faceDataUri))
+        if (!BitmapUtil.isImageUri(this@SettingActivity, faceDataUri))
             faceDataUri = ""
 
         LogUtils.printLog("faceDataUri $faceDataUri")
@@ -679,7 +679,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         var mrz = Helpers.getValuePreferences(MY_KEY_MRZ) ?: ""
         edtMRZ.setText(mrz)
         edtLeftoverSession.setText(leftoverSession)
-
+        var upgradePlanFromSessionID = Helpers.getBooleanPreferences(MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID, false)
+        rgUpgradePlan.switchChangeListener(upgradePlanFromSessionID)
         val mainTextColor =
             Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) ?: defaultConfig.mainTextColor
         val mainColor = Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) ?: defaultConfig.mainColor
