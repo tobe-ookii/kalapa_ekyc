@@ -15,6 +15,8 @@ import android.widget.*
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.ThemedSpinnerAdapter.Helper
+import androidx.transition.Visibility
 import com.google.android.material.slider.Slider
 import vn.kalapa.demo.R
 import vn.kalapa.demo.utils.Helpers
@@ -32,6 +34,9 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BACKGROUND_COLOR
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BTN_TEXT_COLOR
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_CAPTURE
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_LIVENESS
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENV
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_DATA_URI
@@ -51,7 +56,6 @@ import vn.kalapa.ekyc.utils.Common.Companion.nfcAvailable
 import vn.kalapa.ekyc.utils.LocaleHelper
 import vn.kalapa.ekyc.views.KLPCustomMultipleChoices
 import vn.kalapa.ekyc.views.KLPCustomSwitch
-import java.io.File
 import java.util.Locale
 
 // prod: api-ekyc.kalapa.vn/face-otp
@@ -63,7 +67,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private val KLP_PROD = "https://ekyc-api.kalapa.vn"
     private val KLP_DEV = "https://ekyc-dev-internal.kalapa.vn"
     private val defaultConfig = KalapaSDKConfig.KalapaSDKConfigBuilder(this@SettingActivity).build()
-
 
     private lateinit var tvMRZ: TextView
     private lateinit var edtMRZ: EditText
@@ -109,6 +112,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvBackgroundColor: TextView
     private lateinit var tvScanNFC: TextView
     private lateinit var tvCaptureImage: TextView
+    private lateinit var containerToken: LinearLayout
 
 
     private lateinit var tvVerifyCheck: TextView
@@ -215,11 +219,14 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvScenario = findViewById(R.id.tv_scenario)
         tvList.add(tvScenario)
         rgScenario = findViewById(R.id.sw_scenario)
+        containerToken = findViewById(R.id.container_token)
+        containerToken.visibility = if ((Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: "") == Common.SCENARIO.CUSTOM.name) View.GONE else View.VISIBLE
         rgScenario.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
             containerRegister.visibility = if (it == 0) View.VISIBLE else View.GONE
             containerUpgrade.visibility = if (it > 0) View.VISIBLE else View.GONE
             containerCustom.visibility = if (it == 2) View.VISIBLE else View.GONE
             rgUpgradePlan.visibility = if (it == 2) View.GONE else View.VISIBLE
+            containerToken.visibility = if (it == 2) View.GONE else View.VISIBLE
             if (it == 2) {
                 containerMrz.visibility = View.VISIBLE
                 containerFaceData.visibility = View.VISIBLE
@@ -561,7 +568,14 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun setConfigBeforeExit() {
-        if (edtToken.text.toString().isNotEmpty() && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
+        if (containerToken.visibility == View.GONE && !cbNFCScreen.isChecked && !cbNFCScreen.isChecked && !cbNFCScreen.isChecked && !cbNFCScreen.isChecked)
+            Helpers.showDialog(
+                this@SettingActivity,
+                resources.getString(R.string.klp_demo_alert_title),
+                resources.getString(R.string.please_choose_atleast_one_screen),
+                R.drawable.frowning_face
+            )
+        else if ((edtToken.text.toString().isNotEmpty() || containerToken.visibility == View.GONE) && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
             Helpers.savePrefs(
                 MY_KEY_LIVENESS_VERSION,
                 if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
@@ -572,7 +586,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             )
 
             Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPositiveCheck) "vi" else "en")
-            Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString())
+            edtToken.text.toString().isNotEmpty().let { Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString()) }
 
 
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
@@ -585,6 +599,10 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPositiveCheck)
+
+            Helpers.savePrefs(MY_KEY_CUSTOM_NFC, cbNFCScreen.isChecked)
+            Helpers.savePrefs(MY_KEY_CUSTOM_LIVENESS, cbLivenessScreen.isChecked)
+            Helpers.savePrefs(MY_KEY_CUSTOM_CAPTURE, cbCaptureIdScreen.isChecked)
 
             if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(
                     MY_KEY_MAIN_COLOR
@@ -695,6 +713,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             true
         )
         sliderFaceMatchingThreshold.value = faceMatchingThreshold.toFloat()
+        cbNFCScreen.isChecked = Helpers.getBooleanPreferences(MY_KEY_CUSTOM_NFC, true)
+        cbLivenessScreen.isChecked = Helpers.getBooleanPreferences(MY_KEY_CUSTOM_LIVENESS, true)
+        cbCaptureIdScreen.isChecked = Helpers.getBooleanPreferences(MY_KEY_CUSTOM_CAPTURE, true)
 
         cbAcceptedOldIdCard.isChecked = accept9DigitsIdCard
         cbAcceptedOld12DigitsIdCard.isChecked = accept12DigitIdCard

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:layout_marginHorizontal="@dimen/margin_horizontal"
+        android:layout_marginHorizontal="@dimen/klp_margin_camera_horizontal"
         android:layout_marginTop="@dimen/camera_margin_vertical_from_top"
         android:background="@drawable/frame_exclude_png"
         app:cardCornerRadius="@dimen/button_corner_radius">

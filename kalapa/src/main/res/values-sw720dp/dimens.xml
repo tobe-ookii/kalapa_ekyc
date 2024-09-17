@@ -25,7 +25,7 @@
     <dimen name="liveness_image">290dp</dimen>
     <dimen name="liveness_radius">320dp</dimen>
     <dimen name="camera_offset_y">-80dp</dimen>
-    <dimen name="camera_margin_vertical_from_top">60dp</dimen>
+    <dimen name="camera_margin_vertical_from_top">20dp</dimen>
     <dimen name="camera_offset_passport">-100dp</dimen>
     <dimen name="camera_offset_selfie">-60dp</dimen>
     <dimen name="margin_from_button_holder">30dp</dimen>
@@ -38,4 +38,6 @@
     <dimen name="klp_holder_card_height">120dp</dimen>
     <dimen name="margin_bottom_button">50dp</dimen>
     <dimen name="margin_vertical_xlarge">36dp</dimen>
+    <dimen name="klp_margin_camera_horizontal">130dp</dimen>
+    <dimen name="klp_margin_camera_selfie_horizontal">200dp</dimen>
 </resources>

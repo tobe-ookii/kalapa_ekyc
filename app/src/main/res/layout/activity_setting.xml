@@ -69,10 +69,10 @@
             android:visibility="visible" />
 
         <TextView
-            android:layout_marginStart="@dimen/klp_margin_xsmall"
             android:id="@+id/tv_liveness_version_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/klp_margin_xsmall"
             android:layout_marginBottom="@dimen/klp_margin_small"
             android:text="@string/klp_demo_liveness_version_description"
             android:textSize="@dimen/klp_txt_size_description" />
@@ -97,10 +97,10 @@
             android:visibility="visible" />
 
         <TextView
-            android:layout_marginStart="@dimen/klp_margin_xsmall"
             android:id="@+id/tv_scenario_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/klp_margin_xsmall"
             android:layout_marginBottom="@dimen/klp_margin_small"
             android:text="@string/klp_demo_scenario_description"
             android:textSize="@dimen/klp_txt_size_description" />
@@ -114,24 +114,31 @@
             app:kmc_second_label="@string/klp_demo_scenario_upgrade"
             app:kmc_third_label="@string/klp_demo_scenario_custom" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/klp_margin_mid"
-            android:layout_marginBottom="@dimen/klp_margin_small"
-            android:text="@string/klp_demo_token"
-            android:textSize="@dimen/klp_txt_size_header"
-            android:textStyle="bold" />
-
-        <EditText
-            android:layout_marginStart="@dimen/klp_margin_xsmall"
-            android:id="@+id/edt_token"
+        <LinearLayout
+            android:id="@+id/container_token"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/edt_default_background"
-            android:contentDescription="Enter your token"
-            android:maxLines="3"
-            android:textSize="@dimen/klp_txt_size_normal" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:layout_marginBottom="@dimen/klp_margin_small"
+                android:text="@string/klp_demo_token"
+                android:textSize="@dimen/klp_txt_size_header"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edt_token"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/klp_margin_xsmall"
+                android:background="@drawable/edt_default_background"
+                android:contentDescription="Enter your token"
+                android:maxLines="3"
+                android:textSize="@dimen/klp_txt_size_normal" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/container_custom"
@@ -228,8 +235,8 @@
             <vn.kalapa.ekyc.views.KLPCustomSwitch
                 android:id="@+id/sw_upgrade_plan"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="@dimen/klp_margin_mid"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_mid"
                 app:rb_first_label="@string/klp_demo_from_session_id"
                 app:rb_second_label="@string/klp_demo_from_provided_data" />
 
@@ -248,6 +255,7 @@
                     android:text="@string/klp_demo_session_id"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_session_id_description"
                     android:layout_width="match_parent"
@@ -255,6 +263,7 @@
                     android:layout_marginBottom="@dimen/klp_margin_small"
                     android:text="@string/klp_demo_session_id_description"
                     android:textSize="@dimen/klp_txt_size_description" />
+
                 <EditText
                     android:id="@+id/edt_leftover_session"
                     android:layout_width="match_parent"
@@ -281,6 +290,7 @@
                     android:text="@string/klp_demo_mrz"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_mrz_description"
                     android:layout_width="match_parent"
@@ -288,6 +298,7 @@
                     android:layout_marginBottom="@dimen/klp_margin_small"
                     android:text="@string/klp_demo_mrz_description"
                     android:textSize="@dimen/klp_txt_size_description" />
+
                 <EditText
                     android:id="@+id/edt_mrz"
                     android:layout_width="match_parent"
@@ -314,6 +325,7 @@
                     android:text="@string/klp_demo_face_data"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_face_data_description"
                     android:layout_width="match_parent"
@@ -321,6 +333,7 @@
                     android:layout_marginBottom="@dimen/klp_margin_small"
                     android:text="@string/klp_demo_face_data_description"
                     android:textSize="@dimen/klp_txt_size_description" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

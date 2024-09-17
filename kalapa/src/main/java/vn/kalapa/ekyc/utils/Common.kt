@@ -34,7 +34,20 @@ class Common {
         ACTIVE(3)
     }
 
-    enum class SCENARIO { REGISTER, UPGRADE, CUSTOM }
+    enum class SCENARIO {
+        REGISTER, UPGRADE, CUSTOM, NA;
+
+        companion object {
+            fun getScenarioFromName(scenario: String): SCENARIO {
+                return when (scenario) {
+                    REGISTER.name -> REGISTER
+                    UPGRADE.name -> UPGRADE
+                    CUSTOM.name -> CUSTOM
+                    else -> NA
+                }
+            }
+        }
+    }
 
     enum class SCENARIO_PLAN {
         FROM_SESSION_ID, FROM_PROVIDED_DATA, NA;
@@ -67,9 +80,9 @@ class Common {
         val MY_KEY_BACKGROUND_COLOR = "KLP_EKYC_KEY_BACKGROUND_COLOR"
         val MY_KEY_ENV = "KLP_EKYC_KEY_ENVIRONMENT"
 
-        val MY_KEY_CUSTOM_CAPTURE = "KLP_EKYC_KEY_CUSTOM_CAPTURE"
-        val MY_KEY_CUSTOM_LIVENESS = "KLP_EKYC_KEY_CUSTOM_LIVENESS"
-        val MY_KEY_CUSTOM_NFC = "KLP_EKYC_KEY_CUSTOM_NFC"
+        val MY_KEY_CUSTOM_CAPTURE = "KLP_EKYC_KEY_CUSTOM_CAPTURE" // boolean
+        val MY_KEY_CUSTOM_LIVENESS = "KLP_EKYC_KEY_CUSTOM_LIVENESS" // boolean
+        val MY_KEY_CUSTOM_NFC = "KLP_EKYC_KEY_CUSTOM_NFC" // boolean
 
         val MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID = "KLP_EKYC_UPGRADE_PLAN_FROM_SESSION_ID" // boolean
 

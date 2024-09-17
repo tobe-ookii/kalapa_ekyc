@@ -33,10 +33,14 @@ class PreferencesConfig(
     val leftoverSession: String,
     val mrz: String,
     val facedataURI: String,
+    scenario: String,
     scenarioPlan: String,
+    val hasCustomCaptureScreen: Boolean,
+    val hasCustomLivenessScreen: Boolean,
+    val hasCustomNFCScreen: Boolean
 ) {
     val scenarioPlan = Common.SCENARIO_PLAN.getScenarioPlanFromName(scenarioPlan)
-
+    val scenario = Common.SCENARIO.getScenarioFromName(scenario)
     fun getAcceptedDocument(): Array<String> {
         var acceptedDocuments: ArrayList<String> = ArrayList()
         if (acceptOldId) acceptedDocuments.add(OLD_ID_CARD)

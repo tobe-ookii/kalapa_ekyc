@@ -45,4 +45,6 @@
     <dimen name="klp_shinhan_title_20">20dp</dimen>
     <dimen name="margin_vertical_xlarge">36dp</dimen>
     <dimen name="klp_toggle_height">28dp</dimen>
+    <dimen name="klp_margin_camera_horizontal">36dp</dimen>
+    <dimen name="klp_margin_camera_selfie_horizontal">24dp</dimen>
 </resources>

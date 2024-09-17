@@ -39,6 +39,9 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_4
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_5
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_CAPTURE
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_LIVENESS
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
@@ -70,6 +73,7 @@ internal class Helpers {
             val faceMatchingThreshold: Int =
                 getIntPreferences(MY_KEY_FACE_MATCHING_THRESHOLD, 50)
             val scenarioPlan = getValuePreferences(Common.MY_KEY_SCENARIO_PLAN) ?: ""
+            val scenario = getValuePreferences(Common.MY_KEY_SCENARIO) ?: ""
             val accept9DigitsIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_1, true)
             val accept12DigitIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_2, true)
             val acceptEidWithoutChip = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_3, true)
@@ -83,10 +87,10 @@ internal class Helpers {
                 getBooleanPreferences(MY_KEY_VERIFY_CHECK, false)
             val fraudCheck =
                 getBooleanPreferences(MY_KEY_FRAUD_CHECK, true)
-            val normalCheckOnly = getBooleanPreferences(
-                MY_KEY_NORMAL_CHECK_ONLY,
-                true
-            )
+            val normalCheckOnly = getBooleanPreferences(MY_KEY_NORMAL_CHECK_ONLY, true)
+            val hasCustomCaptureScreen = getBooleanPreferences(MY_KEY_CUSTOM_CAPTURE, true)
+            val hasCustomLivenessScreen = getBooleanPreferences(MY_KEY_CUSTOM_LIVENESS, true)
+            val hasCustomNFCScreen = getBooleanPreferences(MY_KEY_CUSTOM_NFC, true)
             val cardSideMatchesCheck = getBooleanPreferences(
                 MY_KEY_CARD_SIDE_CHECK,
                 true
@@ -94,7 +98,7 @@ internal class Helpers {
             LogUtils.printLog("Preferences: ", token.isEmpty(), lang == null, backgroundColor == null, mainColor == null, mainTextColor == null, btnTextColor == null, env == null)
             return if (token.isEmpty() || lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz, faceDataUri, scenarioPlan)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz, faceDataUri, scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
             }
         }
 
@@ -248,8 +252,8 @@ internal class Helpers {
             dialog.show()
         }
 
-        fun showDialog(myActivity: Activity, myTitle: String?, myBody: String, drawableIcon: Int?, listener: DialogListener?) {
-            showDialog(myActivity, myTitle, myBody, null, null, drawableIcon, listener)
+        fun showDialog(myActivity: Activity, myTitle: String?, myBody: String, drawableIcon: Int?, listener: DialogListener?, yesTxt: String? = null) {
+            showDialog(myActivity, myTitle, myBody, yesTxt, null, drawableIcon, listener)
         }
 
         fun showDialog(myActivity: Activity, myBody: String, drawableIcon: Int?) {
@@ -260,6 +264,11 @@ internal class Helpers {
         fun showDialog(myActivity: Activity, myTitle: String, myBody: String, drawableIcon: Int?) {
             activity = myActivity
             showDialog(activity, myTitle, myBody, drawableIcon, null)
+        }
+
+        fun showDialog(myActivity: Activity, myTitle: String, myBody: String, yesTxt: String, drawableIcon: Int?) {
+            activity = myActivity
+            showDialog(activity, myTitle, myBody, drawableIcon, null, yesTxt)
         }
 
         fun errorLog(

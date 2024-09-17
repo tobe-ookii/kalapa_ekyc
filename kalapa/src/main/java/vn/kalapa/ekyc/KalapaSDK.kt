@@ -222,6 +222,64 @@ class KalapaSDK private constructor(
         activity.startActivity(intent)
     }
 
+    fun startCustomFlow(withCaptureScreen: Boolean, withLivenessScreen: Boolean, withNFCScreen: Boolean, withMRZData: String, withFaceData: String, kalapaCustomHandler: KalapaHandler) {
+        val complete = { kalapaCustomHandler.onComplete(KalapaResult()) }
+
+        val nfcScreen = {
+            startNFCForResult(mrz, object : KalapaNFCHandler() {
+                override fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback) {
+                    callback.sendDone(complete)
+                }
+
+                override fun onExpired() {
+                }
+
+            })
+        }
+
+        val livenessScreen = {
+            startLivenessForResult(faceData, object : KalapaCaptureHandler() {
+                override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                    if (withNFCScreen)
+                        nfcScreen()
+                    else
+                        callback.sendDone(complete)
+                }
+
+                override fun onExpired() {
+                }
+            })
+        }
+        val captureScreen = {
+            startCaptureForResult(KalapaSDKMediaType.FRONT, object : KalapaCaptureHandler() {
+                override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                    startCaptureForResult(KalapaSDKMediaType.BACK, object : KalapaCaptureHandler() {
+                        override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                            if (withLivenessScreen)
+                                callback.sendDone(livenessScreen)
+                            else if (withNFCScreen)
+                                callback.sendDone(nfcScreen)
+                            else
+                                callback.sendDone(complete)
+                        }
+
+                        override fun onExpired() {
+                        }
+
+                    })
+                }
+
+                override fun onExpired() {
+
+                }
+
+            })
+        }
+        if (withCaptureScreen) captureScreen()
+        else if (withLivenessScreen) livenessScreen()
+        else nfcScreen()
+    }
+
     fun start(
         session: String,
         flow: String,
