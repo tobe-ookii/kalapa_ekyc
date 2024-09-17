@@ -99,12 +99,15 @@
     <string name="klp_demo_scenario_custom">Tùy chỉnh</string>
     <string name="klp_demo_face_data">Dữ liệu khuôn mặt</string>
     <string name="klp_demo_pick_image">Chọn từ thư viện</string>
-    <string name="klp_demo_liveness_version_description">- Thụ động: Xác thực khuôn mặt tự động.\n- Bán chủ động: Thực hiện xác thực khuôn mặt xa-gần.\n- Chủ động: Thực hiện ba hành động khác nhau.</string>
-    <string name="klp_demo_scenario_description">- Đăng ký: Xác thực và đăng ký tài khoản mới.\n- Nâng cấp: Xác minh bằng thông tin chip NFC.\n- Tùy chỉnh: Chọn quy trình eKYC của riêng bạn.</string>
+    <string name="klp_demo_liveness_version_description">• Thụ động: Xác thực khuôn mặt tự động.\n• Bán chủ động: Thực hiện xác thực khuôn mặt xa-gần.\n• Chủ động: Thực hiện ba hành động khác nhau.</string>
+    <string name="klp_demo_scenario_description">• Đăng ký: Xác thực và đăng ký tài khoản mới.\n• Nâng cấp: Xác minh bằng thông tin chip NFC.\n• Tùy chỉnh: Chọn quy trình eKYC của riêng bạn.</string>
     <string name="klp_demo_setting_screen">Màn hình</string>
     <string name="klp_demo_setting_screen_capture">Chụp hình giấy tờ</string>
     <string name="klp_demo_setting_screen_liveness">Xác thực chân dung</string>
     <string name="klp_demo_screen_nfc">Xác thực chip điện tử</string>
     <string name="klp_demo_from_session_id">Từ session đã có</string>
     <string name="klp_demo_from_provided_data">Từ dữ liệu đã có</string>
+    <string name="klp_demo_mrz_description">Nếu có sẽ tiết kiệm bước quét MRZ.</string>
+    <string name="klp_demo_face_data_description">Nếu có sẽ tiết kiệm bước xác thực khuôn mặt.</string>
+    <string name="klp_demo_session_id_description">Quá trình eKYC sẽ tiếp tục với Session ID này.</string>
 </resources>

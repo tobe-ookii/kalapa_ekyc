@@ -3,8 +3,6 @@
     android:id="@+id/rg_toggle"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_button_only"
-    android:backgroundTint="@color/textColor"
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/klp_margin_xsmall"
     android:paddingVertical="@dimen/margin_xxsmall">
@@ -18,42 +16,44 @@
         android:layout_marginBottom="1dp"
         android:layout_weight="1"
         android:background="@drawable/custom_switch"
-        android:textSize="@dimen/klp_txt_size_normal"
         android:button="@null"
         android:gravity="center"
         android:paddingHorizontal="@dimen/klp_margin_mid"
         android:text="Search"
-        android:textColor="@color/progress_text_unchecked" />
+        android:textColor="@color/progress_text_unchecked"
+        android:textSize="@dimen/klp_txt_size_normal" />
 
     <RadioButton
         android:id="@+id/rb_second_label"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/klp_margin_small"
         android:layout_marginTop="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
         android:layout_weight="1"
         android:background="@drawable/custom_switch"
-        android:textSize="@dimen/klp_txt_size_normal"
         android:button="@null"
         android:gravity="center"
         android:paddingHorizontal="@dimen/klp_margin_mid"
         android:text="Offers"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/klp_txt_size_normal" />
 
     <RadioButton
         android:id="@+id/rb_third_label"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/klp_margin_small"
         android:layout_marginTop="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
         android:layout_weight="1"
         android:background="@drawable/custom_switch"
-        android:textSize="@dimen/klp_txt_size_normal"
         android:button="@null"
         android:gravity="center"
         android:paddingHorizontal="@dimen/klp_margin_mid"
         android:text="Offers"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/klp_txt_size_normal" />
 </RadioGroup>

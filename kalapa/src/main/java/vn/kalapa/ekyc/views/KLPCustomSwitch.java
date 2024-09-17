@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 import androidx.core.view.ViewCompat;
 
 import vn.kalapa.R;
+import vn.kalapa.ekyc.utils.Helpers;
 
 
 public class KLPCustomSwitch extends RadioGroup {
@@ -79,12 +80,14 @@ public class KLPCustomSwitch extends RadioGroup {
             rbOther.setTextColor(Color.parseColor(mainColor));
             rbOne.setTextColor(Color.parseColor(textColor));
             ViewCompat.setBackgroundTintList(rbOne, ColorStateList.valueOf(Color.parseColor(mainColor)));
+            ViewCompat.setBackgroundTintList(rbOther, ColorStateList.valueOf(Color.parseColor(mainColor)));
         } else {
             check(rbOther.getId());
             isPositiveCheck = false;
             rbOne.setTextColor(Color.parseColor(mainColor));
             rbOther.setTextColor(Color.parseColor(textColor));
             ViewCompat.setBackgroundTintList(rbOther, ColorStateList.valueOf(Color.parseColor(mainColor)));
+            ViewCompat.setBackgroundTintList(rbOne, ColorStateList.valueOf(Color.parseColor(mainColor)));
         }
         if (listener != null) listener.onValueChanged(isPositiveCheck);
     }

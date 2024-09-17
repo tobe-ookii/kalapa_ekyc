@@ -56,6 +56,17 @@ class BitmapUtil {
             )
         }
 
+        fun isValidUri(context: Context, uriString: String): Boolean {
+            return try {
+                val uri = Uri.parse(uriString)
+                val inputStream = context.contentResolver.openInputStream(uri)
+                inputStream?.close()
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
+
         fun getRealPathFromUri(uri: Uri, contentResolver: ContentResolver): String? {
             val projection = arrayOf(MediaStore.Images.Media.DATA)
             val cursor = contentResolver.query(uri, projection, null, null, null)

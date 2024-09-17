@@ -21,6 +21,7 @@ import vn.kalapa.demo.utils.Helpers
 import vn.kalapa.demo.utils.LogUtils
 import vn.kalapa.ekyc.KalapaFlowType
 import vn.kalapa.ekyc.KalapaSDKConfig
+import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_2
@@ -146,6 +147,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvScreen: TextView
     private lateinit var sliderFaceMatchingThreshold: Slider
 
+    private lateinit var tvFaceDataDescription: TextView
+    private lateinit var tvMRZDescription: TextView
+    private lateinit var tvSessionIDDescription: TextView
     private var tvList = ArrayList<TextView>()
     private var rgList = ArrayList<RadioGroup>()
     private var edtList = ArrayList<EditText>()
@@ -192,6 +196,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rootContainer = findViewById(R.id.root_container)
         containerUpgrade = findViewById(R.id.container_upgrade)
         tvScreenNFC = findViewById(R.id.tv_screen_nfc)
+        tvFaceDataDescription = findViewById(R.id.tv_face_data_description)
+        tvMRZDescription = findViewById(R.id.tv_mrz_description)
+        tvSessionIDDescription = findViewById(R.id.tv_session_id_description)
         tvScreen = findViewById(R.id.tv_screen)
         tvScreenCapture = findViewById(R.id.tv_screen_capture)
         tvScreenLiveness = findViewById(R.id.tv_screen_liveness)
@@ -199,7 +206,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         containerCustom = findViewById(R.id.container_custom)
         tvMRZ = findViewById(R.id.tv_mrz)
         edtMRZ = findViewById(R.id.edt_mrz)
-        tvLeftoverSession = findViewById(R.id.tv_leftover_session)
+        tvLeftoverSession = findViewById(R.id.tv_session_id)
         tvList.add(tvLeftoverSession)
         edtLeftoverSession = findViewById(R.id.edt_leftover_session)
         edtList.add(edtLeftoverSession)
@@ -210,8 +217,16 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgScenario = findViewById(R.id.sw_scenario)
         rgScenario.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
             containerRegister.visibility = if (it == 0) View.VISIBLE else View.GONE
-            containerUpgrade.visibility = if (it == 1) View.VISIBLE else View.GONE
+            containerUpgrade.visibility = if (it > 0) View.VISIBLE else View.GONE
             containerCustom.visibility = if (it == 2) View.VISIBLE else View.GONE
+            rgUpgradePlan.visibility = if (it == 2) View.GONE else View.VISIBLE
+            if (it == 2) {
+                containerMrz.visibility = View.VISIBLE
+                containerFaceData.visibility = View.VISIBLE
+                containerLeftoverSession.visibility = View.GONE
+            } else {
+                rgUpgradePlan.switchChangeListener(rgUpgradePlan.isPositiveCheck)
+            }
         }
         rgList.add(rgScenario)
         containerMrz = findViewById(R.id.container_mrz)
@@ -251,6 +266,17 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvScenarioDescription = findViewById(R.id.tv_scenario_description)
         btnSaveConfig.setOnClickListener {
             setConfigBeforeExit()
+        }
+        rgUpgradePlan.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
+            if (it) { // From SessionID
+                containerMrz.visibility = View.GONE
+                containerFaceData.visibility = View.GONE
+                containerLeftoverSession.visibility = View.VISIBLE
+            } else { // Provided Data
+                containerMrz.visibility = View.VISIBLE
+                containerFaceData.visibility = View.VISIBLE
+                containerLeftoverSession.visibility = View.GONE
+            }
         }
         rgLanguage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             LogUtils.printLog("Current language is $it")
@@ -419,7 +445,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgCardSidesMatchCheck.setMainColor(mainColor)
         rgCaptureImage.setMainColor(mainColor)
         rgScanNFC.setMainColor(mainColor)
-        
+
         btnFaceData.setTextColor(Color.parseColor(mainColor))
         Helpers.setBackgroundColorTintList(btnFaceData, mainColor)
         Helpers.setCheckboxTintList(cbAcceptedOldIdCard, Color.parseColor(mainColor))
@@ -466,10 +492,12 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvScreen.text = resources.getString(R.string.klp_demo_setting_screen)
         tvScreenLiveness.text = resources.getString(R.string.klp_demo_setting_screen_liveness)
         tvScreenCapture.text = resources.getString(R.string.klp_demo_setting_screen_capture)
-
+        tvMRZDescription.text = resources.getString(R.string.klp_demo_mrz_description)
+        tvFaceDataDescription.text = resources.getString(R.string.klp_demo_face_data_description)
+        tvSessionIDDescription.text = resources.getString(R.string.klp_demo_session_id_description)
 //        rgLanguage.rbSecond.text = resources.getString(R.string.klp_faceOTP_language_en)
 //        rgLanguage.rbThird.text = resources.getString(R.string.klp_faceOTP_language_ko)
-        tvLeftoverSession.text = resources.getString(R.string.klp_demo_leftover_session)
+        tvLeftoverSession.text = resources.getString(R.string.klp_demo_session_id)
         rgEnvironment.rbOne.text = resources.getString(R.string.klp_environment_production)
         rgEnvironment.rbOther.text = resources.getString(
             R.string.klp_environment_dev
@@ -489,6 +517,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgScenario.rbSecond.text = resources.getString(R.string.klp_demo_scenario_upgrade)
         rgScenario.rbThird.text = resources.getString(R.string.klp_demo_scenario_custom)
 
+        btnFaceData.text = resources.getString(R.string.klp_demo_pick_image)
         rgScanNFC.rbOne.text = resources.getString(R.string.klp_on)
         rgScanNFC.rbOther.text = resources.getString(R.string.klp_off)
 
@@ -623,9 +652,10 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
         var faceDataUri = Helpers.getValuePreferences(MY_KEY_FACE_DATA_URI) ?: ""
         LogUtils.printLog("faceDataUri $faceDataUri")
-        if (!File(faceDataUri).exists()) {
+        if (!BitmapUtil.isValidUri(this@SettingActivity, faceDataUri))
             faceDataUri = ""
-        }
+
+        LogUtils.printLog("faceDataUri $faceDataUri")
         tvFaceDataUri.text = faceDataUri
         var leftoverSession = Helpers.getValuePreferences(MY_KEY_LEFTOVER_SESSION) ?: ""
         var mrz = Helpers.getValuePreferences(MY_KEY_MRZ) ?: ""

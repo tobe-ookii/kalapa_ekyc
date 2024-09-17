@@ -110,4 +110,7 @@
     <string name="klp_demo_screen_nfc">NFC 확인 화면</string>
     <string name="klp_demo_from_session_id">세션 ID에서</string>
     <string name="klp_demo_from_provided_data">제공된 데이터에서</string>
+    <string name="klp_demo_mrz_description">MRZ 스캔 단계를 건너뛰려면.</string>
+    <string name="klp_demo_face_data_description">라이브니스 검사 단계를 건너뛰려면.</string>
+    <string name="klp_demo_session_id_description">eKYC 프로세스는 이 세션 ID로 계속 진행됩니다.</string>
 </resources>

@@ -99,12 +99,15 @@
     <string name="klp_demo_scenario_custom">Custom</string>
     <string name="klp_demo_face_data">Face Data</string>
     <string name="klp_demo_pick_image">Choose from library</string>
-    <string name="klp_demo_liveness_version_description">- Passive: No action is required.\n- Semi-Active: Performs far-near liveness detection.\n- Active: Performs three different actions.</string>
-    <string name="klp_demo_scenario_description">- Register: Authenticate and register a new account.\n- Upgrade: Verify using NFC chip information.\n- Custom: Choose your own eKYC flow.</string>
+    <string name="klp_demo_liveness_version_description">• Passive: No action is required.\n• Semi-Active: Performs far-near liveness detection.\n• Active: Performs three different actions.</string>
+    <string name="klp_demo_scenario_description">• Register: Authenticate and register a new account.\n• Upgrade: Verify using NFC chip information.\n• Custom: Choose your own eKYC flow.</string>
     <string name="klp_demo_setting_screen">Screen</string>
     <string name="klp_demo_setting_screen_capture">Capture ID Screen</string>
     <string name="klp_demo_setting_screen_liveness">Liveness Screen</string>
     <string name="klp_demo_screen_nfc">NFC Verification Screen</string>
     <string name="klp_demo_from_session_id">From Session ID</string>
     <string name="klp_demo_from_provided_data">From provided data</string>
+    <string name="klp_demo_mrz_description">To skip the MRZ scan step.</string>
+    <string name="klp_demo_face_data_description">To skip the liveness check step.</string>
+    <string name="klp_demo_session_id_description">The eKYC process will continue with this session ID.</string>
 </resources>
