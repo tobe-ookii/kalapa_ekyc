@@ -2,11 +2,13 @@ package vn.kalapa.demo.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -53,6 +55,7 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.nfcAvailable
 import vn.kalapa.ekyc.utils.LocaleHelper
+import vn.kalapa.ekyc.utils.TransactionUtils
 import vn.kalapa.ekyc.views.KLPCustomMultipleChoices
 import vn.kalapa.ekyc.views.KLPCustomSwitch
 import java.util.Locale
@@ -86,6 +89,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
     private lateinit var tvLivenessDescription: TextView
     private lateinit var tvScenarioDescription: TextView
+    private var faceBitmap: Bitmap? = null
 
     //    private lateinit var rgLanguage: KLPCustomMultipleChoices
     private lateinit var rgLanguage: KLPCustomSwitch
@@ -113,6 +117,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvCaptureImage: TextView
     private lateinit var containerToken: LinearLayout
 
+    private lateinit var ivRemoveFaceDataUri: ImageView
 
     private lateinit var tvVerifyCheck: TextView
     private lateinit var tvFraudCheck: TextView
@@ -190,7 +195,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             val inputStream = contentResolver.openInputStream(imgUri)
             if (inputStream != null) {
                 LogUtils.printLog("Picked image from inputStream $imgUri")
+                faceBitmap = BitmapUtil.getBitmapFromUri(contentResolver, imgUri)
                 tvFaceDataUri.text = imgUri.toString()
+                ivRemoveFaceDataUri.visibility = View.VISIBLE
             }
         }
     }
@@ -199,6 +206,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rootContainer = findViewById(R.id.root_container)
         containerUpgrade = findViewById(R.id.container_upgrade)
         tvScreenNFC = findViewById(R.id.tv_screen_nfc)
+        ivRemoveFaceDataUri = findViewById(R.id.iv_remove_face_data_uri)
         tvFaceDataDescription = findViewById(R.id.tv_face_data_description)
         tvMRZDescription = findViewById(R.id.tv_mrz_description)
         tvSessionIDDescription = findViewById(R.id.tv_session_id_description)
@@ -242,6 +250,11 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         btnFaceData = findViewById(R.id.btn_choose_face_data)
         btnFaceData.setOnClickListener {
             pickImageFromGallery()
+        }
+        ivRemoveFaceDataUri.setOnClickListener {
+            tvFaceDataUri.text = ""
+            faceBitmap = null
+            ivRemoveFaceDataUri.visibility = View.GONE
         }
         tvFaceDataUri = findViewById(R.id.tv_face_data_uri)
 
@@ -456,6 +469,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
         btnFaceData.setTextColor(Color.parseColor(mainColor))
         Helpers.setBackgroundColorTintList(btnFaceData, mainColor)
+        Helpers.setBackgroundColorTintList(ivRemoveFaceDataUri, mainColor)
         Helpers.setCheckboxTintList(cbAcceptedOldIdCard, Color.parseColor(mainColor))
         Helpers.setCheckboxTintList(cbAcceptedEidWithoutChip, Color.parseColor(mainColor))
         Helpers.setCheckboxTintList(cbAcceptedOld12DigitsIdCard, Color.parseColor(mainColor))
@@ -493,6 +507,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
     private fun refreshUI() {
 //        tvScenario.text = resources.getString(R.string.klp_index_scenario)
+        ivRemoveFaceDataUri.visibility = if (tvFaceDataUri.text.isNullOrEmpty()) View.GONE else View.VISIBLE
         tvLanguage.text = resources.getString(R.string.klp_index_language)
         rgLanguage.rbOne.text = resources.getString(R.string.klp_demo_language_vi)
         rgLanguage.rbOther.text = resources.getString(R.string.klp_demo_language_en)
@@ -577,6 +592,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
                 R.drawable.frowning_face
             )
         else if ((edtToken.text.toString().isNotEmpty() || containerToken.visibility == View.GONE) && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
+
+            Helpers.savePrefs(Common.MY_KEY_FACE_DATA_BASE64, if (faceBitmap != null && tvFaceDataUri.text.isNotEmpty()) TransactionUtils.compressBase64ForTransaction(BitmapUtil.convertBitmapToBase64(faceBitmap!!)) else "")
+
             Helpers.savePrefs(
                 MY_KEY_LIVENESS_VERSION,
                 if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version

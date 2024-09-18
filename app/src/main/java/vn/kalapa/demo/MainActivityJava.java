@@ -122,7 +122,7 @@ public class MainActivityJava extends BaseActivity {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
             Common.SCENARIO scenario = preferencesConfig.getScenario();
-            String faceDataBase64 = "";
+            String faceDataBase64 = preferencesConfig.getFaceDataBase64();
             if (scenario == Common.SCENARIO.CUSTOM) {
                 startCustomFlow(preferencesConfig.getHasCustomCaptureScreen(), preferencesConfig.getHasCustomLivenessScreen(), preferencesConfig.getHasCustomNFCScreen(), preferencesConfig.getMrz(), faceDataBase64);
                 ProgressView.Companion.hideProgress(false);

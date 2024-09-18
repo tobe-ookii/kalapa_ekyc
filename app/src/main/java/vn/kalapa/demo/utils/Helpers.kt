@@ -43,6 +43,7 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_CAPTURE
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_LIVENESS
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
+import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_DATA_BASE64
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
@@ -94,10 +95,11 @@ internal class Helpers {
                 MY_KEY_CARD_SIDE_CHECK,
                 true
             )
+            val faceDataBase64 = getValuePreferences(MY_KEY_FACE_DATA_BASE64) ?: ""
             LogUtils.printLog("Preferences: ", token.isEmpty(), lang == null, backgroundColor == null, mainColor == null, mainTextColor == null, btnTextColor == null, env == null)
             return if (token.isEmpty() || lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz,scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz, faceDataBase64, scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
             }
         }
 
@@ -122,7 +124,7 @@ internal class Helpers {
         }
 
         fun savePrefs(key: String, value: Any) {
-            LogUtils.printLog("Save Prefs String: $key $value")
+//            LogUtils.printLog("Save Prefs String: $key $value")
             val editor = prefs?.edit()
             editor?.putString(key, value.toString())
             editor?.apply()

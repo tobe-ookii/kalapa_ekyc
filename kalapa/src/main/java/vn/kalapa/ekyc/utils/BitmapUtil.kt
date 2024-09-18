@@ -138,12 +138,6 @@ class BitmapUtil {
             return bytes
         }
 
-        //            val width = srcBmp.width
-//            val height = srcBmp.height
-//            val size: Int = srcBmp.rowBytes * srcBmp.height
-//            val byteBuffer: ByteBuffer = ByteBuffer.allocate(size)
-//            srcBmp.copyPixelsToBuffer(byteBuffer)
-//            return byteBuffer.array()
         fun convertBitmapToBase64(srcBmp: Bitmap): String {
             val byteArray = srcBmp.convertToByteArray()
             return Base64.encodeToString(byteArray, Base64.DEFAULT)

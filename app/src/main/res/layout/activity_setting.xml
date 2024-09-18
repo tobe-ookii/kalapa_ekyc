@@ -354,13 +354,24 @@
 
                     <TextView
                         android:id="@+id/tv_face_data_uri"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/klp_margin_small"
+                        android:layout_weight="1"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textSize="@dimen/klp_txt_size_normal" />
+
+                    <ImageView
+                        android:id="@+id/iv_remove_face_data_uri"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/klp_margin_xsmall"
+                        android:layout_marginEnd="@dimen/margin_horizontal"
+                        android:background="@drawable/klp_ic_remove"
+                        android:backgroundTint="@color/ekyc_green" />
                 </LinearLayout>
 
             </LinearLayout>

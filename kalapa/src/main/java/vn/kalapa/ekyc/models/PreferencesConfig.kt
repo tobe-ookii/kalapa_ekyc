@@ -32,6 +32,7 @@ class PreferencesConfig(
     val acceptEid2024: Boolean,
     val leftoverSession: String,
     val mrz: String,
+    val faceDataBase64: String,
     scenario: String,
     scenarioPlan: Boolean,
     val hasCustomCaptureScreen: Boolean,
