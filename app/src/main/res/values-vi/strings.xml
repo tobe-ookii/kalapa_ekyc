@@ -111,4 +111,6 @@
     <string name="klp_demo_face_data_description">Nếu có sẽ tiết kiệm bước xác thực khuôn mặt.</string>
     <string name="klp_demo_session_id_description">Quá trình eKYC sẽ tiếp tục với Session ID này.</string>
     <string name="please_choose_atleast_one_screen">Bạn cần chọn ít nhất một màn hình \"Chụp giấy tờ\", \"Xác thực chân dung\" hoặc \"Xác thực chip\" để tiếp tục</string>
+    <string name="klp_demo_permission_required">Bạn cần cung cấp quyền truy cập hình ảnh để tiếp tục</string>
+
 </resources>

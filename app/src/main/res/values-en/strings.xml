@@ -111,4 +111,6 @@
     <string name="klp_demo_face_data_description">To skip the liveness check step.</string>
     <string name="klp_demo_session_id_description">The eKYC process will continue with this session ID.</string>
     <string name="please_choose_atleast_one_screen">In the custom scenario, please select at least one screen to continue.</string>
+    <string name="klp_demo_permission_required">Permission required to perform this action</string>
+
 </resources>

@@ -1,6 +1,8 @@
 package vn.kalapa.ekyc.utils
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.nfc.NfcManager
@@ -80,7 +82,6 @@ class Common {
         val MY_KEY_MRZ = "KLP_EKYC_MRZ"
         val MY_KEY_LEFTOVER_SESSION = "KLP_EKYC_LEFTOVER_SESSION"
         val MY_KEY_FACE_DATA_URI = "KLP_EKYC_FACE_DATA_URI"
-        val MY_KEY_FACE_DATA_BASE64 = "KLP_EKYC_FACE_DATA_BASE64"
         val MY_KEY_ACCEPTED_DOCUMENT_1 = "KLP_EKYC_KEY_ACCEPTED_DOCUMENT_1"
         val MY_KEY_ACCEPTED_DOCUMENT_2 = "KLP_EKYC_KEY_ACCEPTED_DOCUMENT_2"
         val MY_KEY_ACCEPTED_DOCUMENT_3 = "KLP_EKYC_KEY_ACCEPTED_DOCUMENT_3"
@@ -118,6 +119,16 @@ class Common {
                 e.printStackTrace()
             }
             return cpuInfo.toString()
+        }
+
+        fun checkIfImageOrStorageIsGranted(activity: Activity, shouldRequestIfNot: Boolean): Boolean {
+            val permission = if (Build.VERSION.SDK_INT > 32)
+                android.Manifest.permission.READ_MEDIA_IMAGES else android.Manifest.permission.READ_EXTERNAL_STORAGE
+            if (activity.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                if (shouldRequestIfNot) activity.requestPermissions(arrayOf(permission), 188)
+                return false
+            }
+            return true
         }
 
         fun isOnline(context: Context): Boolean {

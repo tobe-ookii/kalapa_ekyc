@@ -3,6 +3,7 @@ package vn.kalapa.ekyc.activity
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -83,9 +84,16 @@ class CameraXSelfieActivity : CameraXActivity(
     private fun getIntentData() {
         try {
             var faceData: String? = intent.getStringExtra("face_data")
+            var faceDataUri: String? = intent.getStringExtra("face_data_uri")
+            Helpers.printLog("getIntentData faceData $faceData faceDataUri $faceDataUri")
             if (!faceData.isNullOrEmpty()) {
-                faceBitmap = BitmapUtil.base64ToBitmap(faceData)
                 stopCamera()
+                faceBitmap = BitmapUtil.base64ToBitmap(faceData)
+                isCapturedFaceOK()
+                verifyImage()
+            } else if (!faceDataUri.isNullOrEmpty()) {
+                stopCamera()
+                faceBitmap = BitmapUtil.getBitmapFromUri(contentResolver, Uri.parse(faceDataUri))!!
                 isCapturedFaceOK()
                 verifyImage()
             } else

@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -55,7 +54,6 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.nfcAvailable
 import vn.kalapa.ekyc.utils.LocaleHelper
-import vn.kalapa.ekyc.utils.TransactionUtils
 import vn.kalapa.ekyc.views.KLPCustomMultipleChoices
 import vn.kalapa.ekyc.views.KLPCustomSwitch
 import java.util.Locale
@@ -249,7 +247,10 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         containerRegister = findViewById(R.id.container_register)
         btnFaceData = findViewById(R.id.btn_choose_face_data)
         btnFaceData.setOnClickListener {
-            pickImageFromGallery()
+            if (Common.checkIfImageOrStorageIsGranted(this@SettingActivity, true))
+                pickImageFromGallery()
+            else
+                Toast.makeText(this@SettingActivity, resources.getString(R.string.klp_demo_permission_required), Toast.LENGTH_SHORT).show()
         }
         ivRemoveFaceDataUri.setOnClickListener {
             tvFaceDataUri.text = ""
@@ -592,8 +593,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
                 R.drawable.frowning_face
             )
         else if ((edtToken.text.toString().isNotEmpty() || containerToken.visibility == View.GONE) && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
-
-            Helpers.savePrefs(Common.MY_KEY_FACE_DATA_BASE64, if (faceBitmap != null && tvFaceDataUri.text.isNotEmpty()) TransactionUtils.compressBase64ForTransaction(BitmapUtil.convertBitmapToBase64(faceBitmap!!)) else "")
 
             Helpers.savePrefs(
                 MY_KEY_LIVENESS_VERSION,

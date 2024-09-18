@@ -225,6 +225,7 @@ class BitmapUtil {
         }
 
         fun getBitmapFromUri(contentResolver: ContentResolver, imgUri: Uri?): Bitmap? {
+            Helpers.printLog("getBitmapFromUri - $imgUri")
             if (imgUri != null) {
                 val inputStream = contentResolver.openInputStream(imgUri)
                 if (inputStream != null) {
@@ -236,9 +237,9 @@ class BitmapUtil {
                         8 -> 270
                         else -> 0
                     }
-                    var tmpBitmap = BitmapUtil.rotateBitmapToStraight(MediaStore.Images.Media.getBitmap(contentResolver, imgUri), rotation)
+                    var tmpBitmap = rotateBitmapToStraight(MediaStore.Images.Media.getBitmap(contentResolver, imgUri), rotation)
                     Helpers.printLog("Picked image: $imgUri with Rotation $rotation ${tmpBitmap!!.width} ${tmpBitmap!!.height} ${tmpBitmap!!.byteCount}")
-                    tmpBitmap = BitmapUtil.resizeImageFromGallery(tmpBitmap!!)
+                    tmpBitmap = resizeImageFromGallery(tmpBitmap!!)
                     Helpers.printLog("Picked image: Compress ${tmpBitmap!!.byteCount} ${tmpBitmap!!.width} ${tmpBitmap!!.height}")
                     return tmpBitmap
                 }

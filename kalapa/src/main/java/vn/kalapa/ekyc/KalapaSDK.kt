@@ -38,6 +38,7 @@ class KalapaSDK private constructor(
     config: KalapaSDKConfig,
     private val mrz: String = "",
     private val faceData: String = "",
+    private val faceDataUri: String = "",
     private val leftoverSession: String = ""
 ) {
     init {
@@ -47,10 +48,11 @@ class KalapaSDK private constructor(
     class KalapaSDKBuilder constructor(private val activity: Activity, private val config: KalapaSDKConfig) {
         private var mrz = ""
         private var faceData = ""
+        private var faceDataUri = ""
         private var leftoverSession = ""
 
         fun build(): KalapaSDK {
-            return KalapaSDK(activity, config, mrz, faceData, leftoverSession)
+            return KalapaSDK(activity, config, mrz, faceData, faceDataUri, leftoverSession)
         }
 
         fun withMrz(mrz: String): KalapaSDKBuilder {
@@ -64,12 +66,21 @@ class KalapaSDK private constructor(
             Helpers.printLog("KalapaSDKBuilder - withLeftoverSession")
             this.mrz = ""
             this.faceData = ""
+            this.faceDataUri = ""
             this.leftoverSession = leftoverSession
             return this
         }
 
         fun withFaceData(faceData: String): KalapaSDKBuilder {
             this.faceData = faceData
+            this.faceDataUri = ""
+            this.leftoverSession = ""
+            return this
+        }
+
+        fun withFaceDataUri(faceDataUri: String): KalapaSDKBuilder {
+            this.faceDataUri = faceDataUri
+            this.faceData = ""
             this.leftoverSession = ""
             return this
         }
@@ -172,12 +183,14 @@ class KalapaSDK private constructor(
 
     private fun startLivenessForResult(
         faceData: String = "",
+        faceDataUri: String = "",
         handler: KalapaCaptureHandler
     ) {
         Companion.handler = handler
         val intent = Intent(activity, CameraXSelfieActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         intent.putExtra("face_data", faceData)
+        intent.putExtra("face_data_uri", faceDataUri)
         activity.startActivity(intent)
     }
 
@@ -237,7 +250,7 @@ class KalapaSDK private constructor(
         }
 
         val livenessScreen = {
-            startLivenessForResult(faceData, object : KalapaCaptureHandler() {
+            startLivenessForResult(faceData, faceDataUri, object : KalapaCaptureHandler() {
                 override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
                     if (withNFCScreen)
                         callback.sendDone(nfcScreen)
@@ -358,7 +371,7 @@ class KalapaSDK private constructor(
 
         /*****-STEP 4-*****/
         val localStartLivenessForResult = {
-            startLivenessForResult(faceData, object : KalapaCaptureHandler() {
+            startLivenessForResult(faceData, faceDataUri, object : KalapaCaptureHandler() {
                 override fun onExpired() {
                     handler.onExpired()
                 }
