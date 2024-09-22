@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Base64
 import androidx.camera.core.ImageProxy
 import vn.kalapa.ekyc.capturesdk.utils.YuvToRgbConverter
+import vn.kalapa.ekyc.utils.Common.Companion.checkIfImageOrStorageIsGranted
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -225,7 +226,6 @@ class BitmapUtil {
         }
 
         fun getBitmapFromUri(contentResolver: ContentResolver, imgUri: Uri?): Bitmap? {
-            Helpers.printLog("getBitmapFromUri - $imgUri")
             if (imgUri != null) {
                 val inputStream = contentResolver.openInputStream(imgUri)
                 if (inputStream != null) {

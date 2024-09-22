@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -25,24 +23,22 @@ import vn.kalapa.demo.models.NFCCardData;
 import vn.kalapa.demo.models.NFCVerificationData;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
-import vn.kalapa.ekyc.KalapaCaptureHandler;
+import vn.kalapa.ekyc.DialogListener;
 import vn.kalapa.ekyc.KalapaFlowType;
 import vn.kalapa.ekyc.KalapaHandler;
-import vn.kalapa.ekyc.KalapaSDKCallback;
-import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
-import vn.kalapa.ekyc.utils.BitmapUtil;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
 
 public class MainActivityJava extends BaseActivity {
     private static final String TAG = "MainActivity";
+    public static String faceDataBase64 = "";
     private Button ekycButton;
     private TextView tvWelcome;
     private TextView tvWelcomeSubtitle;
@@ -73,6 +69,8 @@ public class MainActivityJava extends BaseActivity {
         });
     }
 
+    private boolean isUpgraded = false;
+
     private KalapaHandler klpHandler = new KalapaHandler() {
         @Override
         public void onExpired() {
@@ -86,7 +84,8 @@ public class MainActivityJava extends BaseActivity {
 
         @Override
         public void onComplete(@NonNull KalapaResult kalapaResult) {
-            LogUtils.Companion.printLog("startFullEKYC onComplete: " + kalapaResult.toMap() + " \n " + kalapaResult.getSession());
+            Common.SCENARIO scenario = preferencesConfig.getScenario();
+            LogUtils.Companion.printLog("startFullEKYC onComplete: \n " + scenario + preferencesConfig.getUseNFC() + kalapaResult.toMap() + " \n " + kalapaResult.getSession());
             ExampleGlobalClass.kalapaResult = kalapaResult;
             if (KalapaSDK.Companion.getFaceBitmap() != null)
                 ExampleGlobalClass.faceImage = KalapaSDK.Companion.getFaceBitmap();
@@ -94,8 +93,29 @@ public class MainActivityJava extends BaseActivity {
                 ExampleGlobalClass.frontImage = KalapaSDK.Companion.getFrontBitmap();
             if (KalapaSDK.Companion.getBackBitmap() != null)
                 ExampleGlobalClass.backImage = KalapaSDK.Companion.getBackBitmap();
-            ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
-            startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+            if (kalapaResult.getNfc_data() != null && kalapaResult.getNfc_data().getId_number() != null)
+                ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
+            if (!isUpgraded && scenario == Common.SCENARIO.REGISTER && (!preferencesConfig.getUseNFC()) &&
+                    (kalapaResult.getDecision() != null && (kalapaResult.getDecision().equals("APPROVE") || kalapaResult.getDecision().equals("MANUAL")))) {
+                Helpers.Companion.showDialog(MainActivityJava.this,
+                        getString(R.string.klp_demo_upgrade_title), getString(R.string.klp_demo_upgrade_body),
+                        getString(R.string.klp_demo_btn_upgrade), getString(R.string.klp_demo_btn_later), R.drawable.klp_demo_nfc, new DialogListener() {
+                            @Override
+                            public void onYes() {
+                                isUpgraded = true;
+                                startUpgradeFlow(kalapaResult.getSession());
+                            }
+
+                            @Override
+                            public void onNo() {
+                                isUpgraded = false;
+                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+                            }
+                        });
+            } else {
+                isUpgraded = false;
+                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+            }
         }
 
     };
@@ -113,19 +133,17 @@ public class MainActivityJava extends BaseActivity {
 
     }
 
-    private void startCustomFlow(boolean hasCaptureScreen, boolean hasLivenessScreen, boolean hasNFCScreen, String withMrzData, String faceDataUri) {
+    private void startCustomFlow(boolean hasCaptureScreen, boolean hasLivenessScreen, boolean hasNFCScreen, String withMrzData, String faceDataBase64) {
         LogUtils.Companion.printLog("hasCaptureScreen", hasCaptureScreen, "hasLivenessScreen", hasLivenessScreen, "hasNFCScreen", hasNFCScreen, "withMrzData", withMrzData);
-        new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig).withMrz(withMrzData).withFaceDataUri(faceDataUri).build().startCustomFlow(hasCaptureScreen, hasLivenessScreen, hasNFCScreen, klpHandler);
+        new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig).withMrz(withMrzData).withFaceData(faceDataBase64).build().startCustomFlow(hasCaptureScreen, hasLivenessScreen, hasNFCScreen, klpHandler);
     }
 
     private void startEKYC() {
         if (Common.Companion.isOnline(MainActivityJava.this)) {
-            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
             Common.SCENARIO scenario = preferencesConfig.getScenario();
-            String faceDataUri = preferencesConfig.getFaceDataUri();
-            LogUtils.Companion.printLog("faceDataUri:", faceDataUri);
+            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
             if (scenario == Common.SCENARIO.CUSTOM) {
-                startCustomFlow(preferencesConfig.getHasCustomCaptureScreen(), preferencesConfig.getHasCustomLivenessScreen(), preferencesConfig.getHasCustomNFCScreen(), preferencesConfig.getMrz(), faceDataUri);
+                startCustomFlow(preferencesConfig.getHasCustomCaptureScreen(), preferencesConfig.getHasCustomLivenessScreen(), preferencesConfig.getHasCustomNFCScreen(), preferencesConfig.getMrz(), faceDataBase64);
                 ProgressView.Companion.hideProgress(false);
             } else if (scenario == Common.SCENARIO.UPGRADE && preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
                 startUpgradeFlow(preferencesConfig.getLeftoverSession());
@@ -146,7 +164,7 @@ public class MainActivityJava extends BaseActivity {
                         createSessionResult -> {
                             ProgressView.Companion.hideProgress(true);
                             LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.getFlow(), createSessionResult.getToken());
-                            KalapaSDK.KalapaSDKBuilder builder = getKalapaSDKBuilder(flowType, "", faceDataUri);
+                            KalapaSDK.KalapaSDKBuilder builder = getKalapaSDKBuilder(flowType, "");
                             builder.build().start(createSessionResult.getToken(), createSessionResult.getFlow(), klpHandler);
                             return null;
                         }, kalapaError -> {
@@ -163,7 +181,7 @@ public class MainActivityJava extends BaseActivity {
     }
 
     @NonNull
-    private KalapaSDK.KalapaSDKBuilder getKalapaSDKBuilder(KalapaFlowType flowType, String finalFaceDataBase64, String finalFaceDataUri) {
+    private KalapaSDK.KalapaSDKBuilder getKalapaSDKBuilder(KalapaFlowType flowType, String finalFaceDataBase64) {
         KalapaSDK.KalapaSDKBuilder builder = new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig);
         LogUtils.Companion.printLog("Builder: ", flowType, preferencesConfig.getMrz(), preferencesConfig.getScenarioPlan());
         if (flowType == KalapaFlowType.NFC_ONLY) {
@@ -172,7 +190,6 @@ public class MainActivityJava extends BaseActivity {
             } else if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_PROVIDED_DATA) {
                 builder.withMrz(preferencesConfig.getMrz());
                 if (!finalFaceDataBase64.isEmpty()) builder.withFaceData(finalFaceDataBase64);
-                if (!finalFaceDataUri.isEmpty()) builder.withFaceDataUri(finalFaceDataUri);
             }
         }
         return builder;

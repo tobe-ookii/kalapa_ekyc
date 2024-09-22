@@ -115,5 +115,9 @@
     <string name="klp_demo_session_id_description">eKYC 프로세스는 이 세션 ID로 계속 진행됩니다.</string>
     <string name="please_choose_atleast_one_screen">사용자 지정 시나리오에서 계속하려면 최소 하나의 화면을 선택하세요.</string>
     <string name="klp_demo_permission_required">Permission required to perform this action</string>
+    <string name="klp_demo_upgrade_title">Nâng hạng tài khoản</string>
+    <string name="klp_demo_upgrade_body">Bạn có muốn xác thực chip điện tử để nâng hạng tài khoản không?</string>
+    <string name="klp_demo_btn_upgrade">Nâng cấp</string>
+    <string name="klp_demo_btn_later">Để sau</string>
 
 </resources>

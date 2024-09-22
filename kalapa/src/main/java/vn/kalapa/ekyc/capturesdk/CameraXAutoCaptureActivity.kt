@@ -41,8 +41,11 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
 
     //    private lateinit var ivBitmapReview: ImageView
     private lateinit var documentType: KalapaSDKMediaType
+    private lateinit var captureGuide: String
     private fun getIntentData() {
         documentType = KalapaSDKMediaType.fromName(intent.getStringExtra("document_type") ?: KalapaSDKMediaType.BACK.name)
+        captureGuide = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_subtitle)) +
+                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(if (documentType == KalapaSDKMediaType.FRONT) R.string.klp_id_capture_subtitle_front else R.string.klp_id_capture_subtitle_back))
         Helpers.printLog("DocumentType: $documentType")
     }
 
@@ -53,6 +56,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     override fun setupCustomUI() {
         getIntentData()
 //        cardMaskView = findViewById(R.id.cardMaskView)
+        tvError.text = captureGuide
         ivGuide = findViewById(R.id.iv_action)
         ivGuide.setImageResource(
             when (documentType) {
@@ -62,13 +66,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
             }
         )
         tvTitle = findViewById(R.id.tv_title)
-        var titleStr = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_title))
-        tvTitle.text =
-            when (documentType) {
-                KalapaSDKMediaType.FRONT -> "$titleStr ${KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_subtitle_front))}"
-                KalapaSDKMediaType.BACK -> "$titleStr ${KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_subtitle_back))}"
-                else -> titleStr
-            }
+        tvTitle.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_title))
         ivPreviewImage = findViewById(R.id.iv_preview_image)
         ivPreviewImage.isDrawingCacheEnabled = false
         tvGuide1 = findViewById(R.id.tv_guide)
@@ -110,13 +108,12 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
     private var currError = ""
 
     override fun sendError(message: String?) {
-//        Helpers.printLog("Failed! $message")
+        Helpers.printLog("sendError! $message")
         if (message == null || currError == message) return
         ProgressView.hideProgress()
         this.runOnUiThread {
             currError = message
-            tvError.visibility = View.VISIBLE
-            tvError.setTextColor(resources.getColor(R.color.ekyc_red))
+            tvError.setTextColor(if (message.isNullOrEmpty()) Color.parseColor(KalapaSDK.config.mainTextColor) else resources.getColor(R.color.ekyc_red))
             tvError.text = currError
             btnNext.visibility = View.INVISIBLE
         }
@@ -201,6 +198,8 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
         currError = ""
         detector?.restart(false)
         ivPreviewImage.visibility = View.INVISIBLE
+        tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+        tvError.text = captureGuide
         tmpBitmap = null
     }
 
@@ -271,7 +270,6 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
             vibratePhone(this)
             runOnUiThread {
                 tvError.setTextColor(resources.getColor(R.color.ekyc_green))
-                tvError.visibility = View.VISIBLE
                 tvError.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_id_capture_ac_success))
             }
         }, 200)

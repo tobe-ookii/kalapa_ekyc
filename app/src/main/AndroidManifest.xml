@@ -16,10 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
-            android:theme="@style/AppTheme"
             android:name=".MainActivityJava"
             android:exported="true"
-            android:resizeableActivity="true">
+            android:resizeableActivity="true"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,13 +27,13 @@
         </activity>
 
         <activity
-            android:theme="@style/AppTheme"
             android:name=".activities.SettingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppTheme" />
         <activity
-            android:theme="@style/AppTheme"
             android:name=".activities.ResultActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppTheme" />
 
     </application>
 

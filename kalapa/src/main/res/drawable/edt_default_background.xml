@@ -6,10 +6,8 @@
         android:right="1dp"
         android:top="1dp">
         <shape android:shape="rectangle">
-            <stroke
-                android:width="0dp"
-                android:color="@color/black_txt" />
-            <solid android:color="@color/white" />
+
+            <solid android:color="@color/klp_border_grey" />
 
             <padding
                 android:bottom="@dimen/klp_margin_small"

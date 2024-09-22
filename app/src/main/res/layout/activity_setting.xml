@@ -133,6 +133,7 @@
                 android:id="@+id/edt_token"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
                 android:layout_marginStart="@dimen/klp_margin_xsmall"
                 android:background="@drawable/edt_default_background"
                 android:contentDescription="Enter your token"
@@ -268,6 +269,8 @@
                     android:id="@+id/edt_leftover_session"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:background="@drawable/edt_default_background"
                     android:contentDescription="Enter your leftover session"
                     android:maxLines="3"
@@ -303,6 +306,8 @@
                     android:id="@+id/edt_mrz"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:background="@drawable/edt_default_background"
                     android:contentDescription="Enter your MRZ"
                     android:maxLines="3"
@@ -692,6 +697,8 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:backgroundTint="@color/white"
+
                 android:background="@drawable/edt_default_background"
                 android:contentDescription="Enter your main color (also your button color)"
                 android:maxLines="1"
@@ -727,6 +734,8 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:backgroundTint="@color/white"
+
                 android:background="@drawable/edt_default_background"
                 android:contentDescription="Enter your text on button color"
                 android:maxLines="1"
@@ -761,6 +770,8 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:backgroundTint="@color/white"
+
                 android:background="@drawable/edt_default_background"
                 android:maxLines="1"
                 android:textSize="@dimen/klp_txt_size_normal" />
@@ -793,6 +804,7 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_xxsmall"
+                android:backgroundTint="@color/white"
                 android:background="@drawable/edt_default_background"
                 android:maxLines="1"
                 android:textSize="@dimen/klp_txt_size_normal" />

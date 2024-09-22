@@ -119,8 +119,9 @@
         android:id="@+id/holder_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btn_holder"
+        android:layout_below="@id/iv_action"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
+        android:layout_marginTop="@dimen/klp_margin_small"
         android:orientation="vertical">
 
         <TextView
@@ -130,8 +131,8 @@
             android:gravity="center"
             android:lines="2"
             android:textColor="@color/ekyc_red"
-            android:textSize="@dimen/klp_txt_size_normal"
-            android:visibility="invisible" />
+            android:text="@string/klp_id_capture_subtitle"
+            android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>
 
 
@@ -177,22 +178,22 @@
         android:id="@+id/tv_guide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_action"
+        android:layout_below="@id/toolbar"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="@dimen/margin_side"
-        android:layout_marginTop="@dimen/klp_margin_xsmall"
         android:lines="2"
         android:text="@string/klp_guide_note"
         android:textAlignment="center"
-        android:textSize="@dimen/klp_txt_size_normal" />
+        android:textSize="@dimen/klp_shinhan_text_15" />
 
     <TextView
         android:id="@+id/tv_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_guide"
+        android:layout_below="@id/holder_error"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="@dimen/margin_horizontal"
+        android:layout_marginTop="@dimen/klp_margin_small"
         android:background="@drawable/border_button_solid"
         android:backgroundTint="@color/progress_unchecked"
         android:text="@string/klp_guide_button_open"

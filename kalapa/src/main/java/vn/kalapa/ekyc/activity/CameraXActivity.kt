@@ -465,23 +465,14 @@ abstract class CameraXActivity(
 
     open fun previewViewLayerMode(isCameraMode: Boolean) = if (isCameraMode) { // start camera
         this.isCameraMode = true
-        tvError.text = ""
-        tvError.setTextColor(resources.getColor(R.color.ekyc_red))
         holderCapture.visibility = View.VISIBLE
-//        holderAutoCapture.visibility = if (!hideAutoCapture) View.VISIBLE else View.INVISIBLE
-//        tvGuide.visibility = View.VISIBLE
         btnNext.visibility = View.INVISIBLE
         btnRetry.visibility = View.INVISIBLE
-//        cardMaskView.setBackgroundColor(resources.getColor(R.color.black20))
-//        viewFinder.visibility = View.VISIBLE
     } else { // stop camera
         btnNext.visibility = View.VISIBLE
         btnRetry.visibility = View.VISIBLE
         holderCapture.visibility = View.INVISIBLE
-//        holderAutoCapture.visibility = if (!hideAutoCapture) View.INVISIBLE else View.INVISIBLE
         this.isCameraMode = false
-//        viewFinder.visibility = View.INVISIBLE
-//        cardMaskView.setBackgroundColor(Color.parseColor(KalapaSDK.config.backgroundColor))
     }
 
 

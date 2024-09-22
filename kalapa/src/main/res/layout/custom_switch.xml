@@ -21,7 +21,7 @@
         android:checked="true"
         android:gravity="center"
         android:lines="1"
-        android:paddingHorizontal="@dimen/margin_large"
+        android:paddingHorizontal="@dimen/klp_margin_large"
         android:text="Search"
         android:textColor="@color/white"
         android:textSize="@dimen/klp_txt_size_normal" />
@@ -40,7 +40,7 @@
         android:checked="false"
         android:gravity="center"
         android:lines="1"
-        android:paddingHorizontal="@dimen/margin_large"
+        android:paddingHorizontal="@dimen/klp_margin_large"
         android:text="Offers"
         android:textSize="@dimen/klp_txt_size_normal" />
 </RadioGroup>

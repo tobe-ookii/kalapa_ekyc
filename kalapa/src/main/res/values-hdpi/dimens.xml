@@ -5,7 +5,7 @@
     <dimen name="klp_margin_xsmall">4dp</dimen>
     <dimen name="klp_margin_small">6dp</dimen>
     <dimen name="klp_margin_mid">8dp</dimen>
-    <dimen name="margin_large">12dp</dimen>
+    <dimen name="klp_margin_large">12dp</dimen>
     <dimen name="margin_side">20dp</dimen>
     <dimen name="margin_xlarge">22dp</dimen>
     <dimen name="size_20">15dp</dimen>

@@ -44,36 +44,7 @@
                 android:layout_height="@dimen/nfc_image_height"
                 android:src="@drawable/nfc_back_guide" />
 
-            <LinearLayout
-                android:id="@+id/ll_show_nfc_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/klp_margin_mid"
-                android:background="@drawable/border_button_solid"
-                android:backgroundTint="@color/ekyc_grey"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/margin_horizontal"
-                android:paddingVertical="@dimen/klp_margin_small">
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_nfc_point" />
-
-                <TextView
-                    android:id="@+id/tv_show_nfc_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/klp_margin_small"
-                    android:gravity="center"
-                    android:lines="2"
-                    android:text="@string/klp_nfc_location_title"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/klp_shinhan_text_15"
-                    android:visibility="visible" />
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_please_make_sure"
@@ -249,7 +220,36 @@
                 android:text="@string/klp_guide_nfc_1"
                 android:textSize="@dimen/klp_txt_size_normal" />
 
+            <LinearLayout
+                android:id="@+id/ll_show_nfc_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/klp_margin_mid"
+                android:background="@drawable/border_button_solid"
+                android:backgroundTint="@color/ekyc_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/margin_horizontal"
+                android:paddingVertical="@dimen/klp_margin_small">
 
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_nfc_point" />
+
+                <TextView
+                    android:id="@+id/tv_show_nfc_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/klp_margin_small"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:text="@string/klp_nfc_location_title"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/klp_shinhan_text_15"
+                    android:visibility="visible" />
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

@@ -17,6 +17,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.slider.Slider
+import vn.kalapa.demo.MainActivityJava
 import vn.kalapa.demo.R
 import vn.kalapa.demo.utils.Helpers
 import vn.kalapa.demo.utils.LogUtils
@@ -38,7 +39,6 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_LIVENESS
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENV
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_DATA_URI
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LANGUAGE
@@ -89,7 +89,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvScenarioDescription: TextView
     private var faceBitmap: Bitmap? = null
 
-    //    private lateinit var rgLanguage: KLPCustomMultipleChoices
     private lateinit var rgLanguage: KLPCustomSwitch
     private lateinit var tvEnvironment: TextView
     private lateinit var rgEnvironment: KLPCustomSwitch
@@ -194,6 +193,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             if (inputStream != null) {
                 LogUtils.printLog("Picked image from inputStream $imgUri")
                 faceBitmap = BitmapUtil.getBitmapFromUri(contentResolver, imgUri)
+                faceBitmap?.let { MainActivityJava.faceDataBase64 = BitmapUtil.convertBitmapToBase64(it) }
                 tvFaceDataUri.text = imgUri.toString()
                 ivRemoveFaceDataUri.visibility = View.VISIBLE
             }
@@ -607,7 +607,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             edtToken.text.toString().isNotEmpty().let { Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString()) }
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
             LogUtils.printLog(tvFaceDataUri.text)
-            Helpers.savePrefs(MY_KEY_FACE_DATA_URI, tvFaceDataUri.text)
             Helpers.savePrefs(MY_KEY_MRZ, edtMRZ.text.toString())
             Helpers.savePrefs(MY_KEY_LEFTOVER_SESSION, edtLeftoverSession.text.toString())
             Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPositiveCheck)
@@ -616,7 +615,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPositiveCheck)
-
+            if (tvFaceDataUri.text.isNullOrEmpty()) MainActivityJava.faceDataBase64 = ""
             Helpers.savePrefs(MY_KEY_CUSTOM_NFC, cbNFCScreen.isChecked)
             Helpers.savePrefs(MY_KEY_CUSTOM_LIVENESS, cbLivenessScreen.isChecked)
             Helpers.savePrefs(MY_KEY_CUSTOM_CAPTURE, cbCaptureIdScreen.isChecked)
@@ -685,13 +684,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         val lang = Helpers.getValuePreferences(MY_KEY_LANGUAGE)
         val livenessVersion = Helpers.getIntPreferences(MY_KEY_LIVENESS_VERSION, 0)
 
-        var faceDataUri = Helpers.getValuePreferences(MY_KEY_FACE_DATA_URI) ?: ""
-        LogUtils.printLog("faceDataUri $faceDataUri")
-        if (!BitmapUtil.isImageUri(this@SettingActivity, faceDataUri))
-            faceDataUri = ""
-
-        LogUtils.printLog("faceDataUri $faceDataUri")
-        tvFaceDataUri.text = faceDataUri
         var leftoverSession = Helpers.getValuePreferences(MY_KEY_LEFTOVER_SESSION) ?: ""
         var mrz = Helpers.getValuePreferences(MY_KEY_MRZ) ?: ""
         edtMRZ.setText(mrz)
@@ -796,16 +788,16 @@ class EditTextWatcher(editText: EditText, onColorTriggered: EditTextWatcherListe
     val edtText: EditText = editText
     val onColorTriggered = onColorTriggered
     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        LogUtils.printLog(" beforeTextChanged $p0 $p1 $p2 $p3")
+//        LogUtils.printLog(" beforeTextChanged $p0 $p1 $p2 $p3")
     }
 
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        LogUtils.printLog("onTextChanged $p0 $p1 $p2 $p3")
+//        LogUtils.printLog("onTextChanged $p0 $p1 $p2 $p3")
     }
 
     @SuppressLint("SetTextI18n")
     override fun afterTextChanged(p0: Editable?) {
-        LogUtils.printLog("afterTextChanged ${p0.toString()}")
+//        LogUtils.printLog("afterTextChanged ${p0.toString()}")
         val text: String = p0.toString()
         val length = text.length
         if (length > 0 && !text.contains("#")) {

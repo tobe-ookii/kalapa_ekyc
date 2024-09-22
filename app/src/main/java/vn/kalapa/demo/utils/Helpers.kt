@@ -90,15 +90,11 @@ internal class Helpers {
             val hasCustomCaptureScreen = getBooleanPreferences(MY_KEY_CUSTOM_CAPTURE, true)
             val hasCustomLivenessScreen = getBooleanPreferences(MY_KEY_CUSTOM_LIVENESS, true)
             val hasCustomNFCScreen = getBooleanPreferences(MY_KEY_CUSTOM_NFC, true)
-            val cardSideMatchesCheck = getBooleanPreferences(
-                MY_KEY_CARD_SIDE_CHECK,
-                true
-            )
-            val faceDataUri = getValuePreferences(MY_KEY_FACE_DATA_URI) ?: ""
+            val cardSideMatchesCheck = getBooleanPreferences(MY_KEY_CARD_SIDE_CHECK, true)
             LogUtils.printLog("Preferences: ", token.isEmpty(), lang == null, backgroundColor == null, mainColor == null, mainTextColor == null, btnTextColor == null, env == null)
-            return if (token.isEmpty() || lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
+            return if (lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz, faceDataUri, scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz,  scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
             }
         }
 

@@ -47,6 +47,11 @@ class CameraXSelfieActivity : CameraXActivity(
     true,
     100
 ), KalapaSDKCallback {
+
+    companion object {
+        internal var faceData: String? = null
+    }
+
     private var isVerifySucceed = false
     private var faceDetected = false
     private lateinit var ivError: KLPGifImageView
@@ -83,22 +88,16 @@ class CameraXSelfieActivity : CameraXActivity(
 
     private fun getIntentData() {
         try {
-            var faceData: String? = intent.getStringExtra("face_data")
-            var faceDataUri: String? = intent.getStringExtra("face_data_uri")
-            Helpers.printLog("getIntentData faceData $faceData faceDataUri $faceDataUri")
+            Helpers.printLog("getIntentData faceData $faceData ${Common.checkIfImageOrStorageIsGranted(this@CameraXSelfieActivity, true)}")
             if (!faceData.isNullOrEmpty()) {
                 stopCamera()
-                faceBitmap = BitmapUtil.base64ToBitmap(faceData)
-                isCapturedFaceOK()
-                verifyImage()
-            } else if (!faceDataUri.isNullOrEmpty()) {
-                stopCamera()
-                faceBitmap = BitmapUtil.getBitmapFromUri(contentResolver, Uri.parse(faceDataUri))!!
+                faceBitmap = BitmapUtil.base64ToBitmap(faceData!!)
                 isCapturedFaceOK()
                 verifyImage()
             } else
                 setupLivenessProcess()
         } catch (e: Exception) {
+            Helpers.printLog("getIntentData exception ${e.localizedMessage}")
             setupLivenessProcess()
         }
 
