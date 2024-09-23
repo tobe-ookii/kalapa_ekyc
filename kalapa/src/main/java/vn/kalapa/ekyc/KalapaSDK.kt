@@ -179,6 +179,7 @@ class KalapaSDK private constructor(
         Companion.handler = handler
         val intent = Intent(activity, CameraXSelfieActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        Helpers.printLog("FaceData: $faceData")
         CameraXSelfieActivity.faceData = faceData
         activity.startActivity(intent)
     }

@@ -148,7 +148,7 @@ public class MainActivityJava extends BaseActivity {
             } else if (scenario == Common.SCENARIO.UPGRADE && preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
                 startUpgradeFlow(preferencesConfig.getLeftoverSession());
             } else {
-                // UPGRADE from Session ID
+                // UPGRADE from Data.
                 KalapaFlowType flowType = scenario == Common.SCENARIO.UPGRADE ? KalapaFlowType.NFC_ONLY :
                         !preferencesConfig.getCaptureImage() && !preferencesConfig.getUseNFC() ? KalapaFlowType.NA : preferencesConfig.getCaptureImage() ? preferencesConfig.getUseNFC() ? KalapaFlowType.NFC_EKYC : KalapaFlowType.EKYC : KalapaFlowType.NFC_ONLY;
                 KalapaAPI.Companion.doRequestGetSession(
@@ -164,7 +164,7 @@ public class MainActivityJava extends BaseActivity {
                         createSessionResult -> {
                             ProgressView.Companion.hideProgress(true);
                             LogUtils.Companion.printLog("doRequestGetSession createSessionResult: ", createSessionResult.getFlow(), createSessionResult.getToken());
-                            KalapaSDK.KalapaSDKBuilder builder = getKalapaSDKBuilder(flowType, "");
+                            KalapaSDK.KalapaSDKBuilder builder = getKalapaSDKBuilder(flowType);
                             builder.build().start(createSessionResult.getToken(), createSessionResult.getFlow(), klpHandler);
                             return null;
                         }, kalapaError -> {
@@ -181,15 +181,16 @@ public class MainActivityJava extends BaseActivity {
     }
 
     @NonNull
-    private KalapaSDK.KalapaSDKBuilder getKalapaSDKBuilder(KalapaFlowType flowType, String finalFaceDataBase64) {
+    private KalapaSDK.KalapaSDKBuilder getKalapaSDKBuilder(KalapaFlowType flowType) {
         KalapaSDK.KalapaSDKBuilder builder = new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig);
         LogUtils.Companion.printLog("Builder: ", flowType, preferencesConfig.getMrz(), preferencesConfig.getScenarioPlan());
         if (flowType == KalapaFlowType.NFC_ONLY) {
             if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
                 builder.withLeftoverSession(preferencesConfig.getLeftoverSession());
             } else if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_PROVIDED_DATA) {
+                builder.withFaceData(faceDataBase64);
                 builder.withMrz(preferencesConfig.getMrz());
-                if (!finalFaceDataBase64.isEmpty()) builder.withFaceData(finalFaceDataBase64);
+                if (faceDataBase64 != null) builder.withFaceData(faceDataBase64);
             }
         }
         return builder;
