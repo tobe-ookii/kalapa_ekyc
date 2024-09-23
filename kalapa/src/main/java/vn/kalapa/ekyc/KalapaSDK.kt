@@ -779,6 +779,9 @@ abstract class KalapaCaptureHandler : KalapaHandler() {
     )
 }
 
+interface IKalapaCustomFlowHandler {
+    
+}
 
 abstract class KalapaHandler {
     open fun onError(resultCode: KalapaSDKResultCode) {
@@ -873,6 +876,7 @@ interface KalapaSDKCallback {
 //    }
 //
 //}
+
 
 enum class KalapaFlowType(val flow: String?) {
     EKYC("ekyc") {

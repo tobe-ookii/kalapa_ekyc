@@ -75,7 +75,7 @@
     <string name="klp_setting_nfc">Quét NFC</string>
     <string name="klp_yes">Đồng ý</string>
     <string name="klp_no">Không</string>
-    <string name="klp_setting_acceptance_document">Ngưỡng chấp nhận đối chiếu khuôn mặt</string>
+    <string name="klp_setting_acceptance_document">Loại giấy tờ chấp nhận</string>
     <string name="klp_old_id_card">CMND cũ (9 số)</string>
     <string name="klp_12_digits_id_card">CMND có mã vạch (12 số)</string>
     <string name="klp_eid_no_chip">CCCD (12 số)</string>

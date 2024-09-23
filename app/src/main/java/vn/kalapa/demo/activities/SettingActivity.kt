@@ -16,6 +16,7 @@ import android.widget.*
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.google.android.material.slider.Slider
 import vn.kalapa.demo.MainActivityJava
 import vn.kalapa.demo.R
@@ -81,7 +82,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var containerLeftoverSession: LinearLayout
     private lateinit var containerRegister: LinearLayout
     private lateinit var containerCustom: LinearLayout
-    private lateinit var tvFaceDataUri: TextView
+    private lateinit var ivFaceData: ImageView
     private lateinit var btnFaceData: Button
     private lateinit var rgUpgradePlan: KLPCustomSwitch
 
@@ -114,6 +115,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvCaptureImage: TextView
     private lateinit var containerToken: LinearLayout
 
+    private lateinit var containerFaceDataBitmap: CardView
+    private lateinit var containerCaptureConfig: LinearLayout
     private lateinit var ivRemoveFaceDataUri: ImageView
 
     private lateinit var tvVerifyCheck: TextView
@@ -127,6 +130,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     private lateinit var tvAcceptanceDocument2: TextView // tv_acceptance_document_2
     private lateinit var tvAcceptanceDocument3: TextView // tv_acceptance_document_3
     private lateinit var tvAcceptanceDocument4: TextView // tv_acceptance_document_4
+    private lateinit var tvAcceptanceDocument5: TextView // tv_acceptance_document_5
     private lateinit var tvAcceptanceFaceMatchingThreshold: TextView // tv_acceptance_face_matching_threshold
 
     private lateinit var rgVerifyCheck: KLPCustomSwitch
@@ -193,9 +197,11 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             if (inputStream != null) {
                 LogUtils.printLog("Picked image from inputStream $imgUri")
                 faceBitmap = BitmapUtil.getBitmapFromUri(contentResolver, imgUri)
-                faceBitmap?.let { MainActivityJava.faceDataBase64 = BitmapUtil.convertBitmapToBase64(it) }
-                tvFaceDataUri.text = imgUri.toString()
-                ivRemoveFaceDataUri.visibility = View.VISIBLE
+                faceBitmap?.let {
+                    MainActivityJava.faceDataBase64 = BitmapUtil.convertBitmapToBase64(it)
+                    ivFaceData.setImageBitmap(it)
+                    containerFaceDataBitmap.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -225,6 +231,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvList.add(tvScenario)
         rgScenario = findViewById(R.id.sw_scenario)
         containerToken = findViewById(R.id.container_token)
+        containerFaceDataBitmap = findViewById(R.id.container_face_data_bitmap)
+        containerCaptureConfig = findViewById(R.id.container_capture_config)
         containerToken.visibility = if ((Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: "") == Common.SCENARIO.CUSTOM.name) View.GONE else View.VISIBLE
         rgScenario.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
             containerRegister.visibility = if (it == 0) View.VISIBLE else View.GONE
@@ -252,12 +260,12 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             else
                 Toast.makeText(this@SettingActivity, resources.getString(R.string.klp_demo_permission_required), Toast.LENGTH_SHORT).show()
         }
+        ivFaceData = findViewById(R.id.iv_face_data)
+
         ivRemoveFaceDataUri.setOnClickListener {
-            tvFaceDataUri.text = ""
+            containerFaceDataBitmap.visibility = View.GONE
             faceBitmap = null
-            ivRemoveFaceDataUri.visibility = View.GONE
         }
-        tvFaceDataUri = findViewById(R.id.tv_face_data_uri)
 
         rootContainer.setBackgroundColor(resources.getColor(R.color.ekyc_demo_color))
         rootContainer.setOnClickListener {
@@ -292,7 +300,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
                 containerMrz.visibility = View.GONE
                 containerFaceData.visibility = View.GONE
                 containerLeftoverSession.visibility = View.VISIBLE
-                containerToken.visibility = View.GONE
+                containerToken.visibility = if (rgScenario.selectedIndex > 0) View.GONE else View.VISIBLE
             } else { // Provided Data
                 containerMrz.visibility = View.VISIBLE
                 containerFaceData.visibility = View.VISIBLE
@@ -339,6 +347,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
                 cbAcceptedEid2024.isChecked = true
                 if (this::rgScanNFC.isInitialized) if (!rgScanNFC.isPositiveCheck) rgScanNFC.switchChangeListener(true)
             }
+            containerCaptureConfig.visibility = if (it) View.VISIBLE else View.GONE
         }
         cbAcceptedEidWithChip.setOnCheckedChangeListener { _, b ->
             LogUtils.printLog("cbAcceptedEidWithChip onCheckedChanged $b")
@@ -434,6 +443,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvAcceptanceDocument2 = findViewById(R.id.tv_acceptance_document_2)
         tvAcceptanceDocument3 = findViewById(R.id.tv_acceptance_document_3)
         tvAcceptanceDocument4 = findViewById(R.id.tv_acceptance_document_4)
+        tvAcceptanceDocument5 = findViewById(R.id.tv_acceptance_document_5)
         tvAcceptanceFaceMatchingThreshold = findViewById(R.id.tv_acceptance_face_matching_threshold)
 
         rgVerifyCheck = findViewById(R.id.sw_verify_check)
@@ -459,7 +469,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         rgLanguage.setMainColor(mainColor)
         rgLivenessVersion.setMainColor(mainColor)
         rgUpgradePlan.setMainColor(mainColor)
-//        rgScenario.setMainColor(mainColor)
+        rgScenario.setMainColor(mainColor)
         rgEnvironment.setMainColor(mainColor)
         rgVerifyCheck.setMainColor(mainColor)
         rgFraudCheck.setMainColor(mainColor)
@@ -477,6 +487,10 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         Helpers.setCheckboxTintList(cbAcceptedEidWithChip, Color.parseColor(mainColor))
         Helpers.setCheckboxTintList(cbAcceptedEid2024, Color.parseColor(mainColor))
         Helpers.setSliderTintList(sliderFaceMatchingThreshold, Color.parseColor(mainColor))
+
+        Helpers.setCheckboxTintList(cbCaptureIdScreen, Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbLivenessScreen, Color.parseColor(mainColor))
+        Helpers.setCheckboxTintList(cbNFCScreen, Color.parseColor(mainColor))
     }
 
     private fun refreshBtnTextColor(txtColor: String) {
@@ -508,7 +522,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
     private fun refreshUI() {
 //        tvScenario.text = resources.getString(R.string.klp_index_scenario)
-        ivRemoveFaceDataUri.visibility = if (tvFaceDataUri.text.isNullOrEmpty()) View.GONE else View.VISIBLE
+//        ivRemoveFaceDataUri.visibility = ivFaceData.visibility
         tvLanguage.text = resources.getString(R.string.klp_index_language)
         rgLanguage.rbOne.text = resources.getString(R.string.klp_demo_language_vi)
         rgLanguage.rbOther.text = resources.getString(R.string.klp_demo_language_en)
@@ -570,6 +584,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         tvAcceptanceDocument2.text = resources.getString(R.string.klp_12_digits_id_card)
         tvAcceptanceDocument3.text = resources.getString(R.string.klp_eid_no_chip)
         tvAcceptanceDocument4.text = resources.getString(R.string.klp_eid_with_chip)
+        tvAcceptanceDocument5.text = resources.getString(R.string.klp_eid_2024)
         tvAcceptanceDocument.text = resources.getString(R.string.klp_setting_acceptance_document)
         tvAcceptanceFaceMatchingThreshold.text =
             resources.getString(R.string.klp_setting_acceptance_face_matching_threshold)
@@ -606,7 +621,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPositiveCheck) "vi" else "en")
             edtToken.text.toString().isNotEmpty().let { Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString()) }
             Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
-            LogUtils.printLog(tvFaceDataUri.text)
             Helpers.savePrefs(MY_KEY_MRZ, edtMRZ.text.toString())
             Helpers.savePrefs(MY_KEY_LEFTOVER_SESSION, edtLeftoverSession.text.toString())
             Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPositiveCheck)
@@ -615,7 +629,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPositiveCheck)
             Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPositiveCheck)
-            if (tvFaceDataUri.text.isNullOrEmpty()) MainActivityJava.faceDataBase64 = ""
+            if (containerFaceDataBitmap.visibility != View.VISIBLE) MainActivityJava.faceDataBase64 = ""
             Helpers.savePrefs(MY_KEY_CUSTOM_NFC, cbNFCScreen.isChecked)
             Helpers.savePrefs(MY_KEY_CUSTOM_LIVENESS, cbLivenessScreen.isChecked)
             Helpers.savePrefs(MY_KEY_CUSTOM_CAPTURE, cbCaptureIdScreen.isChecked)

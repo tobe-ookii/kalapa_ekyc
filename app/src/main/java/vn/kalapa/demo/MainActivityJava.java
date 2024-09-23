@@ -71,6 +71,7 @@ public class MainActivityJava extends BaseActivity {
 
     private boolean isUpgraded = false;
 
+
     private KalapaHandler klpHandler = new KalapaHandler() {
         @Override
         public void onExpired() {
@@ -96,7 +97,7 @@ public class MainActivityJava extends BaseActivity {
             if (kalapaResult.getNfc_data() != null && kalapaResult.getNfc_data().getId_number() != null)
                 ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
             if (!isUpgraded && scenario == Common.SCENARIO.REGISTER && (!preferencesConfig.getUseNFC()) &&
-                    (kalapaResult.getDecision() != null && (kalapaResult.getDecision().equals("APPROVE") || kalapaResult.getDecision().equals("MANUAL")))) {
+                    (kalapaResult.getDecision() != null && (kalapaResult.getDecision().equals("APPROVED") || kalapaResult.getDecision().equals("MANUAL")))) {
                 Helpers.Companion.showDialog(MainActivityJava.this,
                         getString(R.string.klp_demo_upgrade_title), getString(R.string.klp_demo_upgrade_body),
                         getString(R.string.klp_demo_btn_upgrade), getString(R.string.klp_demo_btn_later), R.drawable.klp_demo_nfc, new DialogListener() {
@@ -143,9 +144,11 @@ public class MainActivityJava extends BaseActivity {
             Common.SCENARIO scenario = preferencesConfig.getScenario();
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
             if (scenario == Common.SCENARIO.CUSTOM) {
+                ProgressView.Companion.hideProgress(true);
                 startCustomFlow(preferencesConfig.getHasCustomCaptureScreen(), preferencesConfig.getHasCustomLivenessScreen(), preferencesConfig.getHasCustomNFCScreen(), preferencesConfig.getMrz(), faceDataBase64);
                 ProgressView.Companion.hideProgress(false);
             } else if (scenario == Common.SCENARIO.UPGRADE && preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
+                ProgressView.Companion.hideProgress(true);
                 startUpgradeFlow(preferencesConfig.getLeftoverSession());
             } else {
                 // UPGRADE from Data.

@@ -93,7 +93,6 @@ class BitmapUtil {
             return file
         }
 
-
         fun resizeBitmapToBitmap(srcBmp: Bitmap): Bitmap {
             val image = convertBitmapToBytes(srcBmp)//srcBmp.convertToByteArray()
             return BitmapFactory.decodeByteArray(image, 0, image.size)
@@ -124,7 +123,6 @@ class BitmapUtil {
             val image = byteArrayOutputStream.toByteArray()
             return BitmapFactory.decodeByteArray(image, 0, image.size)
         }
-
 
         fun convertBase64ToBytes(base64: String): ByteArray {
             return Base64.decode(base64, Base64.DEFAULT)

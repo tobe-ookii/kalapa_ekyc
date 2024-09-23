@@ -11,6 +11,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.util.Log
+import vn.kalapa.ekyc.KalapaSDK
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -214,14 +215,28 @@ class Common {
                     return input
                 }
                 if (input.contains("IDVNM")) {
-                    val lines = if (input.contains("\\n")) input.split("\\n") else input.split("\n")
+                    Helpers.printLog("getIdCardNumberFromMRZ: $input")
+                    val lines = if (input.contains("\\\\n")) input.split("\\\\n") else if (input.contains("\\n")) input.split("\\n") else input.split("\n")
                     for (line in lines) {
-                        Helpers.printLog("Lines: $line")
+                        Helpers.printLog(line)
                         if (line.length == 30 && line.contains("IDVNM") && line.contains("<<")) {
-                            val pattern = Regex("IDVNM\\d+(\\d{12})<<\\d")
+                            val pattern = Regex("IDVNM\\d+(\\d{12})<<(\\d)")
                             val match = pattern.find(line.replace("O", "0").replace("o", "0"))
                             if (match != null) {
-                                return match.groupValues[1]
+                                try {
+                                    Helpers.printLog("getIdCardNumberFromMRZ ${match.groupValues}")
+                                    if (match.groupValues.size > 2) {
+                                        val checkSum = calculateChecksum(match.groupValues[1])
+                                        Helpers.printLog("getIdCardNumberFromMRZ $checkSum")
+                                        if (checkSum == Integer.parseInt(match.groupValues[2]))
+                                            return match.groupValues[1]
+                                        else
+                                            Helpers.printLog(" Checksum not OK $line")
+//                                        KalapaSDK.config.loggingHandler?.log(KALAPA_LOG_LEVEL.ERROR, KALAPA_LOG_ACTION.MRZ_FAIL, "Common", mapOf("checksum" to line))
+                                    }
+                                } catch (exception: Exception) {
+                                    exception.printStackTrace()
+                                }
                             } else {
 //                        Helpers.printLog("$TAG No match found.")
                             }
@@ -230,6 +245,25 @@ class Common {
                 }
             }
             return null
+        }
+
+
+        private fun charValue(c: Char): Int {
+            return when {
+                c.isDigit() -> c.toString().toInt()
+                c.isLetter() -> c.toInt() - 55 // A=10, B=11, ..., Z=35
+                c == '<' -> 0
+                else -> throw IllegalArgumentException("Invalid character in MRZ")
+            }
+        }
+
+        fun calculateChecksum(s: String): Int {
+            val weights = listOf(7, 3, 1)
+            var total = 0
+            for ((i, char) in s.withIndex()) {
+                total += charValue(char) * weights[i % 3]
+            }
+            return total % 10
         }
 
         private fun String.md5(): String {

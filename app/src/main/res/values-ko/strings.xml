@@ -78,7 +78,7 @@
     <string name="klp_setting_nfc">NFC 스캔</string>
     <string name="klp_yes">예</string>
     <string name="klp_no">아니요</string>
-    <string name="klp_setting_acceptance_document">얼굴 매칭 수락 임계값</string>
+    <string name="klp_setting_acceptance_document">수락 문서</string>
     <string name="klp_old_id_card">구식 신분증 (9자리)</string>
     <string name="klp_12_digits_id_card">바코드 신분증 (12자리)</string>
     <string name="klp_eid_no_chip">12자리 신분증</string>

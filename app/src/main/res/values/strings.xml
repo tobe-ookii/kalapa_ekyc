@@ -47,9 +47,9 @@
     <string name="klp_field_nationality">Nationality</string>
     <string name="klp_field_religion">Religion</string>
     <string name="klp_field_personal_identification">Personal Identification</string>
-    <string name="klp_field_mother_name">Mother name</string>
-    <string name="klp_field_father_name">Father name</string>
-    <string name="klp_field_spouse_name">Spouse Name</string>
+    <string name="klp_field_mother_name">Mother\'s name</string>
+    <string name="klp_field_father_name">Father\'s name</string>
+    <string name="klp_field_spouse_name">Spouse\'s Name</string>
     <string name="klp_nfc_information">NFC Information</string>
     <string name="klp_card_type">Card Type</string>
     <string name="klp_field_poi">POI</string>
@@ -79,7 +79,7 @@
     <string name="klp_setting_nfc">Scan NFC</string>
     <string name="klp_yes">Yes</string>
     <string name="klp_no">No</string>
-    <string name="klp_setting_acceptance_document">Face match acceptance threshold</string>
+    <string name="klp_setting_acceptance_document">Acceptance document</string>
     <string name="klp_old_id_card">Old identity card (9-digit)</string>
     <string name="klp_12_digits_id_card">Identity card with bar code (12-digit)</string>
     <string name="klp_eid_no_chip">Identity card (12-digit)</string>
