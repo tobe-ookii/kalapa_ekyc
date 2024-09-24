@@ -24,13 +24,16 @@ import vn.kalapa.demo.models.NFCVerificationData;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.DialogListener;
+import vn.kalapa.ekyc.IKalapaRawDataProcessor;
 import vn.kalapa.ekyc.KalapaFlowType;
 import vn.kalapa.ekyc.KalapaHandler;
+import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
+import vn.kalapa.ekyc.networks.Client;
 import vn.kalapa.ekyc.networks.KalapaAPI;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
@@ -140,6 +143,7 @@ public class MainActivityJava extends BaseActivity {
     }
 
     private void startEKYC() {
+
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             Common.SCENARIO scenario = preferencesConfig.getScenario();
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
@@ -186,8 +190,9 @@ public class MainActivityJava extends BaseActivity {
     @NonNull
     private KalapaSDK.KalapaSDKBuilder getKalapaSDKBuilder(KalapaFlowType flowType) {
         KalapaSDK.KalapaSDKBuilder builder = new KalapaSDK.KalapaSDKBuilder(MainActivityJava.this, sdkConfig);
+        Common.SCENARIO scenario = preferencesConfig.getScenario();
         LogUtils.Companion.printLog("Builder: ", flowType, preferencesConfig.getMrz(), preferencesConfig.getScenarioPlan());
-        if (flowType == KalapaFlowType.NFC_ONLY) {
+        if (scenario == Common.SCENARIO.UPGRADE) {
             if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_SESSION_ID) {
                 builder.withLeftoverSession(preferencesConfig.getLeftoverSession());
             } else if (preferencesConfig.getScenarioPlan() == Common.SCENARIO_PLAN.FROM_PROVIDED_DATA) {

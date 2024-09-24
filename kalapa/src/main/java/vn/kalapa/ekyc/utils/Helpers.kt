@@ -46,7 +46,6 @@ internal class Helpers {
         lateinit var advId: String
         lateinit var AppVersion: String
         private lateinit var dialog: Dialog
-
         private var prefs: SharedPreferences? = null
 
         private fun getValuePreferences(activity: Activity, key: String): String? {

@@ -13,7 +13,7 @@ class PreferencesConfig(
     val token: String,
     val livenessVersion: Int,
     val backgroundColor: String,
-    val mainColor: String,
+    var mainColor: String,
     val mainTextColor: String,
     val btnTextColor: String,
     val language: String,

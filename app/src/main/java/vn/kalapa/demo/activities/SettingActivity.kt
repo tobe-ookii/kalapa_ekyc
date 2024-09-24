@@ -18,12 +18,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.slider.Slider
+import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.demo.MainActivityJava
 import vn.kalapa.demo.R
 import vn.kalapa.demo.utils.Helpers
 import vn.kalapa.demo.utils.LogUtils
 import vn.kalapa.ekyc.KalapaFlowType
 import vn.kalapa.ekyc.KalapaSDKConfig
+import vn.kalapa.ekyc.models.PreferencesConfig
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
@@ -462,6 +464,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun refreshMainColor(mainColor: String) {
+        Helpers.setHelpersUI(mainColor = mainColor)
         Helpers.setBackgroundColorTintList(btnMainColor, mainColor)
         Helpers.setBackgroundColorTintList(btnButtonTextColor, mainColor)
         Helpers.setBackgroundColorTintList(btnSaveConfig, mainColor)
@@ -494,6 +497,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun refreshBtnTextColor(txtColor: String) {
+        Helpers.setHelpersUI(btnTextColor = txtColor)
         btnButtonTextColor.text = txtColor
         btnButtonTextColor.setTextColor(Color.parseColor(txtColor))
         btnSaveConfig.setTextColor(Color.parseColor(txtColor))
@@ -511,11 +515,13 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun refreshBackgroundColor(backgroundColor: String) {
+        Helpers.setHelpersUI(backgroundColor = backgroundColor)
         Helpers.setBackgroundColorTintList(btnBackgroundColor, backgroundColor)
         Helpers.setBackgroundColorTintList(btnMainTextColor, backgroundColor)
     }
 
     private fun refreshMainTextColor(txtColor: String) {
+        Helpers.setHelpersUI(mainTextColor = txtColor)
         btnMainTextColor.text = txtColor
         btnMainTextColor.setTextColor(Color.parseColor(txtColor))
     }

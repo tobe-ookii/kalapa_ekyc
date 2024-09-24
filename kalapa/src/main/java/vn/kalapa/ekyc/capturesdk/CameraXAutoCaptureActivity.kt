@@ -170,6 +170,11 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
         return imageAnalysis
     }
 
+    override fun onPause() {
+        super.onPause()
+        detector = null
+    }
+
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {
             override fun onYes() {
@@ -196,7 +201,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
 
     private fun renewSession() {
         currError = ""
-        detector?.restart(false)
+        postSetupCamera() // reinit detector
         ivPreviewImage.visibility = View.INVISIBLE
         tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvError.text = captureGuide

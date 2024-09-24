@@ -343,8 +343,8 @@ class Client {
             }
 
             when (statusCode) {
-                401 -> if (url.toString().contains("/api/auth/get-token")) listener?.fail(KalapaError.ExpiredError) else listener?.timeout()
-                403 -> listener?.fail(KalapaError.ExpiredError)
+                401 -> if (url.toString().contains("/api/auth/get-token")) listener?.fail(kalapaError?.error ?: KalapaError.ExpiredError) else listener?.timeout()
+                403 -> listener?.fail(kalapaError?.error ?: KalapaError.ExpiredError)
                 else -> listener?.fail(kalapaError?.error ?: if (responseBody.isNullOrEmpty()) KalapaError.UnknownError else KalapaError(statusCode, responseBody))
             }
         }

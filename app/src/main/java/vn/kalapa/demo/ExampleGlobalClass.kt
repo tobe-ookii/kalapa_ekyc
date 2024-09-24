@@ -13,6 +13,7 @@ class ExampleGlobalClass {
         lateinit var faceImage: Bitmap
         lateinit var frontImage: Bitmap
         lateinit var backImage: Bitmap
+
         fun isNFCDataInitialized(): Boolean {
             return this::nfcData.isInitialized
         }

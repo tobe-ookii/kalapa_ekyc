@@ -72,26 +72,26 @@
     <string name="klp_demo_loading">Đang tải…</string>
     <string name="klp_demo_decision_details_title">Chi tiết quyết định</string>
     <string name="klp_demo_setting_you_must_enable_at_least_one_nfc_or_capture_image">Vui lòng chọn ít nhất một trong các tính năng chụp ảnh hoặc NFC.</string>
-    <string name="klp_setting_nfc">Quét NFC</string>
+    <string name="klp_setting_nfc">Đăng ký với NFC</string>
     <string name="klp_yes">Đồng ý</string>
     <string name="klp_no">Không</string>
     <string name="klp_setting_acceptance_document">Loại giấy tờ chấp nhận</string>
-    <string name="klp_old_id_card">CMND cũ (9 số)</string>
-    <string name="klp_12_digits_id_card">CMND có mã vạch (12 số)</string>
-    <string name="klp_eid_no_chip">CCCD (12 số)</string>
-    <string name="klp_eid_with_chip">CCCD gắn chip (12 số)</string>
-    <string name="klp_eid_2024">CCCD gắn chip từ năm 2024 (12 số)</string>
-    <string name="klp_setting_verify_check">Kiểm tra xác minh ID-Tên</string>
+    <string name="klp_old_id_card">Chứng minh nhân dân 9 số</string>
+    <string name="klp_12_digits_id_card">Chứng minh nhân dân 12 số</string>
+    <string name="klp_eid_no_chip">Căn cước công dân không chip</string>
+    <string name="klp_eid_with_chip">Căn cước công dân có chip</string>
+    <string name="klp_eid_2024">Căn cước công dân có chip 2024</string>
+    <string name="klp_setting_verify_check">So khớp ID-Tên</string>
     <string name="klp_setting_fraud_check">Kiểm tra giả mạo và gian lận</string>
-    <string name="klp_strict_quality_check">Mức độ kiểm tra chất lượng tài liệu</string>
+    <string name="klp_strict_quality_check">Mức độ kiểm tra chất lượng ảnh</string>
     <string name="sw_strict_quality_advance">Nâng cao</string>
-    <string name="sw_strict_quality_basic">Cơ bản</string>
-    <string name="klp_check_if_card_sides_match">Kiểm tra hai mặt thẻ có khớp nhau không</string>
-    <string name="klp_setting_acceptance_face_matching_threshold">Ngưỡng chấp nhận đối chiếu khuôn mặt</string>
+    <string name="sw_strict_quality_basic">Bình thường</string>
+    <string name="klp_check_if_card_sides_match">Kiểm tra khớp hai mặt thẻ</string>
+    <string name="klp_setting_acceptance_face_matching_threshold">Ngưỡng so khớp gương mặt chấp nhận</string>
     <string name="klp_your_application_is">Trạng thái</string>
     <string name="klp_error_nfc_unsupported">Thiết bị này không hỗ trợ NFC</string>
-    <string name="klp_off">Tắt</string>
-    <string name="klp_on">Bật</string>
+    <string name="klp_off">Không</string>
+    <string name="klp_on">Có</string>
     <string name="klp_environment">Môi trường</string>
     <string name="klp_demo_scenario">Kịch bản</string>
     <string name="klp_demo_scenario_register">Đăng ký</string>
@@ -116,5 +116,6 @@
     <string name="klp_demo_upgrade_body">Bạn có muốn xác thực chip điện tử để nâng hạng tài khoản không?</string>
     <string name="klp_demo_btn_upgrade">Nâng cấp</string>
     <string name="klp_demo_btn_later">Để sau</string>
+    <string name="klp_demo_register_with_nfc_description">Chỉ áp dụng với Căn cước công dân gắn chip</string>
 
 </resources>

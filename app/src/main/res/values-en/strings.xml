@@ -116,5 +116,6 @@
     <string name="klp_demo_upgrade_body">Would you like to verify your electronic chip to upgrade your account?</string>
     <string name="klp_demo_btn_upgrade">Upgrade</string>
     <string name="klp_demo_btn_later">Later</string>
+    <string name="klp_demo_register_with_nfc_description">EID is required</string>
 
 </resources>

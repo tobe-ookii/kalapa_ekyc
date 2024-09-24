@@ -27,8 +27,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.widget.CompoundButtonCompat
 import com.google.android.material.slider.Slider
 import vn.kalapa.demo.ExampleGlobalClass
+import vn.kalapa.demo.R
 import vn.kalapa.ekyc.DialogListener
-import vn.kalapa.R
 import vn.kalapa.ekyc.models.PreferencesConfig
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
@@ -42,7 +42,6 @@ import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_CAPTURE
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_LIVENESS
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_NFC
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_DATA_URI
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
@@ -56,6 +55,18 @@ internal class Helpers {
         private const val TAG = "KLP"
         lateinit var activity: Activity
         private var prefs: SharedPreferences? = null
+        private var backgroundColor: String? = null
+        private var mainColor: String? = null
+        private var mainTextColor: String? = null
+        private var btnTextColor: String? = null
+
+        fun setHelpersUI(backgroundColor: String? = null, mainColor: String? = null, mainTextColor: String? = null, btnTextColor: String? = null) {
+            LogUtils.printLog("setHelpersUI $backgroundColor $mainColor $mainTextColor $btnTextColor")
+            backgroundColor?.let { this.backgroundColor = backgroundColor }
+            mainColor?.let { this.mainColor = mainColor }
+            mainTextColor?.let { this.mainTextColor = mainTextColor }
+            btnTextColor?.let { this.btnTextColor = btnTextColor }
+        }
 
         fun getSharedPreferencesConfig(activity: Activity): PreferencesConfig? {
             init(activity)
@@ -63,9 +74,13 @@ internal class Helpers {
             val lang = getValuePreferences(Common.MY_KEY_LANGUAGE)
             val livenessVersion = getIntPreferences(Common.MY_KEY_LIVENESS_VERSION, Common.LIVENESS_VERSION.PASSIVE.version)
             val backgroundColor = getValuePreferences(Common.MY_KEY_BACKGROUND_COLOR)
+            this.backgroundColor = backgroundColor
             val mainColor = getValuePreferences(Common.MY_KEY_MAIN_COLOR)
+            this.mainColor = mainColor
             val mainTextColor = getValuePreferences(Common.MY_KEY_MAIN_TEXT_COLOR)
+            this.mainTextColor = mainTextColor
             val btnTextColor = getValuePreferences(Common.MY_KEY_BTN_TEXT_COLOR)
+            this.btnTextColor = btnTextColor
             val env = getValuePreferences(Common.MY_KEY_ENV)
             val leftoverSession = getValuePreferences(Common.MY_KEY_LEFTOVER_SESSION) ?: ""
             val mrz = getValuePreferences(Common.MY_KEY_MRZ) ?: ""
@@ -94,7 +109,7 @@ internal class Helpers {
             LogUtils.printLog("Preferences: ", token.isEmpty(), lang == null, backgroundColor == null, mainColor == null, mainTextColor == null, btnTextColor == null, env == null)
             return if (lang == null || backgroundColor == null || mainColor == null || mainTextColor == null || btnTextColor == null || env == null) null
             else {
-                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz,  scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
+                PreferencesConfig(token, livenessVersion, backgroundColor, mainColor, mainTextColor, btnTextColor, lang, env, enableNFC, captureImage, verifyCheck, fraudCheck, normalCheckOnly, cardSideMatchesCheck, faceMatchingThreshold, accept9DigitsIdCard, accept12DigitIdCard, acceptEidWithoutChip, acceptEidWithChip, acceptEid2024, leftoverSession, mrz, scenario, scenarioPlan, hasCustomCaptureScreen, hasCustomLivenessScreen, hasCustomNFCScreen)
             }
         }
 
@@ -220,15 +235,27 @@ internal class Helpers {
 
             val ivIcon = dialog.findViewById<ImageView>(R.id.iv_dialog_icon)
             if (drawableIcon != null) ivIcon.setImageDrawable(activity.getDrawable(drawableIcon))
-            if (yesTxt != null) yesBtn.text = yesTxt
+            yesBtn.text = yesTxt ?: myActivity.getString(R.string.klp_demo_confirm)
             val noBtn = dialog.findViewById(R.id.custom_dialog_btn_no) as TextView
-            if (noTxt != null) noBtn.text = noTxt
+            noBtn.text = noTxt ?: myActivity.getString(R.string.klp_demo_no)
             if (ExampleGlobalClass.isPreferencesConfigInitialized()) {
                 tvTitle.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 noBtn.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 body.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 setBackgroundColorTintList(yesBtn, ExampleGlobalClass.preferencesConfig.mainColor)
                 yesBtn.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.btnTextColor))
+            } else {
+                mainColor?.let {
+                    setBackgroundColorTintList(yesBtn, it)
+                }
+                mainTextColor?.let {
+                    tvTitle.setTextColor(Color.parseColor(it))
+                    noBtn.setTextColor(Color.parseColor(it))
+                    body.setTextColor(Color.parseColor(it))
+                }
+                btnTextColor?.let {
+                    yesBtn.setTextColor(Color.parseColor(it))
+                }
             }
             if (listener != null) {
                 noBtn.setOnClickListener {

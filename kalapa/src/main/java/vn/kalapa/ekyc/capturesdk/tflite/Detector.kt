@@ -98,7 +98,7 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
     }
 
     fun restart(isGpu: Boolean) {
-        interpreter.close()
+        close()
         detected = false
         val options = if (isGpu) {
             val compatList = CompatibilityList()
@@ -121,7 +121,10 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
     }
 
     fun close() {
-        interpreter.close()
+        try {
+            interpreter.close()
+        } catch (exception: Exception) { // Already close.
+        }
     }
 
     fun detect(frame: Bitmap, doneProcessed: () -> Unit) {
