@@ -120,5 +120,6 @@
     <string name="klp_demo_btn_upgrade">Nâng cấp</string>
     <string name="klp_demo_btn_later">Để sau</string>
     <string name="klp_demo_register_with_nfc_description">Chỉ áp dụng với Căn cước công dân gắn chip</string>
+    <string name="klp_demo_unauthorized">Unauthorized. App token is wrong or expired.</string>
 
 </resources>

@@ -75,7 +75,7 @@
     <string name="klp_setting_nfc">Đăng ký với NFC</string>
     <string name="klp_yes">Đồng ý</string>
     <string name="klp_no">Không</string>
-    <string name="klp_setting_acceptance_document">Loại giấy tờ chấp nhận</string>
+    <string name="klp_setting_acceptance_document">Loại thẻ chấp nhận</string>
     <string name="klp_old_id_card">Chứng minh nhân dân 9 số</string>
     <string name="klp_12_digits_id_card">Chứng minh nhân dân 12 số</string>
     <string name="klp_eid_no_chip">Căn cước công dân không chip</string>
@@ -117,5 +117,5 @@
     <string name="klp_demo_btn_upgrade">Nâng cấp</string>
     <string name="klp_demo_btn_later">Để sau</string>
     <string name="klp_demo_register_with_nfc_description">Chỉ áp dụng với Căn cước công dân gắn chip</string>
-
+    <string name="klp_demo_unauthorized">Token sai hoặc hết hạn. Vui lòng liên hệ để được hỗ trợ</string>
 </resources>

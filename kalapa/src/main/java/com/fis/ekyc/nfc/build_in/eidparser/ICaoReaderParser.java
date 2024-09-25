@@ -1,7 +1,10 @@
 package com.fis.ekyc.nfc.build_in.eidparser;
+
 import android.text.TextUtils;
 import android.util.Log;
+
 import androidx.annotation.RequiresApi;
+
 import com.fis.ekyc.nfc.build_in.bouncycastle.asn1.ASN1Encodable;
 import com.fis.ekyc.nfc.build_in.bouncycastle.asn1.ASN1Integer;
 import com.fis.ekyc.nfc.build_in.bouncycastle.asn1.DERSequence;
@@ -35,7 +38,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.crypto.Cipher;
+
+import vn.kalapa.ekyc.utils.Helpers;
 
 public class ICaoReaderParser {
     private static final String TAG = ICaoReaderParser.class.getSimpleName();
@@ -117,24 +123,28 @@ public class ICaoReaderParser {
 
     private ResultCode ecapod() {
         try {
-            Log.d(TAG, "Start Pace...!");
-            CardAccessFile cardAccessFile = new CardAccessFile(this._service.getInputStream((short)284));
+            Log.d(TAG, "KLP Start Pace...!");
+            Helpers.Companion.printLog(TAG, "KLP Start Pace...!");
+            CardAccessFile cardAccessFile = new CardAccessFile(this._service.getInputStream((short) 284));
             Collection<SecurityInfo> securityInfoCollection = cardAccessFile.getSecurityInfos();
             int Startpos = this._cccdId.length() - 6;
             String can = this._cccdId.substring(Startpos).trim();
             PACEKeySpec paceKey = PACEKeySpec.createCANKey(can);
             Iterator var6 = securityInfoCollection.iterator();
 
-            while(var6.hasNext()) {
-                SecurityInfo securityInfo = (SecurityInfo)var6.next();
+            while (var6.hasNext()) {
+                SecurityInfo securityInfo = (SecurityInfo) var6.next();
                 if (securityInfo instanceof PACEInfo) {
-                    PACEInfo paceInfo = (PACEInfo)securityInfo;
-                    this._service.doPACE(paceKey, paceInfo.getObjectIdentifier(), PACEInfo.toParameterSpec(paceInfo.getParameterId()), (BigInteger)null);
+                    PACEInfo paceInfo = (PACEInfo) securityInfo;
+                    this._service.doPACE(paceKey, paceInfo.getObjectIdentifier(), PACEInfo.toParameterSpec(paceInfo.getParameterId()), (BigInteger) null);
                     Log.w(TAG, "ecap successful!");
                     this._service.sendSelectApplet(true);
                     return ResultCode.SUCCESS;
                 }
             }
+        } catch (CardServiceProtocolException var10) {
+            Log.w(TAG, var10);
+            return ResultCode.WRONG_CCCDID;
         } catch (Exception var9) {
             Log.w(TAG, var9);
             return ResultCode.CARD_LOST_CONNECTION;
@@ -146,16 +156,16 @@ public class ICaoReaderParser {
     private ResultCode spuorGataDllAdaer() {
         try {
             this._result.setCode(ResultCode.SUCCESS);
-            CardFileInputStream sodIn = this._service.getInputStream((short)285);
+            CardFileInputStream sodIn = this._service.getInputStream((short) 285);
             this._sodFile = new SODFile(sodIn);
             this._result.setSOD(this._sodFile.getEncoded());
             MessageDigest digest = MessageDigest.getInstance(this._sodFile.getDigestAlgorithm());
             Map<Integer, byte[]> dataHashes = this._sodFile.getDataGroupHashes();
             Iterator var5 = dataHashes.keySet().iterator();
 
-            while(var5.hasNext()) {
-                Integer item = (Integer)var5.next();
-                if (((byte[])dataHashes.get(item)).length > 0) {
+            while (var5.hasNext()) {
+                Integer item = (Integer) var5.next();
+                if (((byte[]) dataHashes.get(item)).length > 0) {
                     Log.d(TAG, "Found hash of Data Group: " + item + "; ");
                     CardFileInputStream cfInputStream = null;
                     byte[] dgHashValue = null;
@@ -163,7 +173,7 @@ public class ICaoReaderParser {
                     try {
                         if (item != 3) {
                             Log.w(TAG, "Ignore DataGroup 3 (Is FingerPrint - cannot read)!");
-                            cfInputStream = this._service.getInputStream((short)(257 + item - 1));
+                            cfInputStream = this._service.getInputStream((short) (257 + item - 1));
                         }
                     } catch (Exception var9) {
                         Log.e(TAG, "Error", var9);
@@ -239,10 +249,10 @@ public class ICaoReaderParser {
             Collection<SecurityInfo> dg14FileSecurityInfos = this._dgSecurityInfoFile.getSecurityInfos();
             Iterator var2 = dg14FileSecurityInfos.iterator();
 
-            while(var2.hasNext()) {
-                SecurityInfo securityInfo = (SecurityInfo)var2.next();
+            while (var2.hasNext()) {
+                SecurityInfo securityInfo = (SecurityInfo) var2.next();
                 if (securityInfo instanceof ChipAuthenticationPublicKeyInfo) {
-                    ChipAuthenticationPublicKeyInfo publicKeyInfo = (ChipAuthenticationPublicKeyInfo)securityInfo;
+                    ChipAuthenticationPublicKeyInfo publicKeyInfo = (ChipAuthenticationPublicKeyInfo) securityInfo;
                     BigInteger keyId = publicKeyInfo.getKeyId();
                     PublicKey publicKey = publicKeyInfo.getSubjectPublicKey();
                     String oid = publicKeyInfo.getObjectIdentifier();
@@ -269,7 +279,7 @@ public class ICaoReaderParser {
                 Log.w(TAG, "Unexpected algorithms for RSA AA: digest algorithm = " + digestAlgorithm + ", signature algorithm = " + signatureAlgorithm);
                 MessageDigest rsaAADigest = MessageDigest.getInstance(digestAlgorithm);
                 Signature rsaAASignature = Signature.getInstance(signatureAlgorithm, JMRTDSecurityProvider.getSpongyCastleProvider());
-                RSAPublicKey rsaPublicKey = (RSAPublicKey)publicKey;
+                RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
                 Cipher rsaAACipher = Cipher.getInstance("RSA/NONE/NoPadding");
                 rsaAACipher.init(2, rsaPublicKey);
                 rsaAASignature.initVerify(rsaPublicKey);
@@ -291,7 +301,7 @@ public class ICaoReaderParser {
             } else {
                 Signature ecdsaAASignature = Signature.getInstance("SHA256withECDSA", JMRTDSecurityProvider.getSpongyCastleProvider());
                 MessageDigest ecdsaAADigest = MessageDigest.getInstance("SHA-256");
-                ECPublicKey ecdsaPublicKey = (ECPublicKey)publicKey;
+                ECPublicKey ecdsaPublicKey = (ECPublicKey) publicKey;
                 if (ecdsaAASignature == null || signatureAlgorithm != null && !signatureAlgorithm.equals(ecdsaAASignature.getAlgorithm())) {
                     Log.w(TAG, "Re-initializing ecdsaAASignature with signature algorithm " + signatureAlgorithm);
                     ecdsaAASignature = Signature.getInstance(signatureAlgorithm);
@@ -341,7 +351,7 @@ public class ICaoReaderParser {
                 Collection<SecurityInfo> dg14FileSecurityInfos = this._dgSecurityInfoFile.getSecurityInfos();
                 Iterator var7 = dg14FileSecurityInfos.iterator();
 
-                while(true) {
+                while (true) {
                     if (!var7.hasNext()) {
                         int activeAuthenticationInfoCount = activeAuthenticationInfoList.size();
                         if (activeAuthenticationInfoCount < 1) {
@@ -354,16 +364,16 @@ public class ICaoReaderParser {
                             Log.d(TAG, "Found activeAuthenticationInfoCount in EF.DG14, expected 1.");
                         }
 
-                        ActiveAuthenticationInfo activeAuthenticationInfo = (ActiveAuthenticationInfo)activeAuthenticationInfoList.get(0);
+                        ActiveAuthenticationInfo activeAuthenticationInfo = (ActiveAuthenticationInfo) activeAuthenticationInfoList.get(0);
                         String signatureAlgorithmOID = activeAuthenticationInfo.getSignatureAlgorithmOID();
                         signatureAlgorithm = ActiveAuthenticationInfo.lookupMnemonicByOID(signatureAlgorithmOID);
                         digestAlgorithm = Util.inferDigestAlgorithmFromSignatureAlgorithm(signatureAlgorithm);
                         break;
                     }
 
-                    SecurityInfo securityInfo = (SecurityInfo)var7.next();
+                    SecurityInfo securityInfo = (SecurityInfo) var7.next();
                     if (securityInfo instanceof ActiveAuthenticationInfo) {
-                        activeAuthenticationInfoList.add((ActiveAuthenticationInfo)securityInfo);
+                        activeAuthenticationInfoList.add((ActiveAuthenticationInfo) securityInfo);
                     }
                 }
             }

@@ -176,7 +176,10 @@ public class MainActivityJava extends BaseActivity {
                             return null;
                         }, kalapaError -> {
                             ProgressView.Companion.hideProgress(true);
-                            Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), kalapaError.getMessageError(), R.drawable.ic_failed_solid);
+                            if (kalapaError.getCode() == 401 || kalapaError.getCode() == 403)
+                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_unauthorized), R.drawable.ic_failed_solid);
+                            else
+                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), kalapaError.getMessageError(), R.drawable.ic_failed_solid);
                             LogUtils.Companion.printLog("doRequestGetSession kalapaError: " + kalapaError);
                             return null;
                         });

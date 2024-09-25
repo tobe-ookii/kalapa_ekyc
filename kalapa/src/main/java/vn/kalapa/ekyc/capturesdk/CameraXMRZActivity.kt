@@ -35,7 +35,7 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
     private var enteredNFCActivity = false
     private var isProcessingFrame = false
 
-//    private lateinit var ivBitmapReview: ImageView
+    //    private lateinit var ivBitmapReview: ImageView
     override fun setupCustomUI() {
 //        cardMaskView = findViewById(R.id.cardMaskView)
         ivGuide = findViewById(R.id.iv_action)
@@ -92,7 +92,7 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
                         if (line.text.startsWith("IDVNM")) {
                             Helpers.printLog("CameraXMRZActivity text blocks OK ${line.text}")
                             val idCardNumber = Common.getIdCardNumberFromMRZ(line.text)
-                            if (!idCardNumber.isNullOrEmpty()) {
+                            if (!idCardNumber.isNullOrEmpty() && idCardNumber != "-1") {
                                 returnToNFCActivity(line.text)
                             }
                         } else {
@@ -123,34 +123,6 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
                 })
             }
     }
-
-    override fun previewViewLayerMode(isCameraMode: Boolean) {
-        super.previewViewLayerMode(isCameraMode)
-//        if (isCameraMode) {
-//            ivPreviewImage.visibility = View.INVISIBLE
-////            cardMaskView.setBackgroundColor(resources.getColor(R.color.black40))
-////            cardMaskView.visibility = View.VISIBLE
-//            tvTitle.setTextColor(resources.getColor(R.color.white))
-//            tvGuide0.setTextColor(resources.getColor(R.color.white))
-//            tvGuide1.setTextColor(resources.getColor(R.color.white))
-//            ivCloseEkyc.setColorFilter(resources.getColor(R.color.white))
-//            ivGuide.setColorFilter(resources.getColor(R.color.white))
-//        } else {
-//            val mainColor = Color.parseColor(KalapaSDK.config.mainColor)
-//            val mainTextColor = Color.parseColor(KalapaSDK.config.mainTextColor)
-//            tvTitle.setTextColor(mainColor)
-//            tvGuide0.setTextColor(mainTextColor)
-//            tvGuide1.setTextColor(mainTextColor)
-//            ivCloseEkyc.setColorFilter(mainColor)
-//            ivGuide.setColorFilter(mainColor)
-//            if (tmpBitmap != null) {
-//                ivPreviewImage.visibility = View.VISIBLE
-//                ivPreviewImage.setImageBitmap(tmpBitmap)
-//            }
-////            cardMaskView.setBackgroundColor(Color.parseColor(KalapaSDK.config.backgroundColor))
-//        }
-    }
-
 
     override fun showEndEkyc() {
         Helpers.showEndKYC(this, object : DialogListener {

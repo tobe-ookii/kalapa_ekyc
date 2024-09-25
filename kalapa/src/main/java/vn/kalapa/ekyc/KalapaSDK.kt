@@ -240,6 +240,7 @@ class KalapaSDK private constructor(
         val livenessScreen = {
             startLivenessForResult(faceData, object : KalapaCaptureHandler() {
                 override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                    faceBitmap = BitmapUtil.base64ToBitmap(base64)
                     if (withNFCScreen)
                         callback.sendDone(nfcScreen)
                     else
@@ -831,11 +832,9 @@ enum class KalapaSDKResultCode(val vi: String, val en: String) {
     USER_CONSENT_DECLINED("lhông đồng ý điều khoản", "user declines consent"),
     SUCCESS_WITH_WARNING("thành công", "success with warning"),
     CANNOT_OPEN_DEVICE("lỗi phần cứng", "device issues"),
-    CARD_NOT_FOUND(
-        "không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ",
-        "document not found or invalid"
-    ),
-    WRONG_CCCDID("giấy tờ không hợp lệ", "document invalid"),
+    CARD_NOT_FOUND("không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ", "document not found or invalid"),
+//    WRONG_CCCDID("giấy tờ không hợp lệ", "document invalid"),
+    WRONG_CCCDID("MRZ không hợp lệ cho ta liệu này", "invalid mrz"),
     CARD_LOST_CONNECTION("mất kết nối tới thẻ", "card lost connection"),
     USER_LEAVE("người dùng hủy bỏ xác thực", "user leave ekyc process"),
     EMULATOR_DETECTED("Phát hiện máy ảo", "emulator detection"),

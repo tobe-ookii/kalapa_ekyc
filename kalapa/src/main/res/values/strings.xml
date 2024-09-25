@@ -127,4 +127,5 @@
     <string name="klp_results_info_res">results_info_res</string>
     <string name="klp_results_info_doe">results_info_doe</string>
     <string name="klp_results_info_poi">results_info_poi</string>
+    <string name="klp_error_invalid_format">error_invalid_format</string>
 </resources>

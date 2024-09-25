@@ -38,9 +38,18 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         }
         idCardNumber = Common.getIdCardNumberFromMRZ(mrz ?: "")
         Helpers.printLog("idCardNumber: $idCardNumber from mrz $mrz")
-        if (idCardNumber == null)
-            openMRZScanner()
-        else
+        if (idCardNumber == null || idCardNumber == "-1") {
+            if (idCardNumber == "-1") {
+                Helpers.showDialog(
+                    this@NFCActivity,
+                    KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
+                    KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_invalid_format)), null
+                ) {
+                    openMRZScanner()
+                }
+            } else
+                openMRZScanner()
+        } else
             nfcUtils.setIdCardNumber(idCardNumber)
 
     }
@@ -136,11 +145,8 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
             )
 
             ResultCode.WRONG_CCCDID -> KalapaSDK.config.languageUtils.getLanguageString(
-                resources.getString(
-                    R.string.klp_nfc_error_invalid_chip
-                )
+                resources.getString(R.string.klp_nfc_invalid_mrz)
             )
-
             else -> ""
         }
     }
@@ -199,12 +205,8 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
                             )
                         onNFCErrorHandleUI(getMesageFromErrorCode(p0))
                     }
-                    if (p0 == ResultCode.WRONG_CCCDID) {
-                        openMRZScanner()
-                    }
-                    var klpResultCode = KalapaSDKResultCode.UNKNOWN
-                    if (p0 != null) {
-                        klpResultCode = when (p0) {
+                    p0?.let {
+                        when (p0) {
                             ResultCode.CARD_NOT_FOUND -> KalapaSDKResultCode.CARD_NOT_FOUND
                             ResultCode.CARD_LOST_CONNECTION -> KalapaSDKResultCode.CARD_LOST_CONNECTION
                             ResultCode.SUCCESS -> KalapaSDKResultCode.SUCCESS

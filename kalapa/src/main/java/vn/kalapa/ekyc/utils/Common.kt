@@ -244,7 +244,7 @@ class Common {
                     }
                 }
             }
-            return null
+            return if (input.isNullOrEmpty()) null else "-1"
         }
 
 

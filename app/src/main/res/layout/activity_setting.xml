@@ -364,7 +364,7 @@
                         android:layout_height="wrap_content"
                         android:visibility="gone"
                         android:background="@color/cardBgColor"
-                        app:cardCornerRadius="@dimen/cardview_default_radius"
+                        app:cardCornerRadius="@dimen/klp_margin_xsmall"
                         android:layout_marginStart="@dimen/klp_margin_small">
 
                         <RelativeLayout
@@ -385,7 +385,7 @@
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentTop="true"
                                 android:layout_gravity="center"
-                                android:layout_marginHorizontal="@dimen/margin_xxsmall"
+                                android:layout_marginHorizontal="2dp"
                                 android:background="@drawable/klp_ic_close_32"
                                 android:backgroundTint="@color/ekyc_green" />
 
@@ -420,6 +420,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_xsmall"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -427,7 +428,6 @@
                     android:id="@+id/cb_acceptance_document_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:buttonTint="@color/mainColor"
                     android:checked="true" />
 
@@ -435,7 +435,6 @@
                     android:id="@+id/tv_acceptance_document_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:text="@string/klp_old_id_card"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
@@ -444,6 +443,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_xsmall"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -458,7 +458,6 @@
                     android:id="@+id/tv_acceptance_document_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:text="@string/klp_12_digits_id_card"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
@@ -467,6 +466,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/klp_margin_xsmall"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -481,7 +481,6 @@
                     android:id="@+id/tv_acceptance_document_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:text="@string/klp_eid_no_chip"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
@@ -491,6 +490,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="@dimen/klp_margin_xsmall"
                 android:orientation="horizontal">
 
                 <CheckBox
@@ -504,7 +504,6 @@
                     android:id="@+id/tv_acceptance_document_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:text="@string/klp_eid_with_chip"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
@@ -514,6 +513,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="@dimen/klp_margin_xsmall"
                 android:orientation="horizontal">
 
                 <CheckBox
@@ -527,7 +527,6 @@
                     android:id="@+id/tv_acceptance_document_5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/klp_margin_mid"
                     android:text="@string/klp_eid_2024"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
@@ -754,6 +753,7 @@
                 android:id="@+id/btn_button_text_color"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
+                style="?android:attr/borderlessButtonStyle"
                 android:layout_marginRight="@dimen/klp_margin_mid"
                 android:background="@drawable/border_button_solid"
                 android:contentDescription="Enter your button text color"
@@ -828,6 +828,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/klp_margin_mid"
                 android:background="@drawable/border_button_solid"
+                style="?android:attr/borderlessButtonStyle"
                 android:textAllCaps="true"
                 android:textSize="@dimen/klp_txt_size_normal" />
 

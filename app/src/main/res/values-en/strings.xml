@@ -116,6 +116,7 @@
     <string name="klp_demo_upgrade_body">Would you like to verify your electronic chip to upgrade your account?</string>
     <string name="klp_demo_btn_upgrade">Upgrade</string>
     <string name="klp_demo_btn_later">Later</string>
-    <string name="klp_demo_register_with_nfc_description">EID is required</string>
+    <string name="klp_demo_register_with_nfc_description">eID is required for this plan</string>
+    <string name="klp_demo_unauthorized">Unauthorized. App token is wrong or expired.</string>
 
 </resources>
