@@ -18,14 +18,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.slider.Slider
-import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.demo.MainActivityJava
 import vn.kalapa.demo.R
 import vn.kalapa.demo.utils.Helpers
 import vn.kalapa.demo.utils.LogUtils
 import vn.kalapa.ekyc.KalapaFlowType
 import vn.kalapa.ekyc.KalapaSDKConfig
-import vn.kalapa.ekyc.models.PreferencesConfig
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
@@ -160,7 +159,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
     private lateinit var tvFaceDataDescription: TextView
     private lateinit var tvMRZDescription: TextView
-    private lateinit var tvSessionIDDescription: TextView
     private lateinit var tvEnabledNFCDescription: TextView
 
     //    private lateinit var tvScenario: TextView
@@ -211,7 +209,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         ivRemoveFaceDataUri = findViewById(R.id.iv_remove_face_data_uri)
         tvFaceDataDescription = findViewById(R.id.tv_face_data_description)
         tvMRZDescription = findViewById(R.id.tv_mrz_description)
-        tvSessionIDDescription = findViewById(R.id.tv_session_id_description)
         tvEnabledNFCDescription = findViewById(R.id.tv_enable_nfc_description)
         tvScreen = findViewById(R.id.tv_screen)
         tvScreenCapture = findViewById(R.id.tv_screen_capture)
@@ -237,7 +234,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             containerToken.visibility = if (it == 2) View.GONE else View.VISIBLE
             if (it == 2) {
                 containerMrz.visibility = View.VISIBLE
-                containerFaceData.visibility = View.VISIBLE
+                containerFaceData.visibility = View.GONE
                 containerLeftoverSession.visibility = View.GONE
             } else {
                 rgUpgradePlan.switchChangeListener(rgUpgradePlan.isPositiveCheck)
@@ -252,7 +249,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             if (Common.checkIfImageOrStorageIsGranted(this@SettingActivity, true))
                 pickImageFromGallery()
             else
-                Toast.makeText(this@SettingActivity, resources.getString(R.string.klp_demo_permission_required), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_check_permission_camera)), Toast.LENGTH_SHORT).show()
         }
         ivFaceData = findViewById(R.id.iv_face_data)
 
@@ -298,12 +295,9 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
             }
         }
         rgLanguage.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
-            LogUtils.printLog("Current language is $it")
-            LocaleHelper.setLocale(
-                this@SettingActivity,
-                if (it) "vi" else "en"
-            )
+            LocaleHelper.setLocale(this@SettingActivity, if (it) "vi" else "en")
             val locale = Locale(if (it) LocaleHelper.VIETNAMESE else LocaleHelper.ENGLISH)
+            KLPLanguageManager.setLanguage(if (it) "vi" else "en")
             Locale.setDefault(locale)
             refreshUI()
         }
@@ -317,8 +311,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
         rgScanNFC.listener = KLPCustomSwitch.KLPCustomSwitchChangeListener {
             if (it && !nfcAvailable(this@SettingActivity)) {
-                Toast.makeText(this@SettingActivity, resources.getString(R.string.klp_error_nfc_unsupported), Toast.LENGTH_SHORT).show()
-                this.rgScanNFC.switchChangeListener(false)
+                Toast.makeText(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_nfc_not_support)), Toast.LENGTH_SHORT).show()
+                    this.rgScanNFC.switchChangeListener(false)
             } else {
                 if (it) {
                     cbAcceptedEidWithChip.isChecked = true
@@ -514,171 +508,169 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun refreshUI() {
-//        tvScenario.text = resources.getString(R.string.klp_index_scenario)
+//        tvScenario.text = KLPLanguageManager.get(resources.getString(R.string.klp_index_scenario)
 //        ivRemoveFaceDataUri.visibility = ivFaceData.visibility
-        tvLanguage.text = resources.getString(R.string.klp_index_language)
-        rgLanguage.rbOne.text = resources.getString(R.string.klp_demo_language_vi)
-        rgLanguage.rbOther.text = resources.getString(R.string.klp_demo_language_en)
-        tvScreenNFC.text = resources.getString(R.string.klp_demo_screen_nfc)
-        tvScreen.text = resources.getString(R.string.klp_demo_setting_screen)
-        tvScreenLiveness.text = resources.getString(R.string.klp_demo_setting_screen_liveness)
-        tvScreenCapture.text = resources.getString(R.string.klp_demo_setting_screen_capture)
-        tvMRZDescription.text = resources.getString(R.string.klp_demo_mrz_description)
-        tvFaceDataDescription.text = resources.getString(R.string.klp_demo_face_data_description)
-        tvSessionIDDescription.text = resources.getString(R.string.klp_demo_session_id_description)
-        tvEnabledNFCDescription.text = resources.getString(R.string.klp_demo_register_with_nfc_description)
-//        rgLanguage.rbSecond.text = resources.getString(R.string.klp_faceOTP_language_en)
-//        rgLanguage.rbThird.text = resources.getString(R.string.klp_faceOTP_language_ko)
-        tvFaceData.text = resources.getString(R.string.klp_demo_face_data)
-        tvLeftoverSession.text = resources.getString(R.string.klp_demo_session_id)
-        rgEnvironment.rbOne.text = resources.getString(R.string.klp_environment_production)
-        rgEnvironment.rbOther.text = resources.getString(
-            R.string.klp_environment_dev
-        )
-        tvLivenessDescription.text = resources.getString(R.string.klp_demo_liveness_version_description)
-        tvScenarioDescription.text = resources.getString(R.string.klp_demo_scenario_description)
+        tvLanguage.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_lang))
+                rgLanguage.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_lang_vi))
+                rgLanguage.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_lang_en))
+                tvScreenNFC.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_nfc))
+                tvScreen.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_screen))
+                tvScreenLiveness.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_custom_screen_selfie))
+                tvScreenCapture.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_custom_screen_id))
+                tvMRZDescription.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade_data_mrz_note))
+                tvFaceDataDescription.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade_data_face_note))
+                tvEnabledNFCDescription.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_nfc_note))
+//        rgLanguage.rbSecond.text = KLPLanguageManager.get(resources.getString(R.string.klp_faceOTP_language_en))
+//        rgLanguage.rbThird.text = KLPLanguageManager.get(resources.getString(R.string.klp_faceOTP_language_ko))
+                tvFaceData.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade_data_face))
+                tvLeftoverSession.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade_session))
+                rgEnvironment.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_env_prod))
+                rgEnvironment.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_env_dev))
+                tvLivenessDescription.text = " - ${KLPLanguageManager.get(resources.getString(R.string.klp_settings_lv_a_note))} \n" +
+        " - ${KLPLanguageManager.get(resources.getString(R.string.klp_settings_lv_sa_note))} \n" +
+        " - ${KLPLanguageManager.get(resources.getString(R.string.klp_settings_lv_p_note))}"
+            tvScenarioDescription.text =  " - ${KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_note_onboard))} \n" +
+            " - ${KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_note_upgrade))} \n" +
+            " - ${KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_note_custom))}"
 
-        tvLivenessVersion.text = resources.getString(R.string.klp_demo_liveness)
-        rgLivenessVersion.rbOne.text = resources.getString(R.string.klp_liveness_passive)
-        rgLivenessVersion.rbSecond.text = resources.getString(R.string.klp_liveness_semi_activate)
-        rgLivenessVersion.rbThird.text = resources.getString(R.string.klp_liveness_activate)
+                tvLivenessVersion.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_lv))
+                        rgLivenessVersion.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_lv_p))
+                        rgLivenessVersion.rbSecond.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_lv_sa))
+                        rgLivenessVersion.rbThird.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_lv_a))
 
-        rgUpgradePlan.rbOne.text = resources.getString(R.string.klp_demo_from_session_id)
-        rgUpgradePlan.rbOther.text = resources.getString(R.string.klp_demo_from_provided_data)
-        tvScenario.text = resources.getString(R.string.klp_demo_scenario)
-        rgScenario.rbOne.text = resources.getString(R.string.klp_demo_scenario_register)
-        rgScenario.rbSecond.text = resources.getString(R.string.klp_demo_scenario_upgrade)
-        rgScenario.rbThird.text = resources.getString(R.string.klp_demo_scenario_custom)
+                        rgUpgradePlan.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade_session))
+                        rgUpgradePlan.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade_data))
+                        tvScenario.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow))
+                        rgScenario.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_onboard))
+                        rgScenario.rbSecond.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade))
+                        rgScenario.rbThird.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_custom))
 
-        btnFaceData.text = resources.getString(R.string.klp_demo_pick_image)
-        rgScanNFC.rbOne.text = resources.getString(R.string.klp_on)
-        rgScanNFC.rbOther.text = resources.getString(R.string.klp_off)
+                        btnFaceData.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_flow_upgrade_data_face_upload))
+                        rgScanNFC.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes))
+                        rgScanNFC.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
 
-        rgCaptureImage.rbOne.text = resources.getString(R.string.klp_on)
-        rgCaptureImage.rbOther.text = resources.getString(R.string.klp_off)
+                        rgCaptureImage.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes))
+                        rgCaptureImage.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
 
-        rgVerifyCheck.rbOne.text = resources.getString(R.string.klp_on)
-        rgVerifyCheck.rbOther.text = resources.getString(R.string.klp_off)
+                        rgVerifyCheck.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes))
+                        rgVerifyCheck.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
 
-        rgFraudCheck.rbOne.text = resources.getString(R.string.klp_on)
-        rgFraudCheck.rbOther.text = resources.getString(R.string.klp_off)
+                        rgFraudCheck.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes))
+                        rgFraudCheck.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
 
-        rgCardSidesMatchCheck.rbOne.text = resources.getString(R.string.klp_on)
-        rgCardSidesMatchCheck.rbOther.text = resources.getString(R.string.klp_off)
+                        rgCardSidesMatchCheck.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes))
+                        rgCardSidesMatchCheck.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
 
-        rgStrictQualityCheck.rbOne.text = resources.getString(R.string.sw_strict_quality_basic)
-        rgStrictQualityCheck.rbOther.text = resources.getString(R.string.sw_strict_quality_advance)
+                        rgStrictQualityCheck.rbOne.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes))
+                        rgStrictQualityCheck.rbOther.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
 
-        btnSaveConfig.text = resources.getString(R.string.klp_save_setting_title)
-        tvMainColor.text = resources.getString(R.string.klp_index_main_color)
-        tvMainTextColor.text = resources.getString(R.string.klp_index_main_text_color)
-        tvButtonTextColor.text = resources.getString(R.string.klp_index_button_text_color)
-        tvBackgroundColor.text = resources.getString(R.string.klp_index_background_color)
+                        btnSaveConfig.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_save))
+                        tvMainColor.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_color_main))
+                        tvMainTextColor.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_color_main_text))
+                        tvButtonTextColor.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_color_button_text))
+                        tvBackgroundColor.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_color_background))
 
-        tvAcceptanceDocument1.text = resources.getString(R.string.klp_old_id_card)
-        tvAcceptanceDocument2.text = resources.getString(R.string.klp_12_digits_id_card)
-        tvAcceptanceDocument3.text = resources.getString(R.string.klp_eid_no_chip)
-        tvAcceptanceDocument4.text = resources.getString(R.string.klp_eid_with_chip)
-        tvAcceptanceDocument5.text = resources.getString(R.string.klp_eid_2024)
-        tvAcceptanceDocument.text = resources.getString(R.string.klp_setting_acceptance_document)
-        tvAcceptanceFaceMatchingThreshold.text =
-            resources.getString(R.string.klp_setting_acceptance_face_matching_threshold)
+                        tvAcceptanceDocument1.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac_idold))
+                        tvAcceptanceDocument2.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac_idnew))
+                        tvAcceptanceDocument3.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac_idnew_barcode))
+                        tvAcceptanceDocument4.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac_eid))
+                        tvAcceptanceDocument5.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac_eid24))
+                        tvAcceptanceDocument.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac))
+                        tvAcceptanceFaceMatchingThreshold.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_facematch_threshold))
 
-        tvStrictQualityCheck.text = resources.getString(R.string.klp_strict_quality_check)
-        tvCardSidesMatchCheck.text = resources.getString(R.string.klp_check_if_card_sides_match)
-        tvVerifyCheck.text = resources.getString(R.string.klp_setting_verify_check)
-        tvFraudCheck.text = resources.getString(R.string.klp_setting_fraud_check)
+                        tvStrictQualityCheck.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_quality_check))
+                        tvCardSidesMatchCheck.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_check_sides_match))
+                        tvVerifyCheck.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_idname))
+                        tvFraudCheck.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_fraud))
 
-        tvEnvironment.text = resources.getString(R.string.klp_environment)
-        tvScanNFC.text = resources.getString(R.string.klp_setting_nfc)
-        tvCaptureImage.text = resources.getString(R.string.klp_setting_capture_image)
-    }
+                        tvEnvironment.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_env))//KLPLanguageManager.get(resources.getString(R.string.klp_environment))
+                        tvScanNFC.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_nfc))
+                        tvCaptureImage.text = KLPLanguageManager.get(resources.getString(R.string.klp_settings_collect_documents))
+                }
 
     private fun setConfigBeforeExit() {
         if (containerToken.visibility == View.GONE && !cbNFCScreen.isChecked && !cbLivenessScreen.isChecked && !cbCaptureIdScreen.isChecked)
             Helpers.showDialog(
                 this@SettingActivity,
-                resources.getString(R.string.klp_demo_alert_title),
-                resources.getString(R.string.please_choose_atleast_one_screen),
-                R.drawable.frowning_face
-            )
-        else if ((edtToken.text.toString().isNotEmpty() || containerToken.visibility == View.GONE) && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
+                KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                    KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)),
+                        R.drawable.frowning_face
+                    )
+                    else if ((edtToken.text.toString().isNotEmpty() || containerToken.visibility == View.GONE) && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
 
-            Helpers.savePrefs(
-                MY_KEY_LIVENESS_VERSION,
-                if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
-            )
+                    Helpers.savePrefs(
+                        MY_KEY_LIVENESS_VERSION,
+                        if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
+                    )
 
-            Helpers.savePrefs(
-                MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) Common.SCENARIO.REGISTER.name else if (rgScenario.selectedIndex == 1) Common.SCENARIO.UPGRADE.name else Common.SCENARIO.CUSTOM.name
-            )
+                    Helpers.savePrefs(
+                        MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) Common.SCENARIO.REGISTER.name else if (rgScenario.selectedIndex == 1) Common.SCENARIO.UPGRADE.name else Common.SCENARIO.CUSTOM.name
+                    )
 
-            Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPositiveCheck) "vi" else "en")
-            edtToken.text.toString().isNotEmpty().let { Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString()) }
-            Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
-            Helpers.savePrefs(MY_KEY_MRZ, edtMRZ.text.toString())
-            Helpers.savePrefs(MY_KEY_LEFTOVER_SESSION, edtLeftoverSession.text.toString())
-            Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPositiveCheck)
-            Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureImage.isPositiveCheck)
-            Helpers.savePrefs(MY_KEY_VERIFY_CHECK, rgVerifyCheck.isPositiveCheck)
-            Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPositiveCheck)
-            Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPositiveCheck)
-            Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPositiveCheck)
-            if (containerFaceDataBitmap.visibility != View.VISIBLE) MainActivityJava.faceDataBase64 = ""
-            Helpers.savePrefs(MY_KEY_CUSTOM_NFC, cbNFCScreen.isChecked)
-            Helpers.savePrefs(MY_KEY_CUSTOM_LIVENESS, cbLivenessScreen.isChecked)
-            Helpers.savePrefs(MY_KEY_CUSTOM_CAPTURE, cbCaptureIdScreen.isChecked)
-            Helpers.savePrefs(MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID, rgUpgradePlan.isPositiveCheck)
-            if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(
-                    MY_KEY_MAIN_COLOR
-                )!!
-            )
-                Helpers.savePrefs(MY_KEY_MAIN_COLOR, edtMainColor.text.toString())
+                    Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPositiveCheck) "vi" else "en")
+                    edtToken.text.toString().isNotEmpty().let { Helpers.savePrefs(MY_KEY_TOKEN, edtToken.text.toString()) }
+                    Helpers.savePrefs(MY_KEY_ENV, if (rgEnvironment.isPositiveCheck) KLP_PROD else KLP_DEV)
+                    Helpers.savePrefs(MY_KEY_MRZ, edtMRZ.text.toString())
+                    Helpers.savePrefs(MY_KEY_LEFTOVER_SESSION, edtLeftoverSession.text.toString())
+                    Helpers.savePrefs(MY_KEY_ENABLE_NFC, rgScanNFC.isPositiveCheck)
+                    Helpers.savePrefs(MY_KEY_CAPTURE_IMAGE, rgCaptureImage.isPositiveCheck)
+                    Helpers.savePrefs(MY_KEY_VERIFY_CHECK, rgVerifyCheck.isPositiveCheck)
+                    Helpers.savePrefs(MY_KEY_FRAUD_CHECK, rgFraudCheck.isPositiveCheck)
+                    Helpers.savePrefs(MY_KEY_NORMAL_CHECK_ONLY, rgStrictQualityCheck.isPositiveCheck)
+                    Helpers.savePrefs(MY_KEY_CARD_SIDE_CHECK, rgCardSidesMatchCheck.isPositiveCheck)
+                    if (containerFaceDataBitmap.visibility != View.VISIBLE) MainActivityJava.faceDataBase64 = ""
+                    Helpers.savePrefs(MY_KEY_CUSTOM_NFC, cbNFCScreen.isChecked)
+                    Helpers.savePrefs(MY_KEY_CUSTOM_LIVENESS, cbLivenessScreen.isChecked)
+                    Helpers.savePrefs(MY_KEY_CUSTOM_CAPTURE, cbCaptureIdScreen.isChecked)
+                    Helpers.savePrefs(MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID, rgUpgradePlan.isPositiveCheck)
+                    if (Helpers.getValuePreferences(MY_KEY_MAIN_COLOR) == null || edtMainColor.text.toString() != Helpers.getValuePreferences(
+                            MY_KEY_MAIN_COLOR
+                        )!!
+                    )
+                        Helpers.savePrefs(MY_KEY_MAIN_COLOR, edtMainColor.text.toString())
 
-            if (Helpers.getValuePreferences(MY_KEY_BTN_TEXT_COLOR) == null || edtButtonTextColor.text.toString() != Helpers.getValuePreferences(
-                    MY_KEY_BTN_TEXT_COLOR
-                )!!
-            )
-                Helpers.savePrefs(MY_KEY_BTN_TEXT_COLOR, edtButtonTextColor.text.toString())
+                    if (Helpers.getValuePreferences(MY_KEY_BTN_TEXT_COLOR) == null || edtButtonTextColor.text.toString() != Helpers.getValuePreferences(
+                            MY_KEY_BTN_TEXT_COLOR
+                        )!!
+                    )
+                        Helpers.savePrefs(MY_KEY_BTN_TEXT_COLOR, edtButtonTextColor.text.toString())
 
-            if (Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) == null || edtMainTextColor.text.toString() != Helpers.getValuePreferences(
-                    MY_KEY_MAIN_TEXT_COLOR
-                )!!
-            )
-                Helpers.savePrefs(MY_KEY_MAIN_TEXT_COLOR, edtMainTextColor.text.toString())
+                    if (Helpers.getValuePreferences(MY_KEY_MAIN_TEXT_COLOR) == null || edtMainTextColor.text.toString() != Helpers.getValuePreferences(
+                            MY_KEY_MAIN_TEXT_COLOR
+                        )!!
+                    )
+                        Helpers.savePrefs(MY_KEY_MAIN_TEXT_COLOR, edtMainTextColor.text.toString())
 
-            if (Helpers.getValuePreferences(MY_KEY_BACKGROUND_COLOR) == null || edtBackgroundColor.text.toString() != Helpers.getValuePreferences(
-                    MY_KEY_BACKGROUND_COLOR
-                )!!
-            ) Helpers.savePrefs(MY_KEY_BACKGROUND_COLOR, edtBackgroundColor.text.toString())
-            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_1, cbAcceptedOldIdCard.isChecked)
-            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_2, cbAcceptedOld12DigitsIdCard.isChecked)
-            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_3, cbAcceptedEidWithoutChip.isChecked)
-            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_4, cbAcceptedEidWithChip.isChecked)
+                    if (Helpers.getValuePreferences(MY_KEY_BACKGROUND_COLOR) == null || edtBackgroundColor.text.toString() != Helpers.getValuePreferences(
+                            MY_KEY_BACKGROUND_COLOR
+                        )!!
+                    ) Helpers.savePrefs(MY_KEY_BACKGROUND_COLOR, edtBackgroundColor.text.toString())
+                    Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_1, cbAcceptedOldIdCard.isChecked)
+                    Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_2, cbAcceptedOld12DigitsIdCard.isChecked)
+                    Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_3, cbAcceptedEidWithoutChip.isChecked)
+                    Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_4, cbAcceptedEidWithChip.isChecked)
 
-            Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_5, cbAcceptedEid2024.isChecked)
-            Helpers.savePrefs(
-                MY_KEY_FACE_MATCHING_THRESHOLD,
-                sliderFaceMatchingThreshold.value.toInt().toString()
-            )
-            finish()
-        } else {
-            if (edtToken.text.toString().isEmpty())
-                Helpers.showDialog(
-                    this@SettingActivity,
-                    resources.getString(R.string.klp_demo_alert_title),
-                    "Token " + resources.getString(R.string.klp_demo_can_not_leave_empty),
-                    R.drawable.frowning_face
-                )
-            else {
-                Helpers.showDialog(
-                    this@SettingActivity,
-                    resources.getString(R.string.klp_demo_alert_title),
-                    resources.getString(R.string.please_choose_atleast_one_document),
-                    R.drawable.frowning_face
-                )
-            }
-        }
+                    Helpers.savePrefs(MY_KEY_ACCEPTED_DOCUMENT_5, cbAcceptedEid2024.isChecked)
+                    Helpers.savePrefs(
+                        MY_KEY_FACE_MATCHING_THRESHOLD,
+                        sliderFaceMatchingThreshold.value.toInt().toString()
+                    )
+                    finish()
+                } else {
+                    if (edtToken.text.toString().isEmpty())
+                        Helpers.showDialog(
+                            this@SettingActivity,
+                            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                                "Token " + KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)), R.drawable.frowning_face)
+                                else {
+                                Helpers.showDialog(
+                                    this@SettingActivity,
+                                    KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                                        KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)),
+                                            R.drawable.frowning_face
+                                        )
+                            }
+                }
     }
 
     override fun onBackPressed() {

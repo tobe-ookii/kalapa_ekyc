@@ -36,6 +36,7 @@ import vn.kalapa.ekyc.views.KLPGifImageView
 import vn.kalapa.ekyc.views.ProgressView
 import vn.kalapa.ekyc.liveness.InputFace
 import vn.kalapa.ekyc.liveness.LivenessSessionStatus
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.Common.Companion.vibratePhone
 import vn.kalapa.ekyc.utils.toBitmap
 
@@ -225,7 +226,7 @@ class CameraXSelfieActivity : CameraXActivity(
                         tvError.setTextColor(resources.getColor(R.color.ekyc_red))
                         tvError.visibility = View.VISIBLE
                         tvError.text =
-                            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_error_timeout))
+                            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_error_timeout))
                         ivError.setGifImageResource(R.drawable.gif_error_small)
                     }
                 }
@@ -264,7 +265,7 @@ class CameraXSelfieActivity : CameraXActivity(
                 if (it.size == 0) {
                     // No face
                     Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: No faces!")
-                    errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_center))
+                    errorMessage = KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_center))
                     tvError.setTextColor(resources.getColor(R.color.ekyc_red))
                     btnNext.visibility = View.INVISIBLE
                 } else {
@@ -277,19 +278,19 @@ class CameraXSelfieActivity : CameraXActivity(
                     if (it.size > 1 && isFaceSizeJustBiggerThanTooSmall > 1) {
                         Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: Too many faces!")
                         // More than one face
-                        errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_many_faces))
+                        errorMessage = KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_many_faces))
                         btnNext.visibility = View.INVISIBLE
                     } else {
                         if (LivenessAction.isFaceMarginRight(it[0], faceBitmap.width, faceBitmap.height)) {
                             Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: OK!")
                             ivError.setGifImageResource(R.drawable.gif_success_small)
                             tvError.setTextColor(resources.getColor(R.color.ekyc_green))
-                            errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_done_title))
+                            errorMessage = KLPLanguageManager.get(resources.getString(R.string.klp_done_title))
                             btnNext.visibility = View.VISIBLE
                         } else {
                             btnNext.visibility = View.INVISIBLE
                             Helpers.printLog("CameraXSelfieActivity onCaptureSuccess: Not margin right!")
-                            errorMessage = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_center))
+                            errorMessage = KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_center))
                         }
                     }
                 }
@@ -320,13 +321,13 @@ class CameraXSelfieActivity : CameraXActivity(
         Helpers.setBackgroundColorTintList(this.btnNext, KalapaSDK.config.mainColor)
         this.btnNext.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
         this.tvGuide.text = KalapaSDK.config.customSubTitle.ifEmpty {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_default))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_default))
         }
         this.tvGuide.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
         Helpers.setBackgroundColorTintList(this.btnCapture, KalapaSDK.config.mainColor)
         tvTitle.setTextColor((Color.parseColor(KalapaSDK.config.mainTextColor)))
         tvTitle.text = KalapaSDK.config.customTitle.ifEmpty {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_title))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_title))
         }
     }
 
@@ -414,7 +415,7 @@ class CameraXSelfieActivity : CameraXActivity(
             btnRetry.visibility = View.VISIBLE
             ivError.setGifImageResource(R.drawable.gif_error_small)
             tvError.text = message
-                ?: KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_result_fail))
+                ?: KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
         }
         Helpers.printLog("onError message: $message")
     }
@@ -540,27 +541,27 @@ class CameraXSelfieActivity : CameraXActivity(
         else
             NO_FACE_COUNT = 0
         if (status != null && status == LivenessSessionStatus.EXPIRED) {
-            return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_error_timeout))
+            return KLPLanguageManager.get(resources.getString(R.string.klp_liveness_error_timeout))
 //            "Phiên xác thực hết hạn, vui lòng thử lại"
         } else return if (status == LivenessSessionStatus.FAILED && input != "Processing") {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_result_fail))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
         } else return if (status == LivenessSessionStatus.TOO_LARGE) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_too_close))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_too_close))
         } else return if (status == LivenessSessionStatus.TOO_SMALL) {
             if (input == "ComeClose") {
                 tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
                 faceMaskColor = resources.getString(R.color.white)
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_too_far))
+                KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_too_far))
             } else
-                return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_too_far))
+                return KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_too_far))
         } else return if (status == LivenessSessionStatus.TOO_MANY_FACES) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_many_faces))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_many_faces))
         } else return if (status == LivenessSessionStatus.NO_FACE && NO_FACE_COUNT > 3) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_noface))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_noface))
         } else return if (status == LivenessSessionStatus.OFF_CENTER) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_center))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_center))
         } else return if (status == LivenessSessionStatus.ANGLE_NOT_CORRECT) {
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_angle))
+            KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_angle))
         } else { // PROCESSING
             setCircleViewAnimation(AnimStatus.ANIM_LOADING)
             tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
@@ -568,53 +569,53 @@ class CameraXSelfieActivity : CameraXActivity(
             faceMaskColor = if (input.isNullOrEmpty()) resources.getString(R.color.white) else KalapaSDK.config.mainColor
 
             val s = when (input) { // PROCESSING.
-                "" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_look_straight)) // "Giữ đầu ngay ngắn, nhìn thẳng trong 3 giây")
-                "HoldSteady3Seconds" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "" -> KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_look_straight)) // "Giữ đầu ngay ngắn, nhìn thẳng trong 3 giây")
+                "HoldSteady3Seconds" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_look_straight
                     )
                 ) // "Giữ đầu ngay ngắn, nhìn thẳng trong 3 giây")
-                "HoldSteady2Seconds" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "HoldSteady2Seconds" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_look_straight
                     )
                 ) // "Giữ đầu ngay ngắn, nhìn thẳng trong 3 giây")
-                "TurnLeft" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_turn_left)) // "Quay trái")
-                "TurnRight" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "TurnLeft" -> KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_turn_left)) // "Quay trái")
+                "TurnRight" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_turn_right
                     )
                 )// "Quay phải")
-                "TiltLeft" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_tilt_left))// "Nghiêng trái")
-                "TiltRight" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "TiltLeft" -> KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_tilt_left))// "Nghiêng trái")
+                "TiltRight" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_tilt_right
                     )
                 ) // "Nghiêng phải")
-                "LookUp", "TurnUp" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "LookUp", "TurnUp" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_turn_up
                     )
                 ) //"Quay lên")
-                "TurnDown", "LookDown" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "TurnDown", "LookDown" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_turn_down
                     )
                 )//"Quay xuống")
-                "GoFar" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_message_too_close)) //"Tiến mặt lại gần camera hơn một chút")
-                "ComeClose" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "GoFar" -> KLPLanguageManager.get(resources.getString(R.string.klp_liveness_message_too_close)) //"Tiến mặt lại gần camera hơn một chút")
+                "ComeClose" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_move_closer
                     )
                 ) //"Lùi mặt ra xa khỏi camera một chút")
-                "HoldSteady2Second" -> KalapaSDK.config.languageUtils.getLanguageString(
+                "HoldSteady2Second" -> KLPLanguageManager.get(
                     resources.getString(
                         R.string.klp_liveness_message_look_straight
                     )
                 ) //"Giữ đầu ngay ngo       ắn, nhìn thẳng trong 2 giây")
-//                "EyeBlink" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_eyeblink) //"Nháy mắt")
-//                "ShakeHead" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_shakehead) //"Lắc đầu")
-//                "NodeHead" -> KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_nodhead) //"Gật đầu")
+//                "EyeBlink" -> KLPLanguageManager.get(resources.getString(R.string.klp_liveness_eyeblink) //"Nháy mắt")
+//                "ShakeHead" -> KLPLanguageManager.get(resources.getString(R.string.klp_liveness_shakehead) //"Lắc đầu")
+//                "NodeHead" -> KLPLanguageManager.get(resources.getString(R.string.klp_liveness_nodhead) //"Gật đầu")
                 "Success" -> {
 //                if (Kalapa.livenessVersion == 3) {
 //                    setCircleViewAnimation(LivenessActivity.AnimStatus.ANIM_VERIFIED)
@@ -628,19 +629,19 @@ class CameraXSelfieActivity : CameraXActivity(
                     faceMaskColor = KalapaSDK.config.mainColor//resources.getString(R.color.ekyc_green)
 
                     setCircleViewAnimation(AnimStatus.ANIM_PROCESSING)
-                    return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_done_title))
+                    return KLPLanguageManager.get(resources.getString(R.string.klp_done_title))
                 }
                 //"Thành công!"
                 "Connecting" -> {
                     tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
                     faceMaskColor = resources.getString(R.color.white)
-                    KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_please_wait)) //"Đang kết nối...")
+                    KLPLanguageManager.get(resources.getString(R.string.klp_please_wait)) //"Đang kết nối...")
                 }
 
                 "Initializing" -> {
                     tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
                     faceMaskColor = resources.getString(R.color.white)
-                    KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_please_wait))
+                    KLPLanguageManager.get(resources.getString(R.string.klp_please_wait))
                 } //"Đang khởi tạo..."
                 "Processing" -> {
                     if (status != null && status == LivenessSessionStatus.VERIFIED) {
@@ -649,32 +650,32 @@ class CameraXSelfieActivity : CameraXActivity(
                         tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
                         faceMaskColor = KalapaSDK.config.mainColor // resources.getString(R.color.ekyc_green)
 
-                        return if (errCode != null) input else KalapaSDK.config.languageUtils.getLanguageString(
+                        return if (errCode != null) input else KLPLanguageManager.get(
                             resources.getString(R.string.klp_liveness_message_look_straight)
                         )
                     } // "Xác thực thành công"
                     if (status != null && status == LivenessSessionStatus.FAILED) {
-                        return KalapaSDK.config.languageUtils.getLanguageString(
+                        return KLPLanguageManager.get(
                             resources.getString(
                                 R.string.klp_liveness_result_fail
                             )
                         )
                     } // "Xác thực thất bại"
-                    else KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_please_wait)) // "Đang xác thực...")
+                    else KLPLanguageManager.get(resources.getString(R.string.klp_please_wait)) // "Đang xác thực...")
                 }
 
                 "ConnectionFailed" -> {
                     tvError.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
                     faceMaskColor = resources.getString(R.color.white)
                     ivError.setGifImageResource(R.drawable.gif_error_small)
-                    return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_network)) //"Kết nối thất bại")
+                    return KLPLanguageManager.get(resources.getString(R.string.klp_error_network)) //"Kết nối thất bại")
                 }
 
                 "Finished" -> {
                     tvError.setTextColor(resources.getColor(R.color.ekyc_green))
                     ivError.setGifImageResource(R.drawable.gif_success_small)
                     faceMaskColor = KalapaSDK.config.mainColor //resources.getString(R.color.ekyc_green)
-                    return KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_liveness_result_fail)) //"Hoàn thành!")
+                    return KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail)) //"Hoàn thành!")
                 }
 
                 else -> input

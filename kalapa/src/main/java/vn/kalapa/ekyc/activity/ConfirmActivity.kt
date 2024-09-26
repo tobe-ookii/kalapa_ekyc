@@ -22,6 +22,7 @@ import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDK.Companion.frontResult
 import vn.kalapa.ekyc.KalapaSDK.Companion.kalapaResult
 import vn.kalapa.ekyc.KalapaSDKResultCode
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.models.ConfirmResult
 import vn.kalapa.ekyc.models.FrontResult
 import vn.kalapa.ekyc.models.KalapaError
@@ -111,7 +112,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         tvTitle = findViewById(R.id.tv_title)
         tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvTitle.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm_title))
+            KLPLanguageManager.get(resources.getString(R.string.klp_confirm_title))
         edName = findViewById(R.id.edName)
         edName.setOnEditorActionListener(this)
 //        edName.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
@@ -185,32 +186,32 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         tvConfirm0.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         tvConfirm1.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
         // klp_results_info_name
-        tvConfirm1.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_name))
+        tvConfirm1.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_name))
         tvConfirm2.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // klp_results_info_gender
-        tvConfirm2.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_gender))
+        tvConfirm2.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_gender))
         tvConfirm3.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // klp_results_info_dob
-        tvConfirm3.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_dob))
+        tvConfirm3.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_dob))
         tvConfirm4.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // klp_results_info_id
-        tvConfirm4.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_id))
+        tvConfirm4.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_id))
         tvConfirm5.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_doi
-        tvConfirm5.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_doi))
+        tvConfirm5.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_doi))
         tvConfirm6.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_poi
-        tvConfirm6.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_poi))
+        tvConfirm6.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_poi))
 
         tvConfirm7.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_res
-        tvConfirm7.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_res))
+        tvConfirm7.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_res))
         tvConfirm8.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-        tvConfirm8.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_res))
+        tvConfirm8.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_res))
         tvConfirm9.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor)) // results_info_home
-        tvConfirm9.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_home))
+        tvConfirm9.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_home))
         tvConfirm10.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-        tvConfirm10.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_results_info_doe)) //results_info_doe
-        radioMale.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm_gender_m))
-        radioFemale.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_confirm_gender_f))
+        tvConfirm10.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_info_doe)) //results_info_doe
+        radioMale.text = KLPLanguageManager.get(resources.getString(R.string.klp_confirm_gender_m))
+        radioFemale.text = KLPLanguageManager.get(resources.getString(R.string.klp_confirm_gender_f))
         this.btnPersonalConfirm.let {
             ViewCompat.setBackgroundTintList(it, ColorStateList.valueOf(Color.parseColor(KalapaSDK.config.mainColor)))
         }
-        btnPersonalConfirm.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_confirm))
+        btnPersonalConfirm.text = KLPLanguageManager.get(resources.getString(R.string.klp_button_confirm))
         Helpers.setRadioButtonTintList(this.radioMale, Color.parseColor(KalapaSDK.config.mainColor))
         Helpers.setRadioButtonTintList(this.radioFemale, Color.parseColor(KalapaSDK.config.mainColor))
     }
@@ -308,7 +309,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 return
             }
             val sex = radioGroupSex.checkedRadioButtonId
-            val gd = KalapaSDK.config.languageUtils.getLanguageString(
+            val gd = KLPLanguageManager.get(
                 if (sex == R.id.radio_male)
                     resources.getString(R.string.klp_confirm_gender_m)
                 else resources.getString(
@@ -333,7 +334,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                         ProgressView.hideProgress()
                         Helpers.showDialog(
                             this@ConfirmActivity,
-                            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
+                            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
                             error.getMessageError(),
                             R.drawable.sad_face
                         )
@@ -539,7 +540,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         } else {
             Helpers.showDialog(
                 this@ConfirmActivity,
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
                 error.getMessageError(),
                 R.drawable.sad_face
             )

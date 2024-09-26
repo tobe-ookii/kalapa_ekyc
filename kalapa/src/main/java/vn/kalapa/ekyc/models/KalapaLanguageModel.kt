@@ -18,6 +18,17 @@ data class KalapaLanguageModel(
     }
 }
 
+data class KalapaAllLanguageModel(
+    val data: Array<LanguageModelData>?,
+    val error: MyError?
+) {
+    fun toJson() = Gson().toJson(this)
+
+    companion object {
+        fun fromJson(json: String): KalapaAllLanguageModel = Gson().fromJson(json, KalapaAllLanguageModel::class.java)
+    }
+}
+
 data class LanguageModelData(
     val code: String,
     val content: LanguageModelContent? = null,

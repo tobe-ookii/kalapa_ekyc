@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import vn.kalapa.R
 import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.Helpers
 
 
@@ -110,7 +111,7 @@ class BottomGuideFragment(var layoutType: GuideType) : Fragment() {
             tv_note_6.text = textArray[8]
             tv_note_7.text = textArray[9]
         }
-        btnUnderstand.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_button_close))
+        btnUnderstand.text = KLPLanguageManager.get(resources.getString(R.string.klp_guide_button_close))
         btnUnderstand.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
         ViewCompat.setBackgroundTintList(
             btnUnderstand,
@@ -137,42 +138,42 @@ class BottomGuideFragment(var layoutType: GuideType) : Fragment() {
     private fun getStringFromLayout(): List<String> {
         when (layoutType) {
             GuideType.PASSPORT -> return listOf(
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_passport_title)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_note)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_passport_1)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_passport_2)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_passport_3)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_passport_4)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_title)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_1)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_2)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_3))
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_passport_title)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_note)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_passport_1)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_passport_2)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_passport_3)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_passport_4)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_reject_title)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_1)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_2)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_3))
             )
 
             GuideType.FRONT, GuideType.BACK -> return listOf(
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_title)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_note)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_1)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_2)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_4)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_title)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_1)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_2)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_3))
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_title)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_note)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_1)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_2)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_3)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_4)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_reject_title)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_1)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_2)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_3))
             )
 
             else -> return listOf(
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_title)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_note)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_1)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_2)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_3)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_4)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_reject_title)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_1)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_2)),
-                KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_id_reject_3))
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_title)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_note)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_1)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_2)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_3)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_4)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_reject_title)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_1)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_2)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_guide_id_reject_3))
             )
         }
     }

@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/klp_margin_mid"
             android:layout_marginBottom="@dimen/klp_margin_small"
-            android:text="@string/klp_demo_environment"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -37,8 +36,7 @@
             android:id="@+id/sw_enviroment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:rb_first_label="@string/klp_environment_production"
-            app:rb_second_label="@string/klp_environment_dev" />
+            />
 
 
         <TextView
@@ -47,7 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/klp_margin_mid"
             android:layout_marginBottom="@dimen/klp_margin_small"
-            android:text="@string/klp_index_language"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -55,15 +52,13 @@
             android:id="@+id/sw_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:rb_first_label="@string/klp_demo_language_vi"
-            app:rb_second_label="@string/klp_demo_language_en" />
+            />
 
         <TextView
             android:id="@+id/tv_liveness_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/klp_margin_mid"
-            android:text="@string/klp_demo_liveness"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold"
             android:visibility="visible" />
@@ -74,24 +69,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/klp_margin_xsmall"
             android:layout_marginBottom="@dimen/klp_margin_small"
-            android:text="@string/klp_demo_liveness_version_description"
             android:textSize="@dimen/klp_txt_size_description" />
 
         <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
             android:id="@+id/sw_liveness_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:kmc_first_label="@string/klp_liveness_activate"
-            app:kmc_second_label="@string/klp_liveness_semi_activate"
-            app:kmc_third_label="@string/klp_liveness_passive" />
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_scenario"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/klp_margin_mid"
-            android:text="@string/klp_demo_scenario"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold"
             android:visibility="visible" />
@@ -102,17 +92,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/klp_margin_xsmall"
             android:layout_marginBottom="@dimen/klp_margin_small"
-            android:text="@string/klp_demo_scenario_description"
             android:textSize="@dimen/klp_txt_size_description" />
 
         <vn.kalapa.ekyc.views.KLPCustomMultipleChoices
             android:id="@+id/sw_scenario"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:kmc_first_label="@string/klp_demo_scenario_register"
-            app:kmc_second_label="@string/klp_demo_scenario_upgrade"
-            app:kmc_third_label="@string/klp_demo_scenario_custom" />
+            android:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/container_token"
@@ -126,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/klp_margin_mid"
                 android:layout_marginBottom="@dimen/klp_margin_small"
-                android:text="@string/klp_demo_token"
+                android:text="Token"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
 
@@ -154,7 +140,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/klp_margin_mid"
-                android:text="@string/klp_demo_setting_screen"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
 
@@ -176,7 +161,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_small"
-                    android:text="@string/klp_demo_setting_screen_capture"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -199,7 +183,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_small"
-                    android:text="@string/klp_demo_setting_screen_liveness"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -222,7 +205,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_small"
-                    android:text="@string/klp_demo_screen_nfc"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -238,9 +220,7 @@
                 android:id="@+id/sw_upgrade_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/klp_margin_mid"
-                app:rb_first_label="@string/klp_demo_from_session_id"
-                app:rb_second_label="@string/klp_demo_from_provided_data" />
+                android:layout_marginTop="@dimen/klp_margin_mid" />
 
             <LinearLayout
                 android:id="@+id/container_leftover_session"
@@ -254,24 +234,14 @@
                     android:id="@+id/tv_session_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_demo_session_id"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_session_id_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/klp_margin_small"
-                    android:text="@string/klp_demo_session_id_description"
-                    android:textSize="@dimen/klp_txt_size_description" />
 
                 <EditText
                     android:id="@+id/edt_leftover_session"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edt_default_background"
-
                     android:backgroundTint="@color/white"
                     android:contentDescription="Enter your leftover session"
                     android:maxLines="3"
@@ -290,8 +260,8 @@
                 <TextView
                     android:id="@+id/tv_mrz"
                     android:layout_width="wrap_content"
+                    android:text="MRZ"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_demo_mrz"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
 
@@ -300,7 +270,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/klp_margin_small"
-                    android:text="@string/klp_demo_mrz_description"
                     android:textSize="@dimen/klp_txt_size_description" />
 
                 <EditText
@@ -308,7 +277,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edt_default_background"
-
                     android:backgroundTint="@color/white"
                     android:contentDescription="Enter your MRZ"
                     android:maxLines="3"
@@ -328,7 +296,6 @@
                     android:id="@+id/tv_face_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_demo_face_data"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
 
@@ -337,7 +304,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/klp_margin_small"
-                    android:text="@string/klp_demo_face_data_description"
                     android:textSize="@dimen/klp_txt_size_description" />
 
                 <LinearLayout
@@ -353,7 +319,6 @@
                         android:background="@drawable/border_button_only"
                         android:backgroundTint="@color/colorPrimary"
                         android:maxLines="1"
-                        android:text="@string/klp_demo_pick_image"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="@dimen/klp_txt_size_normal" />
@@ -413,7 +378,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/klp_margin_mid"
                 android:layout_marginBottom="@dimen/klp_margin_small"
-                android:text="@string/klp_setting_acceptance_document"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
 
@@ -435,7 +399,6 @@
                     android:id="@+id/tv_acceptance_document_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_old_id_card"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -458,7 +421,6 @@
                     android:id="@+id/tv_acceptance_document_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_12_digits_id_card"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -481,7 +443,6 @@
                     android:id="@+id/tv_acceptance_document_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_eid_no_chip"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -504,7 +465,6 @@
                     android:id="@+id/tv_acceptance_document_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_eid_with_chip"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -527,7 +487,6 @@
                     android:id="@+id/tv_acceptance_document_5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/klp_eid_2024"
                     android:textSize="@dimen/klp_txt_size_normal" />
 
             </LinearLayout>
@@ -537,7 +496,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/klp_margin_mid"
-                android:text="@string/klp_setting_nfc"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
 
@@ -547,22 +505,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/klp_margin_small"
-                android:text="@string/klp_demo_register_with_nfc_description"
                 android:textSize="@dimen/klp_txt_size_description" />
 
             <vn.kalapa.ekyc.views.KLPCustomSwitch
                 android:id="@+id/sw_enable_nfc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:rb_first_label="@string/klp_yes"
-                app:rb_second_label="@string/klp_no" />
+                />
 
             <TextView
                 android:id="@+id/tv_capture_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/klp_margin_mid"
-                android:text="@string/klp_setting_capture_image"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
 
@@ -570,8 +525,7 @@
                 android:id="@+id/sw_capture_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:rb_first_label="@string/klp_yes"
-                app:rb_second_label="@string/klp_no" />
+                />
 
             <LinearLayout
                 android:id="@+id/container_capture_config"
@@ -584,7 +538,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:text="@string/klp_setting_verify_check"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
 
@@ -592,15 +545,13 @@
                     android:id="@+id/sw_verify_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:rb_first_label="@string/klp_yes"
-                    app:rb_second_label="@string/klp_no" />
+                    />
 
                 <TextView
                     android:id="@+id/tv_fraud_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:text="@string/klp_setting_fraud_check"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
 
@@ -608,15 +559,13 @@
                     android:id="@+id/sw_fraud_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:rb_first_label="@string/klp_yes"
-                    app:rb_second_label="@string/klp_no" />
+                    />
 
                 <TextView
                     android:id="@+id/tv_strict_quality_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:text="@string/klp_strict_quality_check"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
 
@@ -624,15 +573,13 @@
                     android:id="@+id/sw_strict_quality_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:rb_first_label="@string/sw_strict_quality_basic"
-                    app:rb_second_label="@string/sw_strict_quality_advance" />
+                    />
 
                 <TextView
                     android:id="@+id/tv_card_sides_match_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/klp_margin_mid"
-                    android:text="@string/klp_check_if_card_sides_match"
                     android:textSize="@dimen/klp_txt_size_header"
                     android:textStyle="bold" />
 
@@ -640,8 +587,7 @@
                     android:id="@+id/sw_card_sides_match_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:rb_first_label="@string/klp_yes"
-                    app:rb_second_label="@string/klp_no" />
+                    />
 
             </LinearLayout>
 
@@ -650,7 +596,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/klp_margin_mid"
-                android:text="@string/klp_setting_acceptance_face_matching_threshold"
                 android:textSize="@dimen/klp_txt_size_header"
                 android:textStyle="bold" />
 
@@ -683,8 +628,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/slider_face_matching_threshold"
                     android:layout_centerHorizontal="true"
-                    android:text="50"
                     android:textSize="@dimen/klp_txt_size_normal"
+                    android:text="50"
                     android:translationY="-10dp" />
 
                 <TextView
@@ -693,8 +638,8 @@
                     android:layout_below="@id/slider_face_matching_threshold"
                     android:layout_alignEnd="@id/slider_face_matching_threshold"
                     android:layout_marginEnd="@dimen/klp_margin_mid"
-                    android:text="100"
                     android:textSize="@dimen/klp_txt_size_normal"
+                    android:text="100"
                     android:translationY="-10dp" />
 
             </RelativeLayout>
@@ -705,7 +650,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/klp_margin_mid"
-            android:text="@string/klp_index_main_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -741,7 +685,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/klp_margin_mid"
-            android:text="@string/klp_index_main_text_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -780,7 +723,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/klp_margin_mid"
-            android:text="@string/klp_index_background_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -814,7 +756,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/klp_margin_mid"
-            android:text="@string/klp_index_main_text_color"
             android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
@@ -854,7 +795,6 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_vertical"
             android:background="@drawable/border_button_solid"
-            android:text="@string/klp_save_setting_title"
             android:textColor="@color/white"
             android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>

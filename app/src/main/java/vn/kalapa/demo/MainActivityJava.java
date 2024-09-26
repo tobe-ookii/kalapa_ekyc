@@ -31,6 +31,7 @@ import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
+import vn.kalapa.ekyc.managers.KLPLanguageManager;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.Client;
@@ -63,8 +64,8 @@ public class MainActivityJava extends BaseActivity {
             if (isAppConfigSet()) {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {
                     Helpers.Companion.showDialog(MainActivityJava.this,
-                            getResources().getString(R.string.klp_demo_notice_title),
-                            getResources().getString(R.string.klp_demo_error_network), R.drawable.frowning_face);
+                            KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)),
+                                    KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.frowning_face);
                     return;
                 }
                 startEKYC();
@@ -83,7 +84,7 @@ public class MainActivityJava extends BaseActivity {
 
         @Override
         public void onError(@NonNull KalapaSDKResultCode resultCode) {
-            Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_happended) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), getResources().getString(R.string.klp_demo_confirm), R.drawable.frowning_face);
+            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_nfc_common_error)) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_confirm)), R.drawable.frowning_face);
         }
 
         @Override
@@ -102,20 +103,20 @@ public class MainActivityJava extends BaseActivity {
             if (!isUpgraded && scenario == Common.SCENARIO.REGISTER && (!preferencesConfig.getUseNFC()) &&
                     (kalapaResult.getDecision() != null && (kalapaResult.getDecision().equals("APPROVED") || kalapaResult.getDecision().equals("MANUAL")))) {
                 Helpers.Companion.showDialog(MainActivityJava.this,
-                        getString(R.string.klp_demo_upgrade_title), getString(R.string.klp_demo_upgrade_body),
-                        getString(R.string.klp_demo_btn_upgrade), getString(R.string.klp_demo_btn_later), R.drawable.klp_demo_nfc, new DialogListener() {
-                            @Override
-                            public void onYes() {
-                                isUpgraded = true;
-                                startUpgradeFlow(kalapaResult.getSession());
-                            }
+                        KLPLanguageManager.INSTANCE.get(getString(R.string.klp_settings_flow_upgrade)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_settings_flow_upgrade)),
+                                KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_continue)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_no)), R.drawable.klp_demo_nfc, new DialogListener() {
+                                    @Override
+                                    public void onYes() {
+                                        isUpgraded = true;
+                                        startUpgradeFlow(kalapaResult.getSession());
+                                    }
 
-                            @Override
-                            public void onNo() {
-                                isUpgraded = false;
-                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-                            }
-                        });
+                                    @Override
+                                    public void onNo() {
+                                        isUpgraded = false;
+                                        startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+                                    }
+                                });
             } else {
                 isUpgraded = false;
                 startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
@@ -146,7 +147,7 @@ public class MainActivityJava extends BaseActivity {
 
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             Common.SCENARIO scenario = preferencesConfig.getScenario();
-            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), getString(R.string.klp_demo_alert_title), getString(R.string.klp_demo_loading));
+            ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_notice)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_please_wait)));
             if (scenario == Common.SCENARIO.CUSTOM) {
                 ProgressView.Companion.hideProgress(true);
                 startCustomFlow(preferencesConfig.getHasCustomCaptureScreen(), preferencesConfig.getHasCustomLivenessScreen(), preferencesConfig.getHasCustomNFCScreen(), preferencesConfig.getMrz(), faceDataBase64);
@@ -177,9 +178,9 @@ public class MainActivityJava extends BaseActivity {
                         }, kalapaError -> {
                             ProgressView.Companion.hideProgress(true);
                             if (kalapaError.getCode() == 401 || kalapaError.getCode() == 403)
-                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_unauthorized), R.drawable.ic_failed_solid);
+                                Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_notice)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_timeout)), R.drawable.ic_failed_solid);
                             else
-                                Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), kalapaError.getMessageError(), R.drawable.ic_failed_solid);
+                                Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_notice)), kalapaError.getMessageError(), R.drawable.ic_failed_solid);
                             LogUtils.Companion.printLog("doRequestGetSession kalapaError: " + kalapaError);
                             return null;
                         });
@@ -187,7 +188,7 @@ public class MainActivityJava extends BaseActivity {
 
 
         } else
-            Helpers.Companion.showDialog(MainActivityJava.this, getString(R.string.klp_demo_notice_title), getString(R.string.klp_demo_error_network), R.drawable.ic_failed_solid);
+            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.ic_failed_solid);
     }
 
     @NonNull
@@ -232,8 +233,6 @@ public class MainActivityJava extends BaseActivity {
             String btnTxtColor = preferencesConfig.getBtnTextColor();
             String lang = preferencesConfig.getLanguage();
             livenessVersion = preferencesConfig.getLivenessVersion();
-            refreshText(lang);
-            refreshColor(btnColor, btnTxtColor);
             sdkConfig = new KalapaSDKConfig.KalapaSDKConfigBuilder(MainActivityJava.this)
                     .withBackgroundColor(backgroundColor)
                     .withMainColor(btnColor)
@@ -243,6 +242,8 @@ public class MainActivityJava extends BaseActivity {
                     .withBaseURL(preferencesConfig.getEnv())
                     .withLanguage(preferencesConfig.getLanguage())
                     .build();
+            refreshText(lang);
+            refreshColor(btnColor, btnTxtColor);
             LogUtils.Companion.printLog("Pulling language: " + sdkConfig.getLanguage() + " - " + lang);
         }
     }
@@ -256,16 +257,16 @@ public class MainActivityJava extends BaseActivity {
         configuration.setLayoutDirection(locale);
         this.getResources().updateConfiguration(configuration, this.getResources().getDisplayMetrics());
         if (preferencesConfig != null) {
-            ekycButton.setText(getResources().getString(R.string.klp_start));
+            ekycButton.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_welcome_start)));
             ekycButton.invalidate();
-            tvWelcome.setText(getResources().getString(R.string.klp_name));
+//            tvWelcome.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_name));
             tvWelcome.invalidate();
-            tvWelcomeSubtitle.setText(getResources().getString(R.string.klp_demo_name));
+//            tvWelcomeSubtitle.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_demo_name));
             tvWelcomeSubtitle.invalidate();
         } else {
-            ekycButton.setText(getResources().getString(R.string.klp_start));
-            tvWelcome.setText(getResources().getString(R.string.klp_name));
-            tvWelcomeSubtitle.setText(getResources().getString(R.string.klp_demo_name));
+            ekycButton.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_welcome_start)));
+//            tvWelcome.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_name)));
+//            tvWelcomeSubtitle.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_demo_name)));
         }
     }
 
@@ -301,7 +302,7 @@ public class MainActivityJava extends BaseActivity {
             getPreferencesValuesAndApply();
             return null;
         }));
-        ekycButton.setText(getResources().getText(R.string.klp_start));
+        ekycButton.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_welcome_start)));
     }
 
 

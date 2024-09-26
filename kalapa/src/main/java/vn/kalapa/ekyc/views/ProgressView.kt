@@ -14,6 +14,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import vn.kalapa.R
 import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.Helpers
 
 class ProgressView {
@@ -63,8 +64,8 @@ class ProgressView {
                 val mainTextColor = mainTextColor ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.mainTextColor else ""
                 val mainColor = mainColor ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.mainColor else ""
                 Helpers.printLog("Title: $title - $message ")
-                textView.text = title ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_error_unknown)) else context.getString(R.string.klp_error_unknown)
-                body.text = message ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.languageUtils.getLanguageString(context.getString(R.string.klp_please_wait)) else context.getString(R.string.klp_please_wait)
+                textView.text = title ?: if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get(context.getString(R.string.klp_error_unknown)) else context.getString(R.string.klp_error_unknown)
+                body.text = message ?: if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get(context.getString(R.string.klp_please_wait)) else context.getString(R.string.klp_please_wait)
 
                 textView.setTextColor(Color.parseColor(mainTextColor))
                 body.setTextColor(Color.parseColor(mainTextColor))

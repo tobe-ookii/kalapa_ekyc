@@ -14,10 +14,11 @@
         tools:context=".ResultActivity">
 
         <TextView
+            android:id="@+id/tv_result_banner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_vertical"
-            android:text="@string/klp_demo_result"
+            android:text="@string/klp_results_title_1"
             android:textAlignment="center"
             android:textSize="@dimen/klp_txt_size_banner"
             android:textStyle="bold" />
@@ -132,7 +133,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/klp_margin_small"
                         android:layout_marginBottom="@dimen/klp_margin_mid"
-                        android:text="@string/klp_face_matching"
+                        android:text="@string/klp_results_face_matching_title"
                         android:textColor="@color/mainColor"
                         android:textSize="@dimen/klp_txt_size_header"
                         android:textStyle="bold" />
@@ -141,15 +142,15 @@
                         android:id="@+id/row_is_matched"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_demo_is_matched"
-                        app:tvValue="@string/klp_demo_is_matched" />
+                        app:tvKey="@string/klp_results_face_matching_result" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_matching_score"
                         android:layout_width="match_parent"
+                        android:paddingBottom="-10dp"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_demo_matching_score"
-                        app:tvValue="@string/klp_demo_matching_score" />
+                        app:tvKey="@string/klp_results_face_matching_score"
+                        app:tvValue="@string/klp_results_face_matching_score" />
 
                 </LinearLayout>
 
@@ -171,7 +172,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/klp_margin_small"
                         android:layout_marginBottom="@dimen/klp_margin_mid"
-                        android:text="@string/klp_demo_ocr"
+                        android:text="@string/klp_results_ocr_title"
                         android:textColor="@color/mainColor"
                         android:textSize="@dimen/klp_txt_size_header"
                         android:textStyle="bold" />
@@ -180,70 +181,71 @@
                         android:id="@+id/row_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_id_number"
-                        app:tvValue="@string/klp_field_id_number" />
+                        app:tvKey="@string/klp_results_info_id"
+                        app:tvValue="@string/klp_results_info_id" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_name"
-                        app:tvValue="@string/klp_field_name" />
+                        app:tvKey="@string/klp_results_info_name"
+                        app:tvValue="@string/klp_results_info_name" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_dob"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_dob"
+                        app:tvKey="@string/klp_results_info_dob"
                         app:tvValue="18/08/1994" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_hometown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_hometown"
+                        app:tvKey="@string/klp_results_info_home"
                         app:tvValue="Trịnh Xá, Thành Phố Phủ Lý, Hà Nam" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_address"
+                        app:tvKey="@string/klp_results_info_res"
                         app:tvValue="Số 6 Ngõ 92/8 Nguyễn Khánh Toàn Tổ 5 Quan Hoa Cg Hn" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_doi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_doi"
-                        app:tvValue="@string/klp_field_doi" />
+                        app:tvKey="@string/klp_results_info_doi"
+                        app:tvValue="@string/klp_results_info_doi" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_poi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_poi"
+                        app:tvKey="@string/klp_results_info_poi"
                         app:tvValue="Cục Trưởng Cục Cảnh Sát Quản Lý Hành Chính Về Trật Tự Xã Hội" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_personal_identification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_personal_identification"
+                        app:tvKey="@string/klp_results_info_features"
                         app:tvValue="Nốt Ruồi C:1cm Trên Sau Đuôi Mắt Trái" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_card_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_card_type"
-                        app:tvValue="@string/klp_card_type" />
+                        app:tvKey="@string/klp_results_info_card_type"
+                        app:tvValue="@string/klp_results_info_card_type" />
                 </LinearLayout>
 
 
                 <LinearLayout
                     android:id="@+id/holder_nfc_data"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_side"
                     android:layout_marginTop="20dp"
@@ -258,45 +260,35 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/klp_margin_small"
                         android:layout_marginBottom="@dimen/klp_margin_mid"
-                        android:text="@string/klp_nfc_information"
+                        android:text="@string/klp_results_nfc_title"
                         android:textColor="@color/mainColor"
                         android:textSize="@dimen/klp_txt_size_header"
                         android:textStyle="bold" />
 
-                    <vn.kalapa.ekyc.views.KLPResultRow
-                        android:id="@+id/row_nfc_is_valid"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_demo_field_nfc_is_valid"
-                        android:visibility="gone"
-                        app:tvValue="@string/klp_demo_field_nfc_is_valid" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_id_number"
-                        app:tvValue="@string/klp_field_id_number" />
+                        app:tvKey="@string/klp_results_info_id" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_old_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_old_id_number"
-                        app:tvValue="@string/klp_field_old_id_number" />
+                        app:tvKey="@string/klp_results_info_id_old" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_name"
-                        app:tvValue="@string/klp_field_name" />
+                        app:tvKey="@string/klp_results_info_name" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_dob"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_dob"
+                        app:tvKey="@string/klp_results_info_dob"
                         app:tvValue="18/08/1994" />
 
 
@@ -304,7 +296,7 @@
                         android:id="@+id/row_nfc_gender"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_gender"
+                        app:tvKey="@string/klp_results_info_gender"
                         app:tvValue="18/08/1994" />
 
 
@@ -312,14 +304,14 @@
                         android:id="@+id/row_nfc_hometown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_hometown"
+                        app:tvKey="@string/klp_results_info_home"
                         app:tvValue="Trịnh Xá, Thành Phố Phủ Lý, Hà Nam" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_address"
+                        app:tvKey="@string/klp_results_info_res"
                         app:tvValue="Số 6 Ngõ 92/8 Nguyễn Khánh Toàn Tổ 5 Quan Hoa Cg Hn" />
 
 
@@ -327,7 +319,7 @@
                         android:id="@+id/row_nfc_nationality"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_nationality"
+                        app:tvKey="@string/klp_results_info_nationality"
                         app:tvValue="18/08/1994" />
 
 
@@ -335,7 +327,7 @@
                         android:id="@+id/row_nfc_nation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_nation"
+                        app:tvKey="@string/klp_results_info_nation"
                         app:tvValue="Kinh" />
 
 
@@ -343,7 +335,7 @@
                         android:id="@+id/row_nfc_religion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_religion"
+                        app:tvKey="@string/klp_results_info_religion"
                         app:tvValue="Không" />
 
 
@@ -351,70 +343,42 @@
                         android:id="@+id/row_nfc_doi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_doi"
-                        app:tvValue="@string/klp_field_doi" />
+                        app:tvKey="@string/klp_results_info_doi" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_personal_identification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_personal_identification"
+                        app:tvKey="@string/klp_results_info_features"
                         app:tvValue="Nốt Ruồi C:1cm Trên Sau Đuôi Mắt Trái" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_mother_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_mother_name"
-                        app:tvValue="@string/klp_field_mother_name" />
+                        app:tvKey="@string/klp_results_info_mother" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_father_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_father_name"
-                        app:tvValue="@string/klp_field_father_name" />
+                        app:tvKey="@string/klp_results_info_father" />
 
                     <vn.kalapa.ekyc.views.KLPResultRow
                         android:id="@+id/row_nfc_spouse_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tvKey="@string/klp_field_spouse_name"
-                        app:tvValue="@string/klp_field_spouse_name" />
+                        app:tvKey="@string/klp_results_info_spouse" />
                 </LinearLayout>
 
-
-                <LinearLayout
-                    android:id="@+id/holder_not_qualified_rule"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_side"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/border_button_solid"
-                    android:backgroundTint="@color/white40"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/tv_title_rule"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/klp_margin_small"
-                        android:layout_marginBottom="@dimen/klp_margin_mid"
-                        android:textColor="@color/mainColor"
-                        android:text="@string/klp_demo_decision_details_title"
-                        android:textSize="@dimen/klp_txt_size_header"
-                        android:textStyle="bold" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/container_decision"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_result_status"
@@ -422,9 +386,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/klp_margin_mid"
                         android:textAlignment="center"
-                        android:textSize="@dimen/klp_txt_size_normal"
-
                         android:textColor="@color/black_txt"
+                        android:textSize="@dimen/klp_txt_size_normal"
                         android:textStyle="bold" />
 
                     <TextView
@@ -433,13 +396,37 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/klp_margin_mid"
                         android:layout_marginStart="@dimen/margin_xxsmall"
-                        android:text="@string/klp_demo_approved"
+                        android:text="@string/klp_results_decision_approved"
                         android:textAlignment="center"
                         android:textAllCaps="true"
-                        android:textSize="@dimen/klp_txt_size_normal"
                         android:textColor="@color/black_txt"
+                        android:textSize="@dimen/klp_txt_size_normal"
                         android:textStyle="bold" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/holder_not_qualified_rule"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_side"
+                    android:background="@drawable/border_button_solid"
+                    android:backgroundTint="@color/white40"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_title_rule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/klp_margin_small"
+                        android:layout_marginBottom="@dimen/klp_margin_mid"
+                        android:text="@string/klp_results_decision_details"
+                        android:textColor="@color/mainColor"
+                        android:textSize="@dimen/klp_txt_size_header"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
 
 
                 <Button
@@ -451,9 +438,9 @@
                     android:layout_marginBottom="@dimen/margin_vertical"
                     android:background="@drawable/border_button_solid"
                     android:backgroundTint="@color/mainColor"
-                    android:textSize="@dimen/klp_shinhan_title_17"
-                    android:text="@string/klp_demo_done"
-                    android:textAllCaps="false" />
+                    android:text="@string/klp_button_confirm"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/klp_shinhan_title_17" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </ScrollView>
     </LinearLayout>

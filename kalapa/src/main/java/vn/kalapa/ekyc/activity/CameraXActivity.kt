@@ -44,6 +44,7 @@ import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDKResultCode
 import vn.kalapa.ekyc.capturesdk.LumaListener
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.CameraUtils
 import vn.kalapa.ekyc.utils.Helpers
@@ -95,8 +96,8 @@ abstract class CameraXActivity(
         // Something
         Helpers.showDialog(
             this,
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_unknown)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_error_emulator)), R.drawable.frowning_face
+            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_error_emulator)), R.drawable.frowning_face
         ) {
             KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)
             finish()
@@ -158,10 +159,10 @@ abstract class CameraXActivity(
 
     private fun askToGoToSetting() {
         Helpers.showDialog(this@CameraXActivity,
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera_title)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_check_permission_camera)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_confirm)),
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_cancel)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_check_permission_camera_title)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_check_permission_camera)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_button_confirm)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_button_cancel)),
             R.drawable.frowning_face,
             object : DialogListener {
                 override fun onYes() {
@@ -208,7 +209,7 @@ abstract class CameraXActivity(
             showEndEkyc()
         }
         tvInstruction = findViewById(R.id.tv_instruction)
-        tvInstruction.text = KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_guide_button_open))
+        tvInstruction.text = KLPLanguageManager.get(resources.getString(R.string.klp_guide_button_open))
         tvInstruction.setOnClickListener(this)
         tvError = findViewById(R.id.tv_error)
         btnCapture = findViewById(R.id.btn_capture)
@@ -220,9 +221,9 @@ abstract class CameraXActivity(
         btnRetry = findViewById(R.id.btn_retry)
         btnNext = findViewById(R.id.btn_next)
         btnNext.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_continue))
+            KLPLanguageManager.get(resources.getString(R.string.klp_button_continue))
         btnRetry.text =
-            KalapaSDK.config.languageUtils.getLanguageString(resources.getString(R.string.klp_button_retry))
+            KLPLanguageManager.get(resources.getString(R.string.klp_button_retry))
         Helpers.setBackgroundColorTintList(btnNext, KalapaSDK.config.mainColor)
         Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
         ivAutoCapture = findViewById(R.id.toggle_auto_capture)

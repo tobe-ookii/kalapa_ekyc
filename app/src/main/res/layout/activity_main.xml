@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_side"
         android:layout_marginTop="@dimen/margin_vertical_large"
-        android:text="@string/klp_name"
+        android:text="Welcome to"
         android:textSize="@dimen/klp_txt_size_banner"
         android:textStyle="bold" />
 
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_side"
-        android:text="@string/klp_demo_name"
+        android:text="Kalapa eKYC"
         android:textSize="@dimen/klp_txt_size_sub_banner" />
 
 
@@ -56,11 +56,11 @@
         android:layout_marginHorizontal="@dimen/margin_side"
         android:layout_marginTop="@dimen/klp_margin_mid"
         android:layout_marginBottom="@dimen/klp_margin_mid"
-        android:textSize="@dimen/klp_shinhan_title_17"
         android:background="@drawable/border_button"
-        android:text="@string/klp_start"
+        android:text="@string/klp_welcome_start"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/klp_shinhan_title_17" />
 
     <TextView
         android:id="@+id/tv_reset_pin_face_otp"

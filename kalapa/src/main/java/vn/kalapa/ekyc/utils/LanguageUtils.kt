@@ -8,7 +8,6 @@ import kotlin.collections.HashMap
 class LanguageUtils(val activity: Context, private var mapLanguage: HashMap<String, String> = HashMap()) {
     fun setLanguage(map: Map<String, String>, map2: Map<String, String>? = null) {
         for (k in map.keys) {
-//            Helpers.printLog("Key $k: ${map[k]}")
             mapLanguage[k] = map[k] ?: k
         }
         map2?.let {
@@ -19,8 +18,6 @@ class LanguageUtils(val activity: Context, private var mapLanguage: HashMap<Stri
     }
 
     fun getLanguageString(tag: String): String {
-//        val string = Helpers.getStringPreferences(activity, tag)
-//        Helpers.printLog("Get $tag: ${KalapaSDK.config.language}")
         val k = tag.lowercase(Locale.ROOT)
         return if (mapLanguage[k] != null) mapLanguage[k]!!
         else if (KalapaSDK.config.language.contains("vi") && VI_DEFAULT[k] != null)

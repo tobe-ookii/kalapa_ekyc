@@ -29,6 +29,7 @@ import com.google.android.material.slider.Slider
 import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.demo.R
 import vn.kalapa.ekyc.DialogListener
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.models.PreferencesConfig
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
@@ -61,7 +62,7 @@ internal class Helpers {
         private var btnTextColor: String? = null
 
         fun setHelpersUI(backgroundColor: String? = null, mainColor: String? = null, mainTextColor: String? = null, btnTextColor: String? = null) {
-            LogUtils.printLog("setHelpersUI $backgroundColor $mainColor $mainTextColor $btnTextColor")
+//            LogUtils.printLog("setHelpersUI $backgroundColor $mainColor $mainTextColor $btnTextColor")
             backgroundColor?.let { this.backgroundColor = backgroundColor }
             mainColor?.let { this.mainColor = mainColor }
             mainTextColor?.let { this.mainTextColor = mainTextColor }
@@ -235,9 +236,9 @@ internal class Helpers {
 
             val ivIcon = dialog.findViewById<ImageView>(R.id.iv_dialog_icon)
             if (drawableIcon != null) ivIcon.setImageDrawable(activity.getDrawable(drawableIcon))
-            yesBtn.text = yesTxt ?: myActivity.getString(R.string.klp_demo_confirm)
+            yesBtn.text = yesTxt ?: KLPLanguageManager.get(myActivity.getString(R.string.klp_button_confirm))
             val noBtn = dialog.findViewById(R.id.custom_dialog_btn_no) as TextView
-            noBtn.text = noTxt ?: myActivity.getString(R.string.klp_demo_no)
+            noBtn.text = noTxt ?: KLPLanguageManager.get(myActivity.getString(R.string.klp_settings_no))
             if (ExampleGlobalClass.isPreferencesConfigInitialized()) {
                 tvTitle.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 noBtn.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))

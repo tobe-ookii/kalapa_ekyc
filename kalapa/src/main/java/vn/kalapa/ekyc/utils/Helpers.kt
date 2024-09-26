@@ -34,7 +34,9 @@ import androidx.core.view.ViewCompat
 import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.Common.Companion.MY_PREFERENCES
+import kotlin.reflect.KClass
 
 
 internal class Helpers {
@@ -159,10 +161,10 @@ internal class Helpers {
         fun showEndKYC(activity: Activity, dialogListener: DialogListener) {
             showDialog(
                 activity,
-                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_exit_confirm_title)),
-                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_exit_confirm_message)),
-                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_button_yes)),
-                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_button_no)),
+                KLPLanguageManager.get(activity.getString(R.string.klp_exit_confirm_title)),
+                KLPLanguageManager.get(activity.getString(R.string.klp_exit_confirm_message)),
+                KLPLanguageManager.get(activity.getString(R.string.klp_button_yes)),
+                KLPLanguageManager.get(activity.getString(R.string.klp_button_no)),
                 R.drawable.sad_face,
                 object : DialogListener {
                     override fun onYes() {
@@ -209,7 +211,7 @@ internal class Helpers {
             body.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
             val yesBtn = dialog.findViewById(R.id.custom_dialog_btn_yes) as Button
             val tvTitle = dialog.findViewById(R.id.custom_dialog_title) as TextView
-            dialog.findViewById<TextView>(R.id.tv_alert_title).text = KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_error_unknown))
+            dialog.findViewById<TextView>(R.id.tv_alert_title).text = KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown))
             tvTitle.setTextColor(Color.BLACK)
             tvTitle.text = myTitle
             ViewCompat.setBackgroundTintList(
@@ -237,7 +239,7 @@ internal class Helpers {
                     listener.onYes()
                 }
             } else {
-                yesBtn.text = KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_button_confirm))
+                yesBtn.text = KLPLanguageManager.get(activity.getString(R.string.klp_button_confirm))
                 noBtn.visibility = View.GONE
                 yesBtn.setOnClickListener {
                     dialog.dismiss()
@@ -260,8 +262,8 @@ internal class Helpers {
         fun showDialog(myActivity: Activity, myTitle: String, myBody: String, drawableIcon: Int?, alertListener: (() -> Unit)? = null) {
             showDialog(
                 myActivity, myTitle, myBody,
-                KalapaSDK.config.languageUtils.getLanguageString(myActivity.getString(R.string.klp_button_yes)),
-                KalapaSDK.config.languageUtils.getLanguageString(myActivity.getString(R.string.klp_button_no)),
+                KLPLanguageManager.get(myActivity.getString(R.string.klp_button_yes)),
+                KLPLanguageManager.get(myActivity.getString(R.string.klp_button_no)),
                 drawableIcon,
                 null,
                 alertListener
@@ -277,6 +279,7 @@ internal class Helpers {
                 )
             }
         }
+
 
         fun errorLog(
             vararg errors: Any

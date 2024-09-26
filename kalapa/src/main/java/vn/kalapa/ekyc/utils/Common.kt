@@ -296,9 +296,9 @@ class Common {
             return body.ifEmpty { null }
         }
 
-        fun getDynamicLanguage(baseUrl: String, language: String): String? {
-            if (language.isEmpty()) return null
-            val url = URL("$baseUrl/api/language?language=$language")
+        fun getDynamicLanguage(baseUrl: String, language: String?): String? {
+            if (language != null && language.isEmpty()) return null
+            val url = if (language == null) URL("$baseUrl/api/language") else URL("$baseUrl/api/language?language=$language")
             var body = ""
             Helpers.printLog("\nSent 'GET' request to URL : $url")
             with(url.openConnection() as HttpURLConnection) {
@@ -309,10 +309,6 @@ class Common {
                     val reader = BufferedReader(InputStreamReader(inputStream))
                     body = reader.readText()
                     reader.close()
-
-//                    Helpers.printLog("Response Code: $responseCode")
-//                    Helpers.printLog("Response Message: $responseMessage")
-//                    Helpers.printLog("Response Body: $body")
                 } else {
                     Helpers.printLog("GET request not worked")
                 }

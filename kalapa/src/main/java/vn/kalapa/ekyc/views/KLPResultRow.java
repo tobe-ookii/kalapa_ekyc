@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import vn.kalapa.R;
 import vn.kalapa.ekyc.KalapaSDK;
+import vn.kalapa.ekyc.managers.KLPLanguageManager;
 
 
 public class KLPResultRow extends LinearLayout {
@@ -30,7 +31,7 @@ public class KLPResultRow extends LinearLayout {
         tvKey = findViewById(R.id.tv_title);
         tvValue = findViewById(R.id.tv_value);
         Log.d(TAG, "Label " + firstLabel);
-        tvKey.setText(firstLabel);
+        tvKey.setText(KLPLanguageManager.INSTANCE.get(firstLabel));
         tvValue.setText(secondLabel);
         typedArray.recycle();
     }

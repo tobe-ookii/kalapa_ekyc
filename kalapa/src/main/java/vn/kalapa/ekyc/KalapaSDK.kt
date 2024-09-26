@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Handler
+import android.os.Looper
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
@@ -16,6 +18,7 @@ import vn.kalapa.ekyc.activity.CameraXSelfieActivity
 import vn.kalapa.ekyc.activity.ConfirmActivity
 import vn.kalapa.ekyc.capturesdk.CameraXAutoCaptureActivity
 import vn.kalapa.ekyc.handlers.GetDynamicLanguageHandler
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.models.BackResult
 import vn.kalapa.ekyc.models.ConfirmResult
 import vn.kalapa.ekyc.models.FrontResult
@@ -49,6 +52,7 @@ class KalapaSDK private constructor(
         private var leftoverSession = ""
 
         fun build(): KalapaSDK {
+            Helpers.printLog("KalapaSDKBuilder build() $mrz - $faceData - $leftoverSession")
             return KalapaSDK(activity, config, mrz, faceData, leftoverSession)
         }
 
@@ -75,6 +79,7 @@ class KalapaSDK private constructor(
 
     }
 
+
     companion object {
         private val VERSION = "2.10.0.1"
 
@@ -88,7 +93,12 @@ class KalapaSDK private constructor(
         internal lateinit var config: KalapaSDKConfig
         internal lateinit var handler: KalapaHandler
         internal lateinit var session: String
-
+        private fun refreshSession(){
+            this.kalapaResult = KalapaResult()
+            this.frontResult = FrontResult()
+            this.backResult = BackResult()
+            this.session = ""
+        }
         var faceBitmap: Bitmap? = null
         var frontBitmap: Bitmap? = null
         var backBitmap: Bitmap? = null
@@ -223,8 +233,8 @@ class KalapaSDK private constructor(
     }
 
     fun startCustomFlow(withCaptureScreen: Boolean, withLivenessScreen: Boolean, withNFCScreen: Boolean, kalapaCustomHandler: KalapaHandler) {
+        refreshSession()
         val complete = { kalapaCustomHandler.onComplete(KalapaResult()) }
-
         val nfcScreen = {
             startNFCForResult(mrz, object : KalapaNFCHandler() {
                 override fun process(idCardNumber: String, nfcData: String, callback: KalapaSDKCallback) {
@@ -316,6 +326,7 @@ class KalapaSDK private constructor(
         kalapaHandler: KalapaHandler,
         kalapaCustomHandler: IKalapaRawDataProcessor
     ) {
+        refreshSession()
         Companion.session = session
         var leftoverSessionMRZ: String? = null
         val sessionFlow = KalapaFlowType.ofFlow(flow)
@@ -382,7 +393,7 @@ class KalapaSDK private constructor(
                     }
 
                     override fun timeout() {
-                        config.languageUtils.getLanguageString(activity.getString(R.string.klp_error_timeout))
+                        KLPLanguageManager.get(activity.getString(R.string.klp_error_timeout))
                     }
 
                 })
@@ -417,11 +428,7 @@ class KalapaSDK private constructor(
                         }
 
                         override fun timeout() {
-                            callback.sendError(
-                                config.languageUtils.getLanguageString(
-                                    activity.getString(R.string.klp_error_timeout)
-                                )
-                            )
+                            callback.sendError(KLPLanguageManager.get(activity.getString(R.string.klp_error_timeout)))
                         }
 
                     })
@@ -437,7 +444,7 @@ class KalapaSDK private constructor(
 
         /*****-STEP 3-*****/
         val localStartNFCForResult = {
-            Helpers.printLog("localStartNFCForResult $mrz")
+            Helpers.printLog("localStartNFCForResult: $mrz")
             startNFCForResult(
                 if (mrz.isNotEmpty()) mrz else
                     if (!leftoverSessionMRZ.isNullOrEmpty()) leftoverSessionMRZ!! else
@@ -497,9 +504,7 @@ class KalapaSDK private constructor(
 
                             override fun timeout() {
                                 callback.sendError(
-                                    config.languageUtils.getLanguageString(
-                                        activity.getString(R.string.klp_error_timeout)
-                                    )
+                                    KLPLanguageManager.get(activity.getString(R.string.klp_error_timeout))
                                 )
                             }
 
@@ -546,7 +551,7 @@ class KalapaSDK private constructor(
 
                         override fun timeout() {
                             callback.sendError(
-                                config.languageUtils.getLanguageString(
+                                KLPLanguageManager.get(
                                     activity.getString(
                                         R.string.klp_error_timeout
                                     )
@@ -592,7 +597,7 @@ class KalapaSDK private constructor(
 
                         override fun timeout() {
                             callback.sendError(
-                                config.languageUtils.getLanguageString(
+                                KLPLanguageManager.get(
                                     activity.getString(
                                         R.string.klp_error_timeout
                                     )
@@ -662,7 +667,6 @@ class KalapaSDKConfig private constructor(
     var language: String,
     var minNFCRetry: Int = 3,
     var baseURL: String = "https://api-ekyc.kalapa.vn",
-    var languageUtils: LanguageUtils,
 ) {
     init {
         KalapaAPI.configure(baseURL)
@@ -697,6 +701,7 @@ class KalapaSDKConfig private constructor(
         var baseURL: String = "https://ekyc-api.kalapa.vn"
 
         fun build(): KalapaSDKConfig {
+            KLPLanguageManager.setLanguage(language).pullLanguage(baseURL)
             return KalapaSDKConfig(
                 backgroundColor,
                 mainColor,
@@ -706,31 +711,7 @@ class KalapaSDKConfig private constructor(
                 language,
                 minNFCRetry,
                 baseURL,
-                pullLanguage(context)
             )
-        }
-
-
-        private fun pullLanguage(context: Context): LanguageUtils {
-            val start = System.currentTimeMillis()
-            Helpers.printLog("pullLanguage $start | $language")
-            val languageUtils = LanguageUtils(context)
-            val languageJsonBody: String? =
-                GetDynamicLanguageHandler(context).execute(baseURL, language).get() // null //
-            Helpers.printLog("pullLanguage Done ${System.currentTimeMillis() - start} | $language")
-            if (!languageJsonBody.isNullOrEmpty() && languageJsonBody != "-1") {
-                Helpers.printLog("pullLanguage $languageJsonBody")
-                val klpLanguageModel = KalapaLanguageModel.fromJson(languageJsonBody)
-                Helpers.printLog("pullLanguage ${klpLanguageModel.error} ${klpLanguageModel.data}")
-                if ((klpLanguageModel.error != null) && (klpLanguageModel.error.code == 200) && klpLanguageModel.data != null) {
-                    // Thành công
-                    if (klpLanguageModel.data.content?.SDK?.isNotEmpty() == true) {
-                        Helpers.printLog("setLanguage ${klpLanguageModel.data.content.SDK}")
-                        languageUtils.setLanguage(klpLanguageModel.data.content.SDK, klpLanguageModel.data.content.APP_DEMO)
-                    }
-                }
-            }
-            return languageUtils
         }
 
         fun withBackgroundColor(color: String): KalapaSDKConfigBuilder {
@@ -833,7 +814,8 @@ enum class KalapaSDKResultCode(val vi: String, val en: String) {
     SUCCESS_WITH_WARNING("thành công", "success with warning"),
     CANNOT_OPEN_DEVICE("lỗi phần cứng", "device issues"),
     CARD_NOT_FOUND("không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ", "document not found or invalid"),
-//    WRONG_CCCDID("giấy tờ không hợp lệ", "document invalid"),
+
+    //    WRONG_CCCDID("giấy tờ không hợp lệ", "document invalid"),
     WRONG_CCCDID("MRZ không hợp lệ cho ta liệu này", "invalid mrz"),
     CARD_LOST_CONNECTION("mất kết nối tới thẻ", "card lost connection"),
     USER_LEAVE("người dùng hủy bỏ xác thực", "user leave ekyc process"),

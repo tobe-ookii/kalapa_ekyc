@@ -19,6 +19,7 @@ import vn.kalapa.demo.models.NFCVerificationData
 import vn.kalapa.demo.utils.Helpers.Companion.getValuePreferences
 import vn.kalapa.demo.utils.LogUtils
 import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.views.KLPDecisionRow
@@ -26,14 +27,13 @@ import vn.kalapa.ekyc.views.KLPResultRow
 
 class ResultActivity : AppCompatActivity() {
     val TAG = "ResultActivity"
-    var btnFinish: Button? = null
+    lateinit var btnFinish: Button
     lateinit var ivSelfie: ImageView
     lateinit var ivFront: ImageView
     lateinit var ivBack: ImageView
     lateinit var rootContainer: View
     var language: String = "vi"
     lateinit var tvResult: TextView
-    lateinit var tvResultStatus: TextView
     lateinit var tvOcrTitle: TextView
     lateinit var tvNFCTitle: TextView
     lateinit var tvRuleTitle: TextView
@@ -67,10 +67,10 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var row_nfc_spouse_name: KLPResultRow
     private lateinit var row_nfc_nation: KLPResultRow
     private lateinit var row_nfc_religion: KLPResultRow
-
-    private lateinit var row_nfc_is_valid: KLPResultRow
+    private lateinit var tv_result_banner: TextView
     private lateinit var row_is_matched: KLPResultRow
     private lateinit var row_matching_score: KLPResultRow
+    private lateinit var tv_title_face_matching: TextView
     lateinit var containerMatchingHolder: LinearLayout
 
     private lateinit var nfcDataResult: JsonObject
@@ -89,16 +89,19 @@ class ResultActivity : AppCompatActivity() {
             getValuePreferences(Common.MY_KEY_MAIN_COLOR) ?: getString(R.color.mainColor)
         var txtColor = getValuePreferences(Common.MY_KEY_BTN_TEXT_COLOR) ?: getString(R.color.white)
         tvNFCTitle.setTextColor(Color.parseColor(mainColor))
+
         tvOcrTitle.setTextColor(Color.parseColor(mainColor))
         tvRuleTitle.setTextColor(Color.parseColor(mainColor))
-        if (btnFinish != null) {
-            btnFinish!!.setTextColor(Color.parseColor(txtColor))
-            ViewCompat.setBackgroundTintList(
-                btnFinish!!,
-                ColorStateList.valueOf(Color.parseColor(mainColor))
-            )
-        }
-        findViewById<TextView>(R.id.tv_title_face_matching).setTextColor(Color.parseColor(mainColor))
+
+        btnFinish.setTextColor(Color.parseColor(txtColor))
+        ViewCompat.setBackgroundTintList(
+            btnFinish,
+            ColorStateList.valueOf(Color.parseColor(mainColor))
+        )
+
+        tv_title_face_matching = findViewById(R.id.tv_title_face_matching)
+        tv_title_face_matching.setTextColor(Color.parseColor(mainColor))
+        tv_title_face_matching.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_face_matching_title))
 //        ViewCompat.setBackgroundTintList(
 //            containerNFCInfo,
 //            ColorStateList.valueOf(Color.parseColor(mainColor))
@@ -115,6 +118,7 @@ class ResultActivity : AppCompatActivity() {
     }
 
     fun setupBinding() {
+        tv_result_banner = findViewById(R.id.tv_result_banner)
         btnFinish = findViewById(R.id.btn_finish)
         ivSelfie = findViewById(R.id.iv_selfie)
         ivFront = findViewById(R.id.iv_front_id)
@@ -126,7 +130,6 @@ class ResultActivity : AppCompatActivity() {
         rootContainer = findViewById(R.id.root_container)
         rootContainer.setBackgroundColor(resources.getColor(R.color.ekyc_demo_color))
         tvResult = findViewById(R.id.tv_result)
-        tvResultStatus = findViewById(R.id.tv_result_status)
         rowId = findViewById(R.id.row_id)
         rowName = findViewById(R.id.row_name)
         rowDob = findViewById(R.id.row_dob)
@@ -170,7 +173,6 @@ class ResultActivity : AppCompatActivity() {
         container_selfie_photo = findViewById(R.id.container_selfie_photo)
         containerMatchingHolder = findViewById(R.id.container_matching_holder)
         iv_eid_photo = findViewById(R.id.iv_eid_photo)
-        row_nfc_is_valid = findViewById(R.id.row_nfc_is_valid)
         row_is_matched = findViewById(R.id.row_is_matched)
         row_matching_score = findViewById(R.id.row_matching_score)
     }
@@ -184,7 +186,7 @@ class ResultActivity : AppCompatActivity() {
                 row_nfc_id.setRecordValue(nfcResult.id_number) else row_nfc_id.visibility = View.GONE
             if (nfcResult.old_id_number != null && nfcResult.old_id_number!!.isNotEmpty()) row_nfc_old_id.setRecordValue(
                 nfcResult.old_id_number
-            ) else row_nfc_old_id.setRecordValue(resources.getString(R.string.no_information))
+            ) else row_nfc_old_id.setRecordValue("-")
             if (nfcResult.name != null && nfcResult.name!!.isNotEmpty()) row_nfc_name.setRecordValue(
                 nfcResult.name
             ) else row_nfc_name.visibility = View.GONE
@@ -245,27 +247,18 @@ class ResultActivity : AppCompatActivity() {
             row_is_matched.visibility = View.VISIBLE
             row_matching_score.visibility = View.VISIBLE
             row_is_matched.setRecordValue(
-                if (nfcVerificationData.is_match!!) resources.getString(R.string.klp_demo_yes) else resources.getString(
-                    R.string.klp_demo_no
-                )
+                if (nfcVerificationData.is_match!!) KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes)) else KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
             )
             row_matching_score.setRecordValue(nfcVerificationData.matching_score.toString())
         } else containerMatchingHolder.visibility = View.GONE
-
-
-        if (nfcVerificationData?.nfc_data?.is_valid != null) {
-            // Set Card is valid or not
-            LogUtils.printLog("isValid: ${nfcVerificationData.nfc_data?.is_valid} ")
-            row_nfc_is_valid.visibility = View.VISIBLE
-            row_nfc_is_valid.setRecordValue(
-                if (nfcVerificationData.nfc_data?.is_valid!!) resources.getString(
-                    R.string.klp_demo_yes
-                ) else resources.getString(R.string.klp_demo_no)
-            )
-        } else row_nfc_is_valid.visibility = View.GONE
     }
 
     fun setValue() {
+        tv_result_banner.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_title_1))
+        tvNFCTitle.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_nfc_title))
+        tvRuleTitle.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_details))
+        btnFinish.setText(KLPLanguageManager.get(resources.getString(R.string.klp_button_confirm)))
+
         if (ExampleGlobalClass.isFaceImageInitialized()) {
             ivSelfie.visibility = View.VISIBLE
             container_selfie_photo.visibility = View.VISIBLE
@@ -296,9 +289,7 @@ class ResultActivity : AppCompatActivity() {
                 row_is_matched.visibility = View.VISIBLE
                 row_matching_score.visibility = View.VISIBLE
                 row_is_matched.setRecordValue(
-                    if (myFields.selfie_data!!.is_matched!!) resources.getString(R.string.klp_demo_yes) else resources.getString(
-                        R.string.klp_demo_no
-                    )
+                    if (myFields.selfie_data!!.is_matched!!) KLPLanguageManager.get(resources.getString(R.string.klp_settings_yes)) else KLPLanguageManager.get(resources.getString(R.string.klp_settings_no))
                 )
                 row_matching_score.setRecordValue(myFields.selfie_data!!.matching_score.toString())
             } else containerMatchingHolder.visibility = View.GONE
@@ -328,21 +319,12 @@ class ResultActivity : AppCompatActivity() {
             if (myFields.decision != null && myFields.decision_detail != null) {
                 findViewById<View>(R.id.container_decision).visibility = View.VISIBLE
                 tvResult.visibility = View.VISIBLE
-                tvResultStatus.visibility = View.VISIBLE
-                tvResultStatus.text =
-                    if (myFields.decision == "REJECTED") resources.getString(R.string.klp_your_application_were) else resources.getString(
-                        R.string.klp_your_application_is
-                    )
+
                 if (myFields.decision == "APPROVED") {
                     containerViolatedRule.visibility = View.GONE
                     tvResult.setTextColor(resources.getColor(R.color.ekyc_green))
-                    tvResult.text = resources.getString(R.string.klp_demo_approved)
                 } else {
                     tvResult.setTextColor(resources.getColor(if (myFields.decision == "REJECTED") R.color.ekyc_red else R.color.ekyc_warning))
-                    tvResult.text =
-                        if (myFields.decision == "REJECTED") resources.getString(R.string.klp_demo_rejected) else resources.getString(
-                            R.string.klp_demo_manual
-                        )
                     containerViolatedRule.visibility = View.VISIBLE
                     var decisionDetails = myFields.decision_detail
                     var count = 0
@@ -366,8 +348,8 @@ class ResultActivity : AppCompatActivity() {
 
     private fun qualifiedToUpgrade() {
 //        if (Kalapa.flowType == KalapaFlowType.EKYC && Kalapa.result != null && Kalapa.result!!.decision == "APPROVED") {
-//            Helpers.showDialog(this@ResultActivity, resources.getString(R.string.klp_upgrade_your_account), resources.getString(R.string.klp_do_you_want_to_verify_nfc_to_upgrade),
-//                resources.getString(R.string.klp_btn_upgrade), resources.getString(R.string.klp_btn_skip), R.drawable.ic_nfc, object : DialogListener {
+//            Helpers.showDialog(this@ResultActivity, KLPLanguageManager.get(resources.getString(R.string.klp_upgrade_your_account), KLPLanguageManager.get(resources.getString(R.string.klp_do_you_want_to_verify_nfc_to_upgrade),
+//                KLPLanguageManager.get(resources.getString(R.string.klp_btn_upgrade), KLPLanguageManager.get(resources.getString(R.string.klp_btn_skip), R.drawable.ic_nfc, object : DialogListener {
 //                    override fun onYes() {
 //                        KalapaNFC.configure(KalapaNFCConfig.Builder(this@ResultActivity).withBaseUrl(Kalapa.baseURL).withLanguage(if (Kalapa.language.contains("vi")) Language.VI else Language.EN).withMinNFCRetries(3).build(), null)
 ////                            .start(this@ResultActivity, Kalapa.session, KalapaFlowType.NFC_ONLY)
@@ -398,13 +380,11 @@ class ResultActivity : AppCompatActivity() {
         if (decision == "APPROVED") {
             containerViolatedRule.visibility = View.GONE
             tvResult.setTextColor(resources.getColor(R.color.ekyc_green))
-            tvResult.text = resources.getString(R.string.klp_demo_approved)
+            tvResult.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_approved))
         } else {
             tvResult.setTextColor(resources.getColor(if (decision == "REJECTED") R.color.ekyc_red else R.color.ekyc_warning))
             tvResult.text =
-                if (decision == "REJECTED") resources.getString(R.string.klp_demo_rejected) else resources.getString(
-                    R.string.klp_demo_manual
-                )
+                if (decision == "REJECTED") KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_rejected)) else KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_manual))
             containerViolatedRule.visibility = View.VISIBLE
             var decisionDetails = arrayOf(
                 "Face on id and selfie are matched with high confidence",
