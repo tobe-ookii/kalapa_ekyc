@@ -6,8 +6,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Handler
-import android.os.Looper
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
@@ -17,20 +15,17 @@ import vn.kalapa.ekyc.capturesdk.CameraXPassportActivity
 import vn.kalapa.ekyc.activity.CameraXSelfieActivity
 import vn.kalapa.ekyc.activity.ConfirmActivity
 import vn.kalapa.ekyc.capturesdk.CameraXAutoCaptureActivity
-import vn.kalapa.ekyc.handlers.GetDynamicLanguageHandler
 import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.models.BackResult
 import vn.kalapa.ekyc.models.ConfirmResult
 import vn.kalapa.ekyc.models.FrontResult
 import vn.kalapa.ekyc.models.KalapaError
-import vn.kalapa.ekyc.models.KalapaLanguageModel
 import vn.kalapa.ekyc.models.KalapaResult
 import vn.kalapa.ekyc.models.MRZData
 import vn.kalapa.ekyc.models.NFCRawData
 import vn.kalapa.ekyc.networks.Client
 import vn.kalapa.ekyc.networks.KalapaAPI
 import vn.kalapa.ekyc.utils.Helpers
-import vn.kalapa.ekyc.utils.LanguageUtils
 import vn.kalapa.ekyc.nfcsdk.activities.NFCActivity
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.views.ProgressView
@@ -44,6 +39,15 @@ class KalapaSDK private constructor(
 ) {
     init {
         Companion.config = config
+    }
+
+    private var startTime: Long? = null
+    private fun sdkIsJustRan(): Boolean {
+        if (startTime == null || System.currentTimeMillis() - startTime!! > 2000) {
+            startTime = System.currentTimeMillis()
+            return false
+        } else
+            return true
     }
 
     class KalapaSDKBuilder(private val activity: Activity, private val config: KalapaSDKConfig) {
@@ -93,12 +97,17 @@ class KalapaSDK private constructor(
         internal lateinit var config: KalapaSDKConfig
         internal lateinit var handler: KalapaHandler
         internal lateinit var session: String
-        private fun refreshSession(){
+        private fun refreshSession() {
+            Helpers.printLog("Refresh session")
             this.kalapaResult = KalapaResult()
             this.frontResult = FrontResult()
             this.backResult = BackResult()
+            this.faceBitmap = null
+            this.frontBitmap = null
+            this.backBitmap = null
             this.session = ""
         }
+
         var faceBitmap: Bitmap? = null
         var frontBitmap: Bitmap? = null
         var backBitmap: Bitmap? = null
@@ -233,6 +242,7 @@ class KalapaSDK private constructor(
     }
 
     fun startCustomFlow(withCaptureScreen: Boolean, withLivenessScreen: Boolean, withNFCScreen: Boolean, kalapaCustomHandler: KalapaHandler) {
+        if (sdkIsJustRan()) return
         refreshSession()
         val complete = { kalapaCustomHandler.onComplete(KalapaResult()) }
         val nfcScreen = {
@@ -264,8 +274,10 @@ class KalapaSDK private constructor(
         val captureScreen = {
             startCaptureForResult(KalapaSDKMediaType.FRONT, object : KalapaCaptureHandler() {
                 override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                    frontBitmap = BitmapUtil.base64ToBitmap(base64)
                     startCaptureForResult(KalapaSDKMediaType.BACK, object : KalapaCaptureHandler() {
                         override fun process(base64: String, mediaType: KalapaSDKMediaType, callback: KalapaSDKCallback) {
+                            backBitmap = BitmapUtil.base64ToBitmap(base64)
                             if (withLivenessScreen)
                                 callback.sendDone(livenessScreen)
                             else if (withNFCScreen)
@@ -326,6 +338,7 @@ class KalapaSDK private constructor(
         kalapaHandler: KalapaHandler,
         kalapaCustomHandler: IKalapaRawDataProcessor
     ) {
+        if (sdkIsJustRan()) return
         refreshSession()
         Companion.session = session
         var leftoverSessionMRZ: String? = null
@@ -807,23 +820,23 @@ enum class KalapaSDKNFCStatus(status: Int) {
 }
 
 enum class KalapaSDKResultCode(val vi: String, val en: String) {
-    UNKNOWN("lỗi không xác định", "unknown error"),
-    SUCCESS("thành công", "success"),
-    PERMISSION_DENIED("không cung cấp quyền truy cập", "user permission not granted"),
-    USER_CONSENT_DECLINED("lhông đồng ý điều khoản", "user declines consent"),
-    SUCCESS_WITH_WARNING("thành công", "success with warning"),
-    CANNOT_OPEN_DEVICE("lỗi phần cứng", "device issues"),
-    CARD_NOT_FOUND("không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ", "document not found or invalid"),
+    UNKNOWN("Lỗi không xác định", "Unknown error"),
+    SUCCESS("Thành công", "Success"),
+    PERMISSION_DENIED("Không cung cấp quyền truy cập", "User permission not granted"),
+    USER_CONSENT_DECLINED("Không đồng ý điều khoản", "User declines consent"),
+    SUCCESS_WITH_WARNING("Thành công", "Success with warning"),
+    CANNOT_OPEN_DEVICE("Lỗi phần cứng", "Device issues"),
+    CARD_NOT_FOUND("Không tìm thấy giấy tờ hoặc giấy tờ không hợp lệ", "Document not found or invalid"),
 
     //    WRONG_CCCDID("giấy tờ không hợp lệ", "document invalid"),
-    WRONG_CCCDID("MRZ không hợp lệ cho ta liệu này", "invalid mrz"),
-    CARD_LOST_CONNECTION("mất kết nối tới thẻ", "card lost connection"),
-    USER_LEAVE("người dùng hủy bỏ xác thực", "user leave ekyc process"),
-    EMULATOR_DETECTED("Phát hiện máy ảo", "emulator detection"),
-    DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "device does not support"),
+    WRONG_CCCDID("MRZ không hợp lệ cho ta liệu này", "Invalid mrz"),
+    CARD_LOST_CONNECTION("Mất kết nối tới thẻ", "Card lost connection"),
+    USER_LEAVE("Người dùng hủy bỏ xác thực", "User leave ekyc process"),
+    EMULATOR_DETECTED("Phát hiện máy ảo", "Emulator detection"),
+    DEVICE_NOT_SUPPORTED("Thiết bị không hỗ trợ", "Device does not support"),
     CONFIGURATION_NOT_ACCEPTABLE(
-        "cấu hình chưa đúng, vui lòng kiểm tra lại",
-        "configuration not acceptable, please try again"
+        "Cấu hình chưa đúng, vui lòng kiểm tra lại",
+        "Configuration not acceptable, please try again"
     )
 }
 

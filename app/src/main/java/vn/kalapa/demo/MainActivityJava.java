@@ -65,7 +65,7 @@ public class MainActivityJava extends BaseActivity {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {
                     Helpers.Companion.showDialog(MainActivityJava.this,
                             KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)),
-                                    KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.frowning_face);
+                            KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.frowning_face);
                     return;
                 }
                 startEKYC();
@@ -84,7 +84,7 @@ public class MainActivityJava extends BaseActivity {
 
         @Override
         public void onError(@NonNull KalapaSDKResultCode resultCode) {
-            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_nfc_common_error)) + " " + (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_confirm)), R.drawable.frowning_face);
+            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_confirm)), R.drawable.frowning_face);
         }
 
         @Override
@@ -92,31 +92,28 @@ public class MainActivityJava extends BaseActivity {
             Common.SCENARIO scenario = preferencesConfig.getScenario();
             LogUtils.Companion.printLog("startFullEKYC onComplete: \n " + scenario + preferencesConfig.getUseNFC() + kalapaResult.toMap() + " \n " + kalapaResult.getSession());
             ExampleGlobalClass.kalapaResult = kalapaResult;
-            if (KalapaSDK.Companion.getFaceBitmap() != null)
-                ExampleGlobalClass.faceImage = KalapaSDK.Companion.getFaceBitmap();
-            if (KalapaSDK.Companion.getFrontBitmap() != null)
-                ExampleGlobalClass.frontImage = KalapaSDK.Companion.getFrontBitmap();
-            if (KalapaSDK.Companion.getBackBitmap() != null)
-                ExampleGlobalClass.backImage = KalapaSDK.Companion.getBackBitmap();
+            ExampleGlobalClass.Companion.setFaceImage(KalapaSDK.Companion.getFaceBitmap());
+            ExampleGlobalClass.Companion.setFrontImage(KalapaSDK.Companion.getFrontBitmap());
+            ExampleGlobalClass.Companion.setBackImage(KalapaSDK.Companion.getBackBitmap());
             if (kalapaResult.getNfc_data() != null && kalapaResult.getNfc_data().getId_number() != null)
                 ExampleGlobalClass.nfcData = new NFCVerificationData(new NFCCardData(kalapaResult.getNfc_data(), true), null, null);
             if (!isUpgraded && scenario == Common.SCENARIO.REGISTER && (!preferencesConfig.getUseNFC()) &&
                     (kalapaResult.getDecision() != null && (kalapaResult.getDecision().equals("APPROVED") || kalapaResult.getDecision().equals("MANUAL")))) {
                 Helpers.Companion.showDialog(MainActivityJava.this,
                         KLPLanguageManager.INSTANCE.get(getString(R.string.klp_settings_flow_upgrade)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_settings_flow_upgrade)),
-                                KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_continue)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_no)), R.drawable.klp_demo_nfc, new DialogListener() {
-                                    @Override
-                                    public void onYes() {
-                                        isUpgraded = true;
-                                        startUpgradeFlow(kalapaResult.getSession());
-                                    }
+                        KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_continue)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_no)), R.drawable.klp_demo_nfc, new DialogListener() {
+                            @Override
+                            public void onYes() {
+                                isUpgraded = true;
+                                startUpgradeFlow(kalapaResult.getSession());
+                            }
 
-                                    @Override
-                                    public void onNo() {
-                                        isUpgraded = false;
-                                        startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
-                                    }
-                                });
+                            @Override
+                            public void onNo() {
+                                isUpgraded = false;
+                                startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
+                            }
+                        });
             } else {
                 isUpgraded = false;
                 startActivity(new Intent(MainActivityJava.this, ResultActivity.class));
@@ -144,7 +141,6 @@ public class MainActivityJava extends BaseActivity {
     }
 
     private void startEKYC() {
-
         if (Common.Companion.isOnline(MainActivityJava.this)) {
             Common.SCENARIO scenario = preferencesConfig.getScenario();
             ProgressView.Companion.showProgress(MainActivityJava.this, ProgressView.ProgressViewType.LOADING, preferencesConfig.getMainColor(), preferencesConfig.getMainTextColor(), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_notice)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_please_wait)));

@@ -30,7 +30,7 @@ public class KLPResultRow extends LinearLayout {
         String secondLabel = typedArray.getString(R.styleable.KLPResultRow_tvValue);
         tvKey = findViewById(R.id.tv_title);
         tvValue = findViewById(R.id.tv_value);
-        Log.d(TAG, "Label " + firstLabel);
+//        Log.d(TAG, "Label " + firstLabel);
         tvKey.setText(KLPLanguageManager.INSTANCE.get(firstLabel));
         tvValue.setText(secondLabel);
         typedArray.recycle();

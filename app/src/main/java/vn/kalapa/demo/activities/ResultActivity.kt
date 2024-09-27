@@ -18,7 +18,6 @@ import vn.kalapa.demo.R
 import vn.kalapa.demo.models.NFCVerificationData
 import vn.kalapa.demo.utils.Helpers.Companion.getValuePreferences
 import vn.kalapa.demo.utils.LogUtils
-import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
@@ -47,7 +46,7 @@ class ResultActivity : AppCompatActivity() {
     lateinit var rowPersonalIdentification: KLPResultRow
     lateinit var rowCardType: KLPResultRow
     lateinit var containerViolatedRule: LinearLayout
-    lateinit var containerNFCInfo: LinearLayout
+    lateinit var containerNFCData: LinearLayout
     lateinit var containerOCRInfo: LinearLayout
     private lateinit var container_eid_photo: CardView
     private lateinit var container_selfie_photo: CardView
@@ -140,7 +139,7 @@ class ResultActivity : AppCompatActivity() {
         rowPersonalIdentification = findViewById(R.id.row_personal_identification)
         rowCardType = findViewById(R.id.row_card_type)
         containerViolatedRule = findViewById(R.id.holder_not_qualified_rule)
-        containerNFCInfo = findViewById(R.id.holder_nfc_data)
+        containerNFCData = findViewById(R.id.holder_nfc_data)
         containerOCRInfo = findViewById(R.id.ll_ocr_holder)
         tvOcrTitle = findViewById(R.id.tv_title_ocr)
         tvNFCTitle = findViewById(R.id.tv_title_nfc)
@@ -149,11 +148,6 @@ class ResultActivity : AppCompatActivity() {
             qualifiedToUpgrade()
         }
         language = if (btnFinish?.text == "Done") "en" else "vi"
-        if (this::nfcDataResult.isInitialized) {
-            containerNFCInfo.visibility = View.VISIBLE
-        } else {
-            containerNFCInfo.visibility = View.GONE
-        }
         row_nfc_id = findViewById(R.id.row_nfc_id)
         row_nfc_old_id = findViewById(R.id.row_nfc_old_id)
         row_nfc_name = findViewById(R.id.row_nfc_name)
@@ -180,8 +174,8 @@ class ResultActivity : AppCompatActivity() {
     private fun setNFCValue(nfcVerificationData: NFCVerificationData?) {
         val nfcResult = nfcVerificationData?.nfc_data?.card_data
         LogUtils.printLog("NFC Result: $nfcResult")
-        if (nfcResult != null) {
-            containerNFCInfo.visibility = View.VISIBLE
+        if (nfcResult != null && !nfcResult.id_number.isNullOrEmpty()) {
+            containerNFCData.visibility = View.VISIBLE
             if (nfcResult.id_number != null && nfcResult.id_number!!.isNotEmpty())
                 row_nfc_id.setRecordValue(nfcResult.id_number) else row_nfc_id.visibility = View.GONE
             if (nfcResult.old_id_number != null && nfcResult.old_id_number!!.isNotEmpty()) row_nfc_old_id.setRecordValue(
@@ -236,9 +230,8 @@ class ResultActivity : AppCompatActivity() {
                     container_eid_photo.visibility = View.GONE
                     e.printStackTrace()
                 }
-        } else {
-            containerNFCInfo.visibility = View.GONE
-        }
+        } else
+            containerNFCData.visibility = View.GONE
         // is_valid & matching_score
         if (nfcVerificationData?.is_match != null && nfcVerificationData.matching_score != null) {
             containerMatchingHolder.visibility = View.VISIBLE
@@ -258,22 +251,22 @@ class ResultActivity : AppCompatActivity() {
         tvNFCTitle.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_nfc_title))
         tvRuleTitle.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_details))
         btnFinish.setText(KLPLanguageManager.get(resources.getString(R.string.klp_button_confirm)))
-
-        if (ExampleGlobalClass.isFaceImageInitialized()) {
+        tvOcrTitle.text = KLPLanguageManager.get(resources.getString(R.string.klp_results_ocr_title))
+        if (ExampleGlobalClass.faceImage != null) {
             ivSelfie.visibility = View.VISIBLE
             container_selfie_photo.visibility = View.VISIBLE
             ivSelfie.setImageBitmap(ExampleGlobalClass.faceImage)
         } else
             container_selfie_photo.visibility = View.GONE
 
-        if (ExampleGlobalClass.isFrontImageInitialized()) {
+        if (ExampleGlobalClass.frontImage != null) {
             ivFront.visibility = View.VISIBLE
             ivFront.setImageBitmap(ExampleGlobalClass.frontImage)
             findViewById<View>(R.id.cv_front_id).visibility = View.VISIBLE
         } else
             ivFront.visibility = View.GONE
 
-        if (ExampleGlobalClass.isBackImageInitialized()) {
+        if (ExampleGlobalClass.backImage != null) {
             ivBack.visibility = View.VISIBLE
             ivBack.setImageBitmap(ExampleGlobalClass.backImage)
             findViewById<View>(R.id.cv_back_id).visibility = View.VISIBLE
@@ -319,6 +312,13 @@ class ResultActivity : AppCompatActivity() {
             if (myFields.decision != null && myFields.decision_detail != null) {
                 findViewById<View>(R.id.container_decision).visibility = View.VISIBLE
                 tvResult.visibility = View.VISIBLE
+
+                tvResult.text = when (myFields.decision) {
+                    "APPROVED" -> KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_approved))
+                    "MANUAL" -> KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_manual))
+                    "REJECTED" -> KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_rejected))
+                    else -> KLPLanguageManager.get(resources.getString(R.string.klp_results_decision_manual))
+                }
 
                 if (myFields.decision == "APPROVED") {
                     containerViolatedRule.visibility = View.GONE

@@ -10,26 +10,16 @@ class ExampleGlobalClass {
         lateinit var preferencesConfig: PreferencesConfig
         lateinit var nfcData: NFCVerificationData
         lateinit var kalapaResult: KalapaResult
-        lateinit var faceImage: Bitmap
-        lateinit var frontImage: Bitmap
-        lateinit var backImage: Bitmap
+        var faceImage: Bitmap? = null
+        var frontImage: Bitmap? = null
+        var backImage: Bitmap? = null
 
         fun isNFCDataInitialized(): Boolean {
             return this::nfcData.isInitialized
         }
 
-        fun isHaveResult(): Boolean{
+        fun isHaveResult(): Boolean {
             return this::kalapaResult.isInitialized
-        }
-        fun isFaceImageInitialized(): Boolean {
-            return this::faceImage.isInitialized
-        }
-        fun isFrontImageInitialized(): Boolean {
-            return this::frontImage.isInitialized
-        }
-
-        fun isBackImageInitialized(): Boolean {
-            return this::backImage.isInitialized
         }
 
         fun isPreferencesConfigInitialized(): Boolean {
