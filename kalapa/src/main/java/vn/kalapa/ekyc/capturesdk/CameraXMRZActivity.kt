@@ -162,6 +162,14 @@ class CameraXMRZActivity : CameraXActivity(activityLayoutId = R.layout.activity_
     override fun onInfoBtnClicked() {
     }
 
+    override fun sendError(message: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendDone(nextAction: () -> Unit) {
+        TODO("Not yet implemented")
+    }
+
 }
 
 class MRZAnalyzer(private val listener: OCROnlyImageInput) : ImageAnalysis.Analyzer {

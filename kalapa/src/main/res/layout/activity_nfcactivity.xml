@@ -8,11 +8,11 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_gravity="bottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/container_scan_nfc"
+        android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/klp_margin_small"
+        app:layout_constraintBottom_toTopOf="@id/container_scan_nfc"
         app:layout_constraintEnd_toEndOf="@id/container"
         app:layout_constraintStart_toStartOf="@id/container"
         app:layout_constraintTop_toTopOf="@id/container">
@@ -43,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/nfc_image_height"
                 android:src="@drawable/nfc_back_guide" />
-
 
 
             <LinearLayout
@@ -262,6 +261,18 @@
         android:gravity="center|bottom"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/container">
+
+        <Button
+            android:id="@+id/btn_skip_nfc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal"
+            android:layout_marginBottom="@dimen/klp_margin_xsmall"
+            android:background="@drawable/border_button_only"
+            android:text="@string/klp_nfc_skip"
+            android:textAllCaps="false"
+            android:textSize="@dimen/klp_shinhan_title_17"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_scan_nfc"

@@ -4,14 +4,39 @@ import android.content.Context
 import android.os.Build
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
+import vn.kalapa.R
+import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDK
+import vn.kalapa.ekyc.KalapaSDKCallback
+import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.Helpers
+import vn.kalapa.ekyc.views.ProgressView
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), KalapaSDKCallback {
     companion object {
         init {
             System.loadLibrary("envi")
         }
+    }
+
+    override fun sendExpired() {
+        ProgressView.hideProgress()
+        Helpers.showDialog(this@BaseActivity,
+            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_error_timeout)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_button_confirm)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_button_cancel)), null, object : DialogListener {
+                override fun onYes() {
+                    KalapaSDK.handler.onExpired()
+                    finish()
+                }
+
+                override fun onNo() {
+                    finish()
+                }
+
+            })
+
     }
 
     abstract fun onEmulatorDetected()

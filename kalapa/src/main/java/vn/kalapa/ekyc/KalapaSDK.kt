@@ -1,11 +1,16 @@
 package vn.kalapa.ekyc
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.widget.Button
+import android.widget.TextView
 import com.fis.ekyc.nfc.build_in.model.ResultCode
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils
 import com.fis.nfc.sdk.nfc.stepNfc.NFCUtils.NFCListener
@@ -85,7 +90,7 @@ class KalapaSDK private constructor(
 
 
     companion object {
-        private val VERSION = "2.10.0.1"
+        private val VERSION = "2.10.0"
 
         fun getSDKVersion(): String {
             return VERSION
@@ -96,7 +101,9 @@ class KalapaSDK private constructor(
         private lateinit var backResult: BackResult
         internal lateinit var config: KalapaSDKConfig
         internal lateinit var handler: KalapaHandler
+        internal var sdkCallback: KalapaTimeoutScanNFCCallback? = null
         internal lateinit var session: String
+        internal lateinit var ekycFlow: KalapaFlowType
         private fun refreshSession() {
             Helpers.printLog("Refresh session")
             this.kalapaResult = KalapaResult()
@@ -244,6 +251,7 @@ class KalapaSDK private constructor(
     fun startCustomFlow(withCaptureScreen: Boolean, withLivenessScreen: Boolean, withNFCScreen: Boolean, kalapaCustomHandler: KalapaHandler) {
         if (sdkIsJustRan()) return
         refreshSession()
+        ekycFlow = if (withCaptureScreen) KalapaFlowType.NFC_EKYC else KalapaFlowType.NFC_ONLY
         val complete = { kalapaCustomHandler.onComplete(KalapaResult()) }
         val nfcScreen = {
             startNFCForResult(mrz, object : KalapaNFCHandler() {
@@ -252,6 +260,34 @@ class KalapaSDK private constructor(
                 }
 
                 override fun onExpired() {
+                }
+
+                override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaTimeoutScanNFCCallback) {
+                    if (kalapaCustomHandler is KalapaNFCHandler)
+                        kalapaCustomHandler.onNFCTimeoutHandle(activity, nfcHandler)
+                    else // Default
+                        if (ekycFlow == KalapaFlowType.NFC_EKYC) {
+                            nfcHandler.close(complete)
+                        } else
+                            Helpers.showDialog(activity,
+                                KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown)),
+                                KLPLanguageManager.get(activity.getString(R.string.klp_nfc_common_error)),
+                                KLPLanguageManager.get(activity.getString(R.string.klp_button_retry)),
+                                KLPLanguageManager.get(activity.getString(R.string.klp_button_close)),
+                                R.drawable.frowning_face, object : DialogListener {
+                                    override fun onYes() {
+                                        nfcHandler.onRetry()
+                                        Helpers.printLog("User Tap on Retry!")
+                                    }
+
+                                    override fun onNo() {
+                                        nfcHandler.close {
+                                            Helpers.printLog("User Give Up!")
+                                        }
+                                    }
+                                })
+
+
                 }
 
             })
@@ -336,13 +372,14 @@ class KalapaSDK private constructor(
         session: String,
         flow: String,
         kalapaHandler: KalapaHandler,
-        kalapaCustomHandler: IKalapaRawDataProcessor
+        kalapaRawDataProcessor: IKalapaRawDataProcessor
     ) {
         if (sdkIsJustRan()) return
         refreshSession()
         Companion.session = session
         var leftoverSessionMRZ: String? = null
         val sessionFlow = KalapaFlowType.ofFlow(flow)
+        ekycFlow = sessionFlow
         if (config.baseURL.isEmpty() || !config.baseURL.contains("http") || sessionFlow == KalapaFlowType.NA) {
             kalapaHandler.onError(KalapaSDKResultCode.CONFIGURATION_NOT_ACCEPTABLE)
             return
@@ -356,7 +393,7 @@ class KalapaSDK private constructor(
         val localStartConfirmForResult = {
             startConfirmForResult(leftoverSession, object : KalapaHandler() {
                 override fun onExpired() {
-                    handler.onExpired()
+                    kalapaHandler.onExpired()
                 }
 
                 override fun onError(resultCode: KalapaSDKResultCode) {
@@ -406,7 +443,7 @@ class KalapaSDK private constructor(
                     }
 
                     override fun timeout() {
-                        KLPLanguageManager.get(activity.getString(R.string.klp_error_timeout))
+                        callback.sendExpired()
                     }
 
                 })
@@ -416,7 +453,7 @@ class KalapaSDK private constructor(
         val localStartLivenessForResult = {
             startLivenessForResult(faceData, object : KalapaCaptureHandler() {
                 override fun onExpired() {
-                    handler.onExpired()
+                    kalapaHandler.onExpired()
                 }
 
                 override fun process(
@@ -425,7 +462,7 @@ class KalapaSDK private constructor(
                     callback: KalapaSDKCallback
                 ) {
                     faceBitmap = BitmapUtil.base64ToBitmap(base64)
-                    kalapaCustomHandler.processLivenessData(base64, object : Client.RequestListener {
+                    kalapaRawDataProcessor.processLivenessData(base64, object : Client.RequestListener {
                         override fun success(jsonObject: JSONObject) {
                             // Set Liveness. Call Confirm
                             if (config.getCaptureImage())
@@ -441,7 +478,7 @@ class KalapaSDK private constructor(
                         }
 
                         override fun timeout() {
-                            callback.sendError(KLPLanguageManager.get(activity.getString(R.string.klp_error_timeout)))
+                            callback.sendExpired()
                         }
 
                     })
@@ -465,7 +502,14 @@ class KalapaSDK private constructor(
                             ?: frontResult.mrz_data?.data?.raw_mrz ?: "",
                 object : KalapaNFCHandler() {
                     override fun onExpired() {
-                        handler.onExpired()
+                        kalapaHandler.onExpired()
+                    }
+
+                    override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaTimeoutScanNFCCallback) {
+                        if (sessionFlow == KalapaFlowType.NFC_EKYC) {
+                            nfcHandler.close(localStartLivenessForResult)
+                        } else // Callback
+                            kalapaHandler.onNFCTimeoutHandle(activity, nfcHandler)
                     }
 
                     override fun process(
@@ -473,7 +517,7 @@ class KalapaSDK private constructor(
                         nfcData: String,
                         callback: KalapaSDKCallback
                     ) {
-                        kalapaCustomHandler.processNFCData(idCardNumber, nfcData, object : Client.RequestListener {
+                        kalapaRawDataProcessor.processNFCData(idCardNumber, nfcData, object : Client.RequestListener {
                             override fun success(jsonObject: JSONObject) {
                                 // Set NFC. Call liveness.
                                 Helpers.printLog("nfcCheck $jsonObject")
@@ -516,12 +560,11 @@ class KalapaSDK private constructor(
                             }
 
                             override fun timeout() {
-                                callback.sendError(
-                                    KLPLanguageManager.get(activity.getString(R.string.klp_error_timeout))
-                                )
+                                callback.sendExpired()
                             }
 
                         })
+
                     }
 
                     override fun onError(resultCode: KalapaSDKResultCode) {
@@ -535,7 +578,7 @@ class KalapaSDK private constructor(
         val localStartBackForResult = {
             startCaptureForResult(KalapaSDKMediaType.BACK, object : KalapaCaptureHandler() {
                 override fun onExpired() {
-                    handler.onExpired()
+                    kalapaHandler.onExpired()
                 }
 
                 override fun process(
@@ -544,7 +587,7 @@ class KalapaSDK private constructor(
                     callback: KalapaSDKCallback
                 ) {
                     backBitmap = BitmapUtil.base64ToBitmap(base64)
-                    kalapaCustomHandler.processCaptureData(base64, KalapaSDKMediaType.BACK, object : Client.RequestListener {
+                    kalapaRawDataProcessor.processCaptureData(base64, KalapaSDKMediaType.BACK, object : Client.RequestListener {
                         override fun success(jsonObject: JSONObject) {
                             backResult = BackResult.fromJson(jsonObject.toString())!!
                             callback.sendDone {
@@ -563,13 +606,7 @@ class KalapaSDK private constructor(
                         }
 
                         override fun timeout() {
-                            callback.sendError(
-                                KLPLanguageManager.get(
-                                    activity.getString(
-                                        R.string.klp_error_timeout
-                                    )
-                                )
-                            )
+                            callback.sendExpired()
                         }
                     })
                 }
@@ -585,7 +622,7 @@ class KalapaSDK private constructor(
         val localStartFrontForResult = {
             startCaptureForResult(KalapaSDKMediaType.FRONT, object : KalapaCaptureHandler() {
                 override fun onExpired() {
-                    handler.onExpired()
+                    kalapaHandler.onExpired()
                 }
 
                 override fun process(
@@ -595,7 +632,7 @@ class KalapaSDK private constructor(
                 ) {
                     // Check Front!
                     frontBitmap = BitmapUtil.base64ToBitmap(base64)
-                    kalapaCustomHandler.processCaptureData(base64, KalapaSDKMediaType.FRONT, object : Client.RequestListener {
+                    kalapaRawDataProcessor.processCaptureData(base64, KalapaSDKMediaType.FRONT, object : Client.RequestListener {
                         override fun success(jsonObject: JSONObject) {
                             // Call Back!
                             frontResult = FrontResult.fromJson(jsonObject.toString())!!
@@ -609,13 +646,7 @@ class KalapaSDK private constructor(
                         }
 
                         override fun timeout() {
-                            callback.sendError(
-                                KLPLanguageManager.get(
-                                    activity.getString(
-                                        R.string.klp_error_timeout
-                                    )
-                                )
-                            )
+                            callback.sendExpired()
                         }
 
                     })
@@ -680,6 +711,7 @@ class KalapaSDKConfig private constructor(
     var language: String,
     var minNFCRetry: Int = 3,
     var baseURL: String = "https://api-ekyc.kalapa.vn",
+    var nfcTimeoutInSeconds: Int = 180 // 3 min
 ) {
     init {
         KalapaAPI.configure(baseURL)
@@ -712,7 +744,7 @@ class KalapaSDKConfig private constructor(
         var language: String = "vi"
         private val minNFCRetry: Int = 3
         var baseURL: String = "https://ekyc-api.kalapa.vn"
-
+        private var nfcTimeoutInSeconds: Int = 180
         fun build(): KalapaSDKConfig {
             KLPLanguageManager.setLanguage(language).pullLanguage(baseURL)
             return KalapaSDKConfig(
@@ -724,7 +756,13 @@ class KalapaSDKConfig private constructor(
                 language,
                 minNFCRetry,
                 baseURL,
+                nfcTimeoutInSeconds
             )
+        }
+
+        fun withNFCTimeoutInSeconds(seconds: Int): KalapaSDKConfigBuilder {
+            this.nfcTimeoutInSeconds = seconds
+            return this
         }
 
         fun withBackgroundColor(color: String): KalapaSDKConfigBuilder {
@@ -803,6 +841,41 @@ abstract class KalapaHandler {
     }
 
     abstract fun onExpired()
+
+    open fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaTimeoutScanNFCCallback) {
+        val bottomSheetDialog = Dialog(activity)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_nfc_error)
+        bottomSheetDialog.window?.setLayout(-1, -2)
+        bottomSheetDialog.window?.setBackgroundDrawable(ColorDrawable(0))
+        bottomSheetDialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        bottomSheetDialog.window?.setGravity(80)
+        bottomSheetDialog.setCancelable(false)
+        val tvTitle = bottomSheetDialog.findViewById<TextView>(R.id.text_status)
+        tvTitle.text = KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown)) // nfc_location_title
+
+        val tvBody = bottomSheetDialog.findViewById<TextView>(R.id.text_des)
+        tvBody.text = KLPLanguageManager.get(activity.getString(R.string.klp_nfc_common_error))
+
+        val btnCancel = bottomSheetDialog.findViewById<Button>(R.id.btn_cancel)
+        Helpers.setBackgroundColorTintList(btnCancel, KalapaSDK.config.mainColor)
+        btnCancel.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
+        btnCancel.text = KLPLanguageManager.get(activity.getString(R.string.klp_button_cancel))
+        btnCancel.setOnClickListener {
+            bottomSheetDialog.hide()
+            nfcHandler.close { Helpers.printLog("User Give Up!") }
+        }
+
+        val btnRetry = bottomSheetDialog.findViewById<Button>(R.id.btn_retry)
+        Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
+        btnRetry.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
+        btnRetry.text = KLPLanguageManager.get(activity.getString(R.string.klp_button_retry))
+        btnRetry.setOnClickListener {
+            nfcHandler.onRetry()
+            Helpers.printLog("User Tap on Retry!")
+            bottomSheetDialog.hide()
+        }
+        bottomSheetDialog.show()
+    }
 }
 
 internal abstract class KalapaNFCHandler : KalapaHandler() {
@@ -860,29 +933,17 @@ enum class KalapaSDKMediaType {
 interface KalapaSDKCallback {
     fun sendError(message: String?)
     fun sendDone(nextAction: () -> Unit)
-
+    fun sendExpired()
 }
 
-//sealed class KalapaFlowType(val flow: String) {
-//    class EKYC : KalapaFlowType("ekyc") {
-//
-//    }
-//
-//    class NFC_EKYC : KalapaFlowType("nfc_ekyc") {
-//
-//    }
-//
-//    class NFC_ONLY : KalapaFlowType("nfc_only") {
-//
-//    }
-//
-//}
+interface KalapaTimeoutScanNFCCallback {
+    fun close(nextAction: () -> Unit)
+    fun onRetry()
+}
 
 
 enum class KalapaFlowType(val flow: String?) {
-    EKYC("ekyc") {
-        val session: String = ""
-    },
+    EKYC("ekyc"),
     NFC_EKYC("nfc_ekyc"),
     NFC_ONLY("nfc_only"),
     NA("not_applicable");

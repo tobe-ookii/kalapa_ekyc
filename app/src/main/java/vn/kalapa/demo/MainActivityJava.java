@@ -2,11 +2,14 @@ package vn.kalapa.demo;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -16,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import vn.kalapa.demo.activities.BaseActivity;
 import vn.kalapa.demo.activities.ResultActivity;
@@ -24,17 +28,15 @@ import vn.kalapa.demo.models.NFCVerificationData;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.DialogListener;
-import vn.kalapa.ekyc.IKalapaRawDataProcessor;
 import vn.kalapa.ekyc.KalapaFlowType;
 import vn.kalapa.ekyc.KalapaHandler;
-import vn.kalapa.ekyc.KalapaSDKMediaType;
 import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
+import vn.kalapa.ekyc.KalapaTimeoutScanNFCCallback;
 import vn.kalapa.ekyc.managers.KLPLanguageManager;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
-import vn.kalapa.ekyc.networks.Client;
 import vn.kalapa.ekyc.networks.KalapaAPI;
 import vn.kalapa.ekyc.utils.Common;
 import vn.kalapa.ekyc.utils.LocaleHelper;
@@ -80,6 +82,45 @@ public class MainActivityJava extends BaseActivity {
         @Override
         public void onExpired() {
             startEKYC();
+        }
+
+        @Override
+        public void onNFCTimeoutHandle(@NonNull Activity activity, @NonNull KalapaTimeoutScanNFCCallback nfcTimeoutHandler) {
+            LogUtils.Companion.printLog("onNFCTimeoutHandle Java!");
+//            super.onNFCTimeoutHandle(activity, nfcTimeoutHandler);
+            Dialog bottomSheetDialog = new Dialog(activity);
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_nfc_error);
+            bottomSheetDialog.setCancelable(false);
+            Objects.requireNonNull(bottomSheetDialog.getWindow()).setLayout(-1, -2);
+            Objects.requireNonNull(bottomSheetDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
+            Objects.requireNonNull(bottomSheetDialog.getWindow().getAttributes()).windowAnimations = R.style.DialogAnimation;
+            Objects.requireNonNull(bottomSheetDialog.getWindow()).setGravity(80);
+            TextView tvTitle = bottomSheetDialog.findViewById(R.id.text_status);
+            tvTitle.setText(KLPLanguageManager.INSTANCE.get(getResources().getString(R.string.klp_error_unknown))); // nfc_location_title
+
+            TextView tvBody = bottomSheetDialog.findViewById(R.id.text_des);
+            tvBody.setText(KLPLanguageManager.INSTANCE.get((getResources().getString(R.string.klp_nfc_common_error))));
+
+            Button btnCancel = bottomSheetDialog.findViewById(R.id.btn_cancel);
+            Helpers.Companion.setBackgroundColorTintList(btnCancel, preferencesConfig.getMainColor());
+            btnCancel.setTextColor(Color.parseColor(preferencesConfig.getMainColor()));
+            btnCancel.setText(KLPLanguageManager.INSTANCE.get((getResources().getString(R.string.klp_button_cancel))));
+
+
+            Button btnRetry = bottomSheetDialog.findViewById(R.id.btn_retry);
+            Helpers.Companion.setBackgroundColorTintList(btnRetry, preferencesConfig.getMainColor());
+            btnRetry.setTextColor(Color.parseColor(preferencesConfig.getBtnTextColor()));
+            btnRetry.setText(KLPLanguageManager.INSTANCE.get((getResources().getString(R.string.klp_button_retry))));
+            btnCancel.setOnClickListener(v -> nfcTimeoutHandler.close(() -> {
+                bottomSheetDialog.dismiss();
+                return null;
+            }));
+            btnRetry.setOnClickListener(v -> {
+                nfcTimeoutHandler.onRetry();
+                bottomSheetDialog.dismiss();
+            });
+
+            bottomSheetDialog.show();
         }
 
         @Override
@@ -237,6 +278,7 @@ public class MainActivityJava extends BaseActivity {
                     .withLivenessVersion(livenessVersion)
                     .withBaseURL(preferencesConfig.getEnv())
                     .withLanguage(preferencesConfig.getLanguage())
+                    .withNFCTimeoutInSeconds(10)
                     .build();
             refreshText(lang);
             refreshColor(btnColor, btnTxtColor);

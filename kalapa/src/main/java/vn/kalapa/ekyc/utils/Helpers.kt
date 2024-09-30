@@ -206,11 +206,11 @@ internal class Helpers {
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT
             )
-            val body = dialog.findViewById(R.id.custom_dialog_body) as TextView
+            val body: TextView = dialog.findViewById(R.id.custom_dialog_body)
             body.text = myBody
             body.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
-            val yesBtn = dialog.findViewById(R.id.custom_dialog_btn_yes) as Button
-            val tvTitle = dialog.findViewById(R.id.custom_dialog_title) as TextView
+            val yesBtn: Button = dialog.findViewById(R.id.custom_dialog_btn_yes)
+            val tvTitle: TextView = dialog.findViewById(R.id.custom_dialog_title)
             dialog.findViewById<TextView>(R.id.tv_alert_title).text = KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown))
             tvTitle.setTextColor(Color.BLACK)
             tvTitle.text = myTitle
@@ -223,7 +223,7 @@ internal class Helpers {
             if (drawableIcon != null) ivIcon.setImageDrawable(activity.getDrawable(drawableIcon))
             yesBtn.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
             if (yesTxt != null) yesBtn.text = yesTxt
-            val noBtn = dialog.findViewById(R.id.custom_dialog_btn_no) as TextView
+            val noBtn: TextView = dialog.findViewById(R.id.custom_dialog_btn_no)
             if (noTxt != null) noBtn.text = noTxt
 
             if (listener != null) {

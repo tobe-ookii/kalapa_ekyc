@@ -46,7 +46,7 @@ class KLPDetector(private val context: Context, private val modelPath: String, l
 
     init {
         val compatList = CompatibilityList()
-        Helpers.printLog("getCpuInfo ${Common.getCpuInfo()}")
+//        Helpers.printLog("getCpuInfo ${Common.getCpuInfo()}")
         val options = Interpreter.Options().apply {
             if (compatList.isDelegateSupportedOnThisDevice) {
                 val delegateOptions = compatList.bestOptionsForThisDevice

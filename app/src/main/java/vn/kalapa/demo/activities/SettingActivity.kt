@@ -589,12 +589,23 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
     }
 
     private fun setConfigBeforeExit() {
-        if (containerToken.visibility == View.GONE && !cbNFCScreen.isChecked && !cbLivenessScreen.isChecked && !cbCaptureIdScreen.isChecked) // custom flow
-            Helpers.showDialog(
-                this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "${KLPLanguageManager.get(resources.getString(R.string.klp_settings_screen))} ${KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose))}", R.drawable.frowning_face
-            )
-        else if ((edtToken.text.toString().isNotEmpty() || containerToken.visibility == View.GONE) && (cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked)) {
-
+        val isAcceptedDocumentsSelectAtLeastOnce = cbAcceptedEid2024.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedEidWithoutChip.isChecked || cbAcceptedEidWithChip.isChecked || cbAcceptedOld12DigitsIdCard.isChecked
+        val isTokenEmptied = edtToken.text.isNullOrEmpty()
+        val isSessionIdEmptied = edtLeftoverSession.text.isNullOrEmpty()
+        val isCustomScreenSelectAtLeastOnce = cbCaptureIdScreen.isChecked || cbNFCScreen.isChecked || cbLivenessScreen.isChecked
+        if (rgScenario.selectedIndex == 0 && (isTokenEmptied || !isAcceptedDocumentsSelectAtLeastOnce))
+            if (isTokenEmptied)
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "Token ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
+            else
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "${KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac))} ${KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)).lowercase()}", R.drawable.frowning_face)
+        else if (rgScenario.selectedIndex == 1 && (rgUpgradePlan.isPositiveCheck && isSessionIdEmptied || !rgUpgradePlan.isPositiveCheck && isTokenEmptied)) // custom flow
+            if (rgUpgradePlan.isPositiveCheck && isSessionIdEmptied)
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "Session ID ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
+            else
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "Token ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
+        else if (rgScenario.selectedIndex == 2 && !isCustomScreenSelectAtLeastOnce) // custom flow
+            Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "${KLPLanguageManager.get(resources.getString(R.string.klp_settings_screen))} ${KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)).lowercase()}", R.drawable.frowning_face)
+        else {
             Helpers.savePrefs(
                 MY_KEY_LIVENESS_VERSION,
                 if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
@@ -653,21 +664,6 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
                 sliderFaceMatchingThreshold.value.toInt().toString()
             )
             finish()
-        } else {
-            if (edtToken.text.toString().isEmpty())
-                Helpers.showDialog(
-                    this@SettingActivity,
-                    KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
-                    KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)) + " Token", R.drawable.frowning_face
-                )
-            else {
-                Helpers.showDialog(
-                    this@SettingActivity,
-                    KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
-                    KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)),
-                    R.drawable.frowning_face
-                )
-            }
         }
     }
 

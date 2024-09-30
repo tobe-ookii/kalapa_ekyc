@@ -29,8 +29,7 @@ import vn.kalapa.ekyc.views.ProgressView
 
 
 class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16.tflite") :
-    CameraXActivity(activityLayoutId = R.layout.activity_camera_x_id_card, hideAutoCapture = false),
-    KalapaSDKCallback, OnImageDetectedListener {
+    CameraXActivity(activityLayoutId = R.layout.activity_camera_x_id_card, hideAutoCapture = false), OnImageDetectedListener {
     private lateinit var ivPreviewImage: ImageView
     private lateinit var tvTitle: TextView
     private lateinit var tvGuide1: TextView
@@ -128,6 +127,7 @@ class CameraXAutoCaptureActivity(private val modelString: String = "klp_model_16
         }
         finish()
     }
+
 
 
     override fun onRetryClicked() {

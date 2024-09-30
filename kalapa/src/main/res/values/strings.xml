@@ -128,4 +128,6 @@
     <string name="klp_results_info_doe">results_info_doe</string>
     <string name="klp_results_info_poi">results_info_poi</string>
     <string name="klp_error_invalid_format">error_invalid_format</string>
+    <string name="klp_error_empty">error_empty</string>
+    <string name="klp_button_close">button_close</string>
 </resources>

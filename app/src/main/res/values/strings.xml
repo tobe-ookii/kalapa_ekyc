@@ -89,7 +89,6 @@
     <string name="klp_results_info_religion">results_info_religion</string>
     <string name="klp_results_decision_details">results_decision_details</string>
     <string name="klp_settings_screen">settings_screen</string>
-    <string name="klp_error_empty">error_empty</string>
     <string name="klp_error_must_choose">error_must_choose</string>
     <string name="klp_notice">notice</string>
     <string name="klp_results_face_matching_result">results_face_matching_result</string>

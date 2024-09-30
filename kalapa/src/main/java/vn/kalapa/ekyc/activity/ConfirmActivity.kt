@@ -104,6 +104,14 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         })
     }
 
+    override fun sendError(message: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendDone(nextAction: () -> Unit) {
+        TODO("Not yet implemented")
+    }
+
     private fun initView() {
 
         containerView = findViewById(R.id.containerView)
@@ -257,7 +265,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
     fun missingField(field: String) {
         Toast.makeText(
             this,
-            getString(R.string.klp_confirm_warning) + " '${field}'",
+            "'${field}' " + KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase(),
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -341,7 +349,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                     }
 
                     override fun timeout() {
-                        this@ConfirmActivity.timeout()
+                        this@ConfirmActivity.sendExpired()
                     }
 
 

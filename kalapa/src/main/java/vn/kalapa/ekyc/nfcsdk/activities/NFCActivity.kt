@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -23,7 +26,7 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
 import vn.kalapa.kalapasdk.nfcsdk.activities.BaseNFCActivity
 
-class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
+class NFCActivity : BaseNFCActivity(), DialogListener {
     private val TAG = NFCActivity::class.java.simpleName
     private val nfcUtils: KLPNFCUtils = KLPNFCUtils(this@NFCActivity)
     private var mrz: String? = null
@@ -32,7 +35,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     private lateinit var llPleaseMakeSure: LinearLayout
     private lateinit var tvTitle: TextView
     private lateinit var scrollview: ScrollView
-
+    private lateinit var btnSkip: Button
     private fun validateMRZOrOpenMRZScanner() {
         if (intent.getStringExtra("mrz") != null) {
             mrz = intent.getStringExtra("mrz")
@@ -57,6 +60,9 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
     override fun onDestroy() {
         super.onDestroy()
         mrz = ""
+        Helpers.printLog("remove startTimeoutEvent")
+        timeoutHandler?.removeCallbacksAndMessages(null)
+        timeoutHandler = null
     }
 
     private fun getIntentData() {
@@ -73,11 +79,34 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         finish()
     }
 
+    private fun startTimeoutEvent() {
+        Helpers.printLog("startTimeoutEvent")
+        timeoutHandler = Handler(Looper.getMainLooper())
+        timeoutHandler?.postDelayed({
+            if (KalapaSDK.ekycFlow == KalapaFlowType.NFC_EKYC) { // Show SKIP button after 1 min
+                btnSkip.setOnClickListener {
+                    KalapaSDK.handler.onNFCTimeoutHandle(this@NFCActivity, this@NFCActivity)
+                }
+                btnSkip.visibility = View.VISIBLE
+            } else
+                if (!nfcUnderScanning) {
+                    Helpers.printLog("showBottomError from handler timeout")
+                    showBottomError()
+                }
+        }, TIMEOUT.toLong())
+    }
+
     override fun onPostCreated() {
         super.onPostCreated()
         llPleaseMakeSure = findViewById(R.id.ll_please_make_sure)
+        btnSkip = findViewById(R.id.btn_skip_nfc)
+        btnSkip.visibility = View.GONE
+        Helpers.setBackgroundColorTintList(btnSkip, KalapaSDK.config.mainColor)
+        btnSkip.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
+        btnSkip.text = KLPLanguageManager.get(resources.getString(R.string.klp_nfc_skip))
         initNFC()
     }
+
 
     override fun onButtonScanClicked() {
         if (nfcUnderScanning) Toast.makeText(
@@ -121,6 +150,13 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         scrollview.post {
             scrollview.fullScroll(View.FOCUS_DOWN)
         }
+    }
+
+    override fun onNFCRetryClicked() {
+        btnScanNFC.callOnClick()
+        timeoutHandler?.removeCallbacksAndMessages(null)
+        timeoutHandler = null
+        startTimeoutEvent()
     }
 
     fun getMesageFromErrorCode(errorCode: ResultCode?): String {
@@ -319,21 +355,25 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
 
     override fun sendError(errorMess: String?) {
         Helpers.printLog("callback onError $errorMess")
-        this.runOnUiThread {
-            val message = errorMess
-                ?: KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
-            Helpers.showDialog(
-                this@NFCActivity,
-                KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
-                message,
-                R.drawable.ic_warning
-            ) {
-                ProgressView.hideProgress()
-                if (bottomSheetDialog.isShowing)
-                    bottomSheetDialog.dismiss()
+        ProgressView.hideProgress()
+        if (System.currentTimeMillis() - startTime > TIMEOUT) {
+            Helpers.printLog("showBottomError from onError $errorMess")
+            showBottomError(errorMess)
+        } else
+            this.runOnUiThread {
+                val message = errorMess
+                    ?: KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
+                Helpers.showDialog(
+                    this@NFCActivity,
+                    KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                    message,
+                    R.drawable.ic_warning
+                ) {
+                    if (bottomSheetDialog.isShowing)
+                        bottomSheetDialog.dismiss()
+                }
+                tvError.text = message
             }
-            tvError.text = message
-        }
     }
 
 //    override fun onDestroy() {
@@ -361,14 +401,15 @@ class NFCActivity : BaseNFCActivity(), DialogListener, KalapaSDKCallback {
         super.onResume()
 //        nfcUtils.isOnBackground = false
         getIntentData()
+        startTimeoutEvent()
         nfcUtils.callOnResume()
     }
 
     override fun onPause() {
         super.onPause()
-//        nfcUtils.isOnBackground = true
-//        Helpers.printLog("$TAG - NFCActivity - onPause - isOnBackground ${nfcUtils.isOnBackground}")
         nfcUtils.callOnPause()
+        Helpers.printLog("remove startTimeoutEvent")
+        timeoutHandler?.removeCallbacksAndMessages(null)
     }
 
     override fun hideBottomSheet() {

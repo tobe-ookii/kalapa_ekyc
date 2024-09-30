@@ -15,7 +15,6 @@
         android:paddingVertical="@dimen/margin_vertical"
         tools:context=".activity.SettingActivity">
 
-
         <ImageView
             android:id="@+id/iv_setting"
             android:layout_width="40dp"
