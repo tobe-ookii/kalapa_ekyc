@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -87,6 +88,10 @@ class BottomGuideFragment(var layoutType: GuideType) : Fragment() {
 
         // setup color
         val mainTextColor = KalapaSDK.config.mainTextColor
+        val backgroundColor = KalapaSDK.config.backgroundColor
+
+//        .setBackgroundColor(Color.parseColor(backgroundColor))
+        Helpers.setBackgroundColorTintList(view.findViewById<LinearLayout>(R.id.container_content), Color.parseColor(backgroundColor))
         var textArray = this.getStringFromLayout()
 
         tv_note_0.setTextColor(Color.parseColor(mainTextColor))

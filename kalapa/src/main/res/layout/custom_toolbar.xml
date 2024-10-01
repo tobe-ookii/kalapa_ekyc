@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -15,8 +14,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginEnd="@dimen/klp_margin_large"
-            android:layout_marginTop="@dimen/klp_margin_small"
-            android:paddingVertical="@dimen/margin_xxsmall"
             android:src="@drawable/klp_ic_close_32" />
     </androidx.appcompat.widget.Toolbar>
 

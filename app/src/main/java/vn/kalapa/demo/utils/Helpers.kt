@@ -29,6 +29,7 @@ import com.google.android.material.slider.Slider
 import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.demo.R
 import vn.kalapa.ekyc.DialogListener
+import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.models.PreferencesConfig
 import vn.kalapa.ekyc.utils.Common
@@ -229,6 +230,8 @@ internal class Helpers {
 
             val yesBtn = dialog.findViewById(R.id.custom_dialog_btn_yes) as Button
             val tvTitle = dialog.findViewById(R.id.custom_dialog_title) as TextView
+            tvTitle.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
+            setBackgroundColorTintList(dialog.findViewById(vn.kalapa.R.id.container_content), ExampleGlobalClass.preferencesConfig.backgroundColor)
 //            if (!myTitle.isNullOrEmpty()) dialog.findViewById<TextView>(R.id.tv_alert_title).text =
             //myTitle
 //                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_face_otp_alert_title))

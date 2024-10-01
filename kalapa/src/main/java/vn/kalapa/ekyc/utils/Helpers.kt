@@ -212,12 +212,14 @@ internal class Helpers {
             val yesBtn: Button = dialog.findViewById(R.id.custom_dialog_btn_yes)
             val tvTitle: TextView = dialog.findViewById(R.id.custom_dialog_title)
             dialog.findViewById<TextView>(R.id.tv_alert_title).text = KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown))
-            tvTitle.setTextColor(Color.BLACK)
+
             tvTitle.text = myTitle
             ViewCompat.setBackgroundTintList(
                 yesBtn,
                 ColorStateList.valueOf(Color.parseColor(KalapaSDK.config.mainColor))
             )
+            tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
+            setBackgroundColorTintList(dialog.findViewById(R.id.container_content), KalapaSDK.config.backgroundColor)
 
             val ivIcon = dialog.findViewById<ImageView>(R.id.iv_dialog_icon)
             if (drawableIcon != null) ivIcon.setImageDrawable(activity.getDrawable(drawableIcon))

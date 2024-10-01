@@ -19,7 +19,7 @@
             android:name=".MainActivityJava"
             android:exported="true"
             android:resizeableActivity="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/PaymeAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

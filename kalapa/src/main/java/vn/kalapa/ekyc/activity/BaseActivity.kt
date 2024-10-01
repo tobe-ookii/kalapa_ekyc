@@ -1,8 +1,12 @@
 package vn.kalapa.ekyc.activity
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.DisplayMetrics
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
@@ -16,6 +20,14 @@ abstract class BaseActivity : AppCompatActivity(), KalapaSDKCallback {
     companion object {
         init {
             System.loadLibrary("envi")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (KalapaSDK.isConfigInitialized()) {
+            window.statusBarColor = Color.parseColor(KalapaSDK.config.backgroundColor)
+            window.navigationBarColor = Color.parseColor(KalapaSDK.config.backgroundColor)
         }
     }
 

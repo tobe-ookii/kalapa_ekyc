@@ -297,14 +297,10 @@ public class MainActivityJava extends BaseActivity {
         if (preferencesConfig != null) {
             ekycButton.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_welcome_start)));
             ekycButton.invalidate();
-//            tvWelcome.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_name));
             tvWelcome.invalidate();
-//            tvWelcomeSubtitle.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_demo_name));
             tvWelcomeSubtitle.invalidate();
         } else {
             ekycButton.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_welcome_start)));
-//            tvWelcome.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_name)));
-//            tvWelcomeSubtitle.setText(KLPLanguageManager.INSTANCE.get(getString(R.string.klp_demo_name)));
         }
     }
 

@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import vn.kalapa.R
@@ -63,10 +64,15 @@ class ProgressView {
 
                 val mainTextColor = mainTextColor ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.mainTextColor else ""
                 val mainColor = mainColor ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.mainColor else ""
+                val backgroundColor = if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.backgroundColor else "#FFFFFF"
                 Helpers.printLog("Title: $title - $message ")
                 textView.text = title ?: if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get(context.getString(R.string.klp_error_unknown)) else context.getString(R.string.klp_error_unknown)
                 body.text = message ?: if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get(context.getString(R.string.klp_please_wait)) else context.getString(R.string.klp_please_wait)
-
+                sDialog?.findViewById<LinearLayout>(R.id.progress_container).let {
+                    it?.let {
+                        Helpers.setBackgroundColorTintList(it, Color.parseColor(backgroundColor))
+                    }
+                }
                 textView.setTextColor(Color.parseColor(mainTextColor))
                 body.setTextColor(Color.parseColor(mainTextColor))
                 if (!title.isNullOrEmpty())

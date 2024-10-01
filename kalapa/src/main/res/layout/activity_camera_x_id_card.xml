@@ -130,8 +130,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:lines="2"
-            android:textColor="@color/ekyc_red"
             android:text="@string/klp_id_capture_subtitle"
+            android:textColor="@color/ekyc_red"
             android:textSize="@dimen/klp_txt_size_normal" />
     </LinearLayout>
 

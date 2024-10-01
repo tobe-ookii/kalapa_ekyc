@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('kalapasdk-fat-2.9.1.2.aar'))
+artifacts.add("default", file('kalapasdk-fat-2.10.0.aar'))

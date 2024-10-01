@@ -76,30 +76,30 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'io.github.chaosleung:pinview:1.4.4'
     implementation "androidx.window:window-extensions:1.0.0-alpha01"
-    implementation project(path: ':kalapa')
+//    implementation project(path: ':kalapa')
 
-//    implementation project(':kalapasdk')
-//
-//     // For Liveness version 4
-//    implementation 'com.google.mlkit:face-detection:16.1.5'
-//    implementation 'com.google.mlkit:text-recognition:16.0.0'
-//
-//    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
-//     // Camera X
-//    def camerax_version = "1.2.2"
-//
-//    implementation "androidx.camera:camera-core:${camerax_version}"
-//    implementation "androidx.camera:camera-camera2:${camerax_version}"
-//    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
-//    implementation "androidx.camera:camera-video:${camerax_version}"
-//
-//    implementation "androidx.camera:camera-view:${camerax_version}"
-//    implementation "androidx.camera:camera-extensions:${camerax_version}"
-//
-//    // implement for tensorflow
-//    implementation 'org.tensorflow:tensorflow-lite:2.4.0'
-//    implementation 'org.tensorflow:tensorflow-lite-gpu:2.4.0'
-//
-//    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
-//    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
+    implementation project(':kalapasdk')
+
+     // For Liveness version 4
+    implementation 'com.google.mlkit:face-detection:16.1.5'
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
+
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
+     // Camera X
+    def camerax_version = "1.2.2"
+
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-video:${camerax_version}"
+
+    implementation "androidx.camera:camera-view:${camerax_version}"
+    implementation "androidx.camera:camera-extensions:${camerax_version}"
+
+    // implement for tensorflow
+    implementation 'org.tensorflow:tensorflow-lite:2.4.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.4.0'
+
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
 }
