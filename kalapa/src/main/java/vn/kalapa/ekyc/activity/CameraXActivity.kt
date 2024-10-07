@@ -39,6 +39,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.mlkit.vision.text.internal.LoggingUtils
 import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDK
@@ -48,7 +49,6 @@ import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.CameraUtils
 import vn.kalapa.ekyc.utils.Helpers
-import vn.kalapa.ekyc.utils.Logger
 import java.nio.ByteBuffer
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -62,7 +62,6 @@ abstract class CameraXActivity(
     private val hideAutoCapture: Boolean = true,
     private val refocusFrequency: Int = 100
 ) : BaseActivity(), View.OnClickListener {
-    private val log = Logger()
     var tmpBitmap: Bitmap? = null
     var isAutocapturing = !hideAutoCapture
 
@@ -488,24 +487,25 @@ abstract class CameraXActivity(
         val id: Int = v.id
         when (id) {
             R.id.btn_next -> {
-                log.d("Btn btn_next Clicked")
+                Helpers.printLog("Btn btn_next Clicked")
                 verifyImage()
             }
 
             R.id.btn_retry -> {
-                log.d("Btn btn_retry Clicked")
+                Helpers.printLog("Btn btn_retry Clicked")
                 onRetryClicked()
                 previewViewLayerMode(true)
             }
 
             R.id.btn_capture -> {
-                log.d("Btn btn_capture Clicked")
+                Helpers.printLog("Btn btn_capture Clicked")
+
                 if (!isAutocapturing)
                     takePhoto()
             }
 
             R.id.tv_instruction -> {
-                log.d("TV tv_instruction Clicked")
+                Helpers.printLog("Btn tv_instruction Clicked")
                 onInfoBtnClicked()
             }
         }

@@ -2,16 +2,13 @@ package vn.kalapa.ekyc.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import vn.kalapa.R;
-import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.managers.KLPLanguageManager;
 
 

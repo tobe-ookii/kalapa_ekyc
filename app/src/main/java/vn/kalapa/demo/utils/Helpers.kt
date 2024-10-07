@@ -230,11 +230,6 @@ internal class Helpers {
 
             val yesBtn = dialog.findViewById(R.id.custom_dialog_btn_yes) as Button
             val tvTitle = dialog.findViewById(R.id.custom_dialog_title) as TextView
-            tvTitle.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
-            setBackgroundColorTintList(dialog.findViewById(vn.kalapa.R.id.container_content), ExampleGlobalClass.preferencesConfig.backgroundColor)
-//            if (!myTitle.isNullOrEmpty()) dialog.findViewById<TextView>(R.id.tv_alert_title).text =
-            //myTitle
-//                KalapaSDK.config.languageUtils.getLanguageString(activity.getString(R.string.klp_face_otp_alert_title))
             tvTitle.text = myTitle
 
             val ivIcon = dialog.findViewById<ImageView>(R.id.iv_dialog_icon)
@@ -243,6 +238,7 @@ internal class Helpers {
             val noBtn = dialog.findViewById(R.id.custom_dialog_btn_no) as TextView
             noBtn.text = noTxt ?: KLPLanguageManager.get(myActivity.getString(R.string.klp_settings_no))
             if (ExampleGlobalClass.isPreferencesConfigInitialized()) {
+                setBackgroundColorTintList(dialog.findViewById(vn.kalapa.R.id.container_content), ExampleGlobalClass.preferencesConfig.backgroundColor)
                 tvTitle.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 noBtn.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
                 body.setTextColor(Color.parseColor(ExampleGlobalClass.preferencesConfig.mainTextColor))
