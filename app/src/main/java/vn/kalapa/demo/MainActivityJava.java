@@ -18,13 +18,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import vn.kalapa.demo.activities.BaseActivity;
 import vn.kalapa.demo.activities.ResultActivity;
 import vn.kalapa.demo.models.NFCCardData;
 import vn.kalapa.demo.models.NFCVerificationData;
+import vn.kalapa.demo.network.Client;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.DialogListener;
@@ -34,6 +41,7 @@ import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
 import vn.kalapa.ekyc.KalapaTimeoutScanNFCCallback;
+import vn.kalapa.ekyc.managers.AESCryptor;
 import vn.kalapa.ekyc.managers.KLPLanguageManager;
 import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
@@ -70,9 +78,37 @@ public class MainActivityJava extends BaseActivity {
                             KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.frowning_face);
                     return;
                 }
+                getTicket();
                 startEKYC();
             }
         });
+    }
+
+    private void getTicket() {
+        LogUtils.Companion.printLog(AESCryptor.encryptText("2f2b50bc"));
+//        Client client = new Client("https://ekyc-dev-internal.kalapa.vn");
+//        Map<String, String> headers = new HashMap<>();
+//        headers.put("Authorization", preferencesConfig.getToken());
+//        Map<String, String> body = new HashMap<>();
+//        body.put("customer_identity", "tung@kalapa.vn");
+//        body.put("nday_valid_time", "1");
+//        body.put("ekyc_flow", "nfc_only");
+//        client.post("https://ekyc-dev-internal.kalapa.vn/api/ticket", headers, body, new Client.RequestListener() {
+//            @Override
+//            public void success(@NonNull JSONObject jsonObject) {
+//                LogUtils.Companion.printLog("GetTicket client.post: " + new Gson().toJson(jsonObject));
+//            }
+//
+//            @Override
+//            public void fail(@NonNull String error) {
+//                LogUtils.Companion.printLog("GetTicket client.post failed " + error);
+//            }
+//
+//            @Override
+//            public void timeout() {
+//                LogUtils.Companion.printLog("GetTicket client.post timeout");
+//            }
+//        });
     }
 
     private boolean isUpgraded = false;

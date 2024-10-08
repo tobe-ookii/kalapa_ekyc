@@ -1,7 +1,17 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-//apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.kezong.fat-aar'
+//apply plugin: 'com.android.library'
+//apply plugin: 'kotlin-android'
+////apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'com.kezong.fat-aar'
+
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'com.kezong.fat-aar'
+    id 'com.vanniktech.maven.publish' version "0.25.0"
+    id 'com.gradleup.nmcp' version "0.0.8"
+}
+
 
 android {
     compileSdk 33
@@ -33,6 +43,7 @@ android {
         minSdk 26
         targetSdk 33
         versionCode 1
+        version "2.9.0"
         versionName "2.9.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,11 +56,11 @@ android {
     }
     compileOptions {
         encoding "UTF-8"
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
         freeCompilerArgs = ['-Xjvm-default=compatibility']
     }
     externalNativeBuild {
@@ -110,4 +121,14 @@ dependencies {
     // okhttp for networks
     implementation "com.squareup.okhttp3:logging-interceptor:4.5.0"
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
+}
+
+
+nmcp {
+    publishAllPublications {
+        username = "1+L4MpOB"
+        password = "ZZjUo9T0SGiKtCSai/hOBA5z+UJPeVJT8MlVDgFGdfF/"
+        publicationType = "USER_MANAGED"
+        publicationType = "AUTOMATIC"
+    }
 }

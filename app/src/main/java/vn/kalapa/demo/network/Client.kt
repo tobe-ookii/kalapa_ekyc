@@ -344,7 +344,7 @@ class Client {
                     if (errorCode == 401 || errorCode == 403) {
                         listener.fail("Wrong Token")
                     } else {
-                        if (errorCode == 0)
+                        if (errorCode == 0 || errorCode == 200)
                             listener.success(dataJson as JSONObject)
                         else
                             listener.fail(errorMessage)
