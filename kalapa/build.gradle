@@ -126,8 +126,8 @@ dependencies {
 
 nmcp {
     publishAllPublications {
-        username = "1+L4MpOB"
-        password = "ZZjUo9T0SGiKtCSai/hOBA5z+UJPeVJT8MlVDgFGdfF/"
+        username = "kdV1ND3z"
+        password = "W2oka8dqSefVcrZzJd77ktmqxubQRCVQyUed1o5AoIWb"
         publicationType = "USER_MANAGED"
         publicationType = "AUTOMATIC"
     }

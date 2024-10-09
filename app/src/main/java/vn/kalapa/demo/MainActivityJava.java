@@ -18,20 +18,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import vn.kalapa.demo.activities.BaseActivity;
 import vn.kalapa.demo.activities.ResultActivity;
 import vn.kalapa.demo.models.NFCCardData;
 import vn.kalapa.demo.models.NFCVerificationData;
-import vn.kalapa.demo.network.Client;
 import vn.kalapa.demo.utils.Helpers;
 import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.DialogListener;
@@ -40,7 +33,7 @@ import vn.kalapa.ekyc.KalapaHandler;
 import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
-import vn.kalapa.ekyc.KalapaTimeoutScanNFCCallback;
+import vn.kalapa.ekyc.KalapaScanNFCCallback;
 import vn.kalapa.ekyc.managers.AESCryptor;
 import vn.kalapa.ekyc.managers.KLPLanguageManager;
 import vn.kalapa.ekyc.models.KalapaResult;
@@ -121,7 +114,7 @@ public class MainActivityJava extends BaseActivity {
         }
 
         @Override
-        public void onNFCTimeoutHandle(@NonNull Activity activity, @NonNull KalapaTimeoutScanNFCCallback nfcTimeoutHandler) {
+        public void onNFCTimeoutHandle(@NonNull Activity activity, @NonNull KalapaScanNFCCallback nfcTimeoutHandler) {
             LogUtils.Companion.printLog("onNFCTimeoutHandle Java!");
 //            super.onNFCTimeoutHandle(activity, nfcTimeoutHandler);
             Dialog bottomSheetDialog = new Dialog(activity);

@@ -24,7 +24,7 @@ import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
 
 
-abstract class BaseNFCActivity : BaseActivity, KalapaTimeoutScanNFCCallback {
+abstract class BaseNFCActivity : BaseActivity, KalapaScanNFCCallback {
     lateinit var bottomSheetDialog: Dialog
     var isNFCSucceed = false
     var isNFCFinished = false

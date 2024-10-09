@@ -101,7 +101,7 @@ class KalapaSDK private constructor(
         private lateinit var backResult: BackResult
         internal lateinit var config: KalapaSDKConfig
         internal lateinit var handler: KalapaHandler
-        internal var sdkCallback: KalapaTimeoutScanNFCCallback? = null
+        internal var scanNFCCallback: KalapaScanNFCCallback? = null
         internal lateinit var session: String
         internal lateinit var ekycFlow: KalapaFlowType
         private fun refreshSession() {
@@ -262,7 +262,7 @@ class KalapaSDK private constructor(
                 override fun onExpired() {
                 }
 
-                override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaTimeoutScanNFCCallback) {
+                override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaScanNFCCallback) {
                     if (kalapaCustomHandler is KalapaNFCHandler)
                         kalapaCustomHandler.onNFCTimeoutHandle(activity, nfcHandler)
                     else // Default
@@ -505,7 +505,7 @@ class KalapaSDK private constructor(
                         kalapaHandler.onExpired()
                     }
 
-                    override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaTimeoutScanNFCCallback) {
+                    override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaScanNFCCallback) {
                         if (sessionFlow == KalapaFlowType.NFC_EKYC) {
                             nfcHandler.close(localStartLivenessForResult)
                         } else // Callback
@@ -522,9 +522,7 @@ class KalapaSDK private constructor(
                                 // Set NFC. Call liveness.
                                 Helpers.printLog("nfcCheck $jsonObject")
 
-                                if (jsonObject.has("data") && jsonObject.getJSONObject("data")
-                                        .has("is_nfc_face_match_selfie")
-                                ) {
+                                if (jsonObject.has("data") && jsonObject.getJSONObject("data").has("is_nfc_face_match_selfie")) {
                                     // First we need to get SELFIE
                                     val PATH_GET_SELFIE = "/api/data/image?type=SELFIE"
                                     KalapaAPI.getImage(PATH_GET_SELFIE, leftoverSession,
@@ -842,7 +840,15 @@ abstract class KalapaHandler {
 
     abstract fun onExpired()
 
-    open fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaTimeoutScanNFCCallback) {
+    open fun onNFCErrorHandle(activity: Activity, error: KalapaScanNFCError, message: String, handler: KalapaScanNFCCallback) {
+        showDefaultNFCDialog(activity, message, handler)
+    }
+
+    open fun onNFCTimeoutHandle(activity: Activity, handler: KalapaScanNFCCallback) {
+        showDefaultNFCDialog(activity, null, handler)
+    }
+
+    private fun showDefaultNFCDialog(activity: Activity, message: String?, handler: KalapaScanNFCCallback) {
         val bottomSheetDialog = Dialog(activity)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_nfc_error)
         bottomSheetDialog.window?.setLayout(-1, -2)
@@ -854,7 +860,7 @@ abstract class KalapaHandler {
         tvTitle.text = KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown)) // nfc_location_title
 
         val tvBody = bottomSheetDialog.findViewById<TextView>(R.id.text_des)
-        tvBody.text = KLPLanguageManager.get(activity.getString(R.string.klp_nfc_common_error))
+        tvBody.text = message ?: KLPLanguageManager.get(activity.getString(R.string.klp_nfc_common_error))
 
         val btnCancel = bottomSheetDialog.findViewById<Button>(R.id.btn_cancel)
         Helpers.setBackgroundColorTintList(btnCancel, KalapaSDK.config.mainColor)
@@ -862,7 +868,7 @@ abstract class KalapaHandler {
         btnCancel.text = KLPLanguageManager.get(activity.getString(R.string.klp_button_cancel))
         btnCancel.setOnClickListener {
             bottomSheetDialog.hide()
-            nfcHandler.close { Helpers.printLog("User Give Up!") }
+            handler.close { Helpers.printLog("User Give Up!") }
         }
 
         val btnRetry = bottomSheetDialog.findViewById<Button>(R.id.btn_retry)
@@ -870,12 +876,16 @@ abstract class KalapaHandler {
         btnRetry.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
         btnRetry.text = KLPLanguageManager.get(activity.getString(R.string.klp_button_retry))
         btnRetry.setOnClickListener {
-            nfcHandler.onRetry()
+            handler.onRetry()
             Helpers.printLog("User Tap on Retry!")
             bottomSheetDialog.hide()
         }
         bottomSheetDialog.show()
     }
+}
+
+enum class KalapaScanNFCError {
+    ERROR_NFC_INFO_NOT_MATCH, ERROR_FACE_NOT_MATCH, ERROR_NFC_INVALID
 }
 
 internal abstract class KalapaNFCHandler : KalapaHandler() {
@@ -936,7 +946,7 @@ interface KalapaSDKCallback {
     fun sendExpired()
 }
 
-interface KalapaTimeoutScanNFCCallback {
+interface KalapaScanNFCCallback {
     fun close(nextAction: () -> Unit)
     fun onRetry()
 }

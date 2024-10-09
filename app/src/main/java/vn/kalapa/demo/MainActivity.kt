@@ -13,7 +13,7 @@ import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.KalapaSDKConfig
 import vn.kalapa.ekyc.KalapaSDKMediaType
 import vn.kalapa.ekyc.KalapaSDKResultCode
-import vn.kalapa.ekyc.KalapaTimeoutScanNFCCallback
+import vn.kalapa.ekyc.KalapaScanNFCCallback
 import vn.kalapa.ekyc.models.KalapaResult
 import vn.kalapa.ekyc.networks.Client
 
@@ -45,7 +45,7 @@ class MainActivity : BaseActivity() {
 
             }
             val klpHandler = object : KalapaHandler() {
-                override fun onNFCTimeoutHandle(activity: Activity, sdkCallback: KalapaTimeoutScanNFCCallback) {
+                override fun onNFCTimeoutHandle(activity: Activity, sdkCallback: KalapaScanNFCCallback) {
                     // This handler is called when user stuck in NFC screen for long time. You can implement your UI code and use sdkCallback to tell SDK should retry / stay in this screen or close the SDK
                     super.onNFCTimeoutHandle(activity, sdkCallback)
                 }

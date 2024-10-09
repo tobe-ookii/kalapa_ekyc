@@ -110,11 +110,7 @@ dependencies {
 nmcp {
     publishAggregation {
         project(":kalapa")
-
-        username = "1+L4MpOB"
-        password = "ZZjUo9T0SGiKtCSai/hOBA5z+UJPeVJT8MlVDgFGdfF/"
         publicationType = "USER_MANAGED"
         publicationType = "AUTOMATIC"
-
     }
 }

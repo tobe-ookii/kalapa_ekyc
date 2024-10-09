@@ -241,21 +241,28 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
                     runOnUiThread {
                         Helpers.printLog("NFCActivity initNFC  OnError $p0")
                         ProgressView.hideProgress()
-                        if (bottomSheetDialog.isShowing && !isBottomSheetGuide)
-                            (bottomSheetDialog.findViewById<ImageView>(R.id.iv_gif)!!).setImageDrawable(
-                                gifError
-                            )
-                        onNFCErrorHandleUI(getMesageFromErrorCode(p0))
-                    }
-                    p0?.let {
-                        when (p0) {
-                            ResultCode.CARD_NOT_FOUND -> KalapaSDKResultCode.CARD_NOT_FOUND
-                            ResultCode.CARD_LOST_CONNECTION -> KalapaSDKResultCode.CARD_LOST_CONNECTION
-                            ResultCode.SUCCESS -> KalapaSDKResultCode.SUCCESS
-                            ResultCode.CANNOT_OPEN_DEVICE -> KalapaSDKResultCode.CANNOT_OPEN_DEVICE
-                            ResultCode.UNKNOWN -> KalapaSDKResultCode.UNKNOWN
-                            ResultCode.WRONG_CCCDID -> KalapaSDKResultCode.WRONG_CCCDID
-                            ResultCode.SUCCESS_WITH_WARNING -> KalapaSDKResultCode.SUCCESS_WITH_WARNING
+                        p0?.let {
+                            if (it == ResultCode.WRONG_CCCDID) {
+                                Helpers.showDialog(
+                                    this@NFCActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                                    KLPLanguageManager.get(resources.getString(R.string.klp_error_invalid_format)), null
+                                ) {
+                                    openMRZScanner()
+                                }
+                            } else {
+                                if (bottomSheetDialog.isShowing && !isBottomSheetGuide)
+                                    (bottomSheetDialog.findViewById<ImageView>(R.id.iv_gif)!!).setImageDrawable(gifError)
+                                onNFCErrorHandleUI(getMesageFromErrorCode(it))
+//                            when (p0) {
+//                                ResultCode.CARD_NOT_FOUND -> KalapaSDKResultCode.CARD_NOT_FOUND
+//                                ResultCode.CARD_LOST_CONNECTION -> KalapaSDKResultCode.CARD_LOST_CONNECTION
+//                                ResultCode.SUCCESS -> KalapaSDKResultCode.SUCCESS
+//                                ResultCode.CANNOT_OPEN_DEVICE -> KalapaSDKResultCode.CANNOT_OPEN_DEVICE
+//                                ResultCode.UNKNOWN -> KalapaSDKResultCode.UNKNOWN
+//                                ResultCode.WRONG_CCCDID -> {KalapaSDKResultCode.WRONG_CCCDID
+//                                ResultCode.SUCCESS_WITH_WARNING -> KalapaSDKResultCode.SUCCESS_WITH_WARNING
+//                            }
+                            }
                         }
                     }
                 }
@@ -361,6 +368,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
             showBottomError(errorMess)
         } else
             this.runOnUiThread {
+               
                 val message = errorMess
                     ?: KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
                 Helpers.showDialog(
