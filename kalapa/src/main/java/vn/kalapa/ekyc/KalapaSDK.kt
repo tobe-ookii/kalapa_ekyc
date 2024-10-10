@@ -262,12 +262,12 @@ class KalapaSDK private constructor(
                 override fun onExpired() {
                 }
 
-                override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaScanNFCCallback) {
+                override fun onNFCTimeoutHandle(activity: Activity, callback: KalapaScanNFCCallback) {
                     if (kalapaCustomHandler is KalapaNFCHandler)
-                        kalapaCustomHandler.onNFCTimeoutHandle(activity, nfcHandler)
+                        kalapaCustomHandler.onNFCTimeoutHandle(activity, callback)
                     else // Default
                         if (ekycFlow == KalapaFlowType.NFC_EKYC) {
-                            nfcHandler.close(complete)
+                            callback.close(complete)
                         } else
                             Helpers.showDialog(activity,
                                 KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown)),
@@ -276,12 +276,12 @@ class KalapaSDK private constructor(
                                 KLPLanguageManager.get(activity.getString(R.string.klp_button_close)),
                                 R.drawable.frowning_face, object : DialogListener {
                                     override fun onYes() {
-                                        nfcHandler.onRetry()
+                                        callback.onRetry()
                                         Helpers.printLog("User Tap on Retry!")
                                     }
 
                                     override fun onNo() {
-                                        nfcHandler.close {
+                                        callback.close {
                                             Helpers.printLog("User Give Up!")
                                         }
                                     }
@@ -505,11 +505,11 @@ class KalapaSDK private constructor(
                         kalapaHandler.onExpired()
                     }
 
-                    override fun onNFCTimeoutHandle(activity: Activity, nfcHandler: KalapaScanNFCCallback) {
+                    override fun onNFCTimeoutHandle(activity: Activity, callback: KalapaScanNFCCallback) {
                         if (sessionFlow == KalapaFlowType.NFC_EKYC) {
-                            nfcHandler.close(localStartLivenessForResult)
+                            callback.close(localStartLivenessForResult)
                         } else // Callback
-                            kalapaHandler.onNFCTimeoutHandle(activity, nfcHandler)
+                            kalapaHandler.onNFCTimeoutHandle(activity, callback)
                     }
 
                     override fun process(
@@ -554,7 +554,9 @@ class KalapaSDK private constructor(
                             }
 
                             override fun fail(error: KalapaError) {
-                                callback.sendError(error.getMessageError())
+                                if (error.code == 21 || error.code == 400 || error.code == 51)
+                                    callback.sendError("${error.code};${error.getMessageError()}")
+                                else callback.sendError(error.getMessageError())
                             }
 
                             override fun timeout() {
@@ -840,15 +842,15 @@ abstract class KalapaHandler {
 
     abstract fun onExpired()
 
-    open fun onNFCErrorHandle(activity: Activity, error: KalapaScanNFCError, message: String, handler: KalapaScanNFCCallback) {
-        showDefaultNFCDialog(activity, message, handler)
+    open fun onNFCErrorHandle(activity: Activity, error: KalapaScanNFCError, message: String, callback: KalapaScanNFCCallback) {
+        showDefaultNFCDialog(activity, message, callback)
     }
 
-    open fun onNFCTimeoutHandle(activity: Activity, handler: KalapaScanNFCCallback) {
-        showDefaultNFCDialog(activity, null, handler)
+    open fun onNFCTimeoutHandle(activity: Activity, callback: KalapaScanNFCCallback) {
+        showDefaultNFCDialog(activity, null, callback)
     }
 
-    private fun showDefaultNFCDialog(activity: Activity, message: String?, handler: KalapaScanNFCCallback) {
+    private fun showDefaultNFCDialog(activity: Activity, message: String?, callback: KalapaScanNFCCallback) {
         val bottomSheetDialog = Dialog(activity)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_nfc_error)
         bottomSheetDialog.window?.setLayout(-1, -2)
@@ -868,7 +870,7 @@ abstract class KalapaHandler {
         btnCancel.text = KLPLanguageManager.get(activity.getString(R.string.klp_button_cancel))
         btnCancel.setOnClickListener {
             bottomSheetDialog.hide()
-            handler.close { Helpers.printLog("User Give Up!") }
+            callback.close { Helpers.printLog("User Give Up!") }
         }
 
         val btnRetry = bottomSheetDialog.findViewById<Button>(R.id.btn_retry)
@@ -876,7 +878,7 @@ abstract class KalapaHandler {
         btnRetry.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
         btnRetry.text = KLPLanguageManager.get(activity.getString(R.string.klp_button_retry))
         btnRetry.setOnClickListener {
-            handler.onRetry()
+            callback.onRetry()
             Helpers.printLog("User Tap on Retry!")
             bottomSheetDialog.hide()
         }
@@ -884,8 +886,19 @@ abstract class KalapaHandler {
     }
 }
 
-enum class KalapaScanNFCError {
-    ERROR_NFC_INFO_NOT_MATCH, ERROR_FACE_NOT_MATCH, ERROR_NFC_INVALID
+enum class KalapaScanNFCError(val code: Int) {
+    ERROR_NFC_INFO_NOT_MATCH(51), ERROR_FACE_NOT_MATCH(21), ERROR_NFC_INVALID(400), ERROR_NA(-1);
+
+    companion object {
+        fun fromErrorCode(code: String): KalapaScanNFCError {
+            return when (code) {
+                "21" -> ERROR_FACE_NOT_MATCH
+                "51" -> ERROR_NFC_INVALID
+                "400", "500" -> ERROR_NFC_INVALID
+                else -> ERROR_NA
+            }
+        }
+    }
 }
 
 internal abstract class KalapaNFCHandler : KalapaHandler() {
@@ -950,7 +963,6 @@ interface KalapaScanNFCCallback {
     fun close(nextAction: () -> Unit)
     fun onRetry()
 }
-
 
 enum class KalapaFlowType(val flow: String?) {
     EKYC("ekyc"),

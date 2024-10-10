@@ -363,25 +363,31 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
     override fun sendError(errorMess: String?) {
         Helpers.printLog("callback onError $errorMess")
         ProgressView.hideProgress()
-        if (System.currentTimeMillis() - startTime > TIMEOUT) {
-            Helpers.printLog("showBottomError from onError $errorMess")
-            showBottomError(errorMess)
-        } else
-            this.runOnUiThread {
-               
-                val message = errorMess
-                    ?: KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
-                Helpers.showDialog(
-                    this@NFCActivity,
-                    KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
-                    message,
-                    R.drawable.ic_warning
-                ) {
-                    if (bottomSheetDialog.isShowing)
-                        bottomSheetDialog.dismiss()
+        if (errorMess != null && errorMess.contains(";")) {
+            val errorArr = errorMess.split(";")
+            timeoutHandler?.removeCallbacksAndMessages(null)
+            KalapaSDK.handler.onNFCErrorHandle(this@NFCActivity, KalapaScanNFCError.fromErrorCode(errorArr[0]), errorArr[1], this@NFCActivity)
+        } else {
+            if (System.currentTimeMillis() - startTime > TIMEOUT) {
+                Helpers.printLog("showBottomError from onError $errorMess")
+                showBottomError(errorMess)
+            } else
+                this.runOnUiThread {
+
+                    val message = errorMess
+                        ?: KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
+                    Helpers.showDialog(
+                        this@NFCActivity,
+                        KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                        message,
+                        R.drawable.ic_warning
+                    ) {
+                        if (bottomSheetDialog.isShowing)
+                            bottomSheetDialog.dismiss()
+                    }
+                    tvError.text = message
                 }
-                tvError.text = message
-            }
+        }
     }
 
 //    override fun onDestroy() {

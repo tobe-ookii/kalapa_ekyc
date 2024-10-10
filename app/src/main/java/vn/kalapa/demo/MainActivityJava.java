@@ -34,6 +34,7 @@ import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
 import vn.kalapa.ekyc.KalapaScanNFCCallback;
+import vn.kalapa.ekyc.KalapaScanNFCError;
 import vn.kalapa.ekyc.managers.AESCryptor;
 import vn.kalapa.ekyc.managers.KLPLanguageManager;
 import vn.kalapa.ekyc.models.KalapaResult;
@@ -114,7 +115,12 @@ public class MainActivityJava extends BaseActivity {
         }
 
         @Override
-        public void onNFCTimeoutHandle(@NonNull Activity activity, @NonNull KalapaScanNFCCallback nfcTimeoutHandler) {
+        public void onNFCErrorHandle(@NonNull Activity activity, @NonNull KalapaScanNFCError error, @NonNull String message, @NonNull KalapaScanNFCCallback callback) {
+            super.onNFCErrorHandle(activity, error, message, callback);
+        }
+
+        @Override
+        public void onNFCTimeoutHandle(@NonNull Activity activity, @NonNull KalapaScanNFCCallback callback) {
             LogUtils.Companion.printLog("onNFCTimeoutHandle Java!");
 //            super.onNFCTimeoutHandle(activity, nfcTimeoutHandler);
             Dialog bottomSheetDialog = new Dialog(activity);
@@ -140,12 +146,12 @@ public class MainActivityJava extends BaseActivity {
             Helpers.Companion.setBackgroundColorTintList(btnRetry, preferencesConfig.getMainColor());
             btnRetry.setTextColor(Color.parseColor(preferencesConfig.getBtnTextColor()));
             btnRetry.setText(KLPLanguageManager.INSTANCE.get((getResources().getString(R.string.klp_button_retry))));
-            btnCancel.setOnClickListener(v -> nfcTimeoutHandler.close(() -> {
+            btnCancel.setOnClickListener(v -> callback.close(() -> {
                 bottomSheetDialog.dismiss();
                 return null;
             }));
             btnRetry.setOnClickListener(v -> {
-                nfcTimeoutHandler.onRetry();
+                callback.onRetry();
                 bottomSheetDialog.dismiss();
             });
 
