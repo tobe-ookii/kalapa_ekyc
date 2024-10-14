@@ -34,6 +34,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
     private var transactionId: String? = null
     private lateinit var llPleaseMakeSure: LinearLayout
     private lateinit var tvTitle: TextView
+    private lateinit var ivNFCIcon: ImageView
     private lateinit var scrollview: ScrollView
     private lateinit var btnSkip: Button
     private fun validateMRZOrOpenMRZScanner() {
@@ -83,11 +84,11 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
         Helpers.printLog("startTimeoutEvent")
         timeoutHandler = Handler(Looper.getMainLooper())
         timeoutHandler?.postDelayed({
-            if (KalapaSDK.ekycFlow == KalapaFlowType.NFC_EKYC) { // Show SKIP button after 1 min
-                btnSkip.setOnClickListener {
-                    KalapaSDK.handler.onNFCTimeoutHandle(this@NFCActivity, this@NFCActivity)
-                }
+            if (KalapaSDK.ekycFlow == KalapaFlowType.NFC_EKYC) { // Show SKIP button after x min
                 btnSkip.visibility = View.VISIBLE
+                btnSkip.setOnClickListener {
+                    KalapaSDK.handler.onNFCSkipButtonClicked(this@NFCActivity)
+                }
             } else
                 if (!nfcUnderScanning) {
                     Helpers.printLog("showBottomError from handler timeout")
@@ -101,6 +102,8 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
         llPleaseMakeSure = findViewById(R.id.ll_please_make_sure)
         btnSkip = findViewById(R.id.btn_skip_nfc)
         btnSkip.visibility = View.GONE
+        ivNFCIcon = findViewById(R.id.iv_nfc_icon)
+        Helpers.setColorTintList(ivNFCIcon, KalapaSDK.config.mainColor)
         Helpers.setBackgroundColorTintList(btnSkip, KalapaSDK.config.mainColor)
         btnSkip.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
         btnSkip.text = KLPLanguageManager.get(resources.getString(R.string.klp_nfc_skip))
@@ -243,9 +246,11 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
                         ProgressView.hideProgress()
                         p0?.let {
                             if (it == ResultCode.WRONG_CCCDID) {
+                                hideBottomSheet()
+                                removeTimeoutHandlerCallbackAndMessage()
                                 Helpers.showDialog(
                                     this@NFCActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
-                                    KLPLanguageManager.get(resources.getString(R.string.klp_error_invalid_format)), null
+                                    KLPLanguageManager.get(resources.getString(R.string.klp_nfc_invalid_mrz)), null
                                 ) {
                                     openMRZScanner()
                                 }
@@ -287,8 +292,6 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
                         KLPLanguageManager.get(resources.getString(R.string.klp_nfc_reading_title_reading))
                     (bottomSheetDialog.findViewById(R.id.text_des) as TextView).text =
                         KLPLanguageManager.get(resources.getString(R.string.klp_nfc_reading_message_2))
-                    (bottomSheetDialog.findViewById(R.id.tv_title) as TextView).text =
-                        KLPLanguageManager.get(resources.getString(R.string.klp_nfc_reading_title_reading))
                     (bottomSheetDialog.findViewById(R.id.text_des) as TextView).setTextColor(
                         Color.parseColor(KalapaSDK.config.mainTextColor)
                     )
@@ -360,13 +363,15 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
 
     }
 
+
     override fun sendError(errorMess: String?) {
         Helpers.printLog("callback onError $errorMess")
         ProgressView.hideProgress()
         if (errorMess != null && errorMess.contains(";")) {
             val errorArr = errorMess.split(";")
-            timeoutHandler?.removeCallbacksAndMessages(null)
-            KalapaSDK.handler.onNFCErrorHandle(this@NFCActivity, KalapaScanNFCError.fromErrorCode(errorArr[0]), errorArr[1], this@NFCActivity)
+            removeTimeoutHandlerCallbackAndMessage()
+            Helpers.printLog("NFCActivity onNFCErrorHandle ${errorArr[0]} - ${errorArr[1]}")
+            KalapaSDK.handler.onNFCErrorHandle(this@NFCActivity, KalapaScanNFCError.fromErrorCode(errorArr[0]), this@NFCActivity)
         } else {
             if (System.currentTimeMillis() - startTime > TIMEOUT) {
                 Helpers.printLog("showBottomError from onError $errorMess")

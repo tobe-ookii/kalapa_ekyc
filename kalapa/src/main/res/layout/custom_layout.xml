@@ -31,36 +31,33 @@
 
         <ImageView
             android:id="@+id/iv_dialog_icon"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginTop="@dimen/margin_vertical_large"
-            android:src="@drawable/sad_face"
-            android:visibility="gone" />
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_marginVertical="@dimen/klp_margin_mid"
+            android:src="@drawable/ic_sad_face" />
 
         <TextView
             android:id="@+id/custom_dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:paddingTop="@dimen/klp_margin_mid"
-            android:layout_marginBottom="@dimen/klp_margin_xsmall"
             android:text="@string/klp_error_unknown"
             android:textAlignment="center"
-            android:textSize="@dimen/klp_shinhan_title_22"
+            android:textSize="@dimen/klp_txt_size_header"
             android:textStyle="bold" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/klp_margin_xsmall"
-            android:layout_marginHorizontal="1dp"
-            android:background="@color/ekyc_grey" />
+        <!--        <View-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:layout_marginHorizontal="1dp"-->
+        <!--            android:layout_marginBottom="@dimen/klp_margin_xsmall"-->
+        <!--            android:background="@color/ekyc_grey" />-->
 
         <TextView
             android:id="@+id/custom_dialog_body"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_xlarge"
             android:text="@string/klp_error_network"
             android:textAlignment="center"
             android:textColor="@color/black80"
@@ -81,11 +78,12 @@
                 android:layout_marginEnd="@dimen/margin_xxsmall"
                 android:layout_weight="1"
                 android:background="@drawable/border_button_only"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="@color/ekyc_red"
                 android:text="@string/klp_button_cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/black_txt"
-                android:textSize="@dimen/klp_shinhan_title_17" />
+                android:textSize="@dimen/klp_shinhan_title_17"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/custom_dialog_btn_yes"

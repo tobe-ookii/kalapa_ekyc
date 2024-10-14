@@ -78,8 +78,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'io.github.chaosleung:pinview:1.4.4'
     implementation "androidx.window:window-extensions:1.0.0-alpha01"
-    implementation project(path: ':kalapa')
 
+    implementation project(path: ':kalapa')
+    
 //    implementation project(':kalapasdk')
 //
 //     // For Liveness version 4
@@ -107,10 +108,9 @@ dependencies {
 }
 
 
-nmcp {
-    publishAggregation {
-        project(":kalapa")
-        publicationType = "USER_MANAGED"
-        publicationType = "AUTOMATIC"
-    }
-}
+//nmcp {
+//    publishAggregation {
+//        project(":kalapa")
+//        publicationType = "USER_MANAGED"
+//    }
+//}

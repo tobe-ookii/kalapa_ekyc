@@ -228,50 +228,14 @@ abstract class BaseNFCActivity : BaseActivity, KalapaScanNFCCallback {
     }
 
     fun showBottomError(error: String? = null) {
-        timeoutHandler?.removeCallbacksAndMessages(null)
-        timeoutHandler = null
+        removeTimeoutHandlerCallbackAndMessage()
         if (this.bottomSheetDialog.isShowing)
             hideBottomSheet()
-        KalapaSDK.handler.onNFCTimeoutHandle(this@BaseNFCActivity, this@BaseNFCActivity)
-//        isBottomSheetGuide = true
-//        bottomSheetDialog = Dialog(this@BaseNFCActivity)
-//        bottomSheetDialog.setOnDismissListener { isBottomSheetGuide = false }
-//        bottomSheetDialog.setContentView(R.layout.bottom_sheet_nfc_error)
-//        bottomSheetDialog.window?.setLayout(-1, -2)
-//        bottomSheetDialog.window?.setBackgroundDrawable(ColorDrawable(0))
-//        bottomSheetDialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-//        bottomSheetDialog.window?.setGravity(80)
-//        val tvTitle = this.bottomSheetDialog.findViewById<TextView>(R.id.text_status)
-//        tvTitle.text = KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)) // nfc_location_title
-//
-//        val tvBody = this.bottomSheetDialog.findViewById<TextView>(R.id.text_des)
-//        tvBody.text = error ?: KLPLanguageManager.get(resources.getString(R.string.klp_nfc_common_error))
-//
-//        val btnCancel = bottomSheetDialog.findViewById<Button>(R.id.btn_cancel)
-//        Helpers.setBackgroundColorTintList(btnCancel, KalapaSDK.config.mainColor)
-//        btnCancel.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
-//        btnCancel.text = KLPLanguageManager.get(resources.getString(R.string.klp_button_cancel))
-//        btnCancel.setOnClickListener {
-//            isBottomSheetGuide = false
-//            (KalapaSDK.handler as KalapaNFCHandler).timeout(object : KalapaTimeoutScanNFCHandler {
-//                override fun onTimeout(nextAction: () -> Unit) {
-//                    nextAction()
-//                    finish()
-//                }
-//
-//            })
-//        }
-//
-//        val btnRetry = bottomSheetDialog.findViewById<Button>(R.id.btn_retry)
-//        Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
-//        btnRetry.setTextColor(Color.parseColor(KalapaSDK.config.btnTextColor))
-//        btnRetry.text = KLPLanguageManager.get(resources.getString(R.string.klp_button_retry))
-//        btnRetry.setOnClickListener {
-//            hideBottomSheet()
-//            onNFCRetryClicked()
-//            isBottomSheetGuide = false
-//        }
-//        this.bottomSheetDialog.show()
+        KalapaSDK.handler.onNFCErrorHandle(this@BaseNFCActivity, KalapaScanNFCError.ERROR_NFC_TIMEOUT, this@BaseNFCActivity)
+    }
+
+    fun removeTimeoutHandlerCallbackAndMessage() {
+        timeoutHandler?.removeCallbacksAndMessages(null)
     }
 
     open fun onNFCRetryClicked() {
@@ -280,12 +244,15 @@ abstract class BaseNFCActivity : BaseActivity, KalapaScanNFCCallback {
 
     fun showBottomSheet() {
         initBottomSheetDialog()
+
         try {
-            (this.bottomSheetDialog.findViewById(R.id.text_des) as TextView).text = KLPLanguageManager.get(resources.getString(R.string.klp_nfc_reading_message_1))
+            (this.bottomSheetDialog.findViewById(R.id.text_des) as TextView).text = KLPLanguageManager.get(resources.getString(R.string.klp_nfc_reading_request_present))
             val btnCancel = this.bottomSheetDialog.findViewById<Button>(R.id.btn_cancel)
             val tvStatus = this.bottomSheetDialog.findViewById<TextView>(R.id.text_status)
             val tvDescription = this.bottomSheetDialog.findViewById<TextView>(R.id.text_des)
-            val tvTitle = this.bottomSheetDialog.findViewById<TextView>(R.id.tv_title)
+            this.bottomSheetDialog.findViewById<ImageView>(R.id.ic_close).setOnClickListener {
+                hideBottomSheet()
+            }
             btnCancel.text = KLPLanguageManager.get(resources.getString(R.string.klp_button_cancel))
             btnCancel.setOnClickListener { hideBottomSheet() }
             Helpers.setBackgroundColorTintList(btnCancel, KalapaSDK.config.mainColor)
@@ -294,10 +261,6 @@ abstract class BaseNFCActivity : BaseActivity, KalapaScanNFCCallback {
             tvStatus.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
             tvStatus.visibility = View.VISIBLE
             tvStatus.text = KLPLanguageManager.get(resources.getString(R.string.klp_nfc_reading_title_ready))
-            tvTitle.text = KLPLanguageManager.get(resources.getString(R.string.klp_nfc_title))
-            tvTitle.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
-//            (this.bottomSheetDialog.findViewById(id.btnCancel) as TextView).setText(CustomSdk.Companion.getTextCancel())
-
             (this.bottomSheetDialog.findViewById(R.id.iv_gif) as ImageView).setImageDrawable(
                 scanGif
             )
@@ -327,7 +290,7 @@ abstract class BaseNFCActivity : BaseActivity, KalapaScanNFCCallback {
         Helpers.printLog("OnError $p0 $nfcFailedTimes Threshold ${KalapaSDK.config.minNFCRetry}")
         errorMessage = p0.toString()
         if (bottomSheetDialog.isShowing && !isBottomSheetGuide) {
-            (this.bottomSheetDialog.findViewById(R.id.text_status) as TextView).visibility = View.GONE
+            (this.bottomSheetDialog.findViewById(R.id.text_status) as TextView).text = KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown))
             (this.bottomSheetDialog.findViewById(R.id.text_des) as TextView).text = errorMessage
             (this.bottomSheetDialog.findViewById(R.id.text_des) as TextView).setTextColor(
                 resources!!.getColor(

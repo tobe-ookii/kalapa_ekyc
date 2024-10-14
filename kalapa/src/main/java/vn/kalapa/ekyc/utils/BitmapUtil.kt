@@ -25,7 +25,7 @@ import java.util.*
 import kotlin.math.min
 
 
-class BitmapUtil {
+public class BitmapUtil {
     companion object {
         @SuppressLint("UnsafeExperimentalUsageError")
         @androidx.camera.core.ExperimentalGetImage

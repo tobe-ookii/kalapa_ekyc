@@ -27,7 +27,7 @@ object LocaleHelper {
         return getPersistedData(context, Locale.getDefault().language)
     }
 
-    fun setLocale(context: Context, language: String?): Context {
+    public fun setLocale(context: Context, language: String?): Context {
         persist(context, language)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             updateResources(context, language)

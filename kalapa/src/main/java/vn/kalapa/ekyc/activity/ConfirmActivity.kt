@@ -344,7 +344,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                             this@ConfirmActivity,
                             KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
                             error.getMessageError(),
-                            R.drawable.sad_face
+                            R.drawable.ic_sad_face
                         )
                     }
 
@@ -542,7 +542,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 this@ConfirmActivity,
                 resources.getString(R.string.klp_error_unknown),
                 error.getMessageError() + ", " + resources.getString(R.string.klp_button_retry),
-                R.drawable.sad_face,
+                R.drawable.ic_sad_face,
                 this
             )
         } else {
@@ -550,7 +550,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                 this@ConfirmActivity,
                 KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
                 error.getMessageError(),
-                R.drawable.sad_face
+                R.drawable.ic_sad_face
             )
         }
 //        messageLabel.setText(error.message)

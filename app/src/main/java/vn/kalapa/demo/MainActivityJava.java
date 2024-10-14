@@ -30,9 +30,9 @@ import vn.kalapa.demo.utils.LogUtils;
 import vn.kalapa.ekyc.DialogListener;
 import vn.kalapa.ekyc.KalapaFlowType;
 import vn.kalapa.ekyc.KalapaHandler;
-import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaSDK;
 import vn.kalapa.ekyc.KalapaSDKConfig;
+import vn.kalapa.ekyc.KalapaSDKResultCode;
 import vn.kalapa.ekyc.KalapaScanNFCCallback;
 import vn.kalapa.ekyc.KalapaScanNFCError;
 import vn.kalapa.ekyc.managers.AESCryptor;
@@ -69,7 +69,7 @@ public class MainActivityJava extends BaseActivity {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {
                     Helpers.Companion.showDialog(MainActivityJava.this,
                             KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)),
-                            KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.frowning_face);
+                            KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.sad_face);
                     return;
                 }
                 getTicket();
@@ -114,14 +114,10 @@ public class MainActivityJava extends BaseActivity {
             startEKYC();
         }
 
-        @Override
-        public void onNFCErrorHandle(@NonNull Activity activity, @NonNull KalapaScanNFCError error, @NonNull String message, @NonNull KalapaScanNFCCallback callback) {
-            super.onNFCErrorHandle(activity, error, message, callback);
-        }
 
         @Override
-        public void onNFCTimeoutHandle(@NonNull Activity activity, @NonNull KalapaScanNFCCallback callback) {
-            LogUtils.Companion.printLog("onNFCTimeoutHandle Java!");
+        public void onNFCErrorHandle(@NonNull Activity activity, @NonNull KalapaScanNFCError error, @NonNull KalapaScanNFCCallback callback) {
+            LogUtils.Companion.printLog("onNFCTimeoutHandle Java! " + error);
 //            super.onNFCTimeoutHandle(activity, nfcTimeoutHandler);
             Dialog bottomSheetDialog = new Dialog(activity);
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_nfc_error);
@@ -134,7 +130,7 @@ public class MainActivityJava extends BaseActivity {
             tvTitle.setText(KLPLanguageManager.INSTANCE.get(getResources().getString(R.string.klp_error_unknown))); // nfc_location_title
 
             TextView tvBody = bottomSheetDialog.findViewById(R.id.text_des);
-            tvBody.setText(KLPLanguageManager.INSTANCE.get((getResources().getString(R.string.klp_nfc_common_error))));
+            tvBody.setText(KLPLanguageManager.INSTANCE.get((getResources().getString(R.string.klp_liveness_error_timeout))));
 
             Button btnCancel = bottomSheetDialog.findViewById(R.id.btn_cancel);
             Helpers.Companion.setBackgroundColorTintList(btnCancel, preferencesConfig.getMainColor());
@@ -160,7 +156,7 @@ public class MainActivityJava extends BaseActivity {
 
         @Override
         public void onError(@NonNull KalapaSDKResultCode resultCode) {
-            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_confirm)), R.drawable.frowning_face);
+            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_confirm)), R.drawable.sad_face);
         }
 
         @Override

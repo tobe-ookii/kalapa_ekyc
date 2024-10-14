@@ -17,9 +17,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/sf_pro_display_bold"
             android:text="@string/klp_nfc_button_nfc_location"
-            android:textSize="@dimen/klp_txt_size_header"
+            android:textSize="@dimen/klp_shinhan_title_20"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textAllCaps="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -31,7 +31,7 @@ class MainActivity : BaseActivity() {
         ekycButton.setOnClickListener {
             val klpConfig = KalapaSDKConfig.KalapaSDKConfigBuilder(this@MainActivity)
                 .build()
-            val rawDataProcessor = object :IKalapaRawDataProcessor{
+            val rawDataProcessor = object : IKalapaRawDataProcessor {
                 override fun processLivenessData(portraitBase64: String, completion: Client.RequestListener) {
                     TODO("Process portrait image in base64 after liveness process")
                 }
@@ -46,12 +46,8 @@ class MainActivity : BaseActivity() {
 
             }
             val klpHandler = object : KalapaHandler() {
-                override fun onNFCTimeoutHandle(activity: Activity, sdkCallback: KalapaScanNFCCallback) {
-                    // This handler is called when user stuck in NFC screen for long time. You can implement your UI code and use sdkCallback to tell SDK should retry / stay in this screen or close the SDK
-                    super.onNFCTimeoutHandle(activity, sdkCallback)
-                }
 
-                override fun onNFCErrorHandle(activity: Activity, error: KalapaScanNFCError, message: String, handler: KalapaScanNFCCallback) {
+                override fun onNFCErrorHandle(activity: Activity, error: KalapaScanNFCError, callback: KalapaScanNFCCallback) {
                     // This handler is called when user's information on card does not match with NFC chip data
                 }
 

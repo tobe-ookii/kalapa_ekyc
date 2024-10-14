@@ -163,9 +163,9 @@ internal class Helpers {
                 activity,
                 KLPLanguageManager.get(activity.getString(R.string.klp_exit_confirm_title)),
                 KLPLanguageManager.get(activity.getString(R.string.klp_exit_confirm_message)),
-                KLPLanguageManager.get(activity.getString(R.string.klp_button_yes)),
-                KLPLanguageManager.get(activity.getString(R.string.klp_button_no)),
-                R.drawable.sad_face,
+                KLPLanguageManager.get(activity.getString(R.string.klp_button_confirm)),
+                KLPLanguageManager.get(activity.getString(R.string.klp_button_cancel)),
+                R.drawable.ic_sad_face,
                 object : DialogListener {
                     override fun onYes() {
                         dialogListener.onYes()
@@ -264,8 +264,8 @@ internal class Helpers {
         fun showDialog(myActivity: Activity, myTitle: String, myBody: String, drawableIcon: Int?, alertListener: (() -> Unit)? = null) {
             showDialog(
                 myActivity, myTitle, myBody,
-                KLPLanguageManager.get(myActivity.getString(R.string.klp_button_yes)),
-                KLPLanguageManager.get(myActivity.getString(R.string.klp_button_no)),
+                KLPLanguageManager.get(myActivity.getString(R.string.klp_button_confirm)),
+                KLPLanguageManager.get(myActivity.getString(R.string.klp_button_cancel)),
                 drawableIcon,
                 null,
                 alertListener

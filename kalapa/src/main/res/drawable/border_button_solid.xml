@@ -17,10 +17,10 @@
                 android:top="@dimen/klp_margin_xsmall"
                 android:bottom="@dimen/klp_margin_xsmall" />
             <corners
-                android:topRightRadius="@dimen/klp_margin_xsmall"
-                android:topLeftRadius="@dimen/klp_margin_xsmall"
-                android:bottomRightRadius="@dimen/klp_margin_xsmall"
-                android:bottomLeftRadius="@dimen/klp_margin_xsmall"
+                android:bottomLeftRadius="8dp"
+                android:bottomRightRadius="8dp"
+                android:topLeftRadius="8dp"
+                android:topRightRadius="8dp" />
                 />
         </shape>
     </item>

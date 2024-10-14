@@ -16,14 +16,9 @@ plugins {
 android {
     compileSdk 33
 
-//    lintOptions {
-//        abortOnError false
-//    }
-
     buildFeatures {
         viewBinding true
         dataBinding true
-//        mlModelBinding true
     }
     aaptOptions {
         noCompress "bic"
@@ -43,8 +38,8 @@ android {
         minSdk 26
         targetSdk 33
         versionCode 1
-        version "2.10.1"
-        versionName "2.10.1"
+        version "2.10.1.1"
+        versionName "2.10.1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -129,6 +124,5 @@ nmcp {
         username = "kdV1ND3z"
         password = "W2oka8dqSefVcrZzJd77ktmqxubQRCVQyUed1o5AoIWb"
         publicationType = "USER_MANAGED"
-        publicationType = "AUTOMATIC"
     }
 }

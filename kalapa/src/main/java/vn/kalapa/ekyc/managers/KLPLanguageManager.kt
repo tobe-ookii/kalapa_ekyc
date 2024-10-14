@@ -17,7 +17,7 @@ object KLPLanguageManager {
     private lateinit var language: KLPLanguage
 
     //    private val resourceMap = HashMap<Int, String>()
-    fun get(key: String): String {
+    public fun get(key: String): String {
         if (this::language.isInitialized) {
 //            Helpers.printLog("get $language $key ${(languageMap[language.name])?.get(key) ?: key}")
             return (languageMap[language.name])?.get(key) ?: key

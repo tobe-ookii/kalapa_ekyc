@@ -233,6 +233,7 @@
                 android:paddingVertical="@dimen/klp_margin_small">
 
                 <ImageView
+                    android:id="@+id/iv_nfc_icon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_nfc_point" />

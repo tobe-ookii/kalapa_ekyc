@@ -3,8 +3,6 @@ package com.fis.ekyc.nfc.build_in.eidparser;
 import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
-
 import com.fis.ekyc.nfc.build_in.bouncycastle.asn1.ASN1Encodable;
 import com.fis.ekyc.nfc.build_in.bouncycastle.asn1.ASN1Integer;
 import com.fis.ekyc.nfc.build_in.bouncycastle.asn1.DERSequence;
@@ -142,14 +140,12 @@ public class ICaoReaderParser {
                     return ResultCode.SUCCESS;
                 }
             }
-        } catch (CardServiceProtocolException var10) {
-            Log.w(TAG, var10);
-            return ResultCode.WRONG_CCCDID;
         } catch (Exception var9) {
             Log.w(TAG, var9);
+            if (var9.getLocalizedMessage() != null && var9.getLocalizedMessage().contains("authentication token generation step"))
+                return ResultCode.WRONG_CCCDID;
             return ResultCode.CARD_LOST_CONNECTION;
         }
-
         return ResultCode.WRONG_CCCDID;
     }
 
@@ -336,9 +332,6 @@ public class ICaoReaderParser {
         }
     }
 
-    @RequiresApi(
-            api = 26
-    )
     private ResultCode activeAuthentication() {
         try {
             Log.d(TAG, "Start Active Authentication...");

@@ -130,4 +130,6 @@
     <string name="klp_error_invalid_format">error_invalid_format</string>
     <string name="klp_error_empty">error_empty</string>
     <string name="klp_button_close">button_close</string>
+    <string name="klp_error_nfc_info_not_match">error_nfc_info_not_match</string>
+    <string name="klp_error_nfc_selfie_not_match">error_nfc_selfie_not_match</string>
 </resources>

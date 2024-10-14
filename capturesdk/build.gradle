@@ -48,6 +48,5 @@ nmcp {
         username = "kdV1ND3z"
         password = "W2oka8dqSefVcrZzJd77ktmqxubQRCVQyUed1o5AoIWb"
         publicationType = "USER_MANAGED"
-        publicationType = "AUTOMATIC"
     }
 }
