@@ -342,7 +342,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
                         ProgressView.hideProgress()
                         Helpers.showDialog(
                             this@ConfirmActivity,
-                            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                            KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
                             error.getMessageError(),
                             R.drawable.ic_sad_face
                         )
@@ -540,7 +540,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         if (error.code == 12) {
             Helpers.showDialog(
                 this@ConfirmActivity,
-                resources.getString(R.string.klp_error_unknown),
+                resources.getString(R.string.klp_error_occurred_title),
                 error.getMessageError() + ", " + resources.getString(R.string.klp_button_retry),
                 R.drawable.ic_sad_face,
                 this
@@ -548,7 +548,7 @@ class ConfirmActivity : BaseActivity(), View.OnClickListener, Client.RequestList
         } else {
             Helpers.showDialog(
                 this@ConfirmActivity,
-                KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
                 error.getMessageError(),
                 R.drawable.ic_sad_face
             )

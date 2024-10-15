@@ -95,7 +95,7 @@ abstract class CameraXActivity(
         // Something
         Helpers.showDialog(
             this,
-            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
             KLPLanguageManager.get(resources.getString(R.string.klp_error_emulator)), R.drawable.frowning_face
         ) {
             KalapaSDK.handler.onError(KalapaSDKResultCode.EMULATOR_DETECTED)

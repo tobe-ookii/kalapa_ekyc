@@ -34,7 +34,7 @@ abstract class BaseActivity : AppCompatActivity(), KalapaSDKCallback {
     override fun sendExpired() {
         ProgressView.hideProgress()
         Helpers.showDialog(this@BaseActivity,
-            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
             KLPLanguageManager.get(resources.getString(R.string.klp_error_timeout)),
             KLPLanguageManager.get(resources.getString(R.string.klp_button_confirm)),
             KLPLanguageManager.get(resources.getString(R.string.klp_button_cancel)), null, object : DialogListener {

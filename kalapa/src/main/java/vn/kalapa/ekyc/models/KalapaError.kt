@@ -12,7 +12,7 @@ data class KalapaError(val code: Int, var message: String = "") {
         ) // "Xảy ra lỗi, vui lòng thử lại..."
         val UnknownError = KalapaError(
             -1,
-            if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get("klp_error_unknown_short") else "klp_error_unknown_short"
+            if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get("klp_error_unknown") else "klp_error_unknown"
         )
         val ExpiredError = KalapaError(
             -1,

@@ -211,7 +211,7 @@ internal class Helpers {
             body.setTextColor(Color.parseColor(KalapaSDK.config.mainTextColor))
             val yesBtn: Button = dialog.findViewById(R.id.custom_dialog_btn_yes)
             val tvTitle: TextView = dialog.findViewById(R.id.custom_dialog_title)
-            dialog.findViewById<TextView>(R.id.tv_alert_title).text = KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown))
+            dialog.findViewById<TextView>(R.id.tv_alert_title).text = KLPLanguageManager.get(activity.getString(R.string.klp_error_occurred_title))
 
             tvTitle.text = myTitle
             ViewCompat.setBackgroundTintList(

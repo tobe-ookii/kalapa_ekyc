@@ -47,7 +47,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
             if (idCardNumber == "-1") {
                 Helpers.showDialog(
                     this@NFCActivity,
-                    KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                    KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
                     KLPLanguageManager.get(resources.getString(R.string.klp_error_invalid_format)), null
                 ) {
                     openMRZScanner()
@@ -236,7 +236,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
                         gifError
                     )
                     (bottomSheetDialog.findViewById<TextView>(R.id.tv_title)!!).text =
-                        KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown))
+                        KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title))
                 }
 
                 override fun OnError(p0: ResultCode?) {
@@ -249,7 +249,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
                                 hideBottomSheet()
                                 removeTimeoutHandlerCallbackAndMessage()
                                 Helpers.showDialog(
-                                    this@NFCActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                                    this@NFCActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
                                     KLPLanguageManager.get(resources.getString(R.string.klp_nfc_invalid_mrz)), null
                                 ) {
                                     openMRZScanner()
@@ -383,7 +383,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
                         ?: KLPLanguageManager.get(resources.getString(R.string.klp_liveness_result_fail))
                     Helpers.showDialog(
                         this@NFCActivity,
-                        KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+                        KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
                         message,
                         R.drawable.ic_warning
                     ) {
@@ -439,7 +439,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
     override fun onEmulatorDetected() {
         Helpers.showDialog(
             this@NFCActivity,
-            KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)),
+            KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
             KLPLanguageManager.get(resources.getString(R.string.klp_error_emulator)),
             R.drawable.frowning_face
         ) {

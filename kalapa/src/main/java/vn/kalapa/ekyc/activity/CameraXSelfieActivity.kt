@@ -133,15 +133,22 @@ class CameraXSelfieActivity : CameraXActivity(
     }
 
     override fun previewViewLayerMode(isCameraMode: Boolean) {
-        super.previewViewLayerMode(isCameraMode)
         if (!isCameraMode) {
+            btnNext.visibility = View.VISIBLE
+            btnRetry.visibility = View.VISIBLE
+            holderCapture.visibility = View.INVISIBLE
+            this.isCameraMode = false
             Helpers.setBackgroundColorTintList(btnRetry, KalapaSDK.config.mainColor)
             btnRetry.setTextColor(Color.parseColor(KalapaSDK.config.mainColor))
         } else {
             // Camera Mode
+            holderCapture.visibility = View.VISIBLE
+            btnNext.visibility = View.INVISIBLE
+            btnRetry.visibility = View.INVISIBLE
             tvError.visibility = View.VISIBLE
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -846,7 +846,7 @@ abstract class KalapaHandler {
         bottomSheetDialog.window?.setGravity(80)
         bottomSheetDialog.setCancelable(false)
         val tvTitle = bottomSheetDialog.findViewById<TextView>(R.id.text_status)
-        tvTitle.text = KLPLanguageManager.get(activity.getString(R.string.klp_error_unknown)) // nfc_location_title
+        tvTitle.text = KLPLanguageManager.get(activity.getString(R.string.klp_error_occurred_title)) // nfc_location_title
 
         val tvBody = bottomSheetDialog.findViewById<TextView>(R.id.text_des)
 
@@ -879,8 +879,22 @@ abstract class KalapaHandler {
     }
 }
 
-enum class KalapaScanNFCError(val code: Int) {
-    ERROR_NFC_INFO_NOT_MATCH(51), ERROR_FACE_NOT_MATCH(21), ERROR_NFC_INVALID(400), ERROR_NFC_TIMEOUT(401), ERROR_NA(-1);
+enum class KalapaScanNFCError private constructor(val code: Int, private val key_message: String) {
+    ERROR_NFC_INFO_NOT_MATCH(51, "error_nfc_info_not_match"),
+    ERROR_FACE_NOT_MATCH(21, "error_nfc_selfie_not_match"),
+    ERROR_NFC_INVALID(400, "nfc_error_invalid_chip"),
+    ERROR_NFC_TIMEOUT(401, "liveness_error_timeout"),
+    ERROR_NA(-1, "error_unknown");
+
+    fun getDefaultMessage(): String {
+        return when (this) {
+            ERROR_NFC_INFO_NOT_MATCH -> KLPLanguageManager.get(key_message)
+            ERROR_FACE_NOT_MATCH -> KLPLanguageManager.get(key_message)
+            ERROR_NFC_INVALID -> KLPLanguageManager.get(key_message)
+            ERROR_NFC_TIMEOUT -> KLPLanguageManager.get(key_message)
+            ERROR_NA -> KLPLanguageManager.get(key_message)
+        }
+    }
 
     companion object {
         fun fromErrorCode(code: String): KalapaScanNFCError {

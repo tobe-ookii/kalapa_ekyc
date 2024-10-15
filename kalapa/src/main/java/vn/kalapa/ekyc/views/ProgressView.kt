@@ -66,7 +66,7 @@ class ProgressView {
                 val mainColor = mainColor ?: if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.mainColor else ""
                 val backgroundColor = if (KalapaSDK.isConfigInitialized()) KalapaSDK.config.backgroundColor else "#FFFFFF"
                 Helpers.printLog("Title: $title - $message ")
-                textView.text = title ?: if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get(context.getString(R.string.klp_error_unknown)) else context.getString(R.string.klp_error_unknown)
+                textView.text = title ?: if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get(context.getString(R.string.klp_error_occurred_title)) else context.getString(R.string.klp_error_occurred_title)
                 body.text = message ?: if (KalapaSDK.isConfigInitialized()) KLPLanguageManager.get(context.getString(R.string.klp_please_wait)) else context.getString(R.string.klp_please_wait)
                 sDialog?.findViewById<LinearLayout>(R.id.progress_container).let {
                     it?.let {

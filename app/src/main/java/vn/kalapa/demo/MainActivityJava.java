@@ -68,7 +68,7 @@ public class MainActivityJava extends BaseActivity {
             if (isAppConfigSet()) {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {
                     Helpers.Companion.showDialog(MainActivityJava.this,
-                            KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)),
+                            KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_occurred_title)),
                             KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.sad_face);
                     return;
                 }
@@ -117,7 +117,7 @@ public class MainActivityJava extends BaseActivity {
 
         @Override
         public void onNFCErrorHandle(@NonNull Activity activity, @NonNull KalapaScanNFCError error, @NonNull KalapaScanNFCCallback callback) {
-            LogUtils.Companion.printLog("onNFCTimeoutHandle Java! " + error);
+            LogUtils.Companion.printLog("onNFCErrorHandle Java! " + error + " - " + error.getDefaultMessage());
 //            super.onNFCTimeoutHandle(activity, nfcTimeoutHandler);
             Dialog bottomSheetDialog = new Dialog(activity);
             bottomSheetDialog.setContentView(R.layout.bottom_sheet_nfc_error);
@@ -127,10 +127,11 @@ public class MainActivityJava extends BaseActivity {
             Objects.requireNonNull(bottomSheetDialog.getWindow().getAttributes()).windowAnimations = R.style.DialogAnimation;
             Objects.requireNonNull(bottomSheetDialog.getWindow()).setGravity(80);
             TextView tvTitle = bottomSheetDialog.findViewById(R.id.text_status);
-            tvTitle.setText(KLPLanguageManager.INSTANCE.get(getResources().getString(R.string.klp_error_unknown))); // nfc_location_title
+            tvTitle.setText(KLPLanguageManager.INSTANCE.get(getResources().getString(R.string.klp_error_occurred_title))); // nfc_location_title
 
             TextView tvBody = bottomSheetDialog.findViewById(R.id.text_des);
-            tvBody.setText(KLPLanguageManager.INSTANCE.get((getResources().getString(R.string.klp_liveness_error_timeout))));
+
+            tvBody.setText(error.getDefaultMessage());
 
             Button btnCancel = bottomSheetDialog.findViewById(R.id.btn_cancel);
             Helpers.Companion.setBackgroundColorTintList(btnCancel, preferencesConfig.getMainColor());
@@ -156,7 +157,7 @@ public class MainActivityJava extends BaseActivity {
 
         @Override
         public void onError(@NonNull KalapaSDKResultCode resultCode) {
-            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_confirm)), R.drawable.sad_face);
+            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_occurred_title)), (preferencesConfig.getLanguage().equals("vi") ? resultCode.getVi() : resultCode.getEn()), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_button_confirm)), R.drawable.sad_face);
         }
 
         @Override
@@ -256,7 +257,7 @@ public class MainActivityJava extends BaseActivity {
 
 
         } else
-            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_unknown)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.ic_failed_solid);
+            Helpers.Companion.showDialog(MainActivityJava.this, KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_occurred_title)), KLPLanguageManager.INSTANCE.get(getString(R.string.klp_error_network)), R.drawable.ic_failed_solid);
     }
 
     @NonNull

@@ -595,16 +595,16 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         val isCustomScreenSelectAtLeastOnce = cbCaptureIdScreen.isChecked || cbNFCScreen.isChecked || cbLivenessScreen.isChecked
         if (rgScenario.selectedIndex == 0 && (isTokenEmptied || !isAcceptedDocumentsSelectAtLeastOnce))
             if (isTokenEmptied)
-                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "Token ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)), "Token ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
             else
-                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "${KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac))} ${KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)).lowercase()}", R.drawable.frowning_face)
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)), "${KLPLanguageManager.get(resources.getString(R.string.klp_settings_ac))} ${KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)).lowercase()}", R.drawable.frowning_face)
         else if (rgScenario.selectedIndex == 1 && (rgUpgradePlan.isPositiveCheck && isSessionIdEmptied || !rgUpgradePlan.isPositiveCheck && isTokenEmptied)) // custom flow
             if (rgUpgradePlan.isPositiveCheck && isSessionIdEmptied)
-                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "Session ID ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)), "Session ID ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
             else
-                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "Token ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
+                Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)), "Token ${KLPLanguageManager.get(resources.getString(R.string.klp_error_empty)).lowercase()}", R.drawable.frowning_face)
         else if (rgScenario.selectedIndex == 2 && !isCustomScreenSelectAtLeastOnce) // custom flow
-            Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_unknown)), "${KLPLanguageManager.get(resources.getString(R.string.klp_settings_screen))} ${KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)).lowercase()}", R.drawable.frowning_face)
+            Helpers.showDialog(this@SettingActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)), "${KLPLanguageManager.get(resources.getString(R.string.klp_settings_screen))} ${KLPLanguageManager.get(resources.getString(R.string.klp_error_must_choose)).lowercase()}", R.drawable.frowning_face)
         else {
             Helpers.savePrefs(
                 MY_KEY_LIVENESS_VERSION,
