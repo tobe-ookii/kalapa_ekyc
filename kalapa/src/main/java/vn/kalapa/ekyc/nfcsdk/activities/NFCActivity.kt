@@ -189,7 +189,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
             )
 
             ResultCode.WRONG_CCCDID -> KLPLanguageManager.get(
-                resources.getString(R.string.klp_nfc_invalid_mrz)
+                resources.getString(R.string.klp_error_nfc_mrz_and_chip_not_match)
             )
 
             else -> ""
@@ -250,7 +250,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
                                 removeTimeoutHandlerCallbackAndMessage()
                                 Helpers.showDialog(
                                     this@NFCActivity, KLPLanguageManager.get(resources.getString(R.string.klp_error_occurred_title)),
-                                    KLPLanguageManager.get(resources.getString(R.string.klp_nfc_invalid_mrz)), null
+                                    KLPLanguageManager.get(resources.getString(R.string.klp_error_nfc_mrz_and_chip_not_match)), null
                                 ) {
                                     openMRZScanner()
                                 }
@@ -371,6 +371,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
             val errorArr = errorMess.split(";")
             removeTimeoutHandlerCallbackAndMessage()
             Helpers.printLog("NFCActivity onNFCErrorHandle ${errorArr[0]} - ${errorArr[1]}")
+            hideBottomSheet()
             KalapaSDK.handler.onNFCErrorHandle(this@NFCActivity, KalapaScanNFCError.fromErrorCode(errorArr[0]), this@NFCActivity)
         } else {
             if (System.currentTimeMillis() - startTime > TIMEOUT) {
