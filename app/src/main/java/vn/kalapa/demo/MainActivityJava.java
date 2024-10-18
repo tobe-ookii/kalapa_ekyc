@@ -41,6 +41,7 @@ import vn.kalapa.ekyc.models.KalapaResult;
 import vn.kalapa.ekyc.models.PreferencesConfig;
 import vn.kalapa.ekyc.networks.KalapaAPI;
 import vn.kalapa.ekyc.utils.Common;
+import vn.kalapa.ekyc.utils.FileUtil;
 import vn.kalapa.ekyc.utils.LocaleHelper;
 import vn.kalapa.ekyc.views.ProgressView;
 

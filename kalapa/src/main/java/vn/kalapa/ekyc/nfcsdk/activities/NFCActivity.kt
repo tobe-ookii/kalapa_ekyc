@@ -63,6 +63,7 @@ class NFCActivity : BaseNFCActivity(), DialogListener {
         mrz = ""
         Helpers.printLog("remove startTimeoutEvent")
         timeoutHandler?.removeCallbacksAndMessages(null)
+        nfcUtils.deinit()
         timeoutHandler = null
     }
 

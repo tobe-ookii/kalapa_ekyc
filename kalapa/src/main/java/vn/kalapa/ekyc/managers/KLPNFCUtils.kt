@@ -19,6 +19,9 @@ class KLPNFCUtils(val activity: AppCompatActivity) : NFCUtils() {
         }
     }
 
+    override fun callOnPause() {
+        super.callOnPause()
+    }
 
     companion object {
         fun openNFCSetting(activity: Activity) {
