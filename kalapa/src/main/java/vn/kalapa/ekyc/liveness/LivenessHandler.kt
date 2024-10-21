@@ -3,10 +3,10 @@ package vn.kalapa.ekyc.liveness
 import android.content.Context
 import android.graphics.Bitmap
 import vn.kalapa.ekyc.managers.KLPFaceDetectorListener
-import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
+import vn.kalapa.ekyc.utils.LIVENESS_VERSION
 
-class LivenessHandler(val context: Context, private val livenessSessionType: Common.LIVENESS_VERSION, private val faceDetectorListener: KLPFaceDetectorListener, private val rotationAngle: Int = 0) {
+class LivenessHandler(val context: Context, private val livenessSessionType: LIVENESS_VERSION, private val faceDetectorListener: KLPFaceDetectorListener, private val rotationAngle: Int = 0) {
 
     private val LIVENESS_MAX_TIME = 1 * 60 * 1000 // 1p
     var livenessSession = LivenessSession(livenessSessionType)

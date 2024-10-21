@@ -20,42 +20,51 @@ import androidx.cardview.widget.CardView
 import com.google.android.material.slider.Slider
 import vn.kalapa.demo.MainActivityJava
 import vn.kalapa.demo.R
+import vn.kalapa.demo.utils.Common.MY_KEY_TOKEN
+import vn.kalapa.demo.utils.Common.MY_KEY_LANGUAGE
+import vn.kalapa.demo.utils.Common.MY_KEY_LIVENESS_VERSION
+import vn.kalapa.demo.utils.Common.MY_KEY_MAIN_COLOR
+import vn.kalapa.demo.utils.Common.MY_KEY_BTN_TEXT_COLOR
+import vn.kalapa.demo.utils.Common.MY_KEY_MAIN_TEXT_COLOR
+import vn.kalapa.demo.utils.Common.MY_KEY_BACKGROUND_COLOR
+import vn.kalapa.demo.utils.Common.MY_KEY_ENV
+
+import vn.kalapa.demo.utils.Common.MY_KEY_CUSTOM_CAPTURE
+import vn.kalapa.demo.utils.Common.MY_KEY_CUSTOM_LIVENESS
+import vn.kalapa.demo.utils.Common.MY_KEY_CUSTOM_NFC
+
+import vn.kalapa.demo.utils.Common.MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID
+
+import vn.kalapa.demo.utils.Common.MY_KEY_SCENARIO
+import vn.kalapa.demo.utils.Common.MY_KEY_MRZ
+import vn.kalapa.demo.utils.Common.MY_KEY_LEFTOVER_SESSION
+import vn.kalapa.demo.utils.Common.MY_KEY_FACE_DATA_URI
+import vn.kalapa.demo.utils.Common.MY_KEY_ACCEPTED_DOCUMENT_1
+import vn.kalapa.demo.utils.Common.MY_KEY_ACCEPTED_DOCUMENT_2
+import vn.kalapa.demo.utils.Common.MY_KEY_ACCEPTED_DOCUMENT_3
+import vn.kalapa.demo.utils.Common.MY_KEY_ACCEPTED_DOCUMENT_4
+import vn.kalapa.demo.utils.Common.MY_KEY_ACCEPTED_DOCUMENT_5
+import vn.kalapa.demo.utils.Common.MY_KEY_NFC_TIMEOUT_IN_SECONDS
+import vn.kalapa.demo.utils.Common.MY_KEY_ENABLE_NFC
+import vn.kalapa.demo.utils.Common.MY_KEY_CAPTURE_IMAGE
+import vn.kalapa.demo.utils.Common.MY_KEY_VERIFY_CHECK
+import vn.kalapa.demo.utils.Common.MY_KEY_FRAUD_CHECK
+import vn.kalapa.demo.utils.Common.MY_KEY_NORMAL_CHECK_ONLY
+import vn.kalapa.demo.utils.Common.MY_KEY_CARD_SIDE_CHECK
+
+import vn.kalapa.demo.utils.Common.MY_KEY_FACE_MATCHING_THRESHOLD
 import vn.kalapa.demo.utils.Helpers
 import vn.kalapa.demo.utils.LogUtils
+
 import vn.kalapa.ekyc.KalapaFlowType
 import vn.kalapa.ekyc.KalapaSDKConfig
 import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.BitmapUtil
 import vn.kalapa.ekyc.utils.Common
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_2
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_3
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_4
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_5
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BACKGROUND_COLOR
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_BTN_TEXT_COLOR
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_CAPTURE
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_LIVENESS
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_NFC
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENV
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LANGUAGE
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LEFTOVER_SESSION
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_LIVENESS_VERSION
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MAIN_COLOR
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MAIN_TEXT_COLOR
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_MRZ
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_SCENARIO
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_TOKEN
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
-import vn.kalapa.ekyc.utils.Common.Companion.nfcAvailable
+import vn.kalapa.ekyc.utils.Common.nfcAvailable
+import vn.kalapa.ekyc.utils.LIVENESS_VERSION
 import vn.kalapa.ekyc.utils.LocaleHelper
+import vn.kalapa.ekyc.utils.SCENARIO
 import vn.kalapa.ekyc.views.KLPCustomMultipleChoices
 import vn.kalapa.ekyc.views.KLPCustomSwitch
 import java.util.Locale
@@ -225,7 +234,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         containerToken = findViewById(R.id.container_token)
         containerFaceDataBitmap = findViewById(R.id.container_face_data_bitmap)
         containerCaptureConfig = findViewById(R.id.container_capture_config)
-        containerToken.visibility = if ((Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: "") == Common.SCENARIO.CUSTOM.name) View.GONE else View.VISIBLE
+        containerToken.visibility = if ((Helpers.getValuePreferences(MY_KEY_SCENARIO) ?: "") == SCENARIO.CUSTOM.name) View.GONE else View.VISIBLE
         rgScenario.listener = KLPCustomMultipleChoices.KLPCustomMultipleChoicesChangeListener {
             containerRegister.visibility = if (it == 0) View.VISIBLE else View.GONE
             containerUpgrade.visibility = if (it > 0) View.VISIBLE else View.GONE
@@ -608,11 +617,11 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         else {
             Helpers.savePrefs(
                 MY_KEY_LIVENESS_VERSION,
-                if (rgLivenessVersion.selectedIndex == 0) Common.LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) Common.LIVENESS_VERSION.SEMI_ACTIVE.version else Common.LIVENESS_VERSION.ACTIVE.version
+                if (rgLivenessVersion.selectedIndex == 0) LIVENESS_VERSION.PASSIVE.version else if (rgLivenessVersion.selectedIndex == 1) LIVENESS_VERSION.SEMI_ACTIVE.version else LIVENESS_VERSION.ACTIVE.version
             )
 
             Helpers.savePrefs(
-                MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) Common.SCENARIO.REGISTER.name else if (rgScenario.selectedIndex == 1) Common.SCENARIO.UPGRADE.name else Common.SCENARIO.CUSTOM.name
+                MY_KEY_SCENARIO, if (rgScenario.selectedIndex == 0) SCENARIO.REGISTER.name else if (rgScenario.selectedIndex == 1) SCENARIO.UPGRADE.name else SCENARIO.CUSTOM.name
             )
 
             Helpers.savePrefs(MY_KEY_LANGUAGE, if (rgLanguage.isPositiveCheck) "vi" else "en")
@@ -669,6 +678,7 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
 
     override fun onBackPressed() {
         setConfigBeforeExit()
+        super.onBackPressed()
     }
 
     private fun onInitValue() {
@@ -734,8 +744,8 @@ class SettingActivity : AppCompatActivity(), TextView.OnEditorActionListener {
         edtToken.setText(token)
         LogUtils.printLog("lang $lang liveness $livenessVersion")
 
-        rgLivenessVersion.switchChangeListener(if (livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version) 0 else if (livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version) 1 else 2)
-        rgScenario.switchChangeListener(if (scenario == Common.SCENARIO.REGISTER.name) 0 else if (scenario == Common.SCENARIO.UPGRADE.name) 1 else 2)
+        rgLivenessVersion.switchChangeListener(if (livenessVersion == LIVENESS_VERSION.PASSIVE.version) 0 else if (livenessVersion == LIVENESS_VERSION.SEMI_ACTIVE.version) 1 else 2)
+        rgScenario.switchChangeListener(if (scenario == SCENARIO.REGISTER.name) 0 else if (scenario == SCENARIO.UPGRADE.name) 1 else 2)
         rgLanguage.switchChangeListener(lang == "vi")
         rgEnvironment.switchChangeListener(env == KLP_PROD)
 

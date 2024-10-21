@@ -23,11 +23,12 @@ import vn.kalapa.ekyc.liveness.models.TurnUp
 import vn.kalapa.ekyc.managers.KLPFaceDetectorListener
 import vn.kalapa.ekyc.utils.Common
 import vn.kalapa.ekyc.utils.Helpers
+import vn.kalapa.ekyc.utils.LIVENESS_VERSION
 import java.util.Collections.max
 import kotlin.random.Random
 
 class InputFace(val inputTime: Long, val face: Face, val frameWidth: Int, val frameHeight: Int)
-class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION = Common.LIVENESS_VERSION.PASSIVE) {
+class LivenessSession(private var livenessSessionType: LIVENESS_VERSION = LIVENESS_VERSION.PASSIVE) {
     var sessionStatus: LivenessSessionStatus = LivenessSessionStatus.UNVERIFIED
     private val MAX_N_FRAME = 600
     var faceList = ArrayList<InputFace>()
@@ -47,7 +48,7 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
         .build()
     private var faceDetector: FaceDetector = FaceDetection.getClient(faceDetectorOptions)
 
-    fun renewSession(livenessSessionType: Common.LIVENESS_VERSION) {
+    fun renewSession(livenessSessionType: LIVENESS_VERSION) {
         this.livenessSessionType = livenessSessionType
         this.sessionStatus = LivenessSessionStatus.UNVERIFIED
         gotTypicalFace = false
@@ -72,14 +73,14 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
         // v2
         Helpers.printLog("genActionList ${livenessSessionType.name} ")
         when (livenessSessionType) {
-            Common.LIVENESS_VERSION.PASSIVE -> {
+            LIVENESS_VERSION.PASSIVE -> {
                 index2Action = mapOf(
                     1 to HoldSteady2Seconds(1500),
                     2 to Processing()
                 )
             }
 
-            Common.LIVENESS_VERSION.ACTIVE -> {
+            LIVENESS_VERSION.ACTIVE -> {
                 index2Action = mapOf(
                     1 to HoldSteady2Seconds(1500),
                     2 to if (Random.nextInt(2) % 2 == 0) TurnLeft() else TurnRight(),
@@ -90,7 +91,7 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
                 )
             }
 
-            Common.LIVENESS_VERSION.SEMI_ACTIVE -> {
+            LIVENESS_VERSION.SEMI_ACTIVE -> {
                 index2Action = mapOf(
                     1 to HoldSteady2Seconds(1500),
                     2 to GoFar(),
@@ -144,7 +145,7 @@ class LivenessSession(private var livenessSessionType: Common.LIVENESS_VERSION =
                                 } else if (!LivenessAction.isFaceMarginRight(face.face, cropImage.width, cropImage.height)) {
                                     sessionStatus = LivenessSessionStatus.OFF_CENTER
                                     refreshFaceList()
-                                } else if (KalapaSDK.config.livenessVersion != Common.LIVENESS_VERSION.ACTIVE.version && !LivenessAction.isFaceLookStraight(face.face)) {
+                                } else if (KalapaSDK.config.livenessVersion != LIVENESS_VERSION.ACTIVE.version && !LivenessAction.isFaceLookStraight(face.face)) {
                                     sessionStatus = LivenessSessionStatus.ANGLE_NOT_CORRECT
                                     refreshFaceList()
                                 } else {

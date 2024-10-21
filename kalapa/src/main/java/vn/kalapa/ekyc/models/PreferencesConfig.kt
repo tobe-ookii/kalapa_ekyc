@@ -1,6 +1,8 @@
 package vn.kalapa.ekyc.models
 
 import vn.kalapa.ekyc.utils.Common
+import vn.kalapa.ekyc.utils.SCENARIO
+import vn.kalapa.ekyc.utils.SCENARIO_PLAN
 
 
 val OLD_ID_CARD = "CMND9"
@@ -38,8 +40,8 @@ class PreferencesConfig(
     val hasCustomLivenessScreen: Boolean,
     val hasCustomNFCScreen: Boolean
 ) {
-    val scenarioPlan = if (scenarioPlan) Common.SCENARIO_PLAN.FROM_SESSION_ID else Common.SCENARIO_PLAN.FROM_PROVIDED_DATA
-    val scenario = Common.SCENARIO.getScenarioFromName(scenario)
+    val scenarioPlan = if (scenarioPlan) SCENARIO_PLAN.FROM_SESSION_ID else SCENARIO_PLAN.FROM_PROVIDED_DATA
+    val scenario = SCENARIO.getScenarioFromName(scenario)
     fun getAcceptedDocument(): Array<String> {
         var acceptedDocuments: ArrayList<String> = ArrayList()
         if (acceptOldId) acceptedDocuments.add(OLD_ID_CARD)

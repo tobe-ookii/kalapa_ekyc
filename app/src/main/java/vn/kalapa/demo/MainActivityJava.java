@@ -65,6 +65,7 @@ public class MainActivityJava extends BaseActivity {
         Helpers.Companion.init(this);
         setupBinding();
         getPreferencesValuesAndApply();
+
         ekycButton.setOnClickListener(v -> {
             if (isAppConfigSet()) {
                 if (!Common.Companion.isOnline(MainActivityJava.this)) {

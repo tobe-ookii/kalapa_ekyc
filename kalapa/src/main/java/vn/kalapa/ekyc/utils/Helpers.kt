@@ -18,6 +18,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.Log
@@ -35,12 +36,13 @@ import vn.kalapa.R
 import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.managers.KLPLanguageManager
-import vn.kalapa.ekyc.utils.Common.Companion.MY_PREFERENCES
 import kotlin.reflect.KClass
 
 
 internal class Helpers {
+
     companion object {
+        private val MY_PREFERENCES = PACKAGE_NAME
         lateinit var location: Location
         private var isDebug = true
         private const val TAG = "KLP"

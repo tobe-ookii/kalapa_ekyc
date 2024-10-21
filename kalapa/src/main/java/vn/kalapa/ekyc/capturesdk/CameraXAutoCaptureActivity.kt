@@ -23,7 +23,7 @@ import vn.kalapa.ekyc.fragment.BottomGuideFragment
 import vn.kalapa.ekyc.fragment.GuideType
 import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.utils.BitmapUtil
-import vn.kalapa.ekyc.utils.Common.Companion.vibratePhone
+import vn.kalapa.ekyc.utils.Common.vibratePhone
 import vn.kalapa.ekyc.utils.Helpers
 import vn.kalapa.ekyc.views.ProgressView
 

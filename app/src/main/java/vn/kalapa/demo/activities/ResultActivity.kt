@@ -16,6 +16,8 @@ import com.google.gson.JsonObject
 import vn.kalapa.demo.ExampleGlobalClass
 import vn.kalapa.demo.R
 import vn.kalapa.demo.models.NFCVerificationData
+import vn.kalapa.demo.utils.Common.MY_KEY_BTN_TEXT_COLOR
+import vn.kalapa.demo.utils.Common.MY_KEY_MAIN_COLOR
 import vn.kalapa.demo.utils.Helpers.Companion.getValuePreferences
 import vn.kalapa.demo.utils.LogUtils
 import vn.kalapa.ekyc.managers.KLPLanguageManager
@@ -85,8 +87,8 @@ class ResultActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     fun refreshColor() {
         var mainColor =
-            getValuePreferences(Common.MY_KEY_MAIN_COLOR) ?: getString(R.color.mainColor)
-        var txtColor = getValuePreferences(Common.MY_KEY_BTN_TEXT_COLOR) ?: getString(R.color.white)
+            getValuePreferences(MY_KEY_MAIN_COLOR) ?: getString(R.color.mainColor)
+        var txtColor = getValuePreferences(MY_KEY_BTN_TEXT_COLOR) ?: getString(R.color.white)
         tvNFCTitle.setTextColor(Color.parseColor(mainColor))
 
         tvOcrTitle.setTextColor(Color.parseColor(mainColor))

@@ -32,22 +32,7 @@ import vn.kalapa.ekyc.DialogListener
 import vn.kalapa.ekyc.KalapaSDK
 import vn.kalapa.ekyc.managers.KLPLanguageManager
 import vn.kalapa.ekyc.models.PreferencesConfig
-import vn.kalapa.ekyc.utils.Common
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_1
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_2
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_3
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_4
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ACCEPTED_DOCUMENT_5
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CAPTURE_IMAGE
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CARD_SIDE_CHECK
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_CAPTURE
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_LIVENESS
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_CUSTOM_NFC
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_ENABLE_NFC
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FACE_MATCHING_THRESHOLD
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_FRAUD_CHECK
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_NORMAL_CHECK_ONLY
-import vn.kalapa.ekyc.utils.Common.Companion.MY_KEY_VERIFY_CHECK
+import vn.kalapa.ekyc.utils.LIVENESS_VERSION
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -74,7 +59,7 @@ internal class Helpers {
             init(activity)
             val token = getValuePreferences(Common.MY_KEY_TOKEN) ?: ""
             val lang = getValuePreferences(Common.MY_KEY_LANGUAGE)
-            val livenessVersion = getIntPreferences(Common.MY_KEY_LIVENESS_VERSION, Common.LIVENESS_VERSION.PASSIVE.version)
+            val livenessVersion = getIntPreferences(Common.MY_KEY_LIVENESS_VERSION, LIVENESS_VERSION.PASSIVE.version)
             val backgroundColor = getValuePreferences(Common.MY_KEY_BACKGROUND_COLOR)
             this.backgroundColor = backgroundColor
             val mainColor = getValuePreferences(Common.MY_KEY_MAIN_COLOR)
@@ -83,13 +68,13 @@ internal class Helpers {
             this.mainTextColor = mainTextColor
             val btnTextColor = getValuePreferences(Common.MY_KEY_BTN_TEXT_COLOR)
             this.btnTextColor = btnTextColor
-            val env = getValuePreferences(Common.MY_KEY_ENV)
-            val leftoverSession = getValuePreferences(Common.MY_KEY_LEFTOVER_SESSION) ?: ""
-            val mrz = getValuePreferences(Common.MY_KEY_MRZ) ?: ""
+            val env = getValuePreferences(MY_KEY_ENV)
+            val leftoverSession = getValuePreferences(MY_KEY_LEFTOVER_SESSION) ?: ""
+            val mrz = getValuePreferences(MY_KEY_MRZ) ?: ""
             val faceMatchingThreshold: Int =
                 getIntPreferences(MY_KEY_FACE_MATCHING_THRESHOLD, 50)
-            val scenarioPlan = getBooleanPreferences(Common.MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID, false)
-            val scenario = getValuePreferences(Common.MY_KEY_SCENARIO) ?: ""
+            val scenarioPlan = getBooleanPreferences(MY_KEY_UPGRADE_PLAN_FROM_SESSION_ID, false)
+            val scenario = getValuePreferences(MY_KEY_SCENARIO) ?: ""
             val accept9DigitsIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_1, true)
             val accept12DigitIdCard = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_2, true)
             val acceptEidWithoutChip = getBooleanPreferences(MY_KEY_ACCEPTED_DOCUMENT_3, true)
@@ -157,7 +142,7 @@ internal class Helpers {
 
         private fun initPrefs() {
             LogUtils.printLog("initPrefs")
-            this.prefs = this.activity.getSharedPreferences(Common.MY_PREFERENCES, Context.MODE_PRIVATE)
+            this.prefs = this.activity.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE)
             LogUtils.printLog("done initPrefs")
         }
 

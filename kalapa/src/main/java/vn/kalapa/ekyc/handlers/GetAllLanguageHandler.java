@@ -13,7 +13,7 @@ public class GetAllLanguageHandler extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         try {
 //            if (!Common.Companion.isOnline(c)) return "-1";
-            return Common.Companion.getDynamicLanguage(params[0], null);
+            return Common.INSTANCE.getDynamicLanguage(params[0], null);
         } catch (Exception e) {
             e.printStackTrace();
         }

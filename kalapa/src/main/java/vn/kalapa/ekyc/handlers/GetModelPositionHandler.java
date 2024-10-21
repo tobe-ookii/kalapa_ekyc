@@ -15,8 +15,8 @@ public class GetModelPositionHandler extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         try {
-            if (!Common.Companion.isOnline(c)) return "";
-            return Common.Companion.getModelPosition(params[0]);
+            if (!Common.INSTANCE.isOnline(c)) return "";
+            return Common.INSTANCE.getModelPosition(params[0]);
         } catch (Exception e) {
             e.printStackTrace();
 //            Toast.makeText(c, "Connect Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();

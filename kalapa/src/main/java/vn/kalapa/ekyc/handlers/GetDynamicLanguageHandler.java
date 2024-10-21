@@ -15,8 +15,8 @@ public class GetDynamicLanguageHandler extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         try {
-            if (!Common.Companion.isOnline(c)) return "-1";
-            return Common.Companion.getDynamicLanguage(params[0],params[1]);
+            if (!Common.INSTANCE.isOnline(c)) return "-1";
+            return Common.INSTANCE.getDynamicLanguage(params[0],params[1]);
         } catch (Exception e) {
             e.printStackTrace();
         }

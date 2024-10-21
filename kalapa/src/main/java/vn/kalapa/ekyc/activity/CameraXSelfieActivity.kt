@@ -37,7 +37,8 @@ import vn.kalapa.ekyc.views.ProgressView
 import vn.kalapa.ekyc.liveness.InputFace
 import vn.kalapa.ekyc.liveness.LivenessSessionStatus
 import vn.kalapa.ekyc.managers.KLPLanguageManager
-import vn.kalapa.ekyc.utils.Common.Companion.vibratePhone
+import vn.kalapa.ekyc.utils.Common.vibratePhone
+import vn.kalapa.ekyc.utils.LIVENESS_VERSION
 import vn.kalapa.ekyc.utils.toBitmap
 
 typealias InputImageListener = (inputImage: Bitmap) -> Unit
@@ -157,7 +158,7 @@ class CameraXSelfieActivity : CameraXActivity(
 
     private fun setupLivenessProcess() {
         val livenessVersion =
-            if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.ACTIVE.version) Common.LIVENESS_VERSION.ACTIVE else if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version) Common.LIVENESS_VERSION.SEMI_ACTIVE else Common.LIVENESS_VERSION.PASSIVE
+            if (KalapaSDK.config.livenessVersion == LIVENESS_VERSION.ACTIVE.version) LIVENESS_VERSION.ACTIVE else if (KalapaSDK.config.livenessVersion == LIVENESS_VERSION.SEMI_ACTIVE.version) LIVENESS_VERSION.SEMI_ACTIVE else LIVENESS_VERSION.PASSIVE
         klpLivenessHandler = LivenessHandler(
             this,
             livenessVersion,
@@ -183,7 +184,7 @@ class CameraXSelfieActivity : CameraXActivity(
                             ivError.visibility = View.VISIBLE
                             if (livenessIcon != null) ivError.setGifImageResource(livenessIcon)
                             else {
-                                if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version || KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version)
+                                if (KalapaSDK.config.livenessVersion == LIVENESS_VERSION.SEMI_ACTIVE.version || KalapaSDK.config.livenessVersion == LIVENESS_VERSION.PASSIVE.version)
                                     ivError.visibility = View.INVISIBLE
                             }
                         }
@@ -316,7 +317,7 @@ class CameraXSelfieActivity : CameraXActivity(
         ivFaceMask = findViewById(R.id.iv_face_mask)
         cardviewBorder = findViewById(R.id.cardview_border)
 
-        ivError.setGifImageResource(if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.ACTIVE.version) R.drawable.gif_hold_steady else R.drawable.gif_success_small)
+        ivError.setGifImageResource(if (KalapaSDK.config.livenessVersion == LIVENESS_VERSION.ACTIVE.version) R.drawable.gif_hold_steady else R.drawable.gif_success_small)
         this.tvTitle = findViewById(R.id.tv_title)
         this.ivPreviewImage = findViewById(R.id.iv_preview_image)
         this.ivError.visibility = View.INVISIBLE
@@ -444,7 +445,7 @@ class CameraXSelfieActivity : CameraXActivity(
             vibratePhone(this)
 
         }
-        if (KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.SEMI_ACTIVE.version || KalapaSDK.config.livenessVersion == Common.LIVENESS_VERSION.PASSIVE.version) {
+        if (KalapaSDK.config.livenessVersion == LIVENESS_VERSION.SEMI_ACTIVE.version || KalapaSDK.config.livenessVersion == LIVENESS_VERSION.PASSIVE.version) {
             return when (status) {
                 // REMOVE VERIFIED ICON
 //                LivenessSessionStatus.VERIFIED -> R.drawable.gif_success_small

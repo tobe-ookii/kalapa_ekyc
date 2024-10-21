@@ -78,9 +78,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'io.github.chaosleung:pinview:1.4.4'
     implementation "androidx.window:window-extensions:1.0.0-alpha01"
-
+//    implementation 'vn.kalapa:capturesdk:2.10.2'
+//    implementation 'vn.kalapa:ekyc:2.10.2'
     implementation project(path: ':kalapa')
-    
 //    implementation project(':kalapasdk')
 //
 //     // For Liveness version 4
